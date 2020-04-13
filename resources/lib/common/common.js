@@ -1,4 +1,4 @@
-var api = 'http://127.0.0.1:8080/';
+var api = 'http://127.0.0.1:8001/';
 
 // 下次再发送ajax请求把token带到后台
 let token = $.cookie("TOKEN");

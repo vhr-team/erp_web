@@ -78,7 +78,7 @@ layui.define(["element", "jquery"], function (exports) {
          */
         this.initHome = function () {
             sessionStorage.setItem('layuiminiHomeHref', "resources/page/welcome-1.html?mpi=m-p-i-0");
-            $('#layuiminiHomeTabId').html('<i class="fa fa-home"></i> <span>工作台</span>');
+            $('#layuiminiHomeTabId').html('<i class="fa fa-home"></i> <span> 首页 </span>');
             $('#layuiminiHomeTabId').attr('lay-id', "resources/page/welcome-1.html?mpi=m-p-i-0");
             $('#layuiminiHomeTabIframe').html('<iframe width="100%" height="100%" frameborder="0"  src="resources/page/welcome-1.html?mpi=m-p-i-0"></iframe>');
         };
@@ -88,7 +88,7 @@ layui.define(["element", "jquery"], function (exports) {
          * @param data
          */
         this.initLogo = function () {
-            var html = '<a href="">\n' +
+            var html = '<a href="javascript:;">\n' +
                 '<img src="resources/images/logo.png" alt="logo">\n' +
                 '<h1>仓库管理系统</h1>\n' +
                 '</a>';
