@@ -1,0 +1,141 @@
+{
+    "business": {
+      "title": "业务管理",
+      "icon": "fa fa-address-book",
+      "child": [
+        {
+          "title": "基础数据管理",
+          "href": "",
+          "icon": "fa fa-home",
+          "target": "_self",
+          "spread": true,
+          "child": [
+            {
+              "title": "客户管理",
+              "href": "resources/page/welcome-1.html",
+              "icon": "fa fa-tachometer",
+              "target": "_self"
+            },
+            {
+              "title": "供应商管理",
+              "href": "resources/page/welcome-2.html",
+              "icon": "fa fa-tachometer",
+              "target": "_self"
+            },
+            {
+              "title": "商品管理",
+              "href": "resources/page/welcome-3.html",
+              "icon": "fa fa-tachometer",
+              "target": "_self"
+            }
+          ]
+        },
+        {
+          "title": "进货管理",
+          "href": "resources/page/menu.html",
+          "icon": "fa fa-window-maximize",
+          "child": [
+            {
+              "title": "商品进货",
+              "href": "resources/page/welcome-1.html",
+              "icon": "fa fa-tachometer",
+              "target": "_self"
+            },
+            {
+              "title": "商品退货",
+              "href": "resources/page/welcome-2.html",
+              "icon": "fa fa-tachometer",
+              "target": "_self"
+            }
+          ]
+        },
+        {
+          "title": "销售管理",
+          "href": "resources/page/setting.html",
+          "icon": "fa fa-gears",
+          "child": [
+            {
+              "title": "商品销售",
+              "href": "resources/page/welcome-1.html",
+              "icon": "fa fa-tachometer",
+              "target": "_self"
+            },
+            {
+              "title": "销售退货",
+              "href": "resources/page/welcome-2.html",
+              "icon": "fa fa-tachometer",
+              "target": "_self"
+            }
+          ]
+        }
+      ]
+    },
+    "system": {
+      "title": "系统管理",
+      "icon": "fa fa-lemon-o",
+      "child": [
+        {
+          "title": "系统管理",
+          "icon": "fa fa-dot-circle-o",
+          "target": "_self",
+          "spread": true,
+          "child": [
+            {
+              "title": "部门管理",
+              "href": "page/icon-picker.html",
+              "icon": "fa fa-adn",
+              "target": "_self"
+            },
+            {
+              "title": "菜单管理",
+              "href": "page/icon-picker.html",
+              "icon": "fa fa-adn",
+              "target": "_self"
+            },
+            {
+              "title": "角色管理",
+              "href": "page/icon-picker.html",
+              "icon": "fa fa-adn",
+              "target": "_self"
+            },
+            {
+              "title": "用户管理",
+              "href": "page/icon-picker.html",
+              "icon": "fa fa-adn",
+              "target": "_self"
+            }
+          ]
+        },
+        {
+          "title": "其他管理",
+          "icon": "fa fa-dot-circle-o",
+          "child": [
+            {
+              "title": "登陆日志",
+              "href": "page/icon.html",
+              "icon": "fa fa-dot-circle-o",
+              "target": "_self"
+            },
+            {
+              "title": "数据监控",
+              "href": "page/icon.html",
+              "icon": "fa fa-dot-circle-o",
+              "target": "_self"
+            },
+            {
+              "title": "系统公告",
+              "href": "page/icon.html",
+              "icon": "fa fa-dot-circle-o",
+              "target": "_self"
+            },
+            {
+              "title": "图标列表",
+              "href": "page/icon.html",
+              "icon": "fa fa-dot-circle-o",
+              "target": "_self"
+            }
+          ]
+        }
+      ]
+    }
+}

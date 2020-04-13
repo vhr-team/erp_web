@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>系统公告</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="../../../lib/layui-v2.5.5/css/layui.css" media="all">
+    <link rel="stylesheet" href="../../../css/public.css" media="all">
+</head>
+<body>
+<div class="layuimini-container">
+    <div class="layuimini-main">
+
+        <fieldset class="table-search-fieldset">
+            <legend>搜索信息</legend>
+            <div style="margin: 10px 10px 10px 10px">
+                <form class="layui-form layui-form-pane" action="" id="searchFrm">
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">公告标题</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="title" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">发布人</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="opername" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">开始时间</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="startTime" id="startTime" readonly="readonly"
+                                       autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">结束时间</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="endTime" readonly="readonly" id="endTime" autocomplete="off"
+                                       class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <button type="submit" class="layui-btn layui-btn-primary" lay-submit
+                                    lay-filter="data-search-btn"><i class="layui-icon"></i> 搜 索
+                            </button>
+                            <button type="reset" class="layui-btn layui-btn-primary" lay-filter="data-search-btn"><i
+                                    class="layui-icon layui-icon-refresh"></i> 重 置
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </fieldset>
+
+        <!--表头工具条-->
+        <script type="text/html" id="noticetoolbar">
+            <div class="layui-btn-container">
+                <button class="layui-btn layui-btn-sm layui-btn-normal data-delete-btn" lay-event="addNotice"> 添 加 </button>
+                <button class="layui-btn layui-btn-sm layui-btn-danger data-delete-btn" lay-event="batchDelete"> 批 量 删 除 </button>
+            </div>
+        </script>
+
+        <table class="layui-hide" id="noticeTable" lay-filter="noticeTable"></table>
+
+        <!--表格右侧每一行数据的删除按钮-->
+        <script type="text/html" id="noticeTableBar">
+            <a class="layui-btn layui-btn-xs layui-btn-warm data-count-delete" lay-event="update"> 修 改 </a>
+            <a class="layui-btn layui-btn-xs layui-btn-danger data-count-delete" lay-event="delete"> 删 除 </a>
+        </script>
+
+    </div>
+</div>
+<script src="../../../lib/jquery-3.4.1/jquery-3.4.1.min.js" charset="utf-8"></script>
+<script src="../../../lib/layui-v2.5.5/layui.js?v=1.0.4" charset="utf-8"></script>
+<script src="../../../js/lay-config.js?v=1.0.4" charset="utf-8"></script>
+<script src="../../../lib/common/jquery.cookie.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="../../../lib/common/common.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    layui.use(['form', 'table', 'laydate', 'layer'], function () {
+        let form = layui.form;
+        let table = layui.table;
+        let laydate = layui.laydate;
+        let layuimini = layui.layuimini;
+        let layer = layui.layer;
+
+        // 渲染时间选择器
+        laydate.render({elem: "#startTime", type: "datetime"});
+        laydate.render({elem: "#endTime", type: "datetime"});
+
+        let tableIns = table.render({
+            elem: '#noticeTable',
+            url: api + 'notice/loadAllNotice',
+            toolbar: '#noticetoolbar',
+            defaultToolbar: ['filter', 'exports', 'print', {
+                title: '提示',
+                layEvent: 'LAYTABLE_TIPS',
+                icon: 'layui-icon-tips'
+            }],
+            cols: [[
+                {type: "checkbox", fixed: "left", align: "center"},
+                {field: 'id', title: 'ID', align: "center"},
+                {field: 'title', title: '公告标题', align: "center"},
+                {field: 'createtime', title: '发布时间', align: "center"},
+                {field: 'opername', title: '发布人', align: "center"},
+                {title: '操作', templet: '#noticeTableBar', fixed: "right", align: "center"}
+            ]],
+            page: true
+        });
+
+        // 监听搜索操作
+        form.on('submit(data-search-btn)', function (data) {
+            let params = $("#searchFrm").serialize();
+
+            //执行搜索重载
+            table.reload('noticeTable', {
+                page: {
+                    curr: 1
+                },
+                url: api + "notice/loadAllNotice?" + params
+            });
+
+            return false;
+        });
+
+        //监听事件
+        table.on('toolbar(noticeTable)', function (obj) {
+            switch (obj.event) {
+                case 'batchDelete':
+                    var checkStatus = table.checkStatus('noticeTable'); //idTest 即为基础参数 id 对应的值
+                    var data = checkStatus.data;
+                    var length = checkStatus.data.length;
+
+                    if (length == 0) {
+                        layer.msg("请选中要删除的行数据");
+                    } else {
+                        layer.confirm('真的删除选择中这些数据么?', function (index) {
+                            var params = "";
+                            $.each(data, function (index, item){
+                                if (index == 0) {
+                                    params += "ids=" + item.id;
+                                } else {
+                                    params += "&ids=" + item.id;
+                                }
+                            });
+                            $.post(api + "notice/batchDeleteLoginInfo", params, function (res) {
+                                layer.msg(res.msg);
+                                tableIns.reload();
+                                layer.close(index);
+                            })
+                        });
+                    }
+                    break;
+            }
+        });
+
+
+        table.on('tool(noticeTable)', function (obj) {
+            var data = obj.data;
+            if (obj.event === 'delete') {
+                layer.confirm('真的删除这条数据么', function (index) {
+                    $.post(api+"notice/deleteLoginInfo",{id:data.id},function(res){
+                        layer.msg(res.msg);
+                        obj.del();
+                        layer.close(index);
+                    })
+                });
+            }
+        });
+
+    });
+</script>
+<script>
+
+</script>
+
+</body>
+</html>
