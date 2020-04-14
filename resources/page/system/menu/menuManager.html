@@ -116,7 +116,7 @@
                     class="layui-icon layui-icon-addition"></i> 添 加
         </button>
 
-        <table class="layui-hide" id="deptTable" lay-filter="deptTable"></table>
+        <table class="layui-hide" id="menuTable" lay-filter="menuTable"></table>
 
         <script type="text/html" id="spreadTpl">
             <input type="checkbox" name="spread" value="{{d.id}}" lay-skin="switch" lay-text="展开|不展开"
@@ -131,7 +131,7 @@
         </script>
 
         <!--表格右侧每一行数据的删除按钮-->
-        <script type="text/html" id="deptTableBar">
+        <script type="text/html" id="menuTableBar">
             <a class="layui-btn layui-btn-xs layui-btn-warm data-count-delete" lay-event="update"> 修 改 </a>
             <a class="layui-btn layui-btn-xs layui-btn-danger data-count-delete" lay-event="delete"> 删 除 </a>
         </script>
@@ -166,7 +166,7 @@
                 pidName: 'pid',  // 自定义标识是否还有子节点的字段名称
                 isPidData: true  // 是否是pid形式数据
             },
-            elem: '#deptTable',
+            elem: '#menuTable',
             cols: [
                 {type: "numbers"},
                 {field: 'title', title: '菜单和权限名称', align: "center", width: 200},
@@ -176,11 +176,11 @@
                 {field: 'ordernum', title: '排序码', align: "center"},
                 {field: 'spread', title: '是否展开', align: "center", templet: '#spreadTpl'},
                 {field: 'available', title: '是否可用', align: "center", templet: '#availableTpl'},
-                {title: '操作', templet: '#deptTableBar', fixed: "right", align: "center"}
+                {title: '操作', templet: '#menuTableBar', fixed: "right", align: "center"}
             ],
             reqData: function (data, callback) {
                 // 在这里写ajax请求，通过callback方法回调数据
-                $.get(api + 'dept/loadAllDept', function (res) {
+                $.get(api + 'menu/loadAllDept', function (res) {
                     callback(res.data);  // 参数是数组类型
                 });
             }
@@ -188,7 +188,7 @@
 
         //监听展开操作
         form.on('switch(spreadSwitch)', function (obj) {
-            $.post(api + "dept/updateDept", {id: this.value, spread: obj.elem.checked ? 1 : 0}, res => {
+            $.post(api + "menu/updateDept", {id: this.value, spread: obj.elem.checked ? 1 : 0}, res => {
                 layer.msg(res.msg);
             });
             layer.tips(this.value + ' ' + this.name + '：' + obj.elem.checked, obj.othis);
@@ -196,7 +196,7 @@
 
         //监听是否可用操作
         form.on('switch(availableSwitch)', function (obj) {
-            $.post(api + "dept/updateDept", {id: this.value, available: obj.elem.checked ? 1 : 0}, res => {
+            $.post(api + "menu/updateDept", {id: this.value, available: obj.elem.checked ? 1 : 0}, res => {
                 layer.msg(res.msg);
             });
             layer.tips(this.value + ' ' + this.name + '：' + obj.elem.checked, obj.othis);
@@ -215,10 +215,10 @@
         });
 
         //监听事件
-        table.on('toolbar(deptTable)', function (obj) {
+        table.on('toolbar(menuTable)', function (obj) {
             switch (obj.event) {
                 case 'batchDelete':
-                    var checkStatus = table.checkStatus('deptTable'); //idTest 即为基础参数 id 对应的值
+                    var checkStatus = table.checkStatus('menuTable'); //idTest 即为基础参数 id 对应的值
                     var data = checkStatus.data;
                     var length = checkStatus.data.length;
 
@@ -234,7 +234,7 @@
                                     params += "&ids=" + item.id;
                                 }
                             });
-                            $.post(api + "dept/batchDeleteLoginInfo", params, function (res) {
+                            $.post(api + "menu/batchDeleteLoginInfo", params, function (res) {
                                 layer.msg(res.msg);
                                 tableIns.reload();
                                 layer.close(index);
@@ -246,7 +246,7 @@
         });
 
         $("#addDept").click(function () {
-            openAdddept();
+            openAddmenu();
         });
 
         //监听菜单和权限选择的按钮事件打开菜单和权限选择的弹出层
@@ -261,18 +261,18 @@
 
         var mainIndex;
         var url;  //动态的url
-        function openAdddept() {
+        function openAddmenu() {
             mainIndex = layer.open({
                 type: 1,
                 title: '添加菜单和权限',
                 content: $("#addOrUpdateDiv"),
                 area: ['800px', '600px'],
                 success: function (index) {
-                    url = api + "dept/addDept";
+                    url = api + "menu/addDept";
                     //重置表单
                     $("#dataFrm")[0].reset();
                     //加载最大的排序码
-                    $.get(api + "dept/queryDeptMaxOrderNum", function (res) {
+                    $.get(api + "menu/queryDeptMaxOrderNum", function (res) {
                         $("#ordernum").val(res.data);
                     });
                 }
@@ -281,15 +281,15 @@
 
 
         //监听行数据的事件
-        treeTable.on('tool(deptTable)', function (obj) {
+        treeTable.on('tool(menuTable)', function (obj) {
             var data = obj.data;
             if (obj.event === 'delete') {
-                $.get(api+"dept/getDeptChildrenCountById",{id:data.id},function(res1){
+                $.get(api+"menu/getDeptChildrenCountById",{id:data.id},function(res1){
                     if(res1.data>0){
                         layer.msg("当前菜单和权限有子菜单和权限，请选择删除子菜单和权限");
                     }else{
                         layer.confirm('真的删除【'+data.title+'】这个菜单和权限吗?', function (index) {
-                            $.post(api+"dept/deleteDept",{id:data.id},function(res){
+                            $.post(api+"menu/deleteDept",{id:data.id},function(res){
                                 layer.msg(res.msg);
                                 obj.del();
                                 layer.close(index);
@@ -298,7 +298,7 @@
                     }
                 })
             }else if(obj.event === 'update'){
-                openUpdatedept(data);
+                openUpdatemenu(data);
             }
         });
 
@@ -315,14 +315,14 @@
             return false;
         })
 
-        function openUpdatedept(data){
+        function openUpdatemenu(data){
             mainIndex=layer.open({
                 type:1,
                 title:'修改['+data.title+']菜单和权限',
                 content:$("#addOrUpdateDiv"),
                 area:['800px','600px'],
                 success:function(index){
-                    url=api+"dept/updateDept";
+                    url=api+"menu/updateDept";
                     if(data.pid==0){//说明是根菜单和权限
                         $("#div_pid").hide();
                     }else{
@@ -330,7 +330,7 @@
                     }
                     //装载数据表格
                     form.val("dataFrm",data);
-                    $.get(api+"dept/getDeptById",{id:data.pid},function(res){
+                    $.get(api+"menu/getDeptById",{id:data.pid},function(res){
                         $("#p_name").val(res.data.title);
                     })
                 }
