@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>仓库管理系统-登陆</title>
+    <title>系统登录</title>
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta http-equiv="Access-Control-Allow-Origin" content="*">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -122,7 +122,7 @@
         <div class="layui-form login-form">
             <form class="layui-form" action="">
                 <div class="layui-form-item logo-title">
-                    <h1>仓库管理系统后台登陆</h1>
+                    <h1>后台登录</h1>
                 </div>
                 <div class="layui-form-item">
                     <label class="layui-icon layui-icon-username" for="username"></label>
@@ -180,7 +180,7 @@
             // 发送Ajax请求去后台进行  认证
 
             let btn = $(this);
-            btn.text("登 陆 中 ...").attr("disabled", "disabled").addClass("layui-disabled");
+            btn.text("登 录 中 ...").attr("disabled", "disabled").addClass("layui-disabled");
 
             $.ajax({
                 url: api + "login/doLogin",
@@ -198,8 +198,8 @@
                     }
                 },
                 error: function () {
-                    layer.msg("登陆失败");
-                    btn.text("登 陆").attr("disabled", "").removeClass("layui-disabled");
+                    layer.msg("登录失败");
+                    btn.text("登 录").attr("disabled", "").removeClass("layui-disabled");
                 }
             });
 

@@ -284,12 +284,12 @@
         treeTable.on('tool(deptTable)', function (obj) {
             var data = obj.data;
             if (obj.event === 'delete') {
-                $.get(api+"dept/getDeptChildrenCountById",{id:data.id},function(res1){
-                    if(res1.data>0){
+                $.get(api + "dept/getDeptChildrenCountById", {id: data.id}, function (res1) {
+                    if (res1.data > 0) {
                         layer.msg("当前部门有子部门，请选择删除子部门");
-                    }else{
-                        layer.confirm('真的删除【'+data.title+'】这个部门吗?', function (index) {
-                            $.post(api+"dept/deleteDept",{id:data.id},function(res){
+                    } else {
+                        layer.confirm('真的删除【' + data.title + '】这个部门吗?', function (index) {
+                            $.post(api + "dept/deleteDept", {id: data.id}, function (res) {
                                 layer.msg(res.msg);
                                 obj.del();
                                 layer.close(index);
@@ -297,7 +297,7 @@
                         });
                     }
                 })
-            }else if(obj.event === 'update'){
+            } else if (obj.event === 'update') {
                 openUpdatedept(data);
             }
         });
@@ -315,22 +315,22 @@
             return false;
         })
 
-        function openUpdatedept(data){
-            mainIndex=layer.open({
-                type:1,
-                title:'修改['+data.title+']部门',
-                content:$("#addOrUpdateDiv"),
-                area:['800px','600px'],
-                success:function(index){
-                    url=api+"dept/updateDept";
-                    if(data.pid==0){//说明是根部门
+        function openUpdatedept(data) {
+            mainIndex = layer.open({
+                type: 1,
+                title: '修改[' + data.title + ']部门',
+                content: $("#addOrUpdateDiv"),
+                area: ['800px', '600px'],
+                success: function (index) {
+                    url = api + "dept/updateDept";
+                    if (data.pid == 0) {//说明是根部门
                         $("#div_pid").hide();
-                    }else{
+                    } else {
                         $("#div_pid").show();
                     }
                     //装载数据表格
-                    form.val("dataFrm",data);
-                    $.get(api+"dept/getDeptById",{id:data.pid},function(res){
+                    form.val("dataFrm", data);
+                    $.get(api + "dept/getDeptById", {id: data.pid}, function (res) {
                         $("#p_name").val(res.data.title);
                     })
                 }

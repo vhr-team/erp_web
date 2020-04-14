@@ -90,7 +90,7 @@ layui.define(["element", "jquery"], function (exports) {
         this.initLogo = function () {
             var html = '<a href="javascript:;">\n' +
                 '<img src="resources/images/logo.png" alt="logo">\n' +
-                '<h1>仓库管理系统</h1>\n' +
+                '<h1>管理系统</h1>\n' +
                 '</a>';
             $('.layui-layout-admin .layui-logo').html(html);
         };
