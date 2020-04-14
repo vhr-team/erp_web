@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>系统用户</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="../../../lib/layui-v2.5.5/css/layui.css" media="all">
+    <link rel="stylesheet" href="../../../css/public.css" media="all">
+</head>
+<body>
+<div class="layuimini-container">
+    <div class="layuimini-main">
+        <!--搜索开始-->
+        <fieldset class="table-search-fieldset">
+            <legend>搜索信息</legend>
+            <div style="margin: 10px 10px 10px 10px">
+                <form class="layui-form layui-form-pane" action="" id="searchFrm">
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">所属部门</label>
+                            <div class="layui-input-inline">
+                                <input type="hidden" name="deptid" id="p_deptid"/>
+                                <input type="text" name="p_deptname" id="p_deptname" autocomplete="off"
+                                       class="layui-input">
+                            </div>
+                            <a class="layui-btn layui-btn-primary" id="doSelectDept"><label
+                                    class="layui-icon layui-icon-male"></label> 选 择 </a>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">用户名称</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="name" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">用户备注</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="remark" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <a class="layui-btn layui-btn-primary" lay-submit="" lay-filter="data-search-btn"><label
+                                    class="layui-icon layui-icon-search"></label> 搜 索 </a>
+                            <a class="layui-btn layui-btn-primary"
+                               onclick="javascript:$('#searchFrm')[0].reset();$('#p_deptid').val('')"
+                               lay-filter="data-search-btn"><label class="layui-icon layui-icon-refresh"></label> 重 置
+                            </a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </fieldset>
+        <!--搜索结束-->
+
+        <!--表格开始-->
+        <table class="layui-hide" id="userTable" lay-filter="userTable"></table>
+        <script type="text/html" id="userToolBar">
+            <a class="layui-btn layui-btn-sm layui-btn-normal" lay-event="add"><i
+                    class="layui-icon layui-icon-addition"></i> 添加 </a>
+        </script>
+        <script type="text/html" id="userTableBar">
+            <a class="layui-btn layui-btn-xs layui-btn-warm data-count-delete" lay-event="update">修改</a>
+            <a class="layui-btn layui-btn-xs layui-btn-danger data-count-delete" lay-event="delete">删除</a>
+            <a class="layui-btn layui-btn-xs layui-btn-normal data-count-delete" lay-event="selectRole">分配角色</a>
+            <a class="layui-btn layui-btn-xs layui-bg-black data-count-delete" lay-event="resetPwd">重置密码</a>
+        </script>
+        <script type="text/html" id="availableTpl">
+            <!-- 这里的 checked 的状态只是演示 -->
+            <input type="checkbox" name="available" value="{{d.id}}" lay-skin="switch" lay-text="可用|不可用"
+                   lay-filter="availableSwitch" {{ d.available== 1 ? 'checked' : '' }}>
+        </script>
+        <!--表格结束-->
+
+        <!--添加和修改的弹出层开始-->
+        <div id="addOrUpdateDiv" style="display: none;padding: 0.3125rem">
+            <form method="post" class="layui-form layui-form-pane" lay-filter="dataFrm" id="dataFrm">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">用户名称</label>
+                    <div class="layui-input-block">
+                        <input type="hidden" name="id"/>
+                        <input type="text" name="name" lay-verify="required" autocomplete="off" placeholder="请输入标题"
+                               class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">用户备注</label>
+                    <div class="layui-input-block">
+                        <textarea placeholder="请输入用户备注" name="remark" class="layui-textarea"></textarea>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-input-block" style="text-align: center;">
+                        <a class="layui-btn " lay-submit="" lay-filter="doSubmit"><label
+                                class="layui-icon layui-icon-release"></label>提交</a>
+                        <a class="layui-btn layui-btn-warm" onclick="javascript:$('#dataFrm')[0].reset()"
+                           lay-filter="data-search-btn"><label class="layui-icon layui-icon-refresh"></label>重置</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <!--添加和修改的弹出层结束-->
+
+        <!--选择菜单和权限的弹出层开始-->
+        <div id="selectMenuDiv" style="display: none;padding: 0.3125rem;">
+            <table class="layui-hide" id="menuTable" lay-filter="menuTable"></table>
+        </div>
+        <!--选择菜单和权限的弹出层结束-->
+
+    </div>
+</div>
+<script src="../../../lib/jquery-3.4.1/jquery-3.4.1.min.js" charset="utf-8"></script>
+<script src="../../../lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
+<script src="../../../js/lay-config.js?v=1.0.4" charset="utf-8"></script>
+<script src="../../../lib/jq-module/jquery.particleground.min.js" charset="utf-8"></script>
+<script src="../../../lib/common/jquery.cookie.min.js" charset="utf-8"></script>
+<script src="../../../lib/common/common.js" charset="utf-8"></script>
+<script src="../../../lib/common/selectLayer.js" charset="utf-8"></script>
+
+<script>
+    layui.use(['form', 'table', 'laydate', 'layer'], function () {
+        var form = layui.form;
+        var table = layui.table;
+        var laydate = layui.laydate;
+        var layer = layui.layer;
+
+        var tableIns = table.render({
+            elem: '#userTable',
+            url: api + 'user/loadAllUser',
+            toolbar: "#userToolBar",
+            cellMinWidth: true,
+            cols: [[
+                {field: 'id', title: 'ID', align: "center"},
+                {field: 'name', title: '用户姓名', align: "center"},
+                {
+                    field: 'sex', title: '性别', align: "center", templet: function (d) {
+                        return d.sex == 1 ? '<span class="layui-badge layui-bg-red"> 男 </span>' : '<span class="layui-badge layui-bg-blue"> 女 </span>';
+                    }
+                },
+                {field: 'loginname', title: '登陆名称', align: "center"},
+                {field: 'deptname', title: '所属部门', align: "center"},
+                {field: 'remark', title: '用户备注', align: "center"},
+                {field: 'address', title: '用户地址', align: "center"},
+                {field: 'hiredate', title: '入职时间', align: "center"},
+                {field: 'ordernum', title: '排序码', align: "center"},
+                {
+                    field: 'imgpath', title: '用户头像', align: "center", templet: function (d) {
+                        return `<img src="${d.imgpath}" class="layui-circle">`;
+                    }
+                },
+                {field: 'available', title: '是否可用', align: "center", templet: '#availableTpl'},
+                {title: '操作', width: 300, templet: '#userTableBar', fixed: "right", align: "center"}
+            ]],
+            page: true
+        });
+
+        // 监听搜索操作
+        form.on('submit(data-search-btn)', function (data) {
+            var params = $("#searchFrm").serialize();
+            //执行搜索重载
+            table.reload('userTable', {
+                page: {
+                    curr: 1
+                }
+                , url: api + 'user/loadAllUser?' + params
+            });
+            return false;
+        });
+
+        //监听选择部门
+        $("#doSelectDept").click(function () {
+            // var p_id=$("#p_id").val();
+            openDeptSelecter('', function (id, name) {
+                $("#p_deptid").val(id);
+                $("#p_deptname").val(name);
+            });
+        });
+
+        //监听表头的事件
+        table.on('toolbar(userTable)', function (obj) {
+            var checkStatus = table.checkStatus(obj.config.id);
+            switch (obj.event) {
+                case 'batchdelete':
+                    batchdelete();
+                    break;
+                case 'add':
+                    openAddUser();
+                    break;
+            }
+            ;
+        });
+
+        //监听行数据的事件
+        table.on('tool(userTable)', function (obj) {
+            var data = obj.data;
+            if (obj.event === 'delete') {
+                layer.confirm('真的删除【' + data.name + '】这个用户吗么', function (index) {
+                    $.post(api + "user/deleteUser", {id: data.id}, function (res) {
+                        layer.msg(res.msg);
+                        obj.del();
+                        layer.close(index);
+                    })
+                });
+            } else if (obj.event === 'update') {
+                openUpdateUser(data);
+            } else if (obj.event === 'selectMenu') {
+                openSelectMenu(data);
+            }
+        });
+        //监听可用操作
+        form.on('switch(availableSwitch)', function (obj) {
+            $.post(api + "user/updateUser", {id: this.value, available: obj.elem.checked ? 1 : 0}, function (res) {
+                layer.msg(res.msg);
+                tableIns.reload();
+            })
+        });
+
+        //打开添加用户的弹层
+        var mainIndex;
+        var url;  //动态的url
+        function openAddUser() {
+            mainIndex = layer.open({
+                type: 1,
+                title: '添加用户',
+                content: $("#addOrUpdateDiv"),
+                area: ['800px', '500px'],
+                success: function (index) {
+                    url = api + "user/addUser";
+                    //重置表单
+                    $("#dataFrm")[0].reset();
+                }
+            });
+        }
+
+        function openUpdateUser(data) {
+            mainIndex = layer.open({
+                type: 1,
+                title: '修改【' + data.name + '】用户',
+                content: $("#addOrUpdateDiv"),
+                area: ['800px', '600px'],
+                success: function (index) {
+                    url = api + "user/updateUser";
+                    //装载数据表格
+                    form.val("dataFrm", data);
+                }
+            });
+        }
+
+        //提交数据
+        form.on("submit(doSubmit)", function (data) {
+            var params = $("#dataFrm").serialize();
+            $.post(url, params, function (res) {
+                layer.msg(res.msg);
+                if (res.code == 200) {
+                    tableIns.reload();
+                }
+                layer.close(mainIndex);
+            })
+            return false;
+        });
+
+        //打开选择菜单和权限的弹出层
+        function openSelectMenu(data_table) {
+            var table_MenusIns;
+            mainIndex = layer.open({
+                type: 1,
+                title: '分配【' + data_table.name + '】用户和权限和菜单',
+                content: $("#selectMenuDiv"),
+                area: ['800px', '600px'],
+                btn: ['<span class="layui-icon layui-icon-ok">确认分配</span>'],
+                btnAlign: 'c',
+                yes: function () {
+                    var m = table_MenusIns.checkStatus();
+                    console.log(m);
+                    var rid = data_table.id;
+                    var params = "rid=" + rid;
+                    $.each(m, function (x, item) {
+                        params += "&mids=" + item.id;
+                    });
+                    // alert(params);
+                    $.post(api + "user/saveUserMenu", params, function (res) {
+                        layer.msg(res.msg);
+                    })
+                },
+                success: function (index) {
+                    table_MenusIns = treeTable.render({
+                        tree: {
+                            iconIndex: 1,  // 折叠图标显示在第几列
+                            idName: 'id',  // 自定义id字段的名称
+                            pidName: 'pid',  // 自定义标识是否还有子节点的字段名称
+                            isPidData: true,// 是否是pid形式数据
+                            openName: 'spread'  // 自定义默认展开的字段名
+                        },
+                        elem: '#menuTable',
+                        cellMinWidth: true,
+                        cols: [
+                            {type: "checkbox"},
+                            {field: 'title', title: '菜单或权限名称'},
+                            // {field: 'id',  title: 'ID'},
+                            {
+                                field: 'type', title: '类型', align: "center", templet: function (d) {
+                                    if (d.type == 'topmenu') {
+                                        return '<span class="layui-badge layui-bg-red">顶部菜单</span>';
+                                    }
+                                    if (d.type == 'leftmenu') {
+                                        return '<span class="layui-badge layui-bg-blue">左侧菜单</span>';
+                                    } else {
+                                        return '<span class="layui-badge layui-bg-molv">权限</span>';
+                                    }
+                                }
+                            }
+                        ],
+                        reqData: function (data, callback) {
+                            if (data == undefined) {
+                                // 在这里写ajax请求，通过callback方法回调数据
+                                $.get(api + 'menu/loadAllMenu?available=1', function (res) {
+                                    callback(res.data);  // 参数是数组类型
+                                    //选择中已选择的权限或菜单
+                                    $.get(api + "user/queryMenuIdsByRid", {id: data_table.id}, function (rs) {
+                                        // console.log(rs.data);//[1,3,8]
+                                        var x = new Array();
+                                        $.each(res.data, function (i, i_1) {
+                                            $.each(rs.data, function (j, j_1) {
+                                                if (i_1.id == j_1) {
+                                                    if (!i_1.children) {
+                                                        x.push(j_1);
+                                                    }
+                                                }
+                                            })
+                                        });
+                                        table_MenusIns.setChecked(x);  // 设置选中数据
+                                    });
+                                });
+                            } else {
+                                callback([]);  //回调一个空数据去渲染表格
+                            }
+                        }
+                    });
+                }
+            });
+        }
+    });
+</script>
+<script>
+
+</script>
+
+</body>
+</html>
