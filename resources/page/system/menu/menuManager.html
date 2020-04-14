@@ -232,7 +232,9 @@
                     } else {
                         tableIns.reload();
                     }
+                    return false;
                 });
+
                 //监听表单元素的事件
                 //监听展开操作
                 form.on('switch(spreadSwitch)', function (obj) {
