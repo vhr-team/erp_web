@@ -1,4 +1,5 @@
 let api = 'http://127.0.0.1:8001/';
+let baseUrl = "http://39.106.71.75:8888/";
 
 // 下次再发送ajax请求把token带到后台
 let token = $.cookie("TOKEN");

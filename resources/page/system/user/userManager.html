@@ -204,7 +204,7 @@
                 {field: 'ordernum', title: '排序码', align: "center"},
                 {
                     field: 'imgpath', title: '用户头像', align: "center", templet: function (d) {
-                        return `<img src="${d.imgpath}" class="layui-circle">`;
+                        return `<img width="30" height="30" src="${baseUrl}${d.imgpath}" class="layui-circle">`;
                     }
                 },
                 {field: 'available', title: '是否可用', align: "center", templet: '#availableTpl'},
@@ -356,38 +356,38 @@
         });
 
         //打开选择角色的弹出层
-        function openSelectRole(data_table){
+        function openSelectRole(data_table) {
             var table_RolesIns;
-            mainIndex=layer.open({
-                type:1,
-                title:'分配【'+data_table.name+'】用户和角色',
-                content:$("#selectRoleDiv"),
-                area:['800px','600px'],
-                btn:['<span class="layui-icon layui-icon-ok">确认分配</span>'],
-                btnAlign:'c',
-                yes:function(){
+            mainIndex = layer.open({
+                type: 1,
+                title: '分配【' + data_table.name + '】用户和角色',
+                content: $("#selectRoleDiv"),
+                area: ['800px', '600px'],
+                btn: ['<span class="layui-icon layui-icon-ok">确认分配</span>'],
+                btnAlign: 'c',
+                yes: function () {
                     var checkStatus = table.checkStatus('roleTable');
-                    var m=checkStatus.data;
-                    var uid=data_table.id;
-                    var params="uid="+uid;
-                    $.each(m,function(x,item){
-                        params+="&rids="+item.id;
+                    var m = checkStatus.data;
+                    var uid = data_table.id;
+                    var params = "uid=" + uid;
+                    $.each(m, function (x, item) {
+                        params += "&rids=" + item.id;
                     });
-                    $.post(api+"user/saveUserRole",params,function(res){
+                    $.post(api + "user/saveUserRole", params, function (res) {
                         layer.msg(res.msg);
                     })
                 },
-                success:function(index){
-                    table_RolesIns=table.render({
+                success: function (index) {
+                    table_RolesIns = table.render({
                         elem: '#roleTable',
-                        url: api+'role/loadAllAvailableRoleNoPage?userId='+data_table.id,
-                        toolbar:false,
-                        cellMinWidth:true,
+                        url: api + 'role/loadAllAvailableRoleNoPage?userId=' + data_table.id,
+                        toolbar: false,
+                        cellMinWidth: true,
                         cols: [[
-                            {type: "checkbox",  fixed: "left"},
+                            {type: "checkbox", fixed: "left"},
                             {field: 'id', title: 'ID', align: "center"},
-                            {field: 'name',  title: '角色标题', align: "center"},
-                            {field: 'remark',  title: '角色备注', align: "center"}
+                            {field: 'name', title: '角色标题', align: "center"},
+                            {field: 'remark', title: '角色备注', align: "center"}
                         ]]
 
                     });
