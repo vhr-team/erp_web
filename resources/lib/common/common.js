@@ -41,7 +41,7 @@ if (usertype == 1) {
     if (pers != null) {
         let permissions = pers.split(",");
 
-        //部门权限开始
+        // 部门权限开始
         if (permissions.indexOf("dept:add") < 0) {
             $(".btn_add").hide();
         }
@@ -51,7 +51,43 @@ if (usertype == 1) {
         if (permissions.indexOf("dept:delete") < 0) {
             $(".btn_delete").hide();
         }
-        //部门权限结束
+        // 部门权限结束
+
+        // 角色权限开始
+        if (permissions.indexOf("role:add") < 0) {
+            $(".btn_add").hide();
+        }
+        if (permissions.indexOf("role:update") < 0) {
+            $(".btn_update").hide();
+        }
+        if (permissions.indexOf("role:delete") < 0) {
+            $(".btn_delete").hide();
+        }
+        // 角色权限结束
+
+        // 菜单和权限
+        if (permissions.indexOf("menu:add") < 0) {
+            $(".btn_add").hide();
+        }
+        if (permissions.indexOf("menu:update") < 0) {
+            $(".btn_update").hide();
+        }
+        if (permissions.indexOf("menu:delete") < 0) {
+            $(".btn_delete").hide();
+        }
+        // 菜单和权限
+
+        // 用户
+        if (permissions.indexOf("user:add") < 0) {
+            $(".btn_add").hide();
+        }
+        if (permissions.indexOf("user:update") < 0) {
+            $(".btn_update").hide();
+        }
+        if (permissions.indexOf("user:delete") < 0) {
+            $(".btn_delete").hide();
+        }
+        // 用户
 
     } else {
         $(".btn_add").hide();

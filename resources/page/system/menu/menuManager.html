@@ -47,17 +47,17 @@
                 </fieldset>
                 <!--搜索结束-->
                 <!--表格开始-->
-                <button style="margin-top: 10px;" class="layui-btn layui-btn-sm layui-btn-normal data-delete-btn"
+                <button style="margin-top: 10px;" class="layui-btn layui-btn-sm layui-btn-normal data-delete-btn btn_add"
                         id="addMenuBtn">
                     <i
                             class="layui-icon layui-icon-addition"></i>
                     添 加
                 </button>
                 <table class="layui-hide" id="menuTable" lay-filter="menuTable"></table>
-                <script type="text/html" id="menuTableBar">
-                    <a class="layui-btn layui-btn-xs layui-btn-warm data-count-delete" lay-event="update">修改</a>
-                    <a class="layui-btn layui-btn-xs layui-btn-danger data-count-delete" lay-event="delete">删除</a>
-                </script>
+                <div style="display: none" id="menuTableBar">
+                    <a class="layui-btn layui-btn-xs layui-btn-warm data-count-delete btn_update" lay-event="update">修改</a>
+                    <a class="layui-btn layui-btn-xs layui-btn-danger data-count-delete btn_delete" lay-event="delete">删除</a>
+                </div>
 
                 <script type="text/html" id="spreadTpl">
                     <!-- 这里的 checked 的状态只是演示 -->
@@ -184,7 +184,7 @@
                     cellMinWidth: true,
                     cols: [
                         {type: "numbers"},
-                        {field: 'title', title: '菜单或权限名称', width: 200},
+                        {field: 'title', title: '菜单或权限名称', width: 230},
                         {
                             field: 'type', title: '类型', align: "center", templet: function (d) {
                                 if (d.type == 'topmenu') {
@@ -242,7 +242,7 @@
                         layer.msg(res.msg);
                         tableIns.reload();
                     })
-                    layer.tips(this.value + ' ' + this.name + '：'+ obj.elem.checked, obj.othis);
+                    layer.tips(this.value + ' ' + this.name + '：' + obj.elem.checked, obj.othis);
                 });
 
                 //监听可用操作
