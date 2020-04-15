@@ -192,8 +192,9 @@
                         btn.text("登 陆").attr("disabled", false).removeClass("layui-disabled");
                     } else {
                         //把token写到cookie
-                        $.cookie('TOKEN', res.token.token, { expires: 7 });  //登陆成功这后把token放到cookie里面
-                        localStorage.setItem("permissions",res.token.permissions);
+                        $.cookie('TOKEN', res.token.token, {expires: 7});  //登陆成功这后把token放到cookie里面
+                        localStorage.setItem("permissions", res.token.permissions);
+                        localStorage.setItem("usertype", res.token.usertype);
                         window.location.href = "./index.html";
                     }
                 },

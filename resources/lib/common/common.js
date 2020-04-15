@@ -35,25 +35,28 @@ if (token == undefined) {
 }
 
 let pers = localStorage.getItem("permissions");
-if (pers != null) {
-    let permissions = pers.split(",");
+let usertype = localStorage.getItem("usertype");
+if (usertype == 1) {
+    if (pers != null) {
+        let permissions = pers.split(",");
 
-    //部门权限开始
-    if (permissions.indexOf("dept:add") < 0) {
+        //部门权限开始
+        if (permissions.indexOf("dept:add") < 0) {
+            $(".btn_add").hide();
+        }
+        if (permissions.indexOf("dept:update") < 0) {
+            $(".btn_update").hide();
+        }
+        if (permissions.indexOf("dept:delete") < 0) {
+            $(".btn_delete").hide();
+        }
+        //部门权限结束
+
+    } else {
         $(".btn_add").hide();
-    }
-    if (permissions.indexOf("dept:update") < 0) {
         $(".btn_update").hide();
-    }
-    if (permissions.indexOf("dept:delete") < 0) {
         $(".btn_delete").hide();
+        $(".btn_dispatch").hide();
+        $(".btn_reset").hide();
     }
-    //部门权限结束
-
-} else {
-    $(".btn_add").hide();
-    $(".btn_update").hide();
-    $(".btn_delete").hide();
-    $(".btn_dispatch").hide();
-    $(".btn_reset").hide();
 }
