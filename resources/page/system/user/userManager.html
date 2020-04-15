@@ -76,18 +76,71 @@
         <!--添加和修改的弹出层开始-->
         <div id="addOrUpdateDiv" style="display: none;padding: 0.3125rem">
             <form method="post" class="layui-form layui-form-pane" lay-filter="dataFrm" id="dataFrm">
-                <div class="layui-form-item">
-                    <label class="layui-form-label">用户名称</label>
-                    <div class="layui-input-block">
-                        <input type="hidden" name="id"/>
-                        <input type="text" name="name" lay-verify="required" autocomplete="off" placeholder="请输入标题"
+                <div class="layui-form-item" id="div_pid">
+                    <label class="layui-form-label">所属部门</label>
+                    <div class="layui-input-inline">
+                        <input type="hidden" name="deptid" id="deptid"/>
+                        <input type="text" id="deptid_name" readonly="readonly" autocomplete="off" placeholder="请选择所属部门"
                                class="layui-input">
+                    </div>
+                    <div class="layui-input-inline">
+                        <a class="layui-btn layui-btn-warm" id="doDataFromSelectDept"><label
+                                class="layui-icon layui-icon-male"></label>选择</a>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">用户姓名</label>
+                        <div class="layui-input-inline">
+                            <input type="hidden" name="id"/>
+                            <input type="text" name="name" id="username" lay-verify="required" autocomplete="off"
+                                   placeholder="请输入用户姓名" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">登陆名称</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="loginname" id="loginname" lay-verify="required" autocomplete="off"
+                                   placeholder="请输入登陆名称" class="layui-input">
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">用户地址</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="address" autocomplete="off" placeholder="请输入用户地址" class="layui-input">
                     </div>
                 </div>
                 <div class="layui-form-item">
                     <label class="layui-form-label">用户备注</label>
                     <div class="layui-input-block">
                         <textarea placeholder="请输入用户备注" name="remark" class="layui-textarea"></textarea>
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">入职时间</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="hiredate" id="hiredate" lay-verify="required" readonly="readonly"
+                                   autocomplete="off" placeholder="请选择入职时间" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">排序码</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="ordernum" id="ordernum" lay-verify="required" autocomplete="off"
+                                   placeholder="请输入排序码" class="layui-input">
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">用户性别</label>
+                        <div class="layui-input-inline">
+                            <input type="radio" name="sex" value="1" title="男" checked="checked" class="layui-input">
+                            <input type="radio" name="sex" value="0" title="女" class="layui-input">
+                        </div>
                     </div>
                 </div>
                 <div class="layui-form-item">
@@ -117,6 +170,7 @@
 <script src="../../../lib/common/jquery.cookie.min.js" charset="utf-8"></script>
 <script src="../../../lib/common/common.js" charset="utf-8"></script>
 <script src="../../../lib/common/selectLayer.js" charset="utf-8"></script>
+<script src="../../../lib/common/Convert_Pinyin.js" charset="utf-8"></script>
 
 <script>
     layui.use(['form', 'table', 'laydate', 'layer'], function () {
@@ -124,6 +178,10 @@
         var table = layui.table;
         var laydate = layui.laydate;
         var layer = layui.layer;
+
+        laydate.render({
+            elem:'#hiredate'
+        });
 
         var tableIns = table.render({
             elem: '#userTable',
@@ -229,9 +287,30 @@
                     url = api + "user/addUser";
                     //重置表单
                     $("#dataFrm")[0].reset();
+                    //查询最大排序码
+                    $.get(api + "user/queryUserMaxOrderNum", function (res) {
+                        $("#ordernum").val(res.data);
+                    })
+
                 }
             });
         }
+
+        //监听添加和修改弹出层的选择部门
+        $("#doDataFromSelectDept").click(function () {
+            var f_id = $("#deptid").val();
+            openDeptSelecter(f_id, function (id, name) {
+                $("#deptid").val(id);
+                $("#deptid_name").val(name);
+            });
+        });
+
+        //监听用户姓名失去焦点的事件
+        $("#username").on("blur", function () {
+            var name = $("#username").val();
+            var fullName = pinyin.getFullChars(name);
+            $("#loginname").val(fullName.toLowerCase());
+        })
 
         function openUpdateUser(data) {
             mainIndex = layer.open({
