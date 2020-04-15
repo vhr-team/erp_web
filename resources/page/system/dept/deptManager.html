@@ -111,7 +111,7 @@
         <!--添加和修改的弹出层结束-->
 
         <!--表头工具条-->
-        <button style="margin-top: 10px;" class="layui-btn layui-btn-sm layui-btn-normal data-delete-btn" id="addDept">
+        <button style="margin-top: 10px;" class="layui-btn layui-btn-sm layui-btn-normal data-delete-btn btn_add" id="addDept">
             <i
                     class="layui-icon layui-icon-addition"></i> 添 加
         </button>
@@ -132,8 +132,8 @@
 
         <!--表格右侧每一行数据的删除按钮-->
         <script type="text/html" id="deptTableBar">
-            <a class="layui-btn layui-btn-xs layui-btn-warm data-count-delete" lay-event="update"> 修 改 </a>
-            <a class="layui-btn layui-btn-xs layui-btn-danger data-count-delete" lay-event="delete"> 删 除 </a>
+            <a class="layui-btn layui-btn-xs layui-btn-warm data-count-delete btn_update" lay-event="update"> 修 改 </a>
+            <a class="layui-btn layui-btn-xs layui-btn-danger data-count-delete btn_delete" lay-event="delete"> 删 除 </a>
         </script>
 
     </div>
@@ -338,9 +338,6 @@
         }
 
     });
-</script>
-<script>
-
 </script>
 
 </body>
