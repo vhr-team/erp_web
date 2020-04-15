@@ -180,7 +180,7 @@
         var layer = layui.layer;
 
         laydate.render({
-            elem:'#hiredate'
+            elem: '#hiredate'
         });
 
         var tableIns = table.render({
@@ -262,10 +262,23 @@
                 });
             } else if (obj.event === 'update') {
                 openUpdateUser(data);
-            } else if (obj.event === 'selectMenu') {
-                openSelectMenu(data);
+            } else if (obj.event === 'resetPwd') {
+                resetPwd(data);
+            } else if (obj.event === 'selectRole') {
+                openSelectRole(data);
             }
         });
+
+        //重置密码
+        function resetPwd(data) {
+            layer.confirm('真的重置【' + data.name + '】这个用户的密码吗?', function (index) {
+                $.post(api + "user/resetUserPwd", {id: data.id}, function (res) {
+                    layer.msg(res.msg);
+                    layer.close(index);
+                })
+            });
+        }
+
         //监听可用操作
         form.on('switch(availableSwitch)', function (obj) {
             $.post(api + "user/updateUser", {id: this.value, available: obj.elem.checked ? 1 : 0}, function (res) {
@@ -273,6 +286,24 @@
                 tableIns.reload();
             })
         });
+
+        function openUpdateUser(data) {
+            mainIndex = layer.open({
+                type: 1,
+                title: '修改【' + data.name + '】用户',
+                content: $("#addOrUpdateDiv"),
+                area: ['800px', '600px'],
+                success: function (index) {
+                    url = api + "user/updateUser";
+                    //装载数据表格
+                    form.val("dataFrm", data);
+                    //根据部门ID查询部门名称
+                    $.get(api + "dept/getDeptById", {id: data.deptid}, function (res) {
+                        $("#deptid_name").val(res.data.title);
+                    });
+                }
+            });
+        }
 
         //打开添加用户的弹层
         var mainIndex;
@@ -310,22 +341,7 @@
             var name = $("#username").val();
             var fullName = pinyin.getFullChars(name);
             $("#loginname").val(fullName.toLowerCase());
-        })
-
-        function openUpdateUser(data) {
-            mainIndex = layer.open({
-                type: 1,
-                title: '修改【' + data.name + '】用户',
-                content: $("#addOrUpdateDiv"),
-                area: ['800px', '600px'],
-                success: function (index) {
-                    url = api + "user/updateUser";
-                    //装载数据表格
-                    form.val("dataFrm", data);
-                }
-            });
-        }
-
+        });
         //提交数据
         form.on("submit(doSubmit)", function (data) {
             var params = $("#dataFrm").serialize();
