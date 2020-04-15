@@ -127,12 +127,12 @@
                 <div class="layui-form-item">
                     <label class="layui-icon layui-icon-username" for="username"></label>
                     <input type="text" name="username" lay-verify="required" placeholder="用户名" autocomplete="off"
-                           class="layui-input" value="system">
+                           class="layui-input" value="">
                 </div>
                 <div class="layui-form-item">
                     <label class="layui-icon layui-icon-password" for="password"></label>
                     <input type="password" name="password" lay-verify="required" placeholder="密码" autocomplete="off"
-                           class="layui-input" value="123456">
+                           class="layui-input" value="">
                 </div>
                 <div class="layui-form-item">
                     <label class="layui-icon layui-icon-vercode" for="captcha"></label>
@@ -195,6 +195,7 @@
                         $.cookie('TOKEN', res.token.token, {expires: 7});  //登陆成功这后把token放到cookie里面
                         localStorage.setItem("permissions", res.token.permissions);
                         localStorage.setItem("usertype", res.token.usertype);
+                        localStorage.setItem("username", res.token.username);
                         window.location.href = "./index.html";
                     }
                 },

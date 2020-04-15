@@ -60,3 +60,7 @@ if (usertype == 1) {
         $(".btn_reset").hide();
     }
 }
+
+//给页面显示登陆用户名
+let username = localStorage.getItem("username");
+$(".login_name").html(username);
