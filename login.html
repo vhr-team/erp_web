@@ -139,7 +139,7 @@
                     <input type="text" name="captcha" lay-verify="required" placeholder="图形验证码" autocomplete="off"
                            class="layui-input verification captcha" value="xszg">
                     <div class="captcha-img">
-                        <img id="captchaPic" src="resources/images/captcha.jpg">
+                        <img id="captchaPic" onclick="genCode()">
                     </div>
                 </div>
                 <div class="layui-form-item">
@@ -160,6 +160,15 @@
 <script src="resources/lib/common/common.js" type="text/javascript" charset="utf-8"></script>
 
 <script>
+    //写验证码
+    let keyCode = Math.floor(Math.random() * 9000 + 1000);
+    $("#captchaPic").attr("src", api + 'login/captcha?codeKey=' + keyCode)
+
+    function genCode() {
+        keyCode = Math.floor(Math.random() * 9000 + 1000);
+        $("#captchaPic").attr("src", api + 'login/captcha?codeKey=' + keyCode)
+    }
+
     layui.use(['form'], function () {
         var form = layui.form,
             layer = layui.layer;
@@ -185,7 +194,12 @@
             $.ajax({
                 url: api + "login/doLogin",
                 method: "post",
-                data: {loginname: data.field.username, password: data.field.password, captcha: data.field.captcha},
+                data: {
+                    loginname: data.field.username,
+                    password: data.field.password,
+                    captcha: data.field.captcha,
+                    keyCode: keyCode
+                },
                 success: function (res) {
                     layer.msg(res.msg);
                     if (res.code != 200) {
