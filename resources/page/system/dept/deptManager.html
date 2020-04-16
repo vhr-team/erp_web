@@ -111,7 +111,8 @@
         <!--添加和修改的弹出层结束-->
 
         <!--表头工具条-->
-        <button style="margin-top: 10px;" class="layui-btn layui-btn-sm layui-btn-normal data-delete-btn btn_add" id="addDept">
+        <button style="margin-top: 10px;" class="layui-btn layui-btn-sm layui-btn-normal data-delete-btn btn_add"
+                id="addDept">
             <i
                     class="layui-icon layui-icon-addition"></i> 添 加
         </button>
@@ -189,18 +190,19 @@
         form.on('switch(spreadSwitch)', function (obj) {
             $.post(api + "dept/updateDept", {id: this.value, spread: obj.elem.checked ? 1 : 0}, res => {
                 layer.msg(res.msg);
+                insTb.reload();
             });
             layer.tips(this.value + ' ' + this.name + '：' + obj.elem.checked, obj.othis);
-            insTb.reload();
+
         });
 
         //监听是否可用操作
         form.on('switch(availableSwitch)', function (obj) {
             $.post(api + "dept/updateDept", {id: this.value, available: obj.elem.checked ? 1 : 0}, res => {
                 layer.msg(res.msg);
+                insTb.reload();
             });
             layer.tips(this.value + ' ' + this.name + '：' + obj.elem.checked, obj.othis);
-            insTb.reload();
         });
 
         // 监听搜索操作
