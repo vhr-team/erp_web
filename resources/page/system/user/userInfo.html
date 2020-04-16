@@ -83,8 +83,10 @@
 
         //查询当前用户
         $.get(api + "user/getCurrentUser", function (res) {
+            $("#userFace").attr("src", baseUrl + res.data.imgpath);
             form.val("dataFrm", res.data);
         });
+
         form.on("submit(changeUser)", function (data) {
             //loading层
             var index = layer.load(1, {
