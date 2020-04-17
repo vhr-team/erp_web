@@ -83,9 +83,37 @@
                         <input type="text" id="deptid_name" readonly="readonly" autocomplete="off" placeholder="请选择所属部门"
                                class="layui-input">
                     </div>
-                    <div class="layui-input-inline">
+                    <div class="layui-inline">
                         <a class="layui-btn layui-btn-warm" id="doDataFromSelectDept"><label
                                 class="layui-icon layui-icon-male"></label>选择</a>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">排序码</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="ordernum" id="ordernum" lay-verify="required" autocomplete="off"
+                                   placeholder="请输入排序码" class="layui-input">
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">领导部门</label>
+                        <div class="layui-input-inline">
+                            <input type="hidden" name="mgrDept" id="mgrDept"/>
+                            <input type="text" id="leadername" readonly="readonly" autocomplete="off"
+                                   placeholder="请选择领导部门"
+                                   class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-inline" style="margin-left: -15px;">
+                        <a class="layui-btn layui-btn-warm" id="doDataFromSelectMgr"><label
+                                class="layui-icon layui-icon-male"></label>选择</a>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">直属领导:</label>
+                        <div class="layui-input-inline">
+                            <select name="mgr" id="mgr"></select>
+                        </div>
                     </div>
                 </div>
                 <div class="layui-form-item">
@@ -126,15 +154,6 @@
                                    autocomplete="off" placeholder="请选择入职时间" class="layui-input">
                         </div>
                     </div>
-                    <div class="layui-inline">
-                        <label class="layui-form-label">排序码</label>
-                        <div class="layui-input-inline">
-                            <input type="text" name="ordernum" id="ordernum" lay-verify="required" autocomplete="off"
-                                   placeholder="请输入排序码" class="layui-input">
-                        </div>
-                    </div>
-                </div>
-                <div class="layui-form-item">
                     <div class="layui-inline">
                         <label class="layui-form-label">用户性别</label>
                         <div class="layui-input-inline">
@@ -199,6 +218,7 @@
                 {field: 'loginname', title: '登录名称', align: "center"},
                 {field: 'deptname', title: '所属部门', align: "center"},
                 {field: 'remark', title: '用户备注', align: "center"},
+                {field: 'leadername', title: '直属领导', align: "center"},
                 {field: 'address', title: '用户地址', align: "center"},
                 {field: 'hiredate', title: '入职时间', align: "center"},
                 {field: 'ordernum', title: '排序码', align: "center"},
@@ -284,7 +304,7 @@
             $.post(api + "user/updateUser", {id: this.value, available: obj.elem.checked ? 1 : 0}, function (res) {
                 layer.msg(res.msg);
                 tableIns.reload();
-            })
+            });
         });
 
         function openUpdateUser(data) {
@@ -295,11 +315,37 @@
                 area: ['800px', '600px'],
                 success: function (index) {
                     url = api + "user/updateUser";
+                    $("#mgr").html("");
                     //装载数据表格
                     form.val("dataFrm", data);
                     //根据部门ID查询部门名称
                     $.get(api + "dept/getDeptById", {id: data.deptid}, function (res) {
                         $("#deptid_name").val(res.data.title);
+                    });
+
+                    //根据领导ID查询 领导部门名称
+                    $.get(api + "user/loadUserByUserId", {userId: data.mgr}, function (data) {
+
+                        //根据部门ID查询部门名称
+                        $.get(api + "dept/getDeptById", {id: data.data.deptid}, function (res) {
+                            $("#mgrDept").val(res.data.id);
+                            $("#leadername").val(res.data.title);
+                        });
+
+                        $.post(api + "/user/queryUserByDeptId", {deptid: data.data.deptid}, function (res) {
+                            let domMgr = $("#mgr");
+                            let html = `<option value="">请选择领导</option>`;
+
+                            $.each(res.data, function (i, item) {
+                                if (data.data.id == item.id) {
+                                    html += `<option value="${item.id}" selected>${item.name}</option>`;
+                                } else {
+                                    html += `<option value="${item.id}">${item.name}</option>`;
+                                }
+                            });
+                            domMgr.html(html);
+                            form.render();// 重新渲染表单
+                        });
                     });
                 }
             });
@@ -316,8 +362,12 @@
                 area: ['800px', '500px'],
                 success: function (index) {
                     url = api + "user/addUser";
-                    //重置表单
                     $("#dataFrm")[0].reset();
+
+                    let domMgr = $("#mgr");
+                    let html = `<option value="" selected>请选择领导</option>`;
+
+                    domMgr.html(html);
                     //查询最大排序码
                     $.get(api + "user/queryUserMaxOrderNum", function (res) {
                         $("#ordernum").val(res.data);
@@ -333,6 +383,31 @@
             openDeptSelecter(f_id, function (id, name) {
                 $("#deptid").val(id);
                 $("#deptid_name").val(name);
+            });
+        });
+
+        //监听添加和修改弹出层的选择领导部门
+        $("#doDataFromSelectMgr").click(function () {
+            var f_id = $("#mgrDept").val();
+
+            openDeptSelecter(f_id, function (id, name) {
+                $("#mgrDept").val(id);
+                $("#leadername").val(name);
+
+                $.post(api + "/user/queryUserByDeptId", {deptid: id}, function (res) {
+                    let domMgr = $("#mgr");
+                    let html = `<option value="">请选择领导</option>`;
+
+                    $.each(res.data, function (i, item) {
+                        if (id.mgr == item.id) {
+                            html += `<option value="${item.id}" selected>${item.name}</option>`;
+                        } else {
+                            html += `<option value="${item.id}">${item.name}</option>`;
+                        }
+                    });
+                    domMgr.html(html);
+                    form.render();// 重新渲染表单
+                });
             });
         });
 
