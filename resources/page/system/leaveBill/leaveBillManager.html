@@ -59,11 +59,7 @@
         <!--搜索结束-->
 
         <!--表格开始-->
-        <table id="leaveBillList" lay-filter="leaveBillListTable"></table>
-        <script type="text/html" id="leaveBillToolBar">
-            <a class="layui-btn layui-btn-sm layui-btn-normal" lay-event="add">添加</a>
-            <a class="layui-btn layui-btn-sm layui-btn-danger data-count-delete" lay-event="batchDel">批量删除</a>
-        </script>
+        <table id="leaveBillList" lay-filter="leaveBillList"></table>
         <!--表格结束-->
 
         <!--添加和修改的弹出层开始-->
@@ -108,8 +104,14 @@
             </form>
         </div>
         <!--添加和修改的弹出层结束-->
+
     </div>
 </div>
+
+<script type="text/html" id="leaveBillToolBar">
+    <a class="layui-btn layui-btn-sm layui-btn-normal" lay-event="add">添加</a>
+    <a class="layui-btn layui-btn-sm layui-btn-danger data-count-delete" lay-event="batchDel">批量删除</a>
+</script>
 
 <!--操作-->
 <script type="text/html" id="leaveBillListBar">
@@ -159,10 +161,10 @@
         tableIns = table.render({
             elem: '#leaveBillList',
             url: api + '/leaveBill/loadAllLeaveBills',
-            cellMinWidth: true,
             toolbar: '#leaveBillToolBar',
+            page: true,
             cols: [[
-                {type: "checkbox", fixed: "left"},
+                {type: "checkbox"},
                 {field: 'id', title: '请假单ID', align: "center"},
                 {field: 'title', title: '请假单标题', align: "center"},
                 {field: 'content', title: '请假内容', align: "center"},
@@ -185,9 +187,8 @@
                         return html;
                     }
                 },
-                {title: '操作', templet: '#leaveBillListBar', fixed: "right", align: "center"}
+                {title: '操作', templet: '#leaveBillListBar',align: "center"}
             ]],
-            page: true
         });
 
         // 监听搜索操作
@@ -204,7 +205,7 @@
         });
 
         //监听表头的事件
-        table.on('toolbar(leaveBillListTable)', function (obj) {
+        table.on('toolbar(leaveBillList)', function (obj) {
             var checkStatus = table.checkStatus(obj.config.id);
             switch (obj.event) {
                 case 'batchdelete':
@@ -217,7 +218,7 @@
         });
 
         //监听行数据的事件
-        table.on('tool(leaveBillListTable)', function (obj) {
+        table.on('tool(leaveBillList)', function (obj) {
             var data = obj.data;
             if (obj.event === 'del') {
                 layer.confirm('真的删除这条数据么', function (index) {
