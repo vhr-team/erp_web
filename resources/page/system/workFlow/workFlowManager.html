@@ -72,7 +72,59 @@
             laytpl = layui.laytpl,
             table = layui.table;
 
+        // 第一个表
+        //流程部署列表
+        tableDeploymentIns = table.render({
+            elem: '#deploymentList',
+            url : api+'workFlow/loadAllDeployment',
+            cellMinWidth : true,
+            toolbar: '#deploymentTableToolBar',
+            page : true,
+            height : "full-350",
+            limits : [5,10,15,20],
+            limit : 5,
+            id : "deploymentListTable",
+            cols : [[
+                {type: "checkbox", fixed:"left", width:50},
+                {field: 'id', title: '部署ID', minWidth:100, align:"center"},
+                {field: 'name', title: '部署名称', minWidth:100, align:"center"},
+                {field: 'deploymentTime', title: '部署时间', minWidth:100, align:"center"},
+                {title: '操作', minWidth:175, templet:'#deploymentListBar',fixed:"right",align:"center"}
+            ]]
+        });
 
+        // 第二个表
+        //流程定义列表
+        tableprocessDefinitionIns = table.render({
+            elem: '#processDefinitionList',
+            url : api+'workFlow/loadAllProcessDefinition',
+            cellMinWidth : true,
+            page : true,
+            height : "full-380",
+            limits : [5,10,15,20],
+            limit : 5,
+            id : "processDefinitionListTable",
+            cols : [[
+                {field: 'id', title: '流程定义ID', minWidth:100, align:"center"},
+                {field: 'name', title: '流程定义名称', minWidth:100, align:"center"},
+                {field: 'key', title: '流程定义KEY', minWidth:100, align:"center"},
+                {field: 'version', title: '流程定义版本', minWidth:100, align:"center"},
+                {field: 'deploymentId', title: '部署ID', minWidth:100, align:"center"},
+                {field: 'resourceName', title: '资源文件名[bpmn]', minWidth:100, align:"center"},
+                {field: 'diagramResourceName', title: '资源文件名[png]', minWidth:100, align:"center"}
+            ]]
+        });
+
+        //查询
+        $(".search_btn").on("click",function(){
+            var params=$("#searchForm").serialize();
+            table.reload('deploymentListTable', {
+                url: api+'workFlow/loadAllDeployment?'+params
+            });
+            table.reload('processDefinitionListTable', {
+                url: api+'workFlow/loadAllProcessDefinition?'+params
+            });
+        });
     });
 </script>
 </body>
