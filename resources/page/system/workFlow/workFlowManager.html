@@ -21,13 +21,13 @@
                 <form class="layui-form" id="searchForm" method="post">
                     <div class="layui-form-item">
                         <div class="layui-inline">
-                            <label class="layui-form-label" >流程名称:</label>
+                            <label class="layui-form-label">流程名称:</label>
                             <div class="layui-input-inline">
-                                <input type="text" name="deploymentName"  autocomplete="off" class="layui-input">
+                                <input type="text" name="deploymentName" autocomplete="off" class="layui-input">
                             </div>
                         </div>
                         <div class="layui-inline">
-                            <a class="layui-btn search_btn" >查询</a>
+                            <a class="layui-btn search_btn">查询</a>
                             <button type="reset" class="layui-btn layui-btn-warm">清空</button>
                         </div>
                     </div>
@@ -57,7 +57,8 @@
             </div>
         </div>
         <div class="layui-form-item" style="text-align: center;">
-            <a class="layui-btn" href="javascript:void(0)" lay-submit="" id="addWorkFlow"  lay-filter="addWorkFlow">提交</a >
+            <a class="layui-btn" href="javascript:void(0)" lay-submit="" id="addWorkFlow"
+               lay-filter="addWorkFlow">提交</a>
             <button type="reset" class="layui-btn layui-btn-warm">重置</button>
         </div>
     </form>
@@ -92,32 +93,32 @@
     var tableDeploymentIns;
     var tableprocessDefinitionIns;
 
-    layui.use(['form','layer','table','laydate','laytpl','upload'],function(){
+    layui.use(['form', 'layer', 'table', 'laydate', 'laytpl', 'upload'], function () {
         var form = layui.form,
             layer = parent.layer === undefined ? layui.layer : top.layer,
             $ = layui.jquery,
-            laydate=layui.laydate,
+            laydate = layui.laydate,
             laytpl = layui.laytpl,
             table = layui.table;
-        var upload=layui.upload;
+        var upload = layui.upload;
         // 第一个表
         //流程部署列表
         tableDeploymentIns = table.render({
             elem: '#deploymentList',
-            url : api+'workFlow/loadAllDeployment',
-            cellMinWidth : true,
+            url: api + 'workFlow/loadAllDeployment',
+            cellMinWidth: true,
             toolbar: '#deploymentTableToolBar',
-            page : true,
-            height : "full-350",
-            limits : [5,10,15,20],
-            limit : 5,
-            id : "deploymentListTable",
-            cols : [[
-                {type: "checkbox", fixed:"left", width:50},
-                {field: 'id', title: '部署ID', minWidth:100, align:"center"},
-                {field: 'name', title: '部署名称', minWidth:100, align:"center"},
-                {field: 'deploymentTime', title: '部署时间', minWidth:100, align:"center"},
-                {title: '操作', minWidth:175, templet:'#deploymentListBar',fixed:"right",align:"center"}
+            page: true,
+            height: "full-350",
+            limits: [5, 10, 15, 20],
+            limit: 5,
+            id: "deploymentListTable",
+            cols: [[
+                {type: "checkbox", fixed: "left", width: 50},
+                {field: 'id', title: '部署ID', minWidth: 100, align: "center"},
+                {field: 'name', title: '部署名称', minWidth: 100, align: "center"},
+                {field: 'deploymentTime', title: '部署时间', minWidth: 100, align: "center"},
+                {title: '操作', minWidth: 175, templet: '#deploymentListBar', fixed: "right", align: "center"}
             ]]
         });
 
@@ -125,66 +126,68 @@
         //流程定义列表
         tableprocessDefinitionIns = table.render({
             elem: '#processDefinitionList',
-            url : api+'workFlow/loadAllProcessDefinition',
-            cellMinWidth : true,
-            page : true,
-            height : "full-380",
-            limits : [5,10,15,20],
-            limit : 5,
-            id : "processDefinitionListTable",
-            cols : [[
-                {field: 'id', title: '流程定义ID', minWidth:100, align:"center"},
-                {field: 'name', title: '流程定义名称', minWidth:100, align:"center"},
-                {field: 'key', title: '流程定义KEY', minWidth:100, align:"center"},
-                {field: 'version', title: '流程定义版本', minWidth:100, align:"center"},
-                {field: 'deploymentId', title: '部署ID', minWidth:100, align:"center"},
-                {field: 'resourceName', title: '资源文件名[bpmn]', minWidth:100, align:"center"},
-                {field: 'diagramResourceName', title: '资源文件名[png]', minWidth:100, align:"center"}
+            url: api + 'workFlow/loadAllProcessDefinition',
+            cellMinWidth: true,
+            page: true,
+            height: "full-380",
+            limits: [5, 10, 15, 20],
+            limit: 5,
+            id: "processDefinitionListTable",
+            cols: [[
+                {field: 'id', title: '流程定义ID', minWidth: 100, align: "center"},
+                {field: 'name', title: '流程定义名称', minWidth: 100, align: "center"},
+                {field: 'key', title: '流程定义KEY', minWidth: 100, align: "center"},
+                {field: 'version', title: '流程定义版本', minWidth: 100, align: "center"},
+                {field: 'deploymentId', title: '部署ID', minWidth: 100, align: "center"},
+                {field: 'resourceName', title: '资源文件名[bpmn]', minWidth: 100, align: "center"},
+                {field: 'diagramResourceName', title: '资源文件名[png]', minWidth: 100, align: "center"}
             ]]
         });
 
         //查询
-        $(".search_btn").on("click",function(){
-            var params=$("#searchForm").serialize();
+        $(".search_btn").on("click", function () {
+            var params = $("#searchForm").serialize();
             table.reload('deploymentListTable', {
-                url: api+'workFlow/loadAllDeployment?'+params
+                url: api + 'workFlow/loadAllDeployment?' + params
             });
             table.reload('processDefinitionListTable', {
-                url: api+'workFlow/loadAllProcessDefinition?'+params
+                url: api + 'workFlow/loadAllProcessDefinition?' + params
             });
         });
 
         //监听头工具栏事件
-        table.on('toolbar(deploymentList)', function(obj){
-            switch(obj.event){
+        table.on('toolbar(deploymentList)', function (obj) {
+            switch (obj.event) {
                 case 'add':
                     toAddWorkFlow();
                     break;
                 case 'batchDel':
                     batchDelete();
                     break;
-            };
+            }
+            ;
         });
 
         var index;
+
         //打开 部署流程的弹出层
-        function toAddWorkFlow(){
+        function toAddWorkFlow() {
             index = layui.layer.open({
-                title : "添加流程",
-                type : 1,
-                area:["600px","300px"],
-                content : $("#addOrUpdateDiv"),
-                success : function(layer, index){
-                    setTimeout(function(){
+                title: "添加流程",
+                type: 1,
+                area: ["600px", "300px"],
+                content: $("#addOrUpdateDiv"),
+                success: function (layer, index) {
+                    setTimeout(function () {
                         layui.layer.tips('点击此处返回流程列表', '.layui-layer-setwin .layui-layer-close', {
                             tips: 3
                         });
-                    },500)
+                    }, 500)
                 }
             });
 
             //改变窗口大小时，重置弹窗的宽高，防止超出可视区域（如F12调出debug的操作）
-            $(window).on("resize",function(){
+            $(window).on("resize", function () {
                 layui.layer.full(index);
             })
         }
@@ -192,39 +195,39 @@
         //选完文件后不自动上传
         upload.render({
             elem: '#uploadProcess'
-            ,url: api+'workFlow/addWorkFlow'
-            ,auto: false
-            ,accept:'file'//选择上传文件
-            ,acceptMime:'application/zip'//打开文件选择框默认显示压缩文件
-            ,exts: 'zip'//校验类型
-            ,field:'mf'
-            ,data:{
-                deploymentName:function(){
+            , url: api + 'workFlow/addWorkFlow'
+            , auto: false
+            , accept: 'file'//选择上传文件
+            , acceptMime: 'application/zip'//打开文件选择框默认显示压缩文件
+            , exts: 'zip'//校验类型
+            , field: 'mf'
+            , data: {
+                deploymentName: function () {
                     return $('#deploymentName').val();
                 }
             }
-            ,bindAction: '#addWorkFlow'
-            ,done: function(data){
+            , bindAction: '#addWorkFlow'
+            , done: function (data) {
                 layer.msg(data.msg);
                 layui.layer.close(index);
                 tableDeploymentIns.reload();
                 tableprocessDefinitionIns.reload();
             }
-            ,error:function(){
+            , error: function () {
                 layer.msg('部署失败');
                 layui.layer.close(index);
             }
         });
 
         //列表操作
-        table.on('tool(deploymentList)', function(obj){
+        table.on('tool(deploymentList)', function (obj) {
             var layEvent = obj.event,
                 data = obj.data;
-            if(layEvent === 'del'){ //删除
-                layer.confirm('确定删【'+data.name+'】流程吗？',{icon:3, title:'提示信息'},function(index){
-                    $.post(api+"workFlow/deleteWorkFlow",{
-                        deploymentId : data.id  //将需要删除的id作为参数传入
-                    },function(data){
+            if (layEvent === 'del') { //删除
+                layer.confirm('确定删【' + data.name + '】流程吗？', {icon: 3, title: '提示信息'}, function (index) {
+                    $.post(api + "workFlow/deleteWorkFlow", {
+                        deploymentId: data.id  //将需要删除的id作为参数传入
+                    }, function (data) {
                         layer.msg(data.msg);
                         //刷新table
                         tableDeploymentIns.reload();
@@ -233,24 +236,24 @@
                         layer.close(index);
                     })
                 });
-            }else if(layEvent==="viewProcessImage"){
+            } else if (layEvent === "viewProcessImage") {
                 //传入流程对象
                 viewProcessImage(data);
             }
         });
 
         //批量删除
-        function batchDelete(){
+        function batchDelete() {
             //得到当前表格里面的checkbox的选中对象集合
             var checkStatus = table.checkStatus('deploymentListTable'),//选中状态
                 data = checkStatus.data;//选中的对象集
-            var ids="a=1";
-            if(data.length > 0) {
+            var ids = "a=1";
+            if (data.length > 0) {
                 for (var i in data) {
-                    ids+="&ids="+data[i].id;
+                    ids += "&ids=" + data[i].id;
                 }
                 layer.confirm('确定删除选中的流程？', {icon: 3, title: '提示信息'}, function (index) {
-                    $.post(api+"workFlow/batchDeleteWorkFlow?"+ids,function(data){
+                    $.post(api + "workFlow/batchDeleteWorkFlow?" + ids, function (data) {
                         layer.msg(data.msg);
                         //刷新table
                         tableDeploymentIns.reload();
@@ -259,32 +262,30 @@
                         layer.close(index);
                     })
                 })
-            }else{
+            } else {
                 layer.msg("请选择需要删除的流程");
             }
         }
 
         //查看流程图
-        function viewProcessImage(data){
+        function viewProcessImage(data) {
             var index = layui.layer.open({
-                title : "查看["+data.name+"]流程图",
-                type : 1,
-                area:["500px","600px"],
-                content : $("#viewProcessImage"),
-                success : function(layero, index){
-                    $.get(api+"workFlow/viewProcessImage?deploymentId="+data.id,function(data){
-                        $("#processImage").attr('src',data.data);
-                    });
+                title: "查看[" + data.name + "]流程图",
+                type: 1,
+                area: ["500px", "600px"],
+                content: $("#viewProcessImage"),
+                success: function (layero, index) {
+                    $("#processImage").attr('src', api + 'workFlow/viewProcessImage?deploymentId=' + data.id);
 
-                    setTimeout(function(){
+                    setTimeout(function () {
                         layui.layer.tips('点击此处返回流程列表', '.layui-layer-setwin .layui-layer-close', {
                             tips: 3
                         });
-                    },500)
+                    }, 500)
                 }
             });
             //改变窗口大小时，重置弹窗的宽高，防止超出可视区域（如F12调出debug的操作）
-            $(window).on("resize",function(){
+            $(window).on("resize", function () {
                 layui.layer.full(index);
             })
         }
