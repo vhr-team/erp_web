@@ -57,6 +57,7 @@
             </div>
         </fieldset>
         <!--搜索结束-->
+
         <!--添加和修改的弹出层开始-->
         <div id="addOrUpdateDiv" style="display: none;padding: 0.3125rem">
             <form method="post" class="layui-form layui-form-pane" lay-filter="dataFrm" id="dataFrm">
@@ -100,12 +101,13 @@
         </div>
         <!--添加和修改的弹出层结束-->
 
+
+        <!--表格开始-->
+        <table id="leaveBillList" lay-filter="leaveBillList"></table>
+        <!--表格结束-->
     </div>
 </div>
 
-<!--表格开始-->
-<table id="leaveBillList" lay-filter="leaveBillList"></table>
-<!--表格结束-->
 
 <script type="text/html" id="leaveBillToolBar">
     <a class="layui-btn layui-btn-sm layui-btn-normal" lay-event="add">添加</a>
@@ -139,7 +141,7 @@
     var tableIns;
     layui.use(['form','layer','table','laydate','laytpl'],function(){
         var form = layui.form,
-            layer = parent.layer === undefined ? layui.layer : top.layer,
+            layer = layui.layer;
             $ = layui.jquery,
             laydate=layui.laydate,
             laytpl = layui.laytpl,
@@ -162,7 +164,7 @@
             elem: '#leaveBillList',
             url: api + '/leaveBill/loadAllLeaveBills',
             cellMinWidth : true,
-            toolbar: '#tableToolBar',
+            toolbar: '#leaveBillToolBar',
             page : true,
             id : "leaveBillListTable",
             cols: [[
@@ -306,7 +308,7 @@
                     tableIns.reload();
                 }
                 layer.close(mainIndex);
-            })
+            });
             return false;
         })
 
@@ -361,9 +363,6 @@
             });
         }
     });
-</script>
-<script>
-
 </script>
 
 </body>
