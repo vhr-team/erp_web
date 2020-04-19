@@ -57,12 +57,12 @@
         <!--表格开始-->
         <table class="layui-hide" id="userTable" lay-filter="userTable"></table>
         <div style="display: none" id="userToolBar">
-            <a class="layui-btn layui-btn-sm layui-btn-normal btn_add" lay-event="add"><i
+            <a class="layui-btn layui-btn-sm layui-btn-normal userBtn_add" lay-event="add"><i
                     class="layui-icon layui-icon-addition"></i> 添加 </a>
         </div>
         <script type="text/html" id="userTableBar">
-            <a class="layui-btn layui-btn-xs layui-btn-warm data-count-delete btn_update" lay-event="update">修改</a>
-            <a class="layui-btn layui-btn-xs layui-btn-danger data-count-delete btn_delete" lay-event="delete">删除</a>
+            <a class="layui-btn layui-btn-xs layui-btn-warm data-count-delete userBtn_update" lay-event="update">修改</a>
+            <a class="layui-btn layui-btn-xs layui-btn-danger data-count-delete userBtn_delete" lay-event="delete">删除</a>
             <a class="layui-btn layui-btn-xs layui-btn-normal data-count-delete" lay-event="selectRole">分配角色</a>
             <a class="layui-btn layui-btn-xs layui-bg-black data-count-delete" lay-event="resetPwd">重置密码</a>
         </script>

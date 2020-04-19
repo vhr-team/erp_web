@@ -57,37 +57,37 @@ if (usertype == 1) {
 
         // 角色权限开始
         if (permissions.indexOf("role:add") < 0) {
-            $(".btn_add").hide();
+            $(".roleBtn_add").hide();
         }
         if (permissions.indexOf("role:update") < 0) {
-            $(".btn_update").hide();
+            $(".roleBtn_update").hide();
         }
         if (permissions.indexOf("role:delete") < 0) {
-            $(".btn_delete").hide();
+            $(".roleBtn_delete").hide();
         }
         // 角色权限结束
 
         // 菜单和权限
         if (permissions.indexOf("menu:add") < 0) {
-            $(".btn_add").hide();
+            $(".menubtn_add").hide();
         }
         if (permissions.indexOf("menu:update") < 0) {
-            $(".btn_update").hide();
+            $(".menubtn_update").hide();
         }
         if (permissions.indexOf("menu:delete") < 0) {
-            $(".btn_delete").hide();
+            $(".menubtn_delete").hide();
         }
         // 菜单和权限
 
         // 用户
         if (permissions.indexOf("user:add") < 0) {
-            $(".btn_add").hide();
+            $(".userBtn_add").hide();
         }
         if (permissions.indexOf("user:update") < 0) {
-            $(".btn_update").hide();
+            $(".userBtn_update").hide();
         }
         if (permissions.indexOf("user:delete") < 0) {
-            $(".btn_delete").hide();
+            $(".userBtn_delete").hide();
         }
         // 用户
 
@@ -95,6 +95,19 @@ if (usertype == 1) {
         $(".btn_add").hide();
         $(".btn_update").hide();
         $(".btn_delete").hide();
+
+        $(".menubtn_add").hide();
+        $(".menubtn_update").hide();
+        $(".menubtn_delete").hide();
+
+        $(".roleBtn_add").hide();
+        $(".roleBtn_update").hide();
+        $(".roleBtn_delete").hide();
+
+        $(".userBtn_add").hide();
+        $(".userBtn_update").hide();
+        $(".userBtn_delete").hide();
+
         $(".btn_dispatch").hide();
         $(".btn_reset").hide();
     }

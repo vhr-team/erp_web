@@ -44,7 +44,7 @@
         <!--表格开始-->
         <table class="layui-hide" id="roleTable" lay-filter="roleTable"></table>
         <script type="text/html" id="roleToolBar">
-            <button lay-event="add" class="layui-btn layui-btn-sm layui-btn-normal data-delete-btn btn_add"
+            <button lay-event="add" class="layui-btn layui-btn-sm layui-btn-normal data-delete-btn roleBtn_add"
                     id="addMenuBtn">
                 <i class="layui-icon layui-icon-addition"></i>
                 添 加
@@ -52,8 +52,8 @@
             <a class="layui-btn layui-btn-sm layui-btn-danger data-count-delete" lay-event="batchdelete">批量删除</a>
         </script>
         <div style="display: none" id="roleTableBar">
-            <a class="layui-btn layui-btn-xs layui-btn-warm data-count-delete btn_update" lay-event="update">修改</a>
-            <a class="layui-btn layui-btn-xs layui-btn-danger data-count-delete role:delete" lay-event="delete">删除</a>
+            <a class="layui-btn layui-btn-xs layui-btn-warm data-count-delete roleBtn_update" lay-event="update">修改</a>
+            <a class="layui-btn layui-btn-xs layui-btn-danger data-count-delete roleBtn_delete" lay-event="delete">删除</a>
             <a class="layui-btn layui-btn-xs layui-btn-normal data-count-delete" lay-event="selectMenu">分配权限</a>
         </div>
         <script type="text/html" id="availableTpl">
