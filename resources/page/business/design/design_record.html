@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>table模块快速使用</title>
+    <script src="../../../lib/layui-v2.5.5/layui.all.js" media="all"></script>
+    <link rel="stylesheet" href="../../../lib/layui-v2.5.5/css/layui.css">
+    <script src="../../../lib/jquery-3.4.1/jquery-3.4.1.min.js"></script>
+    <script src="../../../lib/common/common.js"></script>
+</head>
+<body>
+<div>
+    <fieldset class="layui-elem-field">
+        <legend>字段集区块 - 默认风格</legend>
+        <div class="layui-field-box">
+            内容区域
+        </div>
+    </fieldset>
+</div>
+<div class="layui-btn-group demoTable">
+    <button class="layui-btn" data-type="getCheckData">修改</button>
+    <button class="layui-btn" data-type="getCheckLength">获取选中数目</button>
+    <button class="layui-btn" data-type="isAll">验证是否全选</button>
+</div>
+<table id="design_record" lay-filter="test"></table>
+<script>
+    layui.use('table', function () {
+        var table = layui.table;
+
+        //第一个实例
+        table.render({
+            elem: '#design_record'
+            , height: 500
+            , url: api1 + 'design_record/findPage' //数据接口
+            , request: {
+                pageName: 'page' //页码的参数名称，默认：page
+                , limitName: 'pageSize' //每页数据量的参数名，默认：limit
+            }
+            , response: {
+                countName: 'total' //规定数据总数的字段名称，默认：count
+                , dataName: 'rows' //规定数据列表的字段名称，默认：data
+            }
+            , parseData: function (res) { //res 即为原始返回的数据
+                console.log(res.rows);
+                return {
+                    "code": "0",
+                    "total": res.total, //解析数据长度
+                    "rows": res.rows, //解析数据列表
+                };
+            }
+            , page: { //支持传入 laypage 组件的所有参数（某些参数除外，如：jump/elem） - 详见文档
+                layout: ['limit', 'count', 'prev', 'page', 'next', 'skip'] //自定义分页布局
+                //,curr: 5 //设定初始在第 5 页
+                , groups: 1 //只显示 1 个连续页码
+                , first: false //不显示首页
+                , last: false //不显示尾页
+
+            }
+            , toolbar: true
+            , title: '产品档案登记'
+            , totalRow: true
+            , cols: [[ //表头
+                {type: 'checkbox', fixed: 'left'}
+                , {field: 'productId', title: '商品ID', totalRowText: '合计'}
+                , {field: 'productName', title: '商品名称'}
+                , {field: 'factoryName', title: '制造商'}
+                , {field: 'costPrice', title: '计划成本单价', sort: true, totalRow: true}
+                , {field: 'listPrice', title: '市场单价', sort: true, totalRow: true}
+                , {field: 'realCostPrice', title: '成本单价', sort: true, totalRow: true}
+                , {field: 'amountUnit', title: '单位'}
+                , {field: 'responsiblePerson', title: '产品经理'}
+                , {field: 'register', title: '登记人', edit: 'text'}
+                , {field: 'registerTime', title: '建档时间', sort: true}
+                , {field: 'checkTag', title: '审核标志'}
+                , {field: 'changeTag', title: '档案变更标志'}
+                , {field: 'priceChangeTag', title: '价格变更标志'}
+                , {fixed: 'right', width: 150, align: 'center', toolbar: '#barDemo'}
+            ]]
+        });
+
+        //监听工具条
+        table.on('tool(test)', function (obj) { //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
+            var data = obj.data; //获得当前行数据
+            var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+            var tr = obj.tr; //获得当前行 tr 的 DOM 对象（如果有的话）
+
+            if (layEvent === 'detail') { //查看
+                //do somehing
+                layer.confirm('查看', function (index) {
+                    obj.del(); //删除对应行（tr）的DOM结构，并更新缓存
+                    layer.close(index);
+                    //向服务端发送删除指令
+                });
+            } else if (layEvent === 'del') { //删除
+                layer.confirm('真的删除行么', function (index) {
+                    obj.del(); //删除对应行（tr）的DOM结构，并更新缓存
+                    layer.close(index);
+                    //向服务端发送删除指令
+                });
+            } else if (layEvent === 'edit') { //编辑
+                //do something
+
+                //同步更新缓存对应的值
+                obj.update({
+                    username: '123'
+                    , title: 'xxx'
+                });
+            } else if (layEvent === 'LAYTABLE_TIPS') {
+                layer.alert('Hi，头部工具栏扩展的右侧图标。');
+            }
+        });
+        var $ = layui.$, active = {
+            getCheckData: function () { //获取选中数据
+                var checkStatus = table.checkStatus('design_record'), data = checkStatus.data;
+                var s1 = JSON.stringify(data).replace(/\[|]/g, '')
+                console.log(s1);
+                if (data == null) {
+                    layer.alert(JSON.stringify(data));
+                    layer.msg('未选中');
+                    return false;
+                } else {
+                    $.ajax({url:api1+"design_record/updaterecordById",data:s1,type:"post",contentType:"application/json",success:function(result){
+                            layer.msg(result.message);
+                        }});
+                }
+
+            }
+            , getCheckLength: function () { //获取选中数目
+                var checkStatus = table.checkStatus('design_record')
+                    , data = checkStatus.data;
+                layer.msg('选中了：' + data.length + ' 个');
+            }
+            , isAll: function () { //验证是否全选
+                var checkStatus = table.checkStatus('design_record');
+                layer.msg(checkStatus.isAll ? '全选' : '未全选')
+            }
+        };
+
+        $('.demoTable .layui-btn').on('click', function () {
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
+    });
+</script>
+<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-xs" lay-event="detail">查看</a>
+    <a class="layui-btn demoTable layui-btn-xs"  data-type="getCheckData" >修改</a>
+
+    <a class="layui-btn  layui-btn-xs" lay-event="edit">编辑</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>
+</body>
+</html>
