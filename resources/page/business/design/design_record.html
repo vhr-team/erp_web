@@ -14,31 +14,34 @@
     <script src="../../../lib/layui-v2.5.5/lay/modules/laydate.js"></script>
 </head>
 <body>
-<div>
-    <fieldset class="layui-elem-field">
-        <legend>搜索</legend>
-        <div class="layui-form-item layui-container" id="app">
-            <div class="layui-col-lg-offset4">
-                <label class="layui-form-label">商品名称</label>
-                <div class="layui-input-inline">
 
-                    <input type="text" name="username" v-model="productName" lay-verify="required" placeholder="请输入"
-                           autocomplete="off" class="layui-input">
-                </div>
-                <div class="layui-inline">
-                    <label class="layui-form-label">日期选择</label>
-                    <div class="layui-input-block">
-                        <input type="text" name="date" v-model="registerTime" @click="date()" id="register_time" autocomplete="off"
-                               class="layui-input">
+<div class="layuimini-container" id="app">
+    <div class="layuimini-main">
+        <!--搜索开始-->
+        <fieldset class="table-search-fieldset">
+            <legend>搜索</legend>
+            <div class="layui-form-item layui-container">
+                    <label class="layui-form-label">商品名称</label>
+                    <div class="layui-input-inline">
+
+                        <input type="text" name="username" v-model="productName" lay-verify="required" placeholder="请输入"
+                               autocomplete="off" class="layui-input">
                     </div>
-                </div>
-                <div class="layui-inline">
-                    <button class="layui-btn layui-anim layui-anim-scaleSpring" lay-submit @click="search()" title="搜索"> <i class="layui-icon layui-icon-search"></i></button>
-                </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">日期选择</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="date" v-model="registerTime" @click="date()" id="register_time"
+                                   autocomplete="off"
+                                   class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <button class="layui-btn layui-anim layui-anim-scaleSpring" lay-submit @click="search()"
+                                title="搜索"><i class="layui-icon layui-icon-search"></i></button>
+                    </div>
             </div>
-
-        </div>
-    </fieldset>
+        </fieldset>
+    </div>
 </div>
 <script type="text/html" id="record">
     <div class="layui-btn-container">
@@ -53,7 +56,7 @@
 <script type="text/html" id="bardesign_record">
     <a class="layui-btn layui-btn-xs" lay-event="detail">查看</a>
     <a class="layui-btn  layui-btn-xs" lay-event="edit">编辑</a>
-    <a class="layui-btn layui-btn-danger layui-btn-xs sold"  lay-event="del">上/下架</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs sold" lay-event="del">上/下架</a>
 </script>
 
 <!--模仿bootstrap的模态框-->
@@ -95,13 +98,14 @@
 <script>
     layui.use('laydate', function () {
         var laydate = layui.laydate;
+        //常规用法
         laydate.render({
             elem: '#register_time'
         });
     })
 </script>
 <script>
-    layui.use('laydate', function(){
+    layui.use('laydate', function () {
         var laydate = layui.laydate;
 
         //执行一个laydate实例
@@ -128,8 +132,8 @@
                         , where: {productName: this.productName, registerTime: this.registerTime}
                     });
                 },
-                date(){
-                    layui.use('laydate', function(){
+                date() {
+                    layui.use('laydate', function () {
                         var laydate = layui.laydate;
 
                         //执行一个laydate实例
@@ -146,17 +150,15 @@
         });
 
 
-
-
         //第一个实例
         table.render({
             elem: '#design_record' //示例table的Id
             , height: 500 //表格高度
             , url: api1 + 'design_record/findPage' //数据接口
-            ,toolbar: '#record' //开启头部工具栏，并为其绑定左侧模板
+            , toolbar: '#record' //开启头部工具栏，并为其绑定左侧模板
             , request: {
-                 pageName: 'page' //页码的参数名称，默认：page
-                ,limitName: 'pageSize' //每页数据量的参数名，默认：limit
+                pageName: 'page' //页码的参数名称，默认：page
+                , limitName: 'pageSize' //每页数据量的参数名，默认：limit
             }
             , response: {
                 countName: 'total' //规定数据总数的字段名称，默认：count 规定返回数据的总行数实例
@@ -177,71 +179,80 @@
             }
 
             , title: '产品档案登记'//excel导出的标题
-            ,totalRow: true //开启合计行
+            , totalRow: true //开启合计行
             , cols:
                 [[ //表头
                     {type: 'checkbox', fixed: 'left'} //开启多选
-                    ,{field: 'id', title: 'ID',type: "numbers" ,minWidth: 90,hide: true}
-                    , {field: 'productId', type: "numbers" ,title: '商品ID',width: 90,totalRowText: '合计'}
-                    , {field: 'productName', title: '商品名称',minWidth: 90, edit: 'text'}
-                    , {field: 'factoryName', title: '制造商',minWidth: 90,}
-                    , {field: 'costPrice', title: '计划成本单价',minWidth: 90, sort: true,hide:true,totalRow:true}
-                    , {field: 'listPrice', title: '市场单价', minWidth: 90,sort: true,hide:true,totalRow:true}
-                    , {field: 'realCostPrice', title: '成本单价',minWidth: 90,edit: 'text', sort: true,hide:true,totalRow:true}
-                    , {field: 'amountUnit', title: '单位',minWidth: 60,hide:true}
-                    , {field: 'responsiblePerson', minWidth: 90,title: '产品经理',hide:true}
-                    , {field: 'register', title: '登记人', minWidth: 90,edit: 'text'}
-                    , {field: 'registerTime', title: '建档时间',minWidth: 100, sort: true,hide:true}
-                    , {field: 'checkTag', title: '审核标志',minWidth: 90,hide:true}
-                    , {field: 'changeTag', title: '档案变更标志',minWidth: 100}
-                    , {field: 'priceChangeTag', title: '价格变更标志',minWidth: 100}
-                    , {field: 'deleteTag', title: '是否下架',hide:true,minWidth: 90}
-                    , {field: 'firstKindName', title: '一级分类',hide:true,minWidth: 90}
-                    , {field: 'secondKindName', title: '二级分类',hide:true,minWidth: 90}
-                    , {field: 'priceChangeTag', title: '价格变更标志',hide:true,minWidth: 100}
-                    , {field: 'productClass', title: '档次级别',hide:true,minWidth: 90}
-                    , {field: 'productDescribe', title: '产品描述',hide:true,minWidth: 90}
-                    , {field: 'type', title: '类型',hide:true,minWidth: 90}
-                    , {field: 'responsiblePerson', title: '产品经理',hide:true,minWidth: 90}
-                    , {field: 'warranty', title: '保修期',hide:true,minWidth: 90}
-                    , {field: 'fileChangeAmount', title: '变更次数',hide:true,minWidth: 90,totalRow:true}
-                    , {field: 'priceChangeTag', title: '价格变更标志',hide:true,minWidth: 100}
-                    , {fixed: 'right', width: 180, fixed:'right', toolbar: '#bardesign_record'}
+                    , {field: 'id', title: 'ID', type: "numbers", minWidth: 90, hide: true}
+                    , {field: 'productId', type: "numbers", title: '商品ID', width: 90, totalRowText: '合计'}
+                    , {field: 'productName', title: '商品名称', minWidth: 90, edit: 'text'}
+                    , {field: 'factoryName', title: '制造商', minWidth: 90,}
+                    , {field: 'costPrice', title: '计划成本单价', minWidth: 90, sort: true, hide: true, totalRow: true}
+                    , {field: 'listPrice', title: '市场单价', minWidth: 90, sort: true, hide: true, totalRow: true}
+                    , {
+                        field: 'realCostPrice',
+                        title: '成本单价',
+                        minWidth: 90,
+                        edit: 'text',
+                        sort: true,
+                        hide: true,
+                        totalRow: true
+                    }
+                    , {field: 'amountUnit', title: '单位', minWidth: 60, hide: true}
+                    , {field: 'responsiblePerson', minWidth: 90, title: '产品经理', hide: true}
+                    , {field: 'register', title: '登记人', minWidth: 90, edit: 'text'}
+                    , {field: 'registerTime', title: '建档时间', minWidth: 100, sort: true, hide: true}
+                    , {field: 'checkTag', title: '审核标志', minWidth: 90, hide: true}
+                    , {field: 'changeTag', title: '档案变更标志', minWidth: 100}
+                    , {field: 'priceChangeTag', title: '价格变更标志', minWidth: 100}
+                    , {field: 'deleteTag', title: '是否下架', hide: true, minWidth: 90}
+                    , {field: 'firstKindName', title: '一级分类', hide: true, minWidth: 90}
+                    , {field: 'secondKindName', title: '二级分类', hide: true, minWidth: 90}
+                    , {field: 'priceChangeTag', title: '价格变更标志', hide: true, minWidth: 100}
+                    , {field: 'productClass', title: '档次级别', hide: true, minWidth: 90}
+                    , {field: 'productDescribe', title: '产品描述', hide: true, minWidth: 90}
+                    , {field: 'type', title: '类型', hide: true, minWidth: 90}
+                    , {field: 'responsiblePerson', title: '产品经理', hide: true, minWidth: 90}
+                    , {field: 'warranty', title: '保修期', hide: true, minWidth: 90}
+                    , {field: 'fileChangeAmount', title: '变更次数', hide: true, minWidth: 90, totalRow: true}
+                    , {field: 'priceChangeTag', title: '价格变更标志', hide: true, minWidth: 100}
+                    , {fixed: 'right', width: 180, fixed: 'right', toolbar: '#bardesign_record'}
                 ]]
         });
 
-        var checkId=[];//选中id的数组
-        table.on('checkbox(design_record)', function(obj){
-         if(obj.checked){
-             checkId.push(obj.data.id)//选中的id
-         }else{
-             var idx=checkId.indexOf(obj.data.id);//获取要删除的ID
-            checkId.splice(idx,1)//移除id
-         }
+        var checkId = [];//选中id的数组
+        table.on('checkbox(design_record)', function (obj) {
+            if (obj.checked) {
+                checkId.push(obj.data.id)//选中的id
+            } else {
+                var idx = checkId.indexOf(obj.data.id);//获取要删除的ID
+                checkId.splice(idx, 1)//移除id
+            }
             console.log(obj);
         });
         //头工具栏事件
-        table.on('toolbar(design_record)', function(obj){
+        table.on('toolbar(design_record)', function (obj) {
             var checkStatus = table.checkStatus(obj.config.id);
-            switch(obj.event){
+            switch (obj.event) {
                 case 'getCheckData':
                     var data = checkStatus.data;
-                    axios.post("aa",{idx:checkId}).then(res=>{
+                    axios.post("aa", {idx: checkId}).then(res => {
 
-                    }).catch(err=>{
-                      // alert("失败")
+                    }).catch(err => {
+                        // alert("失败")
                     });
                     layer.alert(JSON.stringify(data));
                     break;
                 case 'getCheckLength':
                     var data = checkStatus.data;
-                    layer.msg('选中了：'+ data.length + ' 个');
+                    layer.msg('选中了：' + data.length + ' 个');
                     break;
                 case 'isAll':
-                    layer.msg(checkStatus.isAll ? '全选': '未全选');
+                    layer.msg(checkStatus.isAll ? '全选' : '未全选');
                     break;
 
-            };
+            }
+            ;
         });
         //监听工具条
         table.on('tool(design_record)', function (obj) {
@@ -271,7 +282,7 @@
                         success: function (result) {
                             layer.msg(result.message);
                         },
-                        error:function (result) {
+                        error: function (result) {
                             layer.msg(result.message);
                         }
                     });
