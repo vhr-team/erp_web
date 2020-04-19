@@ -137,7 +137,7 @@ layui.define(["element", "jquery"], function (exports) {
 
             $.each(data, function (key, val) {
                 headerMenuHtml += '<li class="layui-nav-item ' + headerMenuCheckDefault + '" id="' + key + 'HeaderId" data-menu="' + key + '"> <a href="javascript:;"><i class="' + val.icon + '"></i> ' + val.title + '</a> </li>\n';
-                headerMobileMenuHtml += '<dd><a href="javascript:;" id="' + key + 'HeaderId" data-menu="' + key + '"><i class="' + val.icon + '"></i> ' + val.title + '</a></dd>\n';
+                headerMobileMenuHtml += '<dd><a href="javascript:;" id="' + key + 'HeaderId" data-menu="' + key + '"><i class="fa ' + val.icon + '"></i> ' + val.title + '</a></dd>\n';
                 leftMenuHtml += '<ul class="layui-nav layui-nav-tree layui-left-nav-tree ' + leftMenuCheckDefault + '" id="' + key + '">\n';
                 var menuList = val.child;
                 $.each(menuList, function (index, menu) {
@@ -290,12 +290,13 @@ layui.define(["element", "jquery"], function (exports) {
                     menuLeftHover: '#3b3f4b',
                 },
                 {
-                    headerRight: '#23262e',
-                    headerRightThis: '#0c0c0c',
-                    headerLogo: '#0c0c0c',
-                    menuLeft: '#23262e',
-                    menuLeftThis: '#1aa094',
-                    menuLeftHover: '#3b3f4b',
+                    headerRight: '#000', //头部右侧背景色
+                    headerRightThis: '#23262e', //头部右侧选中背景色,
+                    headerLogo: '#192027', //logo背景颜色,
+                    menuLeft: '#28333E', //左侧菜单背景,
+                    menuLeftThis: '#1E9FFF', //左侧菜单选中背景,
+                    menuLeftHover: 'rgb(191, 187, 187)', //左侧菜单更多下拉样式,
+
                 },
                 {
                     headerRight: '#ffa4d1',
