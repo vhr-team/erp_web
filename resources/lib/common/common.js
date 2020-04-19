@@ -80,13 +80,13 @@ if (usertype == 1) {
 
         // 用户
         if (permissions.indexOf("user:add") < 0) {
-            $(".btn_add").hide();
+            $(".userBtn_add").hide();
         }
         if (permissions.indexOf("user:update") < 0) {
-            $(".btn_update").hide();
+            $(".userBtn_update").hide();
         }
         if (permissions.indexOf("user:delete") < 0) {
-            $(".btn_delete").hide();
+            $(".userBtn_delete").hide();
         }
         // 用户
 
@@ -102,6 +102,10 @@ if (usertype == 1) {
         $(".roleBtn_add").hide();
         $(".roleBtn_update").hide();
         $(".roleBtn_delete").hide();
+
+        $(".userBtn_add").hide();
+        $(".userBtn_update").hide();
+        $(".userBtn_delete").hide();
 
         $(".btn_dispatch").hide();
         $(".btn_reset").hide();
