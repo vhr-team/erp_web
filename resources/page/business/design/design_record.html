@@ -3,151 +3,285 @@
 <head>
     <meta charset="utf-8">
     <title>table模块快速使用</title>
-    <script src="../../../lib/layui-v2.5.5/layui.all.js" media="all"></script>
+
     <link rel="stylesheet" href="../../../lib/layui-v2.5.5/css/layui.css">
     <script src="../../../lib/jquery-3.4.1/jquery-3.4.1.min.js"></script>
+    <script src="https://cdn.bootcss.com/vue/2.6.11/vue.js"></script>
+    <script src="../../../lib/layui-v2.5.5/layui.all.js" media="all"></script>
+    <script src="https://cdn.bootcss.com/axios/0.19.2/axios.min.js"></script>
+    <script src="https://cdn.bootcss.com/qs/6.9.3/qs.min.js"></script>
     <script src="../../../lib/common/common.js"></script>
+    <script src="../../../lib/layui-v2.5.5/lay/modules/laydate.js"></script>
 </head>
 <body>
 <div>
     <fieldset class="layui-elem-field">
-        <legend>字段集区块 - 默认风格</legend>
-        <div class="layui-field-box">
-            内容区域
+        <legend>搜索</legend>
+        <div class="layui-form-item layui-container" id="app">
+            <div class="layui-col-lg-offset4">
+                <label class="layui-form-label">商品名称</label>
+                <div class="layui-input-inline">
+
+                    <input type="text" name="username" v-model="productName" lay-verify="required" placeholder="请输入"
+                           autocomplete="off" class="layui-input">
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">日期选择</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="date" v-model="registerTime" @click="date()" id="register_time" autocomplete="off"
+                               class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <button class="layui-btn layui-anim layui-anim-scaleSpring" lay-submit @click="search()" title="搜索"> <i class="layui-icon layui-icon-search"></i></button>
+                </div>
+            </div>
+
         </div>
     </fieldset>
 </div>
-<div class="layui-btn-group demoTable">
-    <button class="layui-btn" data-type="getCheckData">修改</button>
-    <button class="layui-btn" data-type="getCheckLength">获取选中数目</button>
-    <button class="layui-btn" data-type="isAll">验证是否全选</button>
+<script type="text/html" id="record">
+    <div class="layui-btn-container">
+        <button class="layui-btn layui-btn-sm" lay-event="getCheckData">获取选中行数据</button>
+        <button class="layui-btn layui-btn-sm" lay-event="getCheckLength">获取选中数目</button>
+        <button class="layui-btn layui-btn-sm" lay-event="isAll">验证是否全选</button>
+    </div>
+</script>
+<!--表格-->
+<table id="design_record" lay-filter="design_record" lay-data="design_record"></table>
+<!--操作按钮-->
+<script type="text/html" id="bardesign_record">
+    <a class="layui-btn layui-btn-xs" lay-event="detail">查看</a>
+    <a class="layui-btn  layui-btn-xs" lay-event="edit">编辑</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs sold"  lay-event="del">上/下架</a>
+</script>
+
+<!--模仿bootstrap的模态框-->
+<div id="">
+    <div id="detail" style="display: none;">
+        <form class="layui-form" action="" lay-filter="example">
+            <div class="layui-form-item">
+                <label class="layui-form-label">输入框</label>
+                <div class="layui-input-block">
+                    <input type="text" name="username" lay-verify="title" autocomplete="off" placeholder="请输入标题"
+                           class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">密码框</label>
+                <div class="layui-input-block">
+                    <input type="password" name="password" placeholder="请输入密码" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item layui-form-text">
+                <label class="layui-form-label">文本域</label>
+                <div class="layui-input-block">
+                    <textarea placeholder="请输入内容" class="layui-textarea" name="desc"></textarea>
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <button type="button" class="layui-btn layui-btn-normal" @click="l" id="LAY-component-form-setval">
+                        赋值
+                    </button>
+                    <button type="button" class="layui-btn layui-btn-normal" id="LAY-component-form-getval">取值</button>
+                    <button type="submit" class="layui-btn" lay-submit="" lay-filter="demo1">立即提交</button>
+                </div>
+            </div>
+        </form>
+    </div>
 </div>
-<table id="design_record" lay-filter="test"></table>
 <script>
+    layui.use('laydate', function () {
+        var laydate = layui.laydate;
+        laydate.render({
+            elem: '#register_time'
+        });
+    })
+</script>
+<script>
+    layui.use('laydate', function(){
+        var laydate = layui.laydate;
+
+        //执行一个laydate实例
+        laydate.render({
+            elem: '#test1' //指定元素
+        });
+    });
+</script>
+<script>
+
+    //table组件
     layui.use('table', function () {
-        var table = layui.table;
+        var table = layui.table;//引用table
+        var vm = new Vue({//引用vue
+            el: "#app",
+            data: {
+                productName: "",
+                registerTime: "",
+            },
+            methods: {
+                search() {//搜索
+                    table.reload('design_record', {//表格重载
+                        url: api1 + 'design_record/findPage'
+                        , where: {productName: this.productName, registerTime: this.registerTime}
+                    });
+                },
+                date(){
+                    layui.use('laydate', function(){
+                        var laydate = layui.laydate;
+
+                        //执行一个laydate实例
+                        laydate.render({
+                            elem: '#register_time' //指定元素
+                        });
+                    });
+                }
+            },
+            mounted() {
+
+            }
+
+        });
+
+
+
 
         //第一个实例
         table.render({
-            elem: '#design_record'
-            , height: 500
+            elem: '#design_record' //示例table的Id
+            , height: 500 //表格高度
             , url: api1 + 'design_record/findPage' //数据接口
+            ,toolbar: '#record' //开启头部工具栏，并为其绑定左侧模板
             , request: {
-                pageName: 'page' //页码的参数名称，默认：page
-                , limitName: 'pageSize' //每页数据量的参数名，默认：limit
+                 pageName: 'page' //页码的参数名称，默认：page
+                ,limitName: 'pageSize' //每页数据量的参数名，默认：limit
             }
             , response: {
-                countName: 'total' //规定数据总数的字段名称，默认：count
-                , dataName: 'rows' //规定数据列表的字段名称，默认：data
+                countName: 'total' //规定数据总数的字段名称，默认：count 规定返回数据的总行数实例
+                , dataName: 'rows' //规定数据列表的字段名称，默认：data 规定返回的数据示例
             }
             , parseData: function (res) { //res 即为原始返回的数据
-                console.log(res.rows);
                 return {
-                    "code": "0",
+                    "code": "0", //返回的code的值 成功：0
                     "total": res.total, //解析数据长度
                     "rows": res.rows, //解析数据列表
                 };
             }
-            , page: { //支持传入 laypage 组件的所有参数（某些参数除外，如：jump/elem） - 详见文档
+            , page: {//开启分页 设置分页样式
                 layout: ['limit', 'count', 'prev', 'page', 'next', 'skip'] //自定义分页布局
-                //,curr: 5 //设定初始在第 5 页
                 , groups: 1 //只显示 1 个连续页码
                 , first: false //不显示首页
                 , last: false //不显示尾页
-
             }
-            , toolbar: true
-            , title: '产品档案登记'
-            , totalRow: true
-            , cols: [[ //表头
-                {type: 'checkbox', fixed: 'left'}
-                , {field: 'productId', title: '商品ID', totalRowText: '合计'}
-                , {field: 'productName', title: '商品名称'}
-                , {field: 'factoryName', title: '制造商'}
-                , {field: 'costPrice', title: '计划成本单价', sort: true, totalRow: true}
-                , {field: 'listPrice', title: '市场单价', sort: true, totalRow: true}
-                , {field: 'realCostPrice', title: '成本单价', sort: true, totalRow: true}
-                , {field: 'amountUnit', title: '单位'}
-                , {field: 'responsiblePerson', title: '产品经理'}
-                , {field: 'register', title: '登记人', edit: 'text'}
-                , {field: 'registerTime', title: '建档时间', sort: true}
-                , {field: 'checkTag', title: '审核标志'}
-                , {field: 'changeTag', title: '档案变更标志'}
-                , {field: 'priceChangeTag', title: '价格变更标志'}
-                , {fixed: 'right', width: 150, align: 'center', toolbar: '#barDemo'}
-            ]]
+
+            , title: '产品档案登记'//excel导出的标题
+            ,totalRow: true //开启合计行
+            , cols:
+                [[ //表头
+                    {type: 'checkbox', fixed: 'left'} //开启多选
+                    ,{field: 'id', title: 'ID',type: "numbers" ,minWidth: 90,hide: true}
+                    , {field: 'productId', type: "numbers" ,title: '商品ID',width: 90,totalRowText: '合计'}
+                    , {field: 'productName', title: '商品名称',minWidth: 90, edit: 'text'}
+                    , {field: 'factoryName', title: '制造商',minWidth: 90,}
+                    , {field: 'costPrice', title: '计划成本单价',minWidth: 90, sort: true,hide:true,totalRow:true}
+                    , {field: 'listPrice', title: '市场单价', minWidth: 90,sort: true,hide:true,totalRow:true}
+                    , {field: 'realCostPrice', title: '成本单价',minWidth: 90,edit: 'text', sort: true,hide:true,totalRow:true}
+                    , {field: 'amountUnit', title: '单位',minWidth: 60,hide:true}
+                    , {field: 'responsiblePerson', minWidth: 90,title: '产品经理',hide:true}
+                    , {field: 'register', title: '登记人', minWidth: 90,edit: 'text'}
+                    , {field: 'registerTime', title: '建档时间',minWidth: 100, sort: true,hide:true}
+                    , {field: 'checkTag', title: '审核标志',minWidth: 90,hide:true}
+                    , {field: 'changeTag', title: '档案变更标志',minWidth: 100}
+                    , {field: 'priceChangeTag', title: '价格变更标志',minWidth: 100}
+                    , {field: 'deleteTag', title: '是否下架',hide:true,minWidth: 90}
+                    , {field: 'firstKindName', title: '一级分类',hide:true,minWidth: 90}
+                    , {field: 'secondKindName', title: '二级分类',hide:true,minWidth: 90}
+                    , {field: 'priceChangeTag', title: '价格变更标志',hide:true,minWidth: 100}
+                    , {field: 'productClass', title: '档次级别',hide:true,minWidth: 90}
+                    , {field: 'productDescribe', title: '产品描述',hide:true,minWidth: 90}
+                    , {field: 'type', title: '类型',hide:true,minWidth: 90}
+                    , {field: 'responsiblePerson', title: '产品经理',hide:true,minWidth: 90}
+                    , {field: 'warranty', title: '保修期',hide:true,minWidth: 90}
+                    , {field: 'fileChangeAmount', title: '变更次数',hide:true,minWidth: 90,totalRow:true}
+                    , {field: 'priceChangeTag', title: '价格变更标志',hide:true,minWidth: 100}
+                    , {fixed: 'right', width: 180, fixed:'right', toolbar: '#bardesign_record'}
+                ]]
         });
 
+        var checkId=[];//选中id的数组
+        table.on('checkbox(design_record)', function(obj){
+         if(obj.checked){
+             checkId.push(obj.data.id)//选中的id
+         }else{
+             var idx=checkId.indexOf(obj.data.id);//获取要删除的ID
+            checkId.splice(idx,1)//移除id
+         }
+            console.log(obj);
+        });
+        //头工具栏事件
+        table.on('toolbar(design_record)', function(obj){
+            var checkStatus = table.checkStatus(obj.config.id);
+            switch(obj.event){
+                case 'getCheckData':
+                    var data = checkStatus.data;
+                    axios.post("aa",{idx:checkId}).then(res=>{
+
+                    }).catch(err=>{
+                      // alert("失败")
+                    });
+                    layer.alert(JSON.stringify(data));
+                    break;
+                case 'getCheckLength':
+                    var data = checkStatus.data;
+                    layer.msg('选中了：'+ data.length + ' 个');
+                    break;
+                case 'isAll':
+                    layer.msg(checkStatus.isAll ? '全选': '未全选');
+                    break;
+
+            };
+        });
         //监听工具条
-        table.on('tool(test)', function (obj) { //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
+        table.on('tool(design_record)', function (obj) {
             var data = obj.data; //获得当前行数据
             var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
             var tr = obj.tr; //获得当前行 tr 的 DOM 对象（如果有的话）
-
+            console.log(JSON.stringify(data));
             if (layEvent === 'detail') { //查看
-                //do somehing
-                layer.confirm('查看', function (index) {
-                    obj.del(); //删除对应行（tr）的DOM结构，并更新缓存
-                    layer.close(index);
-                    //向服务端发送删除指令
+                $("[name='password']").val(vm.msg)
+                $("[name='username']").val(data.materialList);//向模态框中赋值
+                layer.open({
+                    maxmin: true,
+                    type: 1,//类型
+                    area: ['1000px', '600px'],//定义宽和高
+                    title: '查看详细信息',//题目
+                    shadeClose: false,//点击遮罩层关闭
+                    content: $('#detail')//打开的内容
                 });
             } else if (layEvent === 'del') { //删除
-                layer.confirm('真的删除行么', function (index) {
-                    obj.del(); //删除对应行（tr）的DOM结构，并更新缓存
-                    layer.close(index);
-                    //向服务端发送删除指令
-                });
             } else if (layEvent === 'edit') { //编辑
-                //do something
-
-                //同步更新缓存对应的值
-                obj.update({
-                    username: '123'
-                    , title: 'xxx'
-                });
-            } else if (layEvent === 'LAYTABLE_TIPS') {
-                layer.alert('Hi，头部工具栏扩展的右侧图标。');
-            }
-        });
-        var $ = layui.$, active = {
-            getCheckData: function () { //获取选中数据
-                var checkStatus = table.checkStatus('design_record'), data = checkStatus.data;
-                var s1 = JSON.stringify(data).replace(/\[|]/g, '')
-                console.log(s1);
-                if (data == null) {
-                    layer.alert(JSON.stringify(data));
-                    layer.msg('未选中');
-                    return false;
-                } else {
-                    $.ajax({url:api1+"design_record/updaterecordById",data:s1,type:"post",contentType:"application/json",success:function(result){
+                layer.confirm('is not?', {icon: 3, title: '提示'}, function (index) {
+                    $.ajax({
+                        url: api1 + "design_record/updaterecordById",
+                        data: JSON.stringify(data),
+                        type: "post",
+                        contentType: "application/json",
+                        success: function (result) {
                             layer.msg(result.message);
-                        }});
-                }
-
+                        },
+                        error:function (result) {
+                            layer.msg(result.message);
+                        }
+                    });
+                    layer.close(index);
+                });
             }
-            , getCheckLength: function () { //获取选中数目
-                var checkStatus = table.checkStatus('design_record')
-                    , data = checkStatus.data;
-                layer.msg('选中了：' + data.length + ' 个');
-            }
-            , isAll: function () { //验证是否全选
-                var checkStatus = table.checkStatus('design_record');
-                layer.msg(checkStatus.isAll ? '全选' : '未全选')
-            }
-        };
-
-        $('.demoTable .layui-btn').on('click', function () {
-            var type = $(this).data('type');
-            active[type] ? active[type].call(this) : '';
         });
     });
 </script>
-<script type="text/html" id="barDemo">
-    <a class="layui-btn layui-btn-xs" lay-event="detail">查看</a>
-    <a class="layui-btn demoTable layui-btn-xs"  data-type="getCheckData" >修改</a>
 
-    <a class="layui-btn  layui-btn-xs" lay-event="edit">编辑</a>
-    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
-</script>
+
 </body>
 </html>
