@@ -232,10 +232,24 @@
                 });
             } else if (obj.event === 'edit') {
                 openUpdateLeaveBill(data);
-            } else if (obj.event === 'show') {
-                showLeaveBill(data);
+            } else if (obj.event === 'startProcess') {
+                startProcess(data);//请假单的对象
             }
         });
+
+        //启动流程
+        function startProcess(data){
+            layer.confirm('确定要提交【'+data.title+'】请假单吗？',{icon:3, title:'提示信息'},function(index){
+                $.post(api+"workFlow/startProcess",{
+                    id : data.id  //将需要删除的id作为参数传入
+                },function(data){
+                    //刷新table
+                    tableIns.reload();
+                    //关闭提示框
+                    layer.close(index);
+                })
+            });
+        }
 
         //打开添加请假的弹层
         var mainIndex;
