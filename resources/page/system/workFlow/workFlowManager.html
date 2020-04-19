@@ -253,14 +253,14 @@
                     ids += "&ids=" + data[i].id;
                 }
                 layer.confirm('确定删除选中的流程？', {icon: 3, title: '提示信息'}, function (index) {
-                    $.post(api + "workFlow/batchDeleteWorkFlow?" + ids, function (data) {
-                        layer.msg(data.msg);
-                        //刷新table
-                        tableDeploymentIns.reload();
-                        tableprocessDefinitionIns.reload();
-                        //关闭提示框
-                        layer.close(index);
-                    })
+                        $.post(api + "workFlow/batchDeleteWorkFlow?" + ids, function (data) {
+                            layer.msg(data.msg);
+                            //刷新table
+                            tableDeploymentIns.reload();
+                            tableprocessDefinitionIns.reload();
+                            //关闭提示框
+                            layer.close(index);
+                        })
                 })
             } else {
                 layer.msg("请选择需要删除的流程");
