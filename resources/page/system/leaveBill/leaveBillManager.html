@@ -161,13 +161,9 @@
         tableIns = table.render({
             elem: '#leaveBillList',
             url: api + '/leaveBill/loadAllLeaveBills',
-            cellMinWidth : 95,
+            cellMinWidth : true,
             toolbar: '#tableToolBar',
             page : true,
-            height : "full-220",
-            limits : [10,15,20,25],
-            defaultToolbar: ['filter'],
-            limit : 10,
             id : "leaveBillListTable",
             cols: [[
                 {type: "checkbox"},

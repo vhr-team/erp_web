@@ -63,6 +63,10 @@
     </form>
 </div>
 
+<div id="viewProcessImage" style="display: none;padding: 0.3125rem">
+    <img alt="流程图" id="processImage"/>
+</div>
+
 <table id="deploymentList" lay-filter="deploymentList"></table>
 <table id="processDefinitionList" lay-filter="processDefinitionList"></table>
 
@@ -221,6 +225,7 @@
                     $.post(api+"workFlow/deleteWorkFlow",{
                         deploymentId : data.id  //将需要删除的id作为参数传入
                     },function(data){
+                        layer.msg(data.msg);
                         //刷新table
                         tableDeploymentIns.reload();
                         tableprocessDefinitionIns.reload();
@@ -246,6 +251,7 @@
                 }
                 layer.confirm('确定删除选中的流程？', {icon: 3, title: '提示信息'}, function (index) {
                     $.post(api+"workFlow/batchDeleteWorkFlow?"+ids,function(data){
+                        layer.msg(data.msg);
                         //刷新table
                         tableDeploymentIns.reload();
                         tableprocessDefinitionIns.reload();
@@ -256,6 +262,31 @@
             }else{
                 layer.msg("请选择需要删除的流程");
             }
+        }
+
+        //查看流程图
+        function viewProcessImage(data){
+            var index = layui.layer.open({
+                title : "查看["+data.name+"]流程图",
+                type : 1,
+                area:["500px","600px"],
+                content : $("#viewProcessImage"),
+                success : function(layero, index){
+                    $.get(api+"workFlow/viewProcessImage?deploymentId="+data.id,function(data){
+                        $("#processImage").attr('src',data.data);
+                    });
+
+                    setTimeout(function(){
+                        layui.layer.tips('点击此处返回流程列表', '.layui-layer-setwin .layui-layer-close', {
+                            tips: 3
+                        });
+                    },500)
+                }
+            });
+            //改变窗口大小时，重置弹窗的宽高，防止超出可视区域（如F12调出debug的操作）
+            $(window).on("resize",function(){
+                layui.layer.full(index);
+            })
         }
     });
 </script>

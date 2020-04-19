@@ -9,6 +9,9 @@
         <link rel="stylesheet" href="../../../lib/layui-v2.5.5/css/layui.css" media="all">
         <link rel="stylesheet" href="../../../lib/font-awesome-4.7.0/css/font-awesome.min.css" media="all">
         <link rel="stylesheet" href="../../../css/public.css" media="all">
+        <style>
+            .layui-iconpicker-body.layui-iconpicker-body-page .hide {display: none;}
+        </style>
     </head>
 
     <body>
@@ -47,15 +50,20 @@
                 </fieldset>
                 <!--搜索结束-->
                 <!--表格开始-->
-                <button style="margin-top: 10px;" class="layui-btn layui-btn-sm layui-btn-normal data-delete-btn menubtn_add"
+                <button style="margin-top: 10px;"
+                        class="layui-btn layui-btn-sm layui-btn-normal data-delete-btn menubtn_add"
                         id="addMenuBtn">
                     <i class="layui-icon layui-icon-addition"></i>
                     添 加
                 </button>
                 <table class="layui-hide" id="menuTable" lay-filter="menuTable"></table>
                 <div style="display: none" id="menuTableBar">
-                    <a class="layui-btn layui-btn-xs layui-btn-warm data-count-delete menubtn_update" lay-event="update">修改</a>
-                    <a class="layui-btn layui-btn-xs layui-btn-danger data-count-delete menubtn_delete" lay-event="delete">删除</a>
+                    <a class="layui-btn layui-btn-xs layui-btn-warm data-count-delete menubtn_update"
+                       lay-event="update">修改
+                    </a>
+                    <a class="layui-btn layui-btn-xs layui-btn-danger data-count-delete menubtn_delete"
+                       lay-event="delete">删除
+                    </a>
                 </div>
 
                 <script type="text/html" id="spreadTpl">
@@ -112,10 +120,11 @@
                             </div>
                         </div>
                         <div class="layui-form-item item_topmenu  item_leftmenu">
-                            <label class="layui-form-label">图标</label>
+                            <label for="" class="layui-form-label">图标</label>
                             <div class="layui-input-block">
-                                <input type="text" name="icon" autocomplete="off" placeholder="请输入菜单和权限地址"
-                                       class="layui-input">
+                                <input type="text" id="iconPicker1" lay-filter="iconPicker2" name="icon"
+                                       autocomplete="off" placeholder="请输入菜单和权限地址"
+                                       class="layui-input hide">
                             </div>
                         </div>
                         <div class="layui-form-item  item_leftmenu">
@@ -162,14 +171,33 @@
         <script src="../../../lib/common/common.js" charset="utf-8"></script>
         <script src="../../../lib/common/selectLayer.js" charset="utf-8"></script>
 
-
         <script>
-            layui.use(['form', 'table', 'layer', 'treeTable', 'laydate'], function () {
+            layui.use(['form', 'table', 'layer', 'treeTable', 'laydate', 'iconPickerFa'], function () {
+                var iconPickerFa = layui.iconPickerFa;
                 var form = layui.form;
                 var table = layui.table;
                 var layer = layui.layer;
                 var laydate = layui.laydate;
                 var treeTable = layui.treeTable;
+
+                iconPickerFa.render({
+                    // 选择器，推荐使用input
+                    elem: '#iconPicker1',
+                    // fa 图标接口
+                    url: "../../../lib/font-awesome-4.7.0/less/variables.less",
+                    // 是否开启搜索：true/false
+                    search: true,
+                    // 是否开启分页
+                    page: true,
+                    // 每页显示数量，默认12
+                    limit: 12,
+                    // 点击回调
+                    click: function (data) {
+                    },
+                    // 渲染成功后的回调
+                    success: function (d) {
+                    }
+                });
 
                 var tableIns = treeTable.render({
                     tree: {
@@ -200,7 +228,7 @@
                         {field: 'typecode', title: '编码', align: "center"},
                         {
                             field: 'icon', title: '图标', align: "center", templet: function (d) {
-                                var x = "<i class='" + d.icon + "' ></i>";
+                                var x = "<i class='fa " + d.icon + "' ></i>";
                                 return x;
                             }
                         },
@@ -318,7 +346,7 @@
                             //加载最大的排序码
                             $.get(api + "menu/queryMenuMaxOrderNum", function (res) {
                                 $("#ordernum").val(res.data);
-                            })
+                            });
                             $(".item_permission").hide();
                             $(".item_topmenu").hide();
                             $(".item_leftmenu").show();
@@ -379,9 +407,6 @@
                     });
                 });
             });
-        </script>
-        <script>
-
         </script>
 
     </body>
