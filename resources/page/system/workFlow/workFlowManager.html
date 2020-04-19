@@ -202,17 +202,61 @@
             ,bindAction: '#addWorkFlow'
             ,done: function(data){
                 layer.msg(data.msg);
-
-                layer.close(index);
-                //刷新父页面的table
+                layui.layer.close(index);
                 tableDeploymentIns.reload();
                 tableprocessDefinitionIns.reload();
             }
             ,error:function(){
                 layer.msg('部署失败');
-                layer.close(index);
+                layui.layer.close(index);
             }
         });
+
+        //列表操作
+        table.on('tool(deploymentList)', function(obj){
+            var layEvent = obj.event,
+                data = obj.data;
+            if(layEvent === 'del'){ //删除
+                layer.confirm('确定删【'+data.name+'】流程吗？',{icon:3, title:'提示信息'},function(index){
+                    $.post(api+"workFlow/deleteWorkFlow",{
+                        deploymentId : data.id  //将需要删除的id作为参数传入
+                    },function(data){
+                        //刷新table
+                        tableDeploymentIns.reload();
+                        tableprocessDefinitionIns.reload();
+                        //关闭提示框
+                        layer.close(index);
+                    })
+                });
+            }else if(layEvent==="viewProcessImage"){
+                //传入流程对象
+                viewProcessImage(data);
+            }
+        });
+
+        //批量删除
+        function batchDelete(){
+            //得到当前表格里面的checkbox的选中对象集合
+            var checkStatus = table.checkStatus('deploymentListTable'),//选中状态
+                data = checkStatus.data;//选中的对象集
+            var ids="a=1";
+            if(data.length > 0) {
+                for (var i in data) {
+                    ids+="&ids="+data[i].id;
+                }
+                layer.confirm('确定删除选中的流程？', {icon: 3, title: '提示信息'}, function (index) {
+                    $.post(api+"workFlow/batchDeleteWorkFlow?"+ids,function(data){
+                        //刷新table
+                        tableDeploymentIns.reload();
+                        tableprocessDefinitionIns.reload();
+                        //关闭提示框
+                        layer.close(index);
+                    })
+                })
+            }else{
+                layer.msg("请选择需要删除的流程");
+            }
+        }
     });
 </script>
 </body>
