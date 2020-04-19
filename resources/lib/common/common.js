@@ -99,6 +99,10 @@ if (usertype == 1) {
         $(".menubtn_update").hide();
         $(".menubtn_delete").hide();
 
+        $(".roleBtn_add").hide();
+        $(".roleBtn_update").hide();
+        $(".roleBtn_delete").hide();
+
         $(".btn_dispatch").hide();
         $(".btn_reset").hide();
     }
