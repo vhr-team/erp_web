@@ -243,6 +243,7 @@
                 $.post(api+"workFlow/startProcess",{
                     id : data.id  //将需要删除的id作为参数传入
                 },function(data){
+                    layer.msg(data.msg);
                     //刷新table
                     tableIns.reload();
                     //关闭提示框
