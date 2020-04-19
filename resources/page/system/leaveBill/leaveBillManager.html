@@ -57,11 +57,6 @@
             </div>
         </fieldset>
         <!--搜索结束-->
-
-        <!--表格开始-->
-        <table id="leaveBillList" lay-filter="leaveBillList"></table>
-        <!--表格结束-->
-
         <!--添加和修改的弹出层开始-->
         <div id="addOrUpdateDiv" style="display: none;padding: 0.3125rem">
             <form method="post" class="layui-form layui-form-pane" lay-filter="dataFrm" id="dataFrm">
@@ -108,6 +103,10 @@
     </div>
 </div>
 
+<!--表格开始-->
+<table id="leaveBillList" lay-filter="leaveBillList"></table>
+<!--表格结束-->
+
 <script type="text/html" id="leaveBillToolBar">
     <a class="layui-btn layui-btn-sm layui-btn-normal" lay-event="add">添加</a>
     <a class="layui-btn layui-btn-sm layui-btn-danger data-count-delete" lay-event="batchDel">批量删除</a>
@@ -137,13 +136,14 @@
 <script src="../../../lib/common/common.js" charset="utf-8"></script>
 
 <script>
-
     var tableIns;
-    layui.use(['form', 'layer', 'table', 'laydate'], function () {
-        var form = layui.form;
-        var layer = layui.layer;
-        var laydate = layui.laydate;
-        var table = layui.table;
+    layui.use(['form','layer','table','laydate','laytpl'],function(){
+        var form = layui.form,
+            layer = parent.layer === undefined ? layui.layer : top.layer,
+            $ = layui.jquery,
+            laydate=layui.laydate,
+            laytpl = layui.laytpl,
+            table = layui.table;
 
         laydate.render({
             elem: "#startTime"
@@ -161,8 +161,14 @@
         tableIns = table.render({
             elem: '#leaveBillList',
             url: api + '/leaveBill/loadAllLeaveBills',
-            toolbar: '#leaveBillToolBar',
-            page: true,
+            cellMinWidth : 95,
+            toolbar: '#tableToolBar',
+            page : true,
+            height : "full-220",
+            limits : [10,15,20,25],
+            defaultToolbar: ['filter'],
+            limit : 10,
+            id : "leaveBillListTable",
             cols: [[
                 {type: "checkbox"},
                 {field: 'id', title: '请假单ID', align: "center"},
@@ -293,7 +299,6 @@
             return false;
         })
 
-
         //批量删除
         function batchdelete() {
             var checkStatus = table.checkStatus('leaveBillTable'); //idTest 即为基础参数 id 对应的值
@@ -344,7 +349,6 @@
                 content: html
             });
         }
-
     });
 </script>
 <script>
