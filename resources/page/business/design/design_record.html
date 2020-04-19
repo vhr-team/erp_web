@@ -111,10 +111,8 @@
         search();//查询
         function search() {
             $("#search").click(function () {
-                var productName = $("#proname").val();
-                var registerTime = $("#register_time").val();
-                console.log(productName);
-                console.log(registerTime);
+                var productName = $("#proname").val();//获取用户输入的商品名称
+                var registerTime = $("#register_time").val();//获取用户选择的日期
                 table.reload('design_record', {//表格重载
                     url: api1 + 'design_record/findPage'
                     , where: {productName: productName, registerTime: registerTime}
@@ -123,9 +121,8 @@
         }
 
         batchDelete();
-
         function batchDelete() {
-//头工具栏事件
+            //头工具栏事件
             table.on('toolbar(design_record)', function (obj) {
                 var checkStatus = table.checkStatus(obj.config.id);
                 switch (obj.event) {
@@ -137,17 +134,17 @@
                                 idx.push(data[i].id);//获取选中的ID
                             }
                             layer.confirm('确定删除选中的吗？', {icon: 3, title: '提示'}, function (index) {
-                                $.ajax({
+                                $.ajax({//异步提交  批量删除
                                     url: api1 + "design_record/deletebatch",
                                     type: "post",
                                     data: JSON.stringify(idx),
                                     contentType: "application/json",
-                                    success: function (result) {
+                                    success: function (result) {//成功
                                         layer.msg(result.message);
-                                        tablerecord();
+                                        tablerecord();//表格加载
 
                                     },
-                                    error: function (result) {
+                                    error: function (result) {//失败
                                         layer.msg(result.message);
                                     }
                                 })
@@ -156,24 +153,19 @@
 
                         }
                         break;
-                    case 'addrecord':
+                    case 'addrecord'://添加
                         var data = checkStatus.data;
                         layer.open({
                             maxmin: true,
-                            type: 1,//类型
+                            type: 1,//类型 信息
                             area: ['1000px', '600px'],//定义宽和高
                             title: '查看详细信息',//题目
                             shadeClose: false,//点击遮罩层关闭
-                            content: $('#detail')//打开的内容
+                            content: $('#detail')//打开的模态框
                         });
                         break;
                     case 'isAll':
                         layer.msg(checkStatus.isAll ? '全选' : '未全选');
-                        break;
-
-                    //自定义头工具栏右侧图标 - 提示
-                    case 'LAYTABLE_TIPS':
-                        layer.alert('这是工具栏右侧自定义的一个图标按钮');
                         break;
                 }
                 ;
@@ -224,10 +216,10 @@
                             field: 'realCostPrice',
                             title: '成本单价',
                             minWidth: 90,
-                            edit: 'text',
-                            sort: true,
-                            hide: true,
-                            totalRow: true
+                            edit: 'text', //单元格可编辑
+                            sort: true, //排序
+                            hide: true, //是否开启隐藏
+                            totalRow: true //开启合计
                         }
                         , {field: 'amountUnit', title: '单位', minWidth: 60, hide: true}
                         , {field: 'responsiblePerson', minWidth: 90, title: '产品经理', hide: true}
@@ -247,7 +239,7 @@
                         , {field: 'warranty', title: '保修期', hide: true, minWidth: 90}
                         , {field: 'fileChangeAmount', title: '变更次数', hide: true, minWidth: 90, totalRow: true}
                         , {field: 'priceChangeTag', title: '价格变更标志', hide: true, minWidth: 100}
-                        , {fixed: 'right', width: 180, fixed: 'right', toolbar: '#bardesign_record'}
+                        , {fixed: 'right', width: 180, fixed: 'right', toolbar: '#bardesign_record'}//右侧操作按钮
                     ]]
             });
 
@@ -255,7 +247,6 @@
 
 
         toolRecorde();
-
         function toolRecorde() {
             //监听工具条
             table.on('tool(design_record)', function (obj) {
@@ -266,8 +257,8 @@
                 if (layEvent === 'detail') { //查看
 
                 } else if (layEvent === 'Stand_up_and_down') { //上下架
-                    var tag = "";
-                    var dataTag = "";
+                    var tag = "";//获取上下架信息
+                    var dataTag = "";//修改上下信息
                     if (data.deleteTag == "已下架") {
                         tag = "上架";
                         data.deleteTag = "已上架"
@@ -278,9 +269,9 @@
                     layer.confirm("确定" + tag + "吗？", {icon: 3, title: '提示'}, function (index) {
                         $.ajax({
                             url: api1 + "design_record/putawayrecord",
-                            data: JSON.stringify(data),
-                            type: "post",
-                            contentType: "application/json",
+                            data: JSON.stringify(data),//转json
+                            type: "post",//post提交方式
+                            contentType: "application/json",//json提交
                             success: function (result) {
                                 layer.msg(result.message);
                                 tablerecord();
