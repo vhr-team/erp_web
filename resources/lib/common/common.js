@@ -68,13 +68,13 @@ if (usertype == 1) {
 
         // 菜单和权限
         if (permissions.indexOf("menu:add") < 0) {
-            $(".btn_add").hide();
+            $(".menubtn_add").hide();
         }
         if (permissions.indexOf("menu:update") < 0) {
-            $(".btn_update").hide();
+            $(".menubtn_update").hide();
         }
         if (permissions.indexOf("menu:delete") < 0) {
-            $(".btn_delete").hide();
+            $(".menubtn_delete").hide();
         }
         // 菜单和权限
 
@@ -94,6 +94,11 @@ if (usertype == 1) {
         $(".btn_add").hide();
         $(".btn_update").hide();
         $(".btn_delete").hide();
+
+        $(".menubtn_add").hide();
+        $(".menubtn_update").hide();
+        $(".menubtn_delete").hide();
+
         $(".btn_dispatch").hide();
         $(".btn_reset").hide();
     }
