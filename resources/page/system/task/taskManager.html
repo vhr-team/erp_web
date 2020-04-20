@@ -153,11 +153,6 @@
                         elem: '#commentList',
                         url: api + 'workFlow/loadAllCommentByTaskId?taskId=' + data.id,
                         cellMinWidth: true,
-                        defaultToolbar: ['filter', 'exports', 'print', {
-                            title: '提示',
-                            layEvent: 'LAYTABLE_TIPS',
-                            icon: 'layui-icon-tips'
-                        }],
                         cols: [[
                             {field: 'time', title: '批注时间', align: "center"},
                             {field: 'userId', title: '批注人', align: "center"},
