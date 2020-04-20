@@ -52,6 +52,7 @@
         <button class="layui-btn layui-btn-sm" lay-event="batchDelete">批量删除</button>
         <button class="layui-btn layui-btn-sm" lay-event="addrecord">添加档案</button>
         <button class="layui-btn layui-btn-sm" lay-event="rload">刷新</button>
+        <button class="layui-btn layui-btn-sm" lay-event="classify">分类编辑</button>
     </div>
 </script>
 <!--表格-->
@@ -172,11 +173,10 @@
         }
 
         batchDelete();
-
         function batchDelete() {
             //头工具栏事件
             table.on('toolbar(design_record)', function (obj) {
-                var checkStatus = table.checkStatus(obj.config.id);
+                //var checkStatus = table.checkStatus(obj.config.id);
                 switch (obj.event) {
                     case 'batchDelete':
                         var checkStatus = table.checkStatus('design_record'), data = checkStatus.data;
@@ -207,7 +207,6 @@
                         }
                         break;
                     case 'addrecord'://添加
-                        var data = checkStatus.data;
                         layer.open({
                             maxmin: true,
                             type: 1,//类型 信息
@@ -219,6 +218,19 @@
                         break;
                     case 'rload':
                         window.location.reload();
+                        break;
+                    case 'classify':
+                        layer.open({
+                            type: 2,
+                            shade: false,
+                            area: ['1000px', '500px'],
+                            maxmin: true,
+                            content: 'http://localhost:8888/erp_web/resources/page/business/design/design_classify.html',
+                            zIndex: layer.zIndex, //重点1
+                            success: function (layero) {
+                                layer.setTop(layero); //重点2
+                            }
+                        });
                         break;
                     case 'LAYTABLE_TIPS':
                         layer.msg('提示');
