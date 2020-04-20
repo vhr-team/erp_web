@@ -290,13 +290,11 @@ layui.define(["element", "jquery"], function (exports) {
                     menuLeftHover: '#3b3f4b',
                 },
                 {
-                    headerRight: '#000', //头部右侧背景色
-                    headerRightThis: '#23262e', //头部右侧选中背景色,
-                    headerLogo: '#192027', //logo背景颜色,
-                    menuLeft: '#28333E', //左侧菜单背景,
+                    headerRight: '#3a3f51', //头部右侧背景色
+                    headerRightThis: '#a8a8a8', //头部右侧选中背景色,
+                    headerLogo: '#3a3f51', //logo背景颜色,
+                    menuLeft: '#3a3f51', //左侧菜单背景,
                     menuLeftThis: '#1E9FFF', //左侧菜单选中背景,
-                    menuLeftHover: 'rgb(191, 187, 187)', //左侧菜单更多下拉样式,
-
                 },
                 {
                     headerRight: '#ffa4d1',
