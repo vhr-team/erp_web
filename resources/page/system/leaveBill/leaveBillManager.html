@@ -111,7 +111,6 @@
 
 <script type="text/html" id="leaveBillToolBar">
     <a class="layui-btn layui-btn-sm layui-btn-normal" lay-event="add">添加</a>
-    <a class="layui-btn layui-btn-sm layui-btn-danger data-count-delete" lay-event="batchDel">批量删除</a>
 </script>
 
 <!--操作-->
@@ -212,9 +211,6 @@
         table.on('toolbar(leaveBillList)', function (obj) {
             var checkStatus = table.checkStatus(obj.config.id);
             switch (obj.event) {
-                case 'batchdelete':
-                    batchdelete();
-                    break;
                 case 'add':
                     openAddLeaveBill();
                     break;
@@ -310,36 +306,7 @@
                 layer.close(mainIndex);
             });
             return false;
-        })
-
-        //批量删除
-        function batchdelete() {
-            var checkStatus = table.checkStatus('leaveBillTable'); //idTest 即为基础参数 id 对应的值
-            var data = checkStatus.data;
-            var length = checkStatus.data.length;
-            console.log(checkStatus.data) //获取选中行的数据
-            console.log(checkStatus.data.length) //获取选中行数量，可作为是否有选中行的条件
-            if (length == 0) {
-                layer.msg("请选中要删除的行数据");
-            } else {
-                layer.confirm('真的删除选择中这些数据么?', function (index) {
-                    var params = "";
-                    $.each(data, function (index, item) {
-                        if (index == 0) {
-                            params += "ids=" + item.id;
-                        } else {
-                            params += "&ids=" + item.id;
-                        }
-                    });
-                    $.post(api + "leaveBill/batchDeleteLeaveBill", params, function (res) {
-                        layer.msg(res.msg);
-                        tableIns.reload();
-                        layer.close(index);
-                    })
-                });
-            }
-        }
-
+        });
 
         //查看请假
         function showLeaveBill(data) {
