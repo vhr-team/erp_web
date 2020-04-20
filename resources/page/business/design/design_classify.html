@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>分类编辑</title>
+    <link href="../../../lib/layui-v2.5.5/css/layui.css" rel="stylesheet">
+    <script src="../../../lib/layui-v2.5.5/layui.js"></script>
+    <script src="config/common.js"></script>
+</head>
+<body class="layui-hide">
+<div class="page-wrapper">
+    <div class="layui-btn-container" style="display: inline-block;">
+        <button class="layui-btn layui-btn-sm layui-btn-primary" id="btnExpandAll">
+            <i class="layui-icon">&#xe668;</i>展开全部
+        </button>
+        <button class="layui-btn layui-btn-sm layui-btn-primary" id="btnFoldAll">
+            <i class="layui-icon">&#xe66b;</i>折叠全部
+        </button>
+    </div>
+    <input class="layui-input" id="edtSearch" placeholder="输入关键字"
+           style="display: inline-block;width: 140px;height: 30px;line-height: 30px;padding: 0 5px;margin-right: 5px;"
+           value="添加用户"/>
+    <div class="layui-btn-container" style="display: inline-block;">
+        <button class="layui-btn layui-btn-sm layui-btn-primary" id="btnSearch">
+            <i class="layui-icon">&#xe615;</i>搜索
+        </button>
+        <button class="layui-btn layui-btn-sm layui-btn-primary" id="btnClearSearch">
+            <i class="layui-icon">&#x1006;</i>清除搜索
+        </button>
+    </div>
+    <table id="classifyTable"></table>
+</div>
+<!--添加模态框-->
+<div id="">
+    <div id="updateclassify" style="display: none;">
+        <form action="" class="layui-form" lay-filter="">
+            <div class="layui-form-item" style="display: none">
+                <label class="layui-form-label">序号</label>
+                <div class="layui-input-block">
+                    <input class="layui-input" id="id" name="id"
+                           type="text">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">分类名称</label>
+                <div class="layui-input-block">
+                    <input autocomplete="off" class="layui-input" id="kindName" lay-verify="title" name="kindName"
+                           placeholder="请输入标题"
+                           type="text">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">父级分类</label>
+                <div class="layui-input-block">
+                    <select id="pId" lay-verify="required" name="pId">
+                        <option value=""></option>
+                        <option value="0">北京</option>
+                        <option value="1">上海</option>
+                        <option value="2">广州</option>
+                        <option value="3">深圳</option>
+                        <option value="4">杭州</option>
+                    </select>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">级别</label>
+                <div class="layui-input-block">
+                    <select id="kindLevel" lay-verify="required" name="kindLevel">
+                        <option value=""></option>
+                        <option value="0">北京</option>
+                        <option value="1">上海</option>
+                        <option value="2">广州</option>
+                        <option value="3">深圳</option>
+                        <option value="4">杭州</option>
+                    </select>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <button class="layui-btn layui-btn-normal" id="LAY-component-form-setval" type="button">
+                        赋值
+                    </button>
+                    <button class="layui-btn layui-btn-normal" id="LAY-component-form-getval" type="button">取值</button>
+                    <button class="layui-btn" lay-filter="demo1" lay-submit="" type="submit">立即提交</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<!-- 表格操作列 -->
+<script id="tbBar" type="text/html">
+    <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="edit">修改</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>
+
+<script>
+    layui.config({
+        base: '../design/'
+    }).use(['layer', 'util', 'treeTable', 'table', 'tree'], function () {
+        var tree = layui.tree;
+        var table = layui.table;
+        var $ = layui.jquery;
+        var layer = layui.layer;
+        var util = layui.util;
+        var treeTable = layui.treeTable;
+        $('body').removeClass('layui-hide');
+
+        treetableload();
+
+        function treetableload() {
+            // 渲染表格
+            var treeclassify = treeTable.render({
+                elem: '#classifyTable',
+                url: api1 + 'design_classify/design_classifyAll',
+                toolbar: 'default',
+                tree: {
+                    iconIndex: 2,
+                    isPidData: true,
+                    idName: 'kindId',
+                    pidName: 'pId'
+                },
+                parseData: function (res) { //res 即为原始返回的数据
+                    console.log(res);
+                    return {
+                        "code": "0", //返回的code的值 成功：0
+                        "total": res.total, //解析数据长度
+                        "data": res.data, //解析数据列表
+
+                    };
+
+                },
+                defaultToolbar: ['filter', 'print', 'exports', {
+                    title: '提示',
+                    layEvent: 'LAYTABLE_TIPS',
+                    icon: 'layui-icon-tips'
+                }],
+                cols: [
+                    [
+                        {type: 'numbers'},
+                        {type: 'checkbox'},
+                        {field: 'kindName', title: '分类名称', minWidth: 165},
+                        {field: 'kindLevel', title: '级别'},
+                        {field: 'pId', title: '父级ID'},
+                        {field: 'id', title: '分类ID', minWidth: 165},
+                        {align: 'center', toolbar: '#tbBar', title: '操作', width: 120}
+                    ]
+                ],
+                style: 'margin-top:0;'
+            });
+
+            // 工具列点击事件
+            treeTable.on('tool(classifyTable)', function (obj) {
+                var data = obj.data; //获得当前行数据
+                var event = obj.event;
+                console.log(data);
+                if (event === 'del') {//删除
+                    layer.msg('删除成功');
+
+                    obj.del();
+                } else if (event === 'edit') {//修改
+                    $("#kindName").val(data.kindName)
+                    layer.open({
+                        maxmin: true,
+                        type: 1,//类型 信息
+                        area: ['1000px', '650px'],//定义宽和高
+                        title: '分类编辑',//题目
+                        shadeClose: false,//点击遮罩层关闭
+                        content: $('#updateclassify')//打开的模态框
+                    });
+                    layer.msg('修改成功');
+                    obj.update({authorityName: '新的名称'});
+                }
+            });
+            // 头部工具栏点击事件
+            treeTable.on('toolbar(classifyTable)', function (obj) {
+                var data = obj; //获得当前行数据
+                console.log(data);
+                switch (obj.event) {
+                    case 'add':
+                        layer.msg('添加');
+                        break;
+                    case 'delete':
+                        layer.msg('删除');
+                        break;
+                    case 'update':
+                        layer.msg('编辑');
+                        break;
+                    case 'LAYTABLE_TIPS':
+                        layer.msg('提示');
+                        break;
+                }
+            });
+
+            // 全部展开
+            $('#btnExpandAll').click(function () {
+                treeclassify.expandAll();
+            });
+
+            // 全部折叠
+            $('#btnFoldAll').click(function () {
+                treeclassify.foldAll();
+            });
+
+
+            $('#btnChecked').click(function () {
+                treeclassify.expand(4);
+                treeclassify.setChecked([4]);
+            });
+
+            $('#btnSearch').click(function () {
+                var keywords = $('#edtSearch').val();
+                if (keywords) {
+                    treeclassify.filterData(keywords);
+                } else {
+                    treeclassify.clearFilter();
+                }
+            });
+
+            $('#btnClearSearch').click(function () {
+                treeclassify.clearFilter();
+            });
+            $('#btnReload').click(function () {
+                treeclassify.reload();
+            });
+        }
+
+
+    });
+</script>
+</body>
+</html>

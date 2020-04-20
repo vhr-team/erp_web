@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>table模块快速使用</title>
+    <title>档案管理</title>
 
     <link rel="stylesheet" href="../../../lib/layui-v2.5.5/css/layui.css">
     <script src="../../../lib/jquery-3.4.1/jquery-3.4.1.min.js"></script>
@@ -16,71 +16,128 @@
 <body>
 
 <div class="layuimini-container">
-    <div class="layuimini-main">
-        <!--搜索开始-->
+    <fieldset class="layui-elem-field" style="padding-top: 20px">
         <legend>搜索</legend>
-        <div class="layui-form-item">
-            <label class="layui-form-label">商品名称</label>
-            <div class="layui-input-inline">
-                <input autocomplete="off" class="layui-input" id="proname" lay-verify="required" name="proname"
-                       placeholder="请输入" type="text">
-            </div>
-            <div class="layui-inline">
-                <label class="layui-form-label">日期选择</label>
-                <div class="layui-input-block">
-                    <input autocomplete="off" class="layui-input " id="register_time" name="date" type="text">
+        <div class="layuimini-main layui-col-lg-offset3">
+            <form>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">商品名称</label>
+                    <div class="layui-input-inline">
+                        <input autocomplete="off" class="layui-input" id="proname" lay-verify="required" name="proname"
+                               placeholder="请输入商品名称" type="text">
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">日期选择</label>
+                        <div class="layui-input-block">
+                            <input autocomplete="off" class="layui-input " id="register_time" name="date" type="text">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <button class="layui-btn layui-btn-primary" id="search"><i
+                                class="layui-icon"></i> 搜 索
+                        </button>
+                        <button class="layui-btn layui-btn-primary" lay-filter="data-search-btn" type="reset"><i
+                                class="layui-icon layui-icon-refresh"></i> 重 置
+                        </button>
+                    </div>
                 </div>
-            </div>
-            <div class="layui-inline">
-                <button class="layui-btn layui-anim layui-anim-scaleSpring " id="search"
-                        title="搜索"><i class="layui-icon layui-icon-search"></i></button>
-            </div>
+            </form>
         </div>
-    </div>
+    </fieldset>
+</div>
+
 </div>
 <script type="text/html" id="record">
     <div class="layui-btn-container">
         <button class="layui-btn layui-btn-sm" lay-event="batchDelete">批量删除</button>
         <button class="layui-btn layui-btn-sm" lay-event="addrecord">添加档案</button>
-        <button class="layui-btn layui-btn-sm" lay-event="isAll">验证是否全选</button>
+        <button class="layui-btn layui-btn-sm" lay-event="rload">刷新</button>
     </div>
 </script>
 <!--表格-->
 <table id="design_record" lay-filter="design_record" lay-data="design_record"></table>
 <!--操作按钮-->
 <script type="text/html" id="bardesign_record">
-    <a class="layui-btn layui-btn-xs" lay-event="detail">查看</a>
-    <a class="layui-btn  layui-btn-xs" lay-event="edit">编辑</a>
-    <a class="layui-btn layui-btn-danger layui-btn-xs sold" lay-event="Stand_up_and_down">上/下架</a>
+    <a class="layui-btn  layui-btn-xs" lay-event="edit"><i class="layui-icon layui-icon-edit"></i>编辑</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs sold" lay-event="Stand_up_and_down"><i
+            class="layui-icon layui-icon-note"></i>上/下架</a>
 </script>
 
-<!--模仿bootstrap的模态框-->
+<!--添加模态框-->
 <div id="">
-    <div id="detail" style="display: none;">
-        <form class="layui-form" action="" lay-filter="example">
+    <div id="addrecord" style="display: none;">
+        <form action="" class="layui-form" lay-filter="">
             <div class="layui-form-item">
-                <label class="layui-form-label">输入框</label>
+                <label class="layui-form-label">产品编号</label>
                 <div class="layui-input-block">
                     <input type="text" name="username" lay-verify="title" autocomplete="off" placeholder="请输入标题"
                            class="layui-input">
                 </div>
             </div>
             <div class="layui-form-item">
-                <label class="layui-form-label">密码框</label>
+                <label class="layui-form-label">产品名称</label>
                 <div class="layui-input-block">
-                    <input type="password" name="password" placeholder="请输入密码" autocomplete="off" class="layui-input">
+                    <input autocomplete="off" class="layui-input" lay-verify="title" name="username" placeholder="请输入标题"
+                           type="text">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">制造商</label>
+                <div class="layui-input-block">
+                    <input autocomplete="off" class="layui-input" lay-verify="title" name="username" placeholder="请输入标题"
+                           type="text">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">用途类型</label>
+                <div class="layui-input-block">
+                    <input autocomplete="off" class="layui-input" lay-verify="title" name="username" placeholder="请输入标题"
+                           type="text">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">档次级别</label>
+                <div class="layui-input-block">
+                    <select lay-verify="required" name="city">
+                        <option value=""></option>
+                        <option value="0">北京</option>
+                        <option value="1">上海</option>
+                        <option value="2">广州</option>
+                        <option value="3">深圳</option>
+                        <option value="4">杭州</option>
+                    </select>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">一级分类名称</label>
+                <div class="layui-input-block">
+                    <select lay-verify="required" name="city">
+                        <option value=""></option>
+                        <option value="0">北京</option>
+                        <option value="1">上海</option>
+                        <option value="2">广州</option>
+                        <option value="3">深圳</option>
+                        <option value="4">杭州</option>
+                    </select>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">选择框</label>
+                <div class="layui-input-block">
+                    <select lay-verify="required" name="city">
+                        <option value=""></option>
+                    </select>
                 </div>
             </div>
             <div class="layui-form-item layui-form-text">
-                <label class="layui-form-label">文本域</label>
+                <label class="layui-form-label">产品描述</label>
                 <div class="layui-input-block">
                     <textarea placeholder="请输入内容" class="layui-textarea" name="desc"></textarea>
                 </div>
             </div>
-
             <div class="layui-form-item">
                 <div class="layui-input-block">
-                    <button type="button" class="layui-btn layui-btn-normal" @click="l" id="LAY-component-form-setval">
+                    <button class="layui-btn layui-btn-normal" id="LAY-component-form-setval" type="button">
                         赋值
                     </button>
                     <button type="button" class="layui-btn layui-btn-normal" id="LAY-component-form-getval">取值</button>
@@ -90,21 +147,15 @@
         </form>
     </div>
 </div>
-<script>
-    layui.use('laydate', function () {
-
-//执行一个laydate实例
-
-    })
-</script>
 
 <script>
-
     //table组件
-    layui.use(['table', 'laydate'], function () {
+    layui.use(['table', 'laydate', 'form'], function () {
+        var form = layui.form;
         var table = layui.table;//引用table
         var laydate = layui.laydate;
         var design_recordTable;
+        form.render();//初始化表单组件
         laydate.render({
             elem: '#register_time' //指定元素
         });
@@ -121,6 +172,7 @@
         }
 
         batchDelete();
+
         function batchDelete() {
             //头工具栏事件
             table.on('toolbar(design_record)', function (obj) {
@@ -133,7 +185,7 @@
                             for (var i in data) {
                                 idx.push(data[i].id);//获取选中的ID
                             }
-                            layer.confirm('确定删除选中的吗？', {icon: 3, title: '提示'}, function (index) {
+                            layer.confirm('确定删除选中的吗？', {icon: 3, title: '批量删除'}, function (index) {
                                 $.ajax({//异步提交  批量删除
                                     url: api1 + "design_record/deletebatch",
                                     type: "post",
@@ -150,7 +202,8 @@
                                 })
                                 layer.close(index);//关闭这个提示框
                             });
-
+                        } else {
+                            layer.msg("哈批！！请选中要删除的档案啊");
                         }
                         break;
                     case 'addrecord'://添加
@@ -158,14 +211,17 @@
                         layer.open({
                             maxmin: true,
                             type: 1,//类型 信息
-                            area: ['1000px', '600px'],//定义宽和高
-                            title: '查看详细信息',//题目
+                            area: ['1000px', '650px'],//定义宽和高
+                            title: '添加档案',//题目
                             shadeClose: false,//点击遮罩层关闭
-                            content: $('#detail')//打开的模态框
+                            content: $('#addrecord')//打开的模态框
                         });
                         break;
-                    case 'isAll':
-                        layer.msg(checkStatus.isAll ? '全选' : '未全选');
+                    case 'rload':
+                        window.location.reload();
+                        break;
+                    case 'LAYTABLE_TIPS':
+                        layer.msg('提示');
                         break;
                 }
                 ;
@@ -179,20 +235,29 @@
                 , height: 500 //表格高度
                 , url: api1 + 'design_record/findPage' //数据接口
                 , toolbar: '#record' //开启头部工具栏，并为其绑定左侧模板
+                , defaultToolbar: ['filter', 'print', 'exports', {
+                    title: '提示',
+                    layEvent: 'LAYTABLE_TIPS',
+                    icon: 'layui-icon-tips'
+                }]
                 , request: {
                     pageName: 'page' //页码的参数名称，默认：page
                     , limitName: 'pageSize' //每页数据量的参数名，默认：limit
                 }
                 , response: {
+
                     countName: 'total' //规定数据总数的字段名称，默认：count 规定返回数据的总行数实例
                     , dataName: 'rows' //规定数据列表的字段名称，默认：data 规定返回的数据示例
                 }
                 , parseData: function (res) { //res 即为原始返回的数据
+                    console.log(res);
                     return {
                         "code": "0", //返回的code的值 成功：0
                         "total": res.total, //解析数据长度
                         "rows": res.rows, //解析数据列表
+
                     };
+
                 }
                 , page: {//开启分页 设置分页样式
                     layout: ['limit', 'count', 'prev', 'page', 'next', 'skip'] //自定义分页布局
@@ -231,15 +296,18 @@
                         , {field: 'deleteTag', title: '是否下架', hide: true, minWidth: 90}
                         , {field: 'firstKindName', title: '一级分类', hide: true, minWidth: 90}
                         , {field: 'secondKindName', title: '二级分类', hide: true, minWidth: 90}
-                        , {field: 'priceChangeTag', title: '价格变更标志', hide: true, minWidth: 100}
-                        , {field: 'productClass', title: '档次级别', hide: true, minWidth: 90}
-                        , {field: 'productDescribe', title: '产品描述', hide: true, minWidth: 90}
-                        , {field: 'type', title: '类型', hide: true, minWidth: 90}
+                        , {field: 'productClass', title: '档次级别', hide: true, minWidth: 90, edit: 'text'}
+                        , {field: 'productDescribe', title: '产品描述', hide: true, minWidth: 90, edit: 'text'}
+                        , {field: 'type', title: '类型', hide: true, minWidth: 90, edit: 'text'}
                         , {field: 'responsiblePerson', title: '产品经理', hide: true, minWidth: 90}
                         , {field: 'warranty', title: '保修期', hide: true, minWidth: 90}
                         , {field: 'fileChangeAmount', title: '变更次数', hide: true, minWidth: 90, totalRow: true}
                         , {field: 'priceChangeTag', title: '价格变更标志', hide: true, minWidth: 100}
-                        , {fixed: 'right', width: 180, fixed: 'right', toolbar: '#bardesign_record'}//右侧操作按钮
+                        , {field: 'productNick', title: '产品简称', hide: true, minWidth: 100}
+                        , {field: 'materialList', title: '物料组成', hide: true, minWidth: 100}
+                        , {fixed: 'right', minWidth: 170, fixed: 'right', toolbar: '#bardesign_record'}//右侧操作按钮
+
+
                     ]]
             });
 
@@ -247,6 +315,7 @@
 
 
         toolRecorde();
+
         function toolRecorde() {
             //监听工具条
             table.on('tool(design_record)', function (obj) {
@@ -254,9 +323,7 @@
                 var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
                 var tr = obj.tr; //获得当前行 tr 的 DOM 对象（如果有的话）
                 var jsonData = JSON.stringify(data);//json转换后的json
-                if (layEvent === 'detail') { //查看
-
-                } else if (layEvent === 'Stand_up_and_down') { //上下架
+                if (layEvent === 'Stand_up_and_down') { //上下架
                     var tag = "";//获取上下架信息
                     var dataTag = "";//修改上下信息
                     if (data.deleteTag == "已下架") {
