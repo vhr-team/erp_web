@@ -16,6 +16,8 @@
 
         <div id="taskPopUpLayer" style="display: none;padding: 0.3125rem">
             <form class="layui-form" method="post" id="frm">
+                <input type="hidden" name="taskId" id="taskId"/>
+                <input type="hidden" name="leaveID" id="leaveID"/>
                 <div class="layui-form-item">
                     <label class="layui-form-label">请假标题</label>
                     <div class="layui-input-block">
@@ -70,13 +72,16 @@
 <script src="../../../lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
 <script src="../../../lib/common/common.js" charset="utf-8"></script>
 <script>
+
+    let tableIns;
+    let index;
     layui.use(['form', 'table', 'layer'], function () {
         var $ = layui.jquery,
             form = layui.form,
             table = layui.table,
             layer = layui.layer;
 
-        table.render({
+        tableIns = table.render({
             elem: '#currentTableId',
             url: api + "workFlow/loadCurrentUserTask",
             defaultToolbar: ['filter', 'exports', 'print', {
@@ -113,7 +118,7 @@
 
         //修改待办任务
         function openDoTask(data) {
-            var index = layui.layer.open({
+            index = layui.layer.open({
                 title: "修改待办任务",
                 type: 1,
                 area: ["800px", "600px"],
@@ -123,16 +128,21 @@
                     $('#day').val('');
                     $('#leavetime').val('');
                     $('#content').val('');
+                    $('#taskId').val('');
+                    $('#leaveID').val('');
 
                     $("#btnDiv").empty();
 
                     // 打开弹出层完毕,根据任务ID查询请假单的信息
                     $.get(api + "workFlow/queryLeaveBillByTaskId?taskId=" + data.id, res => {
+
                         //装载数据表格
                         $('#title').val(res.title);
                         $('#day').val(res.days);
                         $('#leavetime').val(res.leavetime);
                         $('#content').val(res.content);
+                        $('#taskId').val(data.id);// 任务ID
+                        $('#leaveID').val(res.id);
                     });
 
                     // 打开弹出层完毕,根据任务ID查询连线信息
@@ -163,6 +173,24 @@
             });
         }
 
+        //监控按钮事件
+        $("body").on("click", ".dotask", function (obj) {
+            // 获取点击按钮的名称
+            let outcome = this.value;
+
+            $.post(api + "workFlow/doTask", {
+                taskId: $("#taskId").val(),// 任务ID
+                outcome: outcome,
+                id: $("#leaveID").val(),// 请假单ID
+                comment: $("#comment").val()
+            }, data => {
+                layer.msg(data.msg);
+                //关闭弹出层
+                layer.close(index);
+                //刷新table
+                tableIns.reload();
+            })
+        });
     });
 </script>
 
