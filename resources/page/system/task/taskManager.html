@@ -8,6 +8,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <link rel="stylesheet" href="../../../lib/layui-v2.5.5/css/layui.css" media="all">
     <link rel="stylesheet" href="../../../css/public.css" media="all">
+    <style>
+        .processImageView {
+            position: absolute;
+            border: 2px solid red;
+            padding: 2px;
+        }
+    </style>
 </head>
 <body>
 <div class="layuimini-container">
@@ -62,6 +69,7 @@
 
         <div id="viewProcessImage" style="display: none;padding: 0.3125rem">
             <img alt="流程图" id="processImage"/>
+            <div class="processImageView"></div>
         </div>
 
         <script type="text/html" id="currentTableBar">
@@ -130,6 +138,17 @@
                         $("#processImage").attr('src', api + 'workFlow/viewProcessImage?deploymentId=' + res);
                     });
 
+                    $.get(api + "workFlow/queryTaskCoordinateByTaskId?taskId=" + data.id, res => {
+                        $(".processImageView").css(
+                            {
+                                "height": res.height + "px",
+                                "width": res.width + "px",
+                                "left": res.x + "px",
+                                "top": res.y + "px",
+                            }
+                        );
+                    });
+
                     setTimeout(function () {
                         layui.layer.tips('点击此处返回待办任务列表', '.layui-layer-setwin .layui-layer-close', {
                             tips: 3
@@ -173,7 +192,7 @@
                         $.each(res, function (index, res) {
                             let inputBtn = $(`<input type="button" value="${res}" class="layui-btn dotask"/>`);
                             $("#btnDiv").append(inputBtn);
-                        })
+                        });
                     });
 
                     setTimeout(function () {
@@ -192,6 +211,7 @@
                             {field: 'message', title: '批注内容', align: "center"}
                         ]]
                     });
+
                 }
             });
         }
