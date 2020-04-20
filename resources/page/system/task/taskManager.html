@@ -112,7 +112,7 @@
             var data = obj.data;
             if (obj.event === 'toDoTask') {
                 openDoTask(data);
-            } else if (layEvent === "viewProcessImage") {
+            } else if (obj.event === "viewProcessByTaskId") {
                 //传入流程对象
                 viewProcessImage(data);
             }
@@ -126,10 +126,9 @@
                 area: ["500px", "600px"],
                 content: $("#viewProcessImage"),
                 success: function (layero, index) {
-                    $("#processImage").attr('src', api + 'workFlow/viewProcessImage?deploymentId=' + data.id);
-
+                    $("#processImage").attr('src', api + 'workFlow/toViewProcessByTaskId?taskId=' + data.id);
                     setTimeout(function () {
-                        layui.layer.tips('点击此处返回流程列表', '.layui-layer-setwin .layui-layer-close', {
+                        layui.layer.tips('点击此处返回待办任务列表', '.layui-layer-setwin .layui-layer-close', {
                             tips: 3
                         });
                     }, 500)
