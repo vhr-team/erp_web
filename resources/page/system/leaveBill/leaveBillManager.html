@@ -99,6 +99,44 @@
                 </div>
             </form>
         </div>
+
+        <div id="viewProcess" style="display: none;padding: 0.3125rem">
+            <form class="layui-form" method="post" id="frm">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">请假标题</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="title" id="title" disabled="disabled" class="layui-input">
+
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">请假天数</label>
+                        <div class="layui-input-inline">
+                            <input type="tel" name="days" id="day" disabled="disabled" autocomplete="off"
+                                   class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">请假时间</label>
+                        <div class="layui-input-inline">
+
+                            <input type="text" name="leavetime" id="leavetime_two" disabled="disabled"
+                                   autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">请假原因</label>
+                    <div class="layui-input-block">
+                        <textarea placeholder="请输入请假单内容" disabled="disabled" name="content" id="content_two"
+                                  class="layui-textarea">${leaveBill.content }</textarea>
+                    </div>
+                </div>
+            </form>
+
+            <table id="commentList" lay-filter="commentList"></table>
+        </div>
         <!--添加和修改的弹出层结束-->
 
 
@@ -137,12 +175,13 @@
 <script src="../../../lib/common/common.js" charset="utf-8"></script>
 
 <script>
-    var tableIns;
-    layui.use(['form','layer','table','laydate','laytpl'],function(){
+    let tableIns;
+    let index;
+    layui.use(['form', 'layer', 'table', 'laydate', 'laytpl'], function () {
         var form = layui.form,
             layer = layui.layer;
-            $ = layui.jquery,
-            laydate=layui.laydate,
+        $ = layui.jquery,
+            laydate = layui.laydate,
             laytpl = layui.laytpl,
             table = layui.table;
 
@@ -162,10 +201,10 @@
         tableIns = table.render({
             elem: '#leaveBillList',
             url: api + '/leaveBill/loadAllLeaveBills',
-            cellMinWidth : true,
+            cellMinWidth: true,
             toolbar: '#leaveBillToolBar',
-            page : true,
-            id : "leaveBillListTable",
+            page: true,
+            id: "leaveBillListTable",
             cols: [[
                 {type: "checkbox"},
                 {field: 'id', title: '请假单ID', align: "center"},
@@ -190,7 +229,7 @@
                         return html;
                     }
                 },
-                {title: '操作', templet: '#leaveBillListBar',align: "center"}
+                {title: '操作', templet: '#leaveBillListBar', align: "center"}
             ]],
         });
 
@@ -232,15 +271,58 @@
                 openUpdateLeaveBill(data);
             } else if (obj.event === 'startProcess') {
                 startProcess(data);//请假单的对象
+            } else if (obj.event === 'viewSpProcess') {
+                viewSpProcess(data);
             }
         });
 
+        //查看审批进度
+        function viewSpProcess(data) {
+            index = layui.layer.open({
+                title: data.title + "的审批进度",
+                type: 1,
+                area: ["800px", "500px"],
+                content: $("#viewProcess"),
+                success: function (layero, index) {
+
+                    $('#title').val('');
+                    $('#day').val('');
+                    $('#leavetime_two').val('');
+                    $('#content_two').val('');
+
+                    //装载数据表格
+                    $('#title').val(data.title);
+                    $('#day').val(data.days);
+                    $('#leavetime_two').val(data.leavetime);
+                    $('#content_two').val(data.content);
+
+                    table.render({
+                        elem: '#commentList',
+                        url: api + 'workFlow/loadCommentByLeaveBillId?id='+data.id,
+                        cellMinWidth: true,
+                        id: "commentListTable",
+                        cols: [[
+                            {field: 'time', title: '批注时间', align: "center"},
+                            {field: 'userId', title: '批注人', align: "center"},
+                            {field: 'message', title: '批注内容', align: "center"}
+                        ]]
+                    });
+
+                    setTimeout(function () {
+                        layui.layer.tips('点击此处返回请假单列表', '.layui-layer-setwin .layui-layer-close', {
+                            tips: 3
+                        });
+                    }, 500)
+                }
+            })
+        }
+
         //启动流程
-        function startProcess(data){
-            layer.confirm('确定要提交【'+data.title+'】请假单吗？',{icon:3, title:'提示信息'},function(index){
-                $.post(api+"workFlow/startProcess",{
-                    id : data.id  //将需要删除的id作为参数传入
-                },function(data){
+        function startProcess(data) {
+            layer.confirm('确定要提交【' + data.title + '】请假单吗？', {icon: 3, title: '提示信息'}, function (index) {
+                $.post(api + "workFlow/startProcess", {
+                    id: data.id  //将需要删除的id作为参数传入
+                }, function (data) {
                     layer.msg(data.msg);
                     //刷新table
                     tableIns.reload();
@@ -307,28 +389,6 @@
             });
             return false;
         });
-
-        //查看请假
-        function showLeaveBill(data) {
-            var title = data.title;
-            var content = data.content;
-            var leaveBillTime = data.createtime;
-            var opername = data.opername;
-            var html = '<div style="padding:15px 20px; text-align:justify; line-height: 22px;border-bottom:1px solid #e2e2e2;background-color: #2f4056;color: #ffffff">\n' +
-                '<div style="text-align: center;margin-bottom: 20px;font-weight: bold;border-bottom:1px solid #718fb5;padding-bottom: 5px"><h4 class="text-danger">' + title + '</h4></div>\n' +
-                '<div style="font-size: 12px">' + content + '</div>\n' +
-                '</div>\n';
-            parent.layer.open({
-                type: 1,
-                title: '系统请假' + '<span style="float: right;right: 1px;font-size: 12px;color: #b1b3b9;margin-top: 1px">发布时间:' + leaveBillTime + ' 发布人:' + opername + '</span>',
-                area: '800px;',
-                shade: 0.8,
-                btn: ['关闭'],
-                btnAlign: 'c',
-                moveType: 1,
-                content: html
-            });
-        }
     });
 </script>
 
