@@ -60,6 +60,10 @@
             <table class="layui-hide" id="commentList" lay-filter="commentListFilter"></table>
         </div>
 
+        <div id="viewProcessImage" style="display: none;padding: 0.3125rem">
+            <img alt="流程图" id="processImage"/>
+        </div>
+
         <script type="text/html" id="currentTableBar">
             <a class="layui-btn layui-btn-xs layui-btn-primary data-count-edit" lay-event="toDoTask">办理任务</a>
             <a class="layui-btn layui-btn-xs layui-btn-normal data-count-delete"
@@ -108,13 +112,30 @@
             var data = obj.data;
             if (obj.event === 'toDoTask') {
                 openDoTask(data);
-            } else if (obj.event === 'delete') {
-                layer.confirm('真的删除行么', function (index) {
-                    obj.del();
-                    layer.close(index);
-                });
+            } else if (layEvent === "viewProcessImage") {
+                //传入流程对象
+                viewProcessImage(data);
             }
         });
+
+        //查看流程图
+        function viewProcessImage(data) {
+            var index = layui.layer.open({
+                title: "审批流程进度图",
+                type: 1,
+                area: ["500px", "600px"],
+                content: $("#viewProcessImage"),
+                success: function (layero, index) {
+                    $("#processImage").attr('src', api + 'workFlow/viewProcessImage?deploymentId=' + data.id);
+
+                    setTimeout(function () {
+                        layui.layer.tips('点击此处返回流程列表', '.layui-layer-setwin .layui-layer-close', {
+                            tips: 3
+                        });
+                    }, 500)
+                }
+            });
+        }
 
         //修改待办任务
         function openDoTask(data) {
