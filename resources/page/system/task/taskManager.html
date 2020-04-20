@@ -22,6 +22,7 @@
     </div>
 </div>
 <script src="../../../lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
+<script src="../../../lib/common/common.js" charset="utf-8"></script>
 <script>
     layui.use(['form', 'table'], function () {
         var $ = layui.jquery,
@@ -30,7 +31,7 @@
 
         table.render({
             elem: '#currentTableId',
-            url: '../../../api/table.json',
+            url: api + "workFlow/loadCurrentUserTask",
             defaultToolbar: ['filter', 'exports', 'print', {
                 title: '提示',
                 layEvent: 'LAYTABLE_TIPS',
