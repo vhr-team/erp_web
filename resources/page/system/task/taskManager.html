@@ -126,7 +126,10 @@
                 area: ["500px", "600px"],
                 content: $("#viewProcessImage"),
                 success: function (layero, index) {
-                    $("#processImage").attr('src', api + 'workFlow/toViewProcessByTaskId?taskId=' + data.id);
+                    $.get(api + "workFlow/ViewProcessByTaskId?taskId=" + data.id, res => {
+                        $("#processImage").attr('src', api + 'workFlow/viewProcessImage?deploymentId=' + res);
+                    });
+
                     setTimeout(function () {
                         layui.layer.tips('点击此处返回待办任务列表', '.layui-layer-setwin .layui-layer-close', {
                             tips: 3
