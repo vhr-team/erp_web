@@ -23,35 +23,39 @@
         <fieldset class="table-search-fieldset">
             <legend>搜索信息</legend>
             <div style="margin: 10px 10px 10px 10px">
-                <form class="layui-form layui-form-pane" action="">
+                <form class="layui-form layui-form-pane" id="searchFrm" action="">
                     <div class="layui-form-item">
                         <div class="layui-inline">
-                            <label class="layui-form-label">用户姓名</label>
+                            <label class="layui-form-label">公告标题</label>
                             <div class="layui-input-inline">
-                                <input type="text" name="username" autocomplete="off" class="layui-input">
+                                <input type="text" name="title" autocomplete="off" class="layui-input">
                             </div>
                         </div>
                         <div class="layui-inline">
-                            <label class="layui-form-label">用户性别</label>
+                            <label class="layui-form-label">发布人</label>
                             <div class="layui-input-inline">
-                                <input type="text" name="sex" autocomplete="off" class="layui-input">
+                                <input type="text" name="opername" autocomplete="off" class="layui-input">
                             </div>
                         </div>
                         <div class="layui-inline">
-                            <label class="layui-form-label">用户城市</label>
+                            <label class="layui-form-label">开始时间</label>
                             <div class="layui-input-inline">
-                                <input type="text" name="city" autocomplete="off" class="layui-input">
+                                <input type="text" name="startTime" id="startTime" readonly="readonly"
+                                       autocomplete="off" class="layui-input">
                             </div>
                         </div>
                         <div class="layui-inline">
-                            <label class="layui-form-label">用户职业</label>
+                            <label class="layui-form-label">结束时间</label>
                             <div class="layui-input-inline">
-                                <input type="text" name="classify" autocomplete="off" class="layui-input">
+                                <input type="text" name="endTime" id="endTime" readonly="readonly" autocomplete="off"
+                                       class="layui-input">
                             </div>
                         </div>
                         <div class="layui-inline">
                             <button type="submit" class="layui-btn layui-btn-primary" lay-submit
                                     lay-filter="data-search-btn"><i class="layui-icon"></i> 搜 索
+                            </button>
+                            <button type="reset" class="layui-btn layui-btn-primary"><i class="layui-icon"></i> 重 置
                             </button>
                         </div>
                     </div>
@@ -59,9 +63,38 @@
             </div>
         </fieldset>
 
+        <!--添加和修改的弹出层开始-->
+        <div id="addOrUpdateDiv" style="display: none;padding: 0.3125rem">
+            <form method="post" class="layui-form layui-form-pane" id="dataFrm">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">标题</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="title" lay-verify="required" autocomplete="off" placeholder="请输入标题"
+                               class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">公告内容</label>
+                    <div class="layui-input-block">
+                        <div id="content" name="content" style="margin: 50px 0 50px 0">
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-input-block" style="text-align: center;">
+                        <a class="layui-btn " lay-submit="" lay-filter="doSubmit"><label
+                                class="layui-icon layui-icon-release"></label>提交</a>
+                        <a class="layui-btn layui-btn-warm" onclick="javascript:$('#dataFrm')[0].reset()"
+                           lay-filter="data-search-btn"><label class="layui-icon layui-icon-refresh"></label>重置</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <!--添加和修改的弹出层结束-->
+
         <script type="text/html" id="toolbarDemo">
             <div class="layui-btn-container">
-                <button class="layui-btn layui-btn-sm data-add-btn" lay-event="add"> 添加用户</button>
+                <button class="layui-btn layui-btn-sm data-add-btn layui-btn-normal" lay-event="add"> 添加</button>
                 <button class="layui-btn layui-btn-sm layui-btn-danger data-delete-btn" lay-event="delete"> 删除用户
                 </button>
             </div>
@@ -70,8 +103,8 @@
         <table class="layui-hide" id="currentTableId" lay-filter="currentTableFilter"></table>
 
         <script type="text/html" id="currentTableBar">
-            <a class="layui-btn layui-btn-xs data-count-edit" lay-event="edit">编辑</a>
-            <a class="layui-btn layui-btn-xs layui-btn-danger data-count-delete" lay-event="delete">删除</a>
+            <a class="layui-btn layui-btn-xs data-count-edit" lay-event="edit"> 编辑 </a>
+            <a class="layui-btn layui-btn-xs layui-btn-danger data-count-delete" lay-event="delete"> 删除 </a>
         </script>
 
     </div>
@@ -80,58 +113,61 @@
 <script src="../../../lib/common/jquery.cookie.min.js" charset="utf-8"></script>
 <script src="../../../lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
 <script src="../../../lib/common/common.js" charset="utf-8"></script>
+<script src="../../../js/lay-config.js?v=1.0.4" charset="utf-8"></script>
 <script>
-    layui.use(['form', 'table', 'laydate', 'layer'], function () {
+    let tableIns;
+    let mainIndex;//打开添加公告的弹层
+    let url;  //动态的url
+
+    layui.use(['form', 'table', 'laydate', 'layer', 'wangEditor'], function () {
         var $ = layui.jquery,
             form = layui.form,
             table = layui.table,
             laydate = layui.laydate,
             layer = layui.layer;
+        wangEditor = layui.wangEditor;
 
-        table.render({
+        //渲染时间选择器
+        laydate.render({
+            elem: '#startTime',
+            type: 'datetime'
+        });
+        laydate.render({
+            elem: '#endTime',
+            type: 'datetime'
+        });
+
+        tableIns = table.render({
             elem: '#currentTableId',
-            url: '../api/table.json',
-            toolbar: '#toolbarDemo',
+            url: api + 'notice/loadAllNotice',
+            toolbar: "#toolbarDemo",
             defaultToolbar: ['filter', 'exports', 'print', {
                 title: '提示',
                 layEvent: 'LAYTABLE_TIPS',
                 icon: 'layui-icon-tips'
             }],
             cols: [[
-                {type: "checkbox", width: 50, fixed: "left"},
-                {field: 'id', width: 80, title: 'ID', sort: true},
-                {field: 'username', width: 80, title: '用户名'},
-                {field: 'sex', width: 80, title: '性别', sort: true},
-                {field: 'city', width: 80, title: '城市'},
-                {field: 'sign', title: '签名', minWidth: 150},
-                {field: 'experience', width: 80, title: '积分', sort: true},
-                {field: 'score', width: 80, title: '评分', sort: true},
-                {field: 'classify', width: 80, title: '职业'},
-                {field: 'wealth', width: 135, title: '财富', sort: true},
-                {title: '操作', minWidth: 50, toolbar: '#currentTableBar', fixed: "right", align: "center"}
+                {type: "checkbox", fixed: "left"},
+                {field: 'id', title: 'ID', align: "center"},
+                {field: 'title', title: '公告标题', align: "center"},
+                {field: 'createtime', title: '发布时间', align: "center"},
+                {field: 'opername', title: '发布人', align: "center"},
+                {title: '操作', templet: '#noticeTableBar', fixed: "right", align: "center"}
             ]],
-            limits: [10, 15, 20, 25, 50, 100],
-            limit: 15,
             page: true
         });
 
+
         // 监听搜索操作
         form.on('submit(data-search-btn)', function (data) {
-            var result = JSON.stringify(data.field);
-            layer.alert(result, {
-                title: '最终的搜索信息'
-            });
-
+            let params = $("#searchFrm").serialize();
             //执行搜索重载
             table.reload('currentTableId', {
                 page: {
                     curr: 1
                 }
-                , where: {
-                    searchParams: result
-                }
-            }, 'data');
-
+                , url: api + 'notice/loadAllNotice?' + params
+            });
             return false;
         });
 
@@ -140,24 +176,71 @@
          */
         table.on('toolbar(currentTableFilter)', function (obj) {
             if (obj.event === 'add') {  // 监听添加操作
-                var index = layer.open({
-                    title: '添加用户',
-                    type: 2,
-                    shade: 0.2,
-                    maxmin: true,
-                    shadeClose: true,
-                    area: ['100%', '100%'],
-                    content: '/page/table/add.html',
-                });
-                $(window).on("resize", function () {
-                    layer.full(index);
-                });
+                openAddNotice();
+                return false;
             } else if (obj.event === 'delete') {  // 监听删除操作
                 var checkStatus = table.checkStatus('currentTableId')
                     , data = checkStatus.data;
                 layer.alert(JSON.stringify(data));
             }
         });
+
+        function openAddNotice() {
+            mainIndex = layer.open({
+                type: 1,
+                title: '添加公告',
+                content: $("#addOrUpdateDiv"),
+                area: ['800px', '600px'],
+                success: function (index) {
+                    url = api + "notice/addNotice";
+                }
+            });
+        }
+
+        //提交数据
+        form.on("submit(doSubmit)", function (data) {
+            let params = $("#dataFrm").serialize();
+            let content = editor.txt.html();
+            params += "&content=" + content;
+            $.post(url, params, function (res) {
+                layer.msg(res.msg);
+                if (res.code == 200) {
+                    tableIns.reload();
+                }
+                layer.close(mainIndex);
+            })
+            return false;
+        })
+
+
+        //初始化富文本
+        let editor = new wangEditor('#content');
+        editor.customConfig.uploadImgServer = "../api/upload.json";
+        editor.customConfig.uploadFileName = 'image';
+        editor.customConfig.pasteFilterStyle = false;
+        editor.customConfig.uploadImgMaxLength = 5;
+        editor.customConfig.uploadImgHooks = {
+            // 上传超时
+            timeout: function (xhr, editor) {
+                layer.msg('上传超时！')
+            },
+            // 如果服务器端返回的不是 {errno:0, data: [...]} 这种格式，可使用该配置
+            customInsert: function (insertImg, result, editor) {
+                if (result.code == 1) {
+                    var url = result.data.url;
+                    url.forEach(function (e) {
+                        insertImg(e);
+                    })
+                } else {
+                    layer.msg(result.msg);
+                }
+            }
+        };
+        editor.customConfig.customAlert = function (info) {
+            layer.msg(info);
+        };
+        editor.create();
+
 
         //监听表格复选框选择
         table.on('checkbox(currentTableFilter)', function (obj) {
@@ -168,18 +251,6 @@
             var data = obj.data;
             if (obj.event === 'edit') {
 
-                var index = layer.open({
-                    title: '编辑用户',
-                    type: 2,
-                    shade: 0.2,
-                    maxmin: true,
-                    shadeClose: true,
-                    area: ['100%', '100%'],
-                    content: '/page/table/edit.html',
-                });
-                $(window).on("resize", function () {
-                    layer.full(index);
-                });
                 return false;
             } else if (obj.event === 'delete') {
                 layer.confirm('真的删除行么', function (index) {
