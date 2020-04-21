@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>入库申请管理</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="../../../lib/layui-v2.5.5/css/layui.css" media="all">
+    <link rel="stylesheet" href="../../../css/public.css" media="all">
+</head>
+<body>
+<div class="layuimini-container">
+    <div class="layuimini-main">
+        <!--搜索开始-->
+        <fieldset class="table-search-fieldset">
+            <legend>搜索信息</legend>
+            <div style="margin: 10px 10px 10px 10px">
+                <form class="layui-form layui-form-pane" id="searchFrm">
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">关键词</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="name" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <a class="layui-btn layui-btn-primary" lay-submit="" lay-filter="data-search-btn"><i class="layui-icon"></i>搜索</a>
+                            <a class="layui-btn layui-btn-primary" onclick="javascript:$('#searchFrm')[0].reset()"
+                               lay-filter="data-search-btn"><i class="layui-icon layui-icon-refresh"></i>重置</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </fieldset>
+        <!--搜索结束-->
+
+        <!--表格开始-->
+        <table class="layui-hide" id="roleTable" lay-filter="roleTable"></table>
+        <script type="text/html" id="roleToolBar">
+            <a class="layui-btn layui-btn-sm layui-btn-danger data-count-delete" lay-event="batchdelete">确认入库</a>
+        </script>
+        <script type="text/html" id="availableTpl">
+            <!-- 这里的 checked 的状态只是演示 -->
+            <input type="checkbox" name="available" value="{{d.id}}" lay-skin="switch" lay-text="可用|不可用"
+                   lay-filter="availableSwitch" {{ d.available== 1 ? 'checked' : '' }}>
+        </script>
+        <!--表格结束-->
+
+        <!--添加和修改的弹出层开始-->
+        <div id="addOrUpdateDiv" style="display: none;padding: 0.3125rem">
+            <form method="post" class="layui-form layui-form-pane" lay-filter="dataFrm" id="dataFrm">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">角色名称</label>
+                    <div class="layui-input-block">
+                        <input type="hidden" name="id"/>
+                        <input type="text" name="name" lay-verify="required" autocomplete="off" placeholder="请输入标题"
+                               class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">角色备注</label>
+                    <div class="layui-input-block">
+                        <textarea placeholder="请输入角色备注" name="remark" class="layui-textarea"></textarea>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-input-block" style="text-align: center;">
+                        <a class="layui-btn " lay-submit="" lay-filter="doSubmit"><label
+                                class="layui-icon layui-icon-release"></label>提交</a>
+                        <a class="layui-btn layui-btn-warm" onclick="javascript:$('#dataFrm')[0].reset()"
+                           lay-filter="data-search-btn"><label class="layui-icon layui-icon-refresh"></label>重置</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <!--添加和修改的弹出层结束-->
+
+        <!--选择菜单和权限的弹出层开始-->
+        <div id="selectMenuDiv" style="display: none;padding: 0.3125rem;">
+            <table class="layui-hide" id="menuTable" lay-filter="menuTable"></table>
+        </div>
+        <!--选择菜单和权限的弹出层结束-->
+
+    </div>
+</div>
+<script src="../../../lib/jquery-3.4.1/jquery-3.4.1.min.js" charset="utf-8"></script>
+<script src="../../../lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
+<script src="../../../js/lay-config.js?v=1.0.4" charset="utf-8"></script>
+<script src="../../../lib/jq-module/jquery.particleground.min.js" charset="utf-8"></script>
+<script src="../../../lib/common/jquery.cookie.min.js" charset="utf-8"></script>
+<script src="../../../lib/common/common.js" charset="utf-8"></script>
+
+<script>
+    layui.use(['form', 'table', 'laydate', 'layer', 'treeTable'], function () {
+        var form = layui.form;
+        var table = layui.table;
+        var laydate = layui.laydate;
+        var layer = layui.layer;
+        var treeTable = layui.treeTable;
+
+        var tableIns = table.render({
+            elem: '#roleTable',
+            url: api + 'role/loadAllRole',
+            toolbar: "#roleToolBar",
+            cellMinWidth: true,
+            cols: [[
+                {type: "checkbox", fixed: "left"},
+                {field: '', title: '入库单编号', align: "center"},
+                {field: '', title: '入库人', align: "center"},
+                {field: '', title: '总件数', align: "center"},
+                {field: '', title: '总金额', align: "center"},
+                {field: '', title: '登记人', align: "center"},
+                {field: '', title: '登记时间', align: "center"},
+                {field: '', title: '复核人', align: "center"},
+                {field: '', title: '复核时间', align: "center"},
+                {field: '', title: '审核标志', align: "center"},
+                {field: '', title: '调度人', align: "center"},
+                {field: '', title: '调度时间', align: "center"},
+                {field: '', title: '库存标志', align: "center"}
+            ]],
+            page: true
+        });
+
+        // 监听搜索操作
+        form.on('submit(data-search-btn)', function (data) {
+            var params = $("#searchFrm").serialize();
+            //执行搜索重载
+            table.reload('roleTable', {
+                page: {
+                    curr: 1
+                }
+                , url: api + 'role/loadAllRole?' + params
+            });
+            return false;
+        });
+
+        //监听表头的事件
+        table.on('toolbar(roleTable)', function (obj) {
+            var checkStatus = table.checkStatus(obj.config.id);
+            switch (obj.event) {
+                case 'batchdelete':
+                    batchdelete();
+                    break;
+                case 'add':
+                    openAddRole();
+                    break;
+            }
+            ;
+        });
+
+        //监听行数据的事件
+        table.on('tool(roleTable)', function (obj) {
+            var data = obj.data;
+            if (obj.event === 'delete') {
+                layer.confirm('真的删除【' + data.name + '】这个角色吗么', function (index) {
+                    $.post(api + "role/deleteRole", {id: data.id}, function (res) {
+                        layer.msg(res.msg);
+                        obj.del();
+                        layer.close(index);
+                    })
+                });
+            } else if (obj.event === 'update') {
+                openUpdateRole(data);
+            } else if (obj.event === 'selectMenu') {
+                openSelectMenu(data);
+            }
+        });
+        //监听可用操作
+        form.on('switch(availableSwitch)', function (obj) {
+            $.post(api + "role/updateRole", {id: this.value, available: obj.elem.checked ? 1 : 0}, function (res) {
+                layer.msg(res.msg);
+                tableIns.reload();
+            })
+        });
+
+
+    });
+</script>
+<script>
+
+</script>
+
+</body>
+</html>
