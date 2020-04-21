@@ -1,14 +1,360 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-    <script src="../../../lib/layui-v2.5.5/layui.all.js" media="all"></script>
+    <meta charset="utf-8">
+    <title>档案管理</title>
+
     <link rel="stylesheet" href="../../../lib/layui-v2.5.5/css/layui.css">
     <script src="../../../lib/jquery-3.4.1/jquery-3.4.1.min.js"></script>
-    <script src="../../../lib/common/common.js"></script>
+    <link href="../../../lib/layui-v2.5.5/css/modules/formSelects-v4.css" rel="stylesheet">
+    <script src="https://cdn.bootcss.com/vue/2.6.11/vue.js"></script>
+    <script media="all" src="../../../lib/layui-v2.5.5/layui.all.js"></script>
+    <script src="https://cdn.bootcss.com/axios/0.19.2/axios.min.js"></script>
+    <script src="https://cdn.bootcss.com/qs/6.9.3/qs.min.js"></script>
+
+    <script src="../../../lib/layui-v2.5.5/lay/modules/laydate.js"></script>
+    <script src="config/common.js"></script>
+
+    <script src="js/jquery-v3.2.1.js"></script>
+    <script src="../../../lib/layui-v2.5.5/lay/modules/formSelects-v4.js"></script>
+
 </head>
 <body>
-id
+
+
+</div>
+<script id="record" type="text/html">
+    <div class="layui-btn-container">
+        <button class="layui-btn layui-btn-sm" lay-event="batchDelete">批量删除</button>
+        <button class="layui-btn layui-btn-sm" lay-event="addrecord">添加档案</button>
+        <button class="layui-btn layui-btn-sm" lay-event="rload">刷新</button>
+        <button class="layui-btn layui-btn-sm" lay-event="classify">分类编辑</button>
+    </div>
+</script>
+<!--表格-->
+<table id="design_record" lay-data="design_record" lay-filter="design_record"></table>
+<!--操作按钮-->
+<script id="bardesign_record" type="text/html">
+    <a class="layui-btn  layui-btn-xs" lay-event="edit"><i class="layui-icon layui-icon-edit"></i>编辑</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs sold" lay-event="Stand_up_and_down"><i
+            class="layui-icon layui-icon-note"></i>上/下架</a>
+</script>
+
+<!--添加模态框-->
+<div id="">
+    <div id="addrecord" style="display: block;">
+        <div action="" class="layui-form" lay-filter="">
+            <!--  <div class="layui-form-item">
+                  <label class="layui-form-label">产品编号</label>
+                  <div class="layui-input-block">
+                      <input type="text" name="username" lay-verify="title" autocomplete="off" placeholder="请输入标题"
+                             class="layui-input">
+                  </div>
+              </div>-->
+            <div class="layui-form-item">
+                <label class="layui-form-label">产品名称</label>
+                <div class="layui-input-block">
+                    <input autocomplete="off" class="layui-input " id="productName" lay-verify="title"
+                           name="productName" placeholder="请输入产品名称"
+                           type="text">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">产品简称</label>
+                <div class="layui-input-block">
+                    <input autocomplete="off" class="layui-input" id="productNick" lay-verify="title" name="productNick"
+                           placeholder="请输入产品检测"
+                           type="text">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">制造商</label>
+                <div class="layui-input-block">
+                    <input autocomplete="off" class="layui-input" id="factoryName" lay-verify="title" name="factoryName"
+                           placeholder="请输入制造商"
+                           type="text">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">用途类型</label>
+                <div class="layui-input-block">
+                    <input autocomplete="off" class="layui-input" id="type" lay-verify="title" name="type"
+                           placeholder="请输入类型"
+                           type="text">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">档次级别</label>
+                <div class="layui-input-block">
+                    <select id="productClass" lay-verify="required" name="productClass">
+                        <option value=""></option>
+                        <option value="高档">高档</option>
+                        <option value="中档">中档</option>
+                        <option value="低挡">低挡</option>
+                    </select>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">一级分类名称</label>
+                <div class="layui-input-block">
+                    <select lay-verify="required" name="firstKindName">
+                        <option value=""></option>
+                        <option value="0">北京</option>
+                        <option value="1">上海</option>
+                        <option value="2">广州</option>
+                        <option value="3">深圳</option>
+                        <option value="4">杭州</option>
+                    </select>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">二级级分类名称</label>
+                <div class="layui-input-block">
+                    <select id="secondKindName" lay-verify="required" xm-select="secondKindName">
+                        <option value=""></option>
+                        <option value="0">北京</option>
+                        <option value="1">上海</option>
+                        <option value="2">广州</option>
+                        <option value="3">深圳</option>
+                        <option value="4">杭州</option>
+                    </select>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">物料组成</label>
+                <div class="layui-input-block">
+                    <select id="materialList" name="materialList" xm-select="material_detail" xm-select-skin="normal">
+                        <option value="1">北京</option>
+                        <option selected="selected" value="2">上海</option>
+                        <option value="3">广州</option>
+                        <option value="4">深圳</option>
+                        <option value="5">天津</option>
+                    </select>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">单位</label>
+                <div class="layui-input-block">
+                    <input autocomplete="off" class="layui-input" id="amountUnit" lay-verify="title" name="amountUnit"
+                           placeholder="请输入单位"
+                           type="text">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">产品保修期</label>
+                <div class="layui-input-block">
+                    <input autocomplete="off" class="layui-input" id="warranty" lay-verify="title" name="warranty"
+                           placeholder="请输入保修期"
+                           type="text">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">市场单价</label>
+                <div class="layui-input-block">
+                    <input autocomplete="off" class="layui-input" id="listPrice" lay-verify="title" name="listPrice"
+                           readonly
+                           type="text">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">计划成本单价</label>
+                <div class="layui-input-block">
+                    <input autocomplete="off" class="layui-input" id="costPrice" lay-verify="title" name="costPrice"
+                           placeholder="请输入标题"
+                           type="text">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">成本单价</label>
+                <div class="layui-input-block">
+                    <input autocomplete="off" class="layui-input" id="realCostPrice" lay-verify="title"
+                           name="realCostPrice" placeholder="请输入成本单价"
+                           type="text">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">产品经理</label>
+                <div class="layui-input-block">
+                    <input autocomplete="off" class="layui-input" id="responsiblePerson" lay-verify="title"
+                           name="responsiblePerson" placeholder="请输入产品经理"
+                           type="text">
+                </div>
+            </div>
+            <div class="layui-form-item layui-form-text">
+                <label class="layui-form-label">产品描述</label>
+                <div class="layui-input-block">
+                    <textarea id="edits" name="productDescribe">这里是<span
+                            style="color: #e03e2d;"><em>edits初始化</em></span>的内容</textarea>
+                    <hr/>
+                    <div class="layui-btn-group" style="margin-top: 10px">
+                        <button class="layui-btn" lay-event="setContent">设置内容</button>
+                        <button class="layui-btn" lay-event="insertContent">插入内容</button>
+                        <button class="layui-btn" lay-event="getContent">获取内容</button>
+                        <button class="layui-btn" lay-event="getText">获取文本</button>
+                        <button class="layui-btn" lay-event="clearContent">清空内容</button>
+                        <button class="layui-btn" lay-event="reload">重载编辑器</button>
+                        <button class="layui-btn" lay-event="destroy">销毁编辑器</button>
+                        <button class="layui-btn" lay-event="render">加载编辑器</button>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <button class="layui-btn layui-btn-normal" id="LAY-component-form-setval" type="button">
+                        赋值
+                    </button>
+                    <button class="layui-btn layui-btn-normal" id="LAY-component-form-getval" type="button">取值</button>
+                    <button class="layui-btn" id="submit" lay-filter="demo1" lay-submit="" type="submit">立即提交</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    var formSelects = layui.formSelects;
+    formSelects.render('material_detail');
+
+    /*    var test1 =formSelects.value('material_detail', [2, 4], true);
+        var test2= formSelects.value('material_detail'); // [{"name":"上海","val":"2"},{"name":"深圳","val":"4"}]
+
+        var test3 = formSelects.value('material_detail', 'all');        // [{"name":"上海","val":"2"},{"name":"深圳","val":"4"}]
+        var test4 = formSelects.value('material_detail', 'val');        // ["2","4"]
+        var test5 = formSelects.value('material_detail', 'valStr');     // 2,4
+        var test6 = formSelects.value('material_detail', 'name');       // ["上海","深圳"]*/
+    var test7 = formSelects.value('material_detail', 'nameStr');    // 上海,深圳
+    /*    console.log(test1);
+        console.log(test2);
+        console.log(test3);
+        console.log(test4);
+        console.log(test5);
+        console.log(test6);*/
+    $("#LAY-component-form-getval").click(function () {
+        console.log(formSelects.value('material_detail', 'nameStr'));
+    })
+</script>
+<script>
+    //table组件
+    layui.use(['table', 'laydate', 'form'], function () {
+        var form = layui.form;
+        var table = layui.table;//引用table
+        var laydate = layui.laydate;
+        var design_recordTable;
+        form.render();//初始化表单组件
+
+
+    });
+</script>
+<script>
+    /^http(s*):\/\//.test(location.href) || alert('请先部署到 localhost 下再访问');
+    layui.extend({
+        tinymce: '{/}./tinymce/tinymce'
+    }).use(['tinymce', 'util', 'layer'], function () {
+        var formSelects = layui.formSelects;
+        formSelects.render('material_detail');
+        var t = layui.tinymce
+        var util = layui.util;
+        var edits = t.render({
+            elem: "#edits",
+            width: 800
+            , height: 600
+            // ...
+            // 其余配置可参考官方文档
+        }, (opt) => {
+            //加载完成后回调
+        });
+        /*获取物料选择的名称*/
+        $("#LAY-component-form-getval").click(function () {
+            console.log(formSelects.value('material_detail', 'nameStr'));
+        })
+
+
+        var materialList = "";//物料组成
+
+        function selectloadOne() {
+            /*一级选择框加载事件*/
+        }
+
+        function selectloadTow() {
+            /*二级级选择框加载事件*/
+        }
+
+        $("#submit").click(function () {
+            /*提交事件*/
+
+            /*获取输入的产品名称*/
+
+            /*获取输入的产品制造商*/
+
+            /*获取输入的产品用途*/
+
+            /*获取选择的的一级分类*/
+
+            /*获取选择的的二级分类*/
+            var materialList = $("#materialList").val();
+            console.log(materialList);
+            /*获取输入的物料名称*/
+
+            /*获取输入的产品保修期*/
+
+            /*获取输入的产品保修期*/
+
+            /*获取输入的产品简称*/
+
+            /*获取输入的产品简称*/
+
+            /*获取输入的计划成本单价*/
+
+            /*获取输入的实际成本单价*/
+
+            /*获取输入的产品经理*/
+
+            /*获取输入的产品描述*/
+        })
+
+        function selectmaterial() {
+            /*物料下拉框加载事件*/
+        }
+
+        util.event('lay-event', {
+            getContent: () => {
+                var content = t.get('#edits').getContent()
+                layer.alert(content)
+            },
+            setContent: () => {
+                t.get('#edits').setContent('点击按钮设置的内容：<span style="color: #e03e2d;">' + new Date() + '</span>')
+            },
+            clearContent: () => {
+                t.get('#edits').setContent('')
+            },
+            insertContent: () => {
+                t.get('#edits').insertContent('<b>插入内容</b>')
+            },
+            getText: () => {
+                var text = t.get('#edits').getContent({format: 'text'})
+                layer.alert(text)
+            },
+            reload: () => {
+                t.reload({
+                    elem: '#edits'
+                    // 所有参数都可以重新设置 ...
+                }, (opt) => {
+                    //重载完成后回调函数，会把所有参数回传，
+                    //重载仅仅重新渲染编辑器，不会清空textarea，可手动清空或设置
+                    t.get('#edits').setContent('')
+                })
+            },
+            destroy: () => {
+                t.get('#edits').destroy()
+            },
+            render: () => {
+                t.render({elem: '#edits', height: '500px'})
+            }
+        });
+
+
+    });
+</script>
+
 </body>
 </html>
