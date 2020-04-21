@@ -69,7 +69,9 @@
                 <div class="layui-form-item">
                     <label class="layui-form-label">标题</label>
                     <div class="layui-input-block">
-                        <input type="text" name="title" lay-verify="required" autocomplete="off" placeholder="请输入标题"
+                        <input type="hidden" name="id" id="title_id"/>
+                        <input type="text" name="title" id="title" lay-verify="required" autocomplete="off"
+                               placeholder="请输入标题"
                                class="layui-input">
                     </div>
                 </div>
@@ -95,7 +97,7 @@
         <script type="text/html" id="toolbarDemo">
             <div class="layui-btn-container">
                 <button class="layui-btn layui-btn-sm data-add-btn layui-btn-normal" lay-event="add"> 添加</button>
-                <button class="layui-btn layui-btn-sm layui-btn-danger data-delete-btn" lay-event="delete"> 删除用户
+                <button class="layui-btn layui-btn-sm layui-btn-danger data-delete-btn" lay-event="batchdelete"> 批量删除
                 </button>
             </div>
         </script>
@@ -152,7 +154,7 @@
                 {field: 'title', title: '公告标题', align: "center"},
                 {field: 'createtime', title: '发布时间', align: "center"},
                 {field: 'opername', title: '发布人', align: "center"},
-                {title: '操作', templet: '#noticeTableBar', fixed: "right", align: "center"}
+                {title: '操作', templet: '#currentTableBar', fixed: "right", align: "center"}
             ]],
             page: true
         });
@@ -178,10 +180,31 @@
             if (obj.event === 'add') {  // 监听添加操作
                 openAddNotice();
                 return false;
-            } else if (obj.event === 'delete') {  // 监听删除操作
-                var checkStatus = table.checkStatus('currentTableId')
-                    , data = checkStatus.data;
-                layer.alert(JSON.stringify(data));
+            } else // 监听删除操作
+            if (obj.event === 'batchdelete') {
+                let checkStatus = table.checkStatus('currentTableId');
+                let data = checkStatus.data;
+                let length = checkStatus.data.length;
+                if (length == 0) {
+                    layer.msg("请选中要删除的行数据");
+                } else {
+                    layer.confirm('真的删除选择中这些数据么?', function (index) {
+                        var params = "";
+                        $.each(data, function (index, item) {
+                            if (index == 0) {
+                                params += "ids=" + item.id;
+                            } else {
+                                params += "&ids=" + item.id;
+                            }
+                        });
+
+                        $.post(api + "loginfo/batchDeleteLoginfo", params, function (res) {
+                            layer.msg(res.msg);
+                            tableIns.reload();
+                            layer.close(index);
+                        })
+                    });
+                }
             }
         });
 
@@ -192,6 +215,9 @@
                 content: $("#addOrUpdateDiv"),
                 area: ['800px', '600px'],
                 success: function (index) {
+                    //重置表单
+                    $("#dataFrm")[0].reset();
+                    editor.txt.html("");
                     url = api + "notice/addNotice";
                 }
             });
@@ -207,6 +233,9 @@
                 if (res.code == 200) {
                     tableIns.reload();
                 }
+                //重置表单
+                $("#dataFrm")[0].reset();
+                editor.txt.html("");
                 layer.close(mainIndex);
             })
             return false;
@@ -250,7 +279,7 @@
         table.on('tool(currentTableFilter)', function (obj) {
             var data = obj.data;
             if (obj.event === 'edit') {
-
+                openUpdateNotice(data);
                 return false;
             } else if (obj.event === 'delete') {
                 layer.confirm('真的删除行么', function (index) {
@@ -260,10 +289,25 @@
             }
         });
 
-    });
-</script>
-<script>
+        function openUpdateNotice(data) {
+            mainIndex = layer.open({
+                type: 1,
+                title: '修改[' + data.title + ']公告',
+                content: $("#addOrUpdateDiv"),
+                area: ['800px', '600px'],
+                success: function (index) {
+                    $("#title").val(data.title);
+                    $("#title_id").val(data.id);
+                    url = api + "notice/updateNotice";
+                    //装载数据表格
+                    form.val("dataFrm", data);
+                    //设置富文本的内容
+                    editor.txt.html(data.content);
+                }
+            });
+        }
 
+    });
 </script>
 
 </body>
