@@ -177,7 +177,8 @@
                     type: "post",//post提交方式
                     contentType: "application/json",//json提交
                     success: function (result) {
-                        layer.msg(result.message)
+                        layer.msg(result.message);
+                        treetableload();
                     },
                     error: function (result) {
                         layer.msg(result.message)
@@ -233,37 +234,37 @@
             treeTable.on('tool(classifyTable)', function (obj) {
                 var data = obj.data; //获得当前行数据
                 var event = obj.event;
-                console.log(data);
                 if (event === 'del') {//删除
                     if (data.kindId == "父级") {
                         layer.confirm('您删除的是父级分类，确定删除吗?', {icon: 3, title: '提示'}, function (index) {
-                            /*$.ajax({
-                                url:api1+"design_classify/deleteclassifyById",
-                                type:"post",
-                                contentType: "application/json",//json提交
-                                success:function () {
-
+                            $.ajax({
+                                url: api1 + "design_classify/deleteclassifyById",
+                                type: "post",
+                                data: {id: data.id, kindId: data.kindId},
+                                success: function (res) {
+                                    layer.msg(res.message);
+                                    treetableload()
                                 },
-                                error:function () {
-
+                                error: function (res) {
+                                    layer.msg(res.message)
                                 }
-                            });*/
+                            });
                             layer.close(index);
                         });
                     } else {
                         layer.confirm('您确定删除吗?', {icon: 3, title: '提示'}, function (index) {
-                            /* $.ajax({
-                                 url:api1+"design_classify/deleteclassifyById",
-                                 type:"post",
-                                 data:"",
-                                 contentType: "application/json",//json提交
-                                 success:function () {
-
-                                 },
-                                 error:function () {
-
-                                 }
-                             });*/
+                            $.ajax({
+                                url: api1 + "design_classify/deleteclassifyById",
+                                type: "post",
+                                data: {id: data.id, kindId: data.kindId},
+                                success: function (res) {
+                                    layer.msg(res.message);
+                                    treetableload();
+                                },
+                                error: function (res) {
+                                    layer.msg(res.message)
+                                }
+                            });
                             layer.close(index);
                         });
                     }
@@ -314,14 +315,14 @@
                         });
                         break;
                     case 'delete':
-                        layer.msg('删除');
+                        layer.msg('无效按钮');
 
                         break;
                     case 'update':
-                        layer.msg('编辑');
+                        layer.msg('无效按钮');
                         break;
                     case 'LAYTABLE_TIPS':
-                        layer.msg('提示');
+                        layer.msg('无效按钮');
                         break;
                 }
             });
