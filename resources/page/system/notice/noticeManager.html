@@ -107,6 +107,7 @@
         <script type="text/html" id="currentTableBar">
             <a class="layui-btn layui-btn-xs data-count-edit" lay-event="edit"> 编辑 </a>
             <a class="layui-btn layui-btn-xs layui-btn-danger data-count-delete" lay-event="delete"> 删除 </a>
+            <a class="layui-btn layui-btn-xs layui-bg-cyan data-count-delete" lay-event="show"> 查看 </a>
         </script>
 
     </div>
@@ -198,7 +199,7 @@
                             }
                         });
 
-                        $.post(api + "loginfo/batchDeleteLoginfo", params, function (res) {
+                        $.post(api + "notice/batchDeleteNotice", params, function (res) {
                             layer.msg(res.msg);
                             tableIns.reload();
                             layer.close(index);
@@ -282,12 +283,40 @@
                 openUpdateNotice(data);
                 return false;
             } else if (obj.event === 'delete') {
-                layer.confirm('真的删除行么', function (index) {
-                    obj.del();
-                    layer.close(index);
+                layer.confirm('真的删除这条数据么', function (index) {
+                    $.post(api + "notice/deleteNotice", {id: data.id}, function (res) {
+                        layer.msg(res.msg);
+                        obj.del();
+                        layer.close(index);
+                        tableIns.reload();
+                    })
                 });
+            } else if (obj.event === 'show') {
+                showNotice(data);
             }
         });
+
+        //查看公告
+        function showNotice(data) {
+            var title = data.title;
+            var content = data.content;
+            var noticeTime = data.createtime;
+            var opername = data.opername;
+            var html = '<div style="padding:15px 20px; text-align:justify; line-height: 22px;border-bottom:1px solid #e2e2e2;background-color: #2f4056;color: #ffffff">\n' +
+                '<div style="text-align: center;margin-bottom: 20px;font-weight: bold;border-bottom:1px solid #718fb5;padding-bottom: 5px"><h4 class="text-danger">' + title + '</h4></div>\n' +
+                '<div style="font-size: 12px">' + content + '</div>\n' +
+                '</div>\n';
+            parent.layer.open({
+                type: 1,
+                title: '系统公告' + '<span style="float: right;right: 1px;font-size: 12px;color: #b1b3b9;margin-top: 1px">发布时间:' + noticeTime + ' 发布人:' + opername + '</span>',
+                area: '800px;',
+                shade: 0.8,
+                btn: ['关闭'],
+                btnAlign: 'c',
+                moveType: 1,
+                content: html
+            });
+        }
 
         function openUpdateNotice(data) {
             mainIndex = layer.open({
