@@ -5,101 +5,250 @@
     <title>物料添加</title>
     <link href="../../../css/layuicmspublic.css" rel="stylesheet">
     <link href="../../../css/layuimini.css" rel="stylesheet">
+    <link href="../../../lib/layui-v2.5.5/css/layui.css" rel="stylesheet">
     <script src="../../../lib/jquery-3.4.1/jquery-3.4.1.min.js"></script>
     <script src="../../../lib/layui-v2.5.5/layui.js"></script>
-    <link href="../../../lib/layui-v2.5.5/css/layui.css" rel="stylesheet">
+    <script src="config/common.js"></script>
 </head>
 <body>
 
-<form action="" class="layui-form">
-    <div class="layui-form-item">
-        <label class="layui-form-label">物料名称</label>
-        <div class="layui-input-block">
-            <input autocomplete="off" class="layui-input" lay-verify="title" name="title" placeholder="请输入名称"
-                   type="text">
+<div id="UpdateDiv" style="display: block;padding: 0.3125rem">
+    <form class="layui-form layui-form-pane" id="dataFrm" lay-filter="dataFrm" method="post">
+        <div class="layui-form-item">
+            <label class="layui-form-label">物料名称</label>
+            <div class="layui-input-block">
+                <input autocomplete="off" class="layui-input" id="addproductName" lay-verify="required"
+                       name="name"
+                       placeholder="请输入名称"
+                       type="text">
+            </div>
         </div>
-    </div>
-    <div class="layui-form-item">
-        <label class="layui-form-label">单价</label>
-        <div class="layui-input-block">
-            <input autocomplete="off" class="layui-input" lay-verify="required" name="username" placeholder="请输入单价"
-                   type="text">
-        </div>
-    </div>
-    <div class="layui-form-item">
-        <label class="layui-form-label">用途类型</label>
-        <div class="layui-input-block">
-            <input autocomplete="off" class="layui-input" lay-verify="required" name="username" placeholder="请输入用途类型"
-                   type="text">
-        </div>
-    </div>
-    <div class="layui-form-item">
-        <label class="layui-form-label">可用数量</label>
-        <div class="layui-input-block">
-            <input autocomplete="off" class="layui-input" lay-verify="title" name="title" placeholder="请输入数量"
-                   type="text">
-        </div>
-    </div>
-    <div class="layui-form-item layui-form-text">
-        <label class="layui-form-label">描述</label>
-        <div class="layui-input-block">
-            <textarea class="layui-textarea" placeholder="请输入内容"></textarea>
-        </div>
-    </div>
-    ‘’
-    <div class="layui-form-item">
-        <div class="layui-input-block">
-            <button class="layui-btn" lay-filter="demo1" lay-submit="" type="submit">立即提交</button>
-            <button class="layui-btn layui-btn-primary" type="reset">重置</button>
-        </div>
-    </div>
-</form>
-</form>
+        <div class="layui-form-item">
+            <label class="layui-form-label">一级分类名称</label>
+            <div class="layui-input-block">
+                <select id="addfirstKindName" lay-filter="addfirstKindName" lay-verify="required"
+                        name="firstKindName">
 
-<!-- 注意：如果你直接复制所有代码到本地，上述js路径需要改成你本地的 -->
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">二级级分类名称</label>
+            <div class="layui-input-block">
+                <select id="addsecondKindName" lay-filter="" lay-verify="required">
+
+
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">设计要求</label>
+            <div class="layui-input-block">
+                <input name="id" type="hidden"/>
+                <input autocomplete="off" class="layui-input" id="addmoduleDescribe" lay-verify="required"
+                       name="moduleDescribe"
+                       placeholder="请输入名称"
+                       type="text">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">类型</label>
+            <div class="layui-input-block">
+                <input name="id" type="hidden"/>
+                <input autocomplete="off" class="layui-input" id="type" lay-verify="required" name="type"
+                       placeholder="请输入名称"
+                       type="text">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">单位</label>
+            <div class="layui-input-block">
+                <input name="id" type="hidden"/>
+                <input autocomplete="off" class="layui-input" id="addamountUnit" lay-verify="required"
+                       name="amountUnit"
+                       placeholder="请输入名称"
+                       type="text">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">售价</label>
+            <div class="layui-input-block">
+                <input name="id" type="hidden"/>
+                <input autocomplete="off" class="layui-input" id="cost_price_sum" lay-verify="required"
+                       name="cost_price_sum"
+                       placeholder="请输入名称"
+                       type="number">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">数量</label>
+            <div class="layui-input-block">
+                <input name="id" type="hidden"/>
+                <input autocomplete="off" class="layui-input" id="addresidualAmount" lay-verify="required"
+                       name="cost_price_sum"
+                       placeholder="请输入名称"
+                       type="number">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">登记人</label>
+            <div class="layui-input-block">
+                <input name="id" type="hidden"/>
+                <input autocomplete="off" class="layui-input" id="addchanger" lay-verify="required"
+                       name="moduleDescribe"
+                       placeholder="请输入名称"
+                       type="text">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">物料描述</label>
+            <div class="layui-input-block">
+                        <textarea class="layui-textarea" id="addproduct_describe" lay-verify="required" name="remark"
+                                  placeholder="请输入物料描述"></textarea>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block" style="text-align: center;">
+                <a class="layui-btn " id="doSubmit" lay-filter="doSubmit" lay-submit="doSubmit"><label
+                        class="layui-icon layui-icon-release"></label>提交</a>
+                <a class="layui-btn layui-btn-warm" lay-filter="data-search-btn"
+                   onclick="javascript:$('#dataFrm')[0].reset()"><label
+                        class="layui-icon layui-icon-refresh"></label>重置</a>
+            </div>
+        </div>
+    </form>
+</div>
+
 <script>
-    layui.use(['form', 'layedit', 'laydate'], function () {
-        var form = layui.form
-            , layer = layui.layer
-            , layedit = layui.layedit
-            , laydate = layui.laydate;
-        //监听指定开关
-        form.on('switch(switchTest)', function (data) {
-            layer.msg('开关checked：' + (this.checked ? 'true' : 'false'), {
-                offset: '6px'
+    layui.use(['form', 'table', 'laydate', 'layer'], function () {
+        var form = layui.form;
+        var table = layui.table;
+        var laydate = layui.laydate;
+        var layer = layui.layer;
+        /*一级分类的加载*/
+        firstSelectLoad();
+
+        function firstSelectLoad() {
+            $.ajax({
+                url: api1 + 'design_classify/design_classifyAll',
+                success: function (result) {
+                    var parentName = '<option value="">请选择</option>';
+                    for (var i in result.data) {
+                        if (result.data[i].pId === 0) {
+                            parentName += "<option value=" + result.data[i].kindName + ">" + result.data[i].kindName + "</option>";
+                        }
+                    }
+                    $("#addfirstKindName").html(parentName);
+                    form.render();//没有写这个，操作后没有效果
+                },
             });
-            layer.tips('温馨提示：请注意开关状态的文字可以随意定义，而不仅仅是ON|OFF', data.othis)
+        }
+
+        /*二级分类加载*/
+        form.on('select(addfirstKindName)', function (data) {
+            SceondselectSelectLoad();
+
+            function SceondselectSelectLoad() {
+                if (data.value == "") {
+                    return;
+                }
+                $.ajax({
+                    url: api1 + 'design_classify/selectByName',
+                    data: {kindName: data.value},
+                    success: function (result) {
+                        console.log(result);
+                        var parentName = '<option value="">请选择</option>';
+                        for (var i in result) {
+                            parentName += "<option value=" + result[i].kindName + ">" + result[i].kindName + "</option>";
+                        }
+                        $("#addsecondKindName").html(parentName);
+                        form.render();//没有写这个，操作后没有效果
+                    },
+                });
+            }
         });
 
+        /*提交*/
         //监听提交
-        form.on('submit(demo1)', function (data) {
-            layer.alert(JSON.stringify(data.field), {
-                title: '最终的提交信息'
-            })
-            return false;
-        });
+        $("#doSubmit").click(function () {
+            var type = $("#type").val();
+            var product_describe = $("#addproduct_describe").val();
+            var firstKindName = $("#addfirstKindName").val();
+            var secondKindName = $("#addsecondKindName").val();
+            var productName = $("#addproductName").val();
+            var moduleDescribe = $("#addmoduleDescribe").val();
+            var amountUnit = $("#addamountUnit").val();
+            var cost_price_sum = $("#cost_price_sum").val();
+            var changer = $("#addchanger").val();
+            var residualAmount = $("#addresidualAmount").val();
 
-        //表单赋值
-        layui.$('#LAY-component-form-setval').on('click', function () {
-            form.val('example', {
-                "username": "贤心" // "name": "value"
-                , "password": "123456"
-                , "interest": 1
-                , "like[write]": true //复选框选中状态
-                , "close": true //开关状态
-                , "sex": "女"
-                , "desc": "我爱 layui"
+            if (changer.length < 0) {
+                lay.msg("请输入登记人姓名")
+                return;
+            }
+            if (type.length < 1) {
+                layer.alert("请输入类型");
+                return;
+            }
+            if (product_describe.length < 1) {
+                layer.msg("请输入类型");
+                return;
+            }
+            if (firstKindName.length < 1) {
+                layer.msg("请选择一级分类名称");
+                return;
+            }
+            if (secondKindName.length < 1) {
+                layer.msg("请选择二级分类名称");
+                return;
+            }
+            if (productName.length < 1) {
+                layer.msg("请输入物料名称");
+                return;
+            }
+            if (moduleDescribe.length < 1) {
+                layer.msg("请输入设计要求");
+                return;
+            }
+            if (amountUnit.length < 1) {
+                layer.msg("请输入单位");
+                return;
+            }
+            if (cost_price_sum.length < 1) {
+                layer.msg("请输入售价");
+                return;
+            }
+            if (residualAmount.length < 1) {
+                layer.msg("请输入售价");
+                return;
+            }
+            $.ajax({
+                url: api1 + "design_material/addmaterial",
+                data: {
+                    type: type,
+                    product_describe: product_describe,
+                    firstKindName: firstKindName,
+                    secondKindName: secondKindName,
+                    productName: productName,
+                    moduleDescribe: moduleDescribe,
+                    amountUnit: amountUnit,
+                    cost_price_sum: cost_price_sum,
+                    changer: changer,
+                    residualAmount: residualAmount
+                },
+                success: function (result) {
+                    layer.msg(result.message)
+                    window.location.reload();
+                },
+                error: function () {
+                    layer.msg(result.message)
+                    window.location.reload();
+                }
+
             });
-        });
-
-        //表单取值
-        layui.$('#LAY-component-form-getval').on('click', function () {
-            var data = form.val('example');
-            alert(JSON.stringify(data));
         });
 
     });
 </script>
-
 </body>
 </html>
