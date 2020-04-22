@@ -114,5 +114,5 @@ if (usertype == 1) {
 }
 
 //给页面显示登陆用户名
-let username = localStorage.getItem("username");
-$(".login_name").html(username);
+let user = JSON.parse(localStorage.getItem("user"));
+$(".login_name").html(user.name);
