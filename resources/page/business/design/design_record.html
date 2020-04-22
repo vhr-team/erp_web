@@ -25,7 +25,7 @@
     <fieldset class="layui-elem-field" style="padding-top: 20px">
         <legend>搜索</legend>
         <div class="layuimini-main layui-col-lg-offset3">
-            <form>
+            <div>
                 <div class="layui-form-item">
                     <label class="layui-form-label">商品名称</label>
                     <div class="layui-input-inline">
@@ -47,7 +47,7 @@
                         </button>
                     </div>
                 </div>
-            </form>
+            </div>
         </div>
     </fieldset>
 </div>
@@ -70,139 +70,7 @@
             class="layui-icon layui-icon-note"></i>上/下架</a>
 </script>
 
-<!--添加模态框-->
-<div id="">
-    <div id="addrecord" style="display: none;">
-        <form action="" class="layui-form" lay-filter="">
-            <div class="layui-form-item">
-                <label class="layui-form-label">产品编号</label>
-                <div class="layui-input-block">
-                    <input type="text" name="username" lay-verify="title" autocomplete="off" placeholder="请输入标题"
-                           class="layui-input">
-                </div>
-            </div>
-            <div class="layui-form-item">
-                <label class="layui-form-label">产品名称</label>
-                <div class="layui-input-block">
-                    <input autocomplete="off" class="layui-input" lay-verify="title" name="username" placeholder="请输入标题"
-                           type="text">
-                </div>
-            </div>
-            <div class="layui-form-item">
-                <label class="layui-form-label">制造商</label>
-                <div class="layui-input-block">
-                    <input autocomplete="off" class="layui-input" lay-verify="title" name="username" placeholder="请输入标题"
-                           type="text">
-                </div>
-            </div>
-            <div class="layui-form-item">
-                <label class="layui-form-label">用途类型</label>
-                <div class="layui-input-block">
-                    <input autocomplete="off" class="layui-input" lay-verify="title" name="username" placeholder="请输入标题"
-                           type="text">
-                </div>
-            </div>
-            <div class="layui-form-item">
-                <label class="layui-form-label">档次级别</label>
-                <div class="layui-input-block">
-                    <select lay-verify="required" name="city">
-                        <option value=""></option>
-                        <option value="0">北京</option>
-                        <option value="1">上海</option>
-                        <option value="2">广州</option>
-                        <option value="3">深圳</option>
-                        <option value="4">杭州</option>
-                    </select>
-                </div>
-            </div>
-            <div class="layui-form-item">
-                <label class="layui-form-label">一级分类名称</label>
-                <div class="layui-input-block">
-                    <select lay-verify="required" name="city">
-                        <option value=""></option>
-                        <option value="0">北京</option>
-                        <option value="1">上海</option>
-                        <option value="2">广州</option>
-                        <option value="3">深圳</option>
-                        <option value="4">杭州</option>
-                    </select>
-                </div>
-            </div>
-            <div class="layui-form-item">
-                <label class="layui-form-label">二级级分类名称</label>
-                <div class="layui-input-block">
-                    <select lay-verify="required" xm-select="city">
-                        <option value=""></option>
-                        <option value="0">北京</option>
-                        <option value="1">上海</option>
-                        <option value="2">广州</option>
-                        <option value="3">深圳</option>
-                        <option value="4">杭州</option>
-                    </select>
-                </div>
-            </div>
-            <div class="layui-form-item">
-                <label class="layui-form-label">物料组成</label>
-                <div class="layui-input-block">
-                    <select name="material_detail" xm-select="material_detail" xm-select-skin="normal">
-                        <option value="1">北京</option>
-                        <option selected="selected" value="2">上海</option>
-                        <option value="3">广州</option>
-                        <option selected="selected" value="4">深圳</option>
-                        <option value="5">天津</option>
-                    </select>
-                </div>
-            </div>
 
-
-            <div class="layui-form-item">
-                <label class="layui-form-label">选择框</label>
-                <div class="layui-input-block">
-                    <select lay-verify="required" name="city">
-                        <option value=""></option>
-                    </select>
-                </div>
-            </div>
-            <div class="layui-form-item layui-form-text">
-                <label class="layui-form-label">产品描述</label>
-                <div class="layui-input-block">
-                    <textarea placeholder="请输入内容" class="layui-textarea" name="desc"></textarea>
-                </div>
-            </div>
-            <div class="layui-form-item">
-                <div class="layui-input-block">
-                    <button class="layui-btn layui-btn-normal" id="LAY-component-form-setval" type="button">
-                        赋值
-                    </button>
-                    <button type="button" class="layui-btn layui-btn-normal" id="LAY-component-form-getval">取值</button>
-                    <button type="submit" class="layui-btn" lay-submit="" lay-filter="demo1">立即提交</button>
-                </div>
-            </div>
-        </form>
-    </div>
-</div>
-<script type="text/javascript">
-    var formSelects = layui.formSelects;
-    formSelects.render('material_detail');
-
-    /*    var test1 =formSelects.value('material_detail', [2, 4], true);
-        var test2= formSelects.value('material_detail'); // [{"name":"上海","val":"2"},{"name":"深圳","val":"4"}]
-
-        var test3 = formSelects.value('material_detail', 'all');        // [{"name":"上海","val":"2"},{"name":"深圳","val":"4"}]
-        var test4 = formSelects.value('material_detail', 'val');        // ["2","4"]
-        var test5 = formSelects.value('material_detail', 'valStr');     // 2,4
-        var test6 = formSelects.value('material_detail', 'name');       // ["上海","深圳"]*/
-    var test7 = formSelects.value('material_detail', 'nameStr');    // 上海,深圳
-    /*    console.log(test1);
-        console.log(test2);
-        console.log(test3);
-        console.log(test4);
-        console.log(test5);
-        console.log(test6);*/
-    $("#LAY-component-form-getval").click(function () {
-        console.log(formSelects.value('material_detail', 'nameStr'));
-    })
-</script>
 <script>
     //table组件
     layui.use(['table', 'laydate', 'form'], function () {
