@@ -223,7 +223,7 @@
                         $.cookie('TOKEN', res.token.token, {expires: 7});  //登陆成功这后把token放到cookie里面
                         localStorage.setItem("permissions", res.token.permissions);
                         localStorage.setItem("usertype", res.token.usertype);
-                        localStorage.setItem("username", res.token.username);
+                        localStorage.setItem("user", JSON.stringify(res.token.user));
                         window.location.href = "./index.html";
                     }
                 },
