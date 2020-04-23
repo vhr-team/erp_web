@@ -297,7 +297,7 @@
                         area: ['1000px', '600px'],
                         maxmin: true,
                         content: $('#UpdateDiv'),//打开的内容
-                        zIndex: layer.zIndex, //重点1
+                        //zIndex: layer.zIndex, //重点1
                         success: function (layero) {
                             layer.setTop(layero); //重点2
                         }
@@ -403,7 +403,7 @@
         /*提交*/
         //监听提交
         $("#doSubmit").click(function () {
-            layer.confirm('请确定数据无误', {icon: 3, title: '提示'}, function (index) { //删除分类
+            layer.confirm('请确定数据无误', {icon: 3, title: '提示', zIndex: layer.zIndex,}, function (index) { //
                 var id = $("#updateid").val();
                 var type = $("#type").val();
                 var product_describe = $("#updateproduct_describe").val();
@@ -484,17 +484,8 @@
                     }
 
                 });
-
-                /*   console.log(type);
-               console.log(product_describe);
-               console.log(firstKindName);
-               console.log(secondKindName);
-               console.log(productName);
-               console.log(moduleDescribe);
-               console.log(amountUnit)
-               console.log(cost_price_sum);*/
             });
-            layer.close(index);
+
         });
 
     });
