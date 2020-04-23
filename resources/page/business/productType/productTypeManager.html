@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>商品类别管理</title>
+    <link rel="stylesheet" href="../../../lib/plugin/iview/dist/styles/iview.css">
+
+</head>
+<body>
+
+<div id="app">
+
+</div>
+<script src="../../../lib/plugin/vue/vue.min.js"></script>
+<script src="../../../lib/plugin/iview/dist/iview.min.js"></script>
+<script src="../../../lib/plugin/axios/axios.min.js"></script>
+<script>
+    $(function () {
+        // http request 拦截器
+        axios.interceptors.request.use(
+            config => {
+                if (token) { //判断token是否存在
+                    config.headers.token = $.cookie("TOKEN");  //将token设置成请求头
+                }
+                return config;
+            },
+            err => {
+                return Promise.reject(err);
+            }
+        );
+
+        new Vue({
+
+        });
+    })
+</script>
+</body>
+</html>
