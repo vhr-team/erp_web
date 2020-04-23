@@ -115,7 +115,7 @@
         }
     </style>
 </head>
-<body>
+<body onload="getCookie();">
 
 <div class="layui-container">
     <div class="admin-login-background">
@@ -126,12 +126,14 @@
                 </div>
                 <div class="layui-form-item">
                     <label class="layui-icon layui-icon-username" for="username"></label>
-                    <input type="text" name="username" lay-verify="required" placeholder="用户名" autocomplete="off"
+                    <input type="text" name="username" id="username" lay-verify="required" placeholder="用户名"
+                           autocomplete="off"
                            class="layui-input" value="">
                 </div>
                 <div class="layui-form-item">
                     <label class="layui-icon layui-icon-password" for="password"></label>
-                    <input type="password" name="password" lay-verify="required" placeholder="密码" autocomplete="off"
+                    <input type="password" name="password" id="password" lay-verify="required" placeholder="密码"
+                           autocomplete="off"
                            class="layui-input" value="">
                 </div>
                 <div class="layui-form-item">
@@ -143,7 +145,8 @@
                     </div>
                 </div>
                 <div class="layui-form-item">
-                    <input type="checkbox" name="rememberMe" value="true" lay-skin="primary" title="记住密码">
+                    <input type="checkbox" id="rememberMe" name="rememberMe" value="true" lay-skin="primary"
+                           title="记住密码">
                 </div>
                 <div class="layui-form-item">
                     <button class="layui-btn layui-btn-fluid" lay-submit="" lay-filter="login">登 入</button>
@@ -158,7 +161,7 @@
 <script src="resources/lib/jq-module/jquery.particleground.min.js" charset="utf-8"></script>
 <script src="resources/lib/common/jquery.cookie.min.js" type="text/javascript" charset="utf-8"></script>
 <script src="resources/lib/common/common.js" type="text/javascript" charset="utf-8"></script>
-
+<script src="resources/lib/common/jquery.base64.js"></script>
 <script>
     //写验证码
     let keyCode = Math.floor(Math.random() * 9000 + 1000);
@@ -168,6 +171,16 @@
         keyCode = Math.floor(Math.random() * 9000 + 1000);
         $("#captchaPic").attr("src", api + 'login/captcha?codeKey=' + keyCode)
     }
+
+    $(function () {
+        $("#username").focus();
+
+        let pwd = $.cookie("pwd"); //获取cookie中的登陆密码
+
+        if (pwd) {//密码存在的话把“记住用户名和密码”复选框勾选住
+            $("#rememberMe").attr("checked", "checked");
+        }
+    })
 
     layui.use(['form'], function () {
         var form = layui.form,
@@ -186,8 +199,9 @@
 
         // 进行登录操作
         form.on('submit(login)', function (data) {
-            // 发送Ajax请求去后台进行  认证
+            setCookie();
 
+            // 发送Ajax请求去后台进行  认证
             let btn = $(this);
             btn.text("登 录 中 ...").attr("disabled", "disabled").addClass("layui-disabled");
 
@@ -209,7 +223,7 @@
                         $.cookie('TOKEN', res.token.token, {expires: 7});  //登陆成功这后把token放到cookie里面
                         localStorage.setItem("permissions", res.token.permissions);
                         localStorage.setItem("usertype", res.token.usertype);
-                        localStorage.setItem("username", res.token.username);
+                        localStorage.setItem("user", JSON.stringify(res.token.user));
                         window.location.href = "./index.html";
                     }
                 },
@@ -222,6 +236,31 @@
             return false;
         });
     });
+
+    function setCookie() { //设置cookie
+        let username = $("#username").val(); //获取用户名信息
+        let pwd = $("#password").val(); //获取登陆密码信息
+        let checked = $("#rememberMe").prop("checked");//获取“是否记住密码”复选框
+
+        if (checked) { //判断是否选中了“记住密码”复选框
+            $.cookie("username", username);//调用jquery.cookie.js中的方法设置cookie中的用户名
+            $.cookie("pwd", $.base64.encode(pwd), {expires: 7});//调用jquery.cookie.js中的方法设置cookie中的登陆密码，并使用base64（jquery.base64.js）进行加密
+        } else {
+            $.cookie("username", '', {expires: 0});
+            $.cookie('pwd', '', {expires: 0});
+        }
+    }
+
+    function getCookie() { //获取cookie
+        let username = $.cookie("username"); //获取cookie中的用户名
+        let pwd = $.cookie("pwd"); //获取cookie中的登陆密码
+        if (username) {//用户名存在的话把用户名填充到用户名文本框
+            $("#username").val(username);
+        }
+        if (pwd) {//密码存在的话把密码填充到密码文本框
+            $("#password").val($.base64.decode(pwd));
+        }
+    }
 </script>
 </body>
 </html>

@@ -6,12 +6,18 @@
 
     <link rel="stylesheet" href="../../../lib/layui-v2.5.5/css/layui.css">
     <script src="../../../lib/jquery-3.4.1/jquery-3.4.1.min.js"></script>
+    <link href="../../../lib/layui-v2.5.5/css/modules/formSelects-v4.css" rel="stylesheet">
     <script src="https://cdn.bootcss.com/vue/2.6.11/vue.js"></script>
     <script src="../../../lib/layui-v2.5.5/layui.all.js" media="all"></script>
     <script src="https://cdn.bootcss.com/axios/0.19.2/axios.min.js"></script>
     <script src="https://cdn.bootcss.com/qs/6.9.3/qs.min.js"></script>
+
     <script src="../../../lib/layui-v2.5.5/lay/modules/laydate.js"></script>
     <script src="config/common.js"></script>
+
+    <script src="js/jquery-v3.2.1.js"></script>
+    <script src="../../../lib/layui-v2.5.5/lay/modules/formSelects-v4.js"></script>
+
 </head>
 <body>
 
@@ -19,7 +25,7 @@
     <fieldset class="layui-elem-field" style="padding-top: 20px">
         <legend>搜索</legend>
         <div class="layuimini-main layui-col-lg-offset3">
-            <form>
+            <div>
                 <div class="layui-form-item">
                     <label class="layui-form-label">商品名称</label>
                     <div class="layui-input-inline">
@@ -41,7 +47,7 @@
                         </button>
                     </div>
                 </div>
-            </form>
+            </div>
         </div>
     </fieldset>
 </div>
@@ -64,90 +70,6 @@
             class="layui-icon layui-icon-note"></i>上/下架</a>
 </script>
 
-<!--添加模态框-->
-<div id="">
-    <div id="addrecord" style="display: none;">
-        <form action="" class="layui-form" lay-filter="">
-            <div class="layui-form-item">
-                <label class="layui-form-label">产品编号</label>
-                <div class="layui-input-block">
-                    <input type="text" name="username" lay-verify="title" autocomplete="off" placeholder="请输入标题"
-                           class="layui-input">
-                </div>
-            </div>
-            <div class="layui-form-item">
-                <label class="layui-form-label">产品名称</label>
-                <div class="layui-input-block">
-                    <input autocomplete="off" class="layui-input" lay-verify="title" name="username" placeholder="请输入标题"
-                           type="text">
-                </div>
-            </div>
-            <div class="layui-form-item">
-                <label class="layui-form-label">制造商</label>
-                <div class="layui-input-block">
-                    <input autocomplete="off" class="layui-input" lay-verify="title" name="username" placeholder="请输入标题"
-                           type="text">
-                </div>
-            </div>
-            <div class="layui-form-item">
-                <label class="layui-form-label">用途类型</label>
-                <div class="layui-input-block">
-                    <input autocomplete="off" class="layui-input" lay-verify="title" name="username" placeholder="请输入标题"
-                           type="text">
-                </div>
-            </div>
-            <div class="layui-form-item">
-                <label class="layui-form-label">档次级别</label>
-                <div class="layui-input-block">
-                    <select lay-verify="required" name="city">
-                        <option value=""></option>
-                        <option value="0">北京</option>
-                        <option value="1">上海</option>
-                        <option value="2">广州</option>
-                        <option value="3">深圳</option>
-                        <option value="4">杭州</option>
-                    </select>
-                </div>
-            </div>
-            <div class="layui-form-item">
-                <label class="layui-form-label">一级分类名称</label>
-                <div class="layui-input-block">
-                    <select lay-verify="required" name="city">
-                        <option value=""></option>
-                        <option value="0">北京</option>
-                        <option value="1">上海</option>
-                        <option value="2">广州</option>
-                        <option value="3">深圳</option>
-                        <option value="4">杭州</option>
-                    </select>
-                </div>
-            </div>
-            <div class="layui-form-item">
-                <label class="layui-form-label">选择框</label>
-                <div class="layui-input-block">
-                    <select lay-verify="required" name="city">
-                        <option value=""></option>
-                    </select>
-                </div>
-            </div>
-            <div class="layui-form-item layui-form-text">
-                <label class="layui-form-label">产品描述</label>
-                <div class="layui-input-block">
-                    <textarea placeholder="请输入内容" class="layui-textarea" name="desc"></textarea>
-                </div>
-            </div>
-            <div class="layui-form-item">
-                <div class="layui-input-block">
-                    <button class="layui-btn layui-btn-normal" id="LAY-component-form-setval" type="button">
-                        赋值
-                    </button>
-                    <button type="button" class="layui-btn layui-btn-normal" id="LAY-component-form-getval">取值</button>
-                    <button type="submit" class="layui-btn" lay-submit="" lay-filter="demo1">立即提交</button>
-                </div>
-            </div>
-        </form>
-    </div>
-</div>
 
 <script>
     //table组件
@@ -161,7 +83,7 @@
             elem: '#register_time' //指定元素
         });
         search();//查询
-        function search() {
+        function search() {                                                              //查询档案
             $("#search").click(function () {
                 var productName = $("#proname").val();//获取用户输入的商品名称
                 var registerTime = $("#register_time").val();//获取用户选择的日期
@@ -185,7 +107,7 @@
                             for (var i in data) {
                                 idx.push(data[i].id);//获取选中的ID
                             }
-                            layer.confirm('确定删除选中的吗？', {icon: 3, title: '批量删除'}, function (index) {
+                            layer.confirm('确定删除选中的吗？', {icon: 3, title: '批量删除'}, function (index) { /*批量删除档案*/
                                 $.ajax({//异步提交  批量删除
                                     url: api1 + "design_record/deletebatch",
                                     type: "post",
@@ -206,21 +128,24 @@
                             layer.msg("哈批！！请选中要删除的档案啊");
                         }
                         break;
-                    case 'addrecord'://添加
+                    case 'addrecord':                                                                  //打开添加的页面
                         layer.open({
+                            type: 2,
+                            shade: false,
+                            area: ['1000px', '600px'],
                             maxmin: true,
-                            type: 1,//类型 信息
-                            area: ['1000px', '650px'],//定义宽和高
-                            title: '添加档案',//题目
-                            shadeClose: false,//点击遮罩层关闭
-                            content: $('#addrecord')//打开的模态框
+                            content: 'http://localhost:8888/erp_web/resources/page/business/design/design_record_add.html',
+                            zIndex: layer.zIndex, //重点1
+                            success: function (layero) {
+                                layer.setTop(layero); //重点2
+                            }
                         });
                         break;
                     case 'rload':
                         window.location.reload();
                         break;
                     case 'classify':
-                        layer.open({
+                        layer.open({                                                                   //打开分类的页面
                             type: 2,
                             shade: false,
                             area: ['1000px', '500px'],
@@ -233,7 +158,7 @@
                         });
                         break;
                     case 'LAYTABLE_TIPS':
-                        layer.msg('提示');
+                        layer.msg('点击单元格即可修改，点击编辑可保存');
                         break;
                 }
                 ;
@@ -242,7 +167,7 @@
 
         tablerecord();//表格加载数据
         function tablerecord() {
-            design_recordTable = table.render({
+            design_recordTable = table.render({                                                         /*表格加载*/
                 elem: '#design_record' //示例table的Id
                 , height: 500 //表格高度
                 , url: api1 + 'design_record/findPage' //数据接口
@@ -285,13 +210,13 @@
                         {type: 'checkbox', fixed: 'left'} //开启多选
                         , {field: 'id', title: 'ID', type: "numbers", minWidth: 90, hide: true}
                         , {field: 'productId', type: "numbers", title: '商品ID', width: 90, totalRowText: '合计'}
-                        , {field: 'productName', title: '商品名称', minWidth: 90, edit: 'text'}
+                        , {field: 'productName', title: '商品名称(可修改)', minWidth: 90, edit: 'text'}
                         , {field: 'factoryName', title: '制造商', minWidth: 90,}
                         , {field: 'costPrice', title: '计划成本单价', minWidth: 90, sort: true, hide: true, totalRow: true}
                         , {field: 'listPrice', title: '市场单价', minWidth: 90, sort: true, hide: true, totalRow: true}
                         , {
                             field: 'realCostPrice',
-                            title: '成本单价',
+                            title: '成本单价(可修改)',
                             minWidth: 90,
                             edit: 'text', //单元格可编辑
                             sort: true, //排序
@@ -300,10 +225,11 @@
                         }
                         , {field: 'amountUnit', title: '单位', minWidth: 60, hide: true}
                         , {field: 'responsiblePerson', minWidth: 90, title: '产品经理', hide: true}
-                        , {field: 'register', title: '登记人', minWidth: 90, edit: 'text'}
+                        , {field: 'register', title: '登记人(可修改)', minWidth: 90, edit: 'text'}
                         , {field: 'registerTime', title: '建档时间', minWidth: 100, sort: true, hide: true}
                         , {field: 'checkTag', title: '审核标志', minWidth: 90, hide: true}
                         , {field: 'changeTag', title: '档案变更标志', minWidth: 100}
+                        , {field: 'type', title: '类型', minWidth: 100}
                         , {field: 'priceChangeTag', title: '价格变更标志', minWidth: 100}
                         , {field: 'deleteTag', title: '是否下架', hide: true, minWidth: 90}
                         , {field: 'firstKindName', title: '一级分类', hide: true, minWidth: 90}
@@ -338,14 +264,14 @@
                 if (layEvent === 'Stand_up_and_down') { //上下架
                     var tag = "";//获取上下架信息
                     var dataTag = "";//修改上下信息
-                    if (data.deleteTag == "已下架") {
+                    if (data.deleteTag == "已下架") {                                                  /*获取上下架信息*/
                         tag = "上架";
                         data.deleteTag = "已上架"
                     } else {
                         tag = "下架";
                         data.deleteTag = "已下架"
                     }
-                    layer.confirm("确定" + tag + "吗？", {icon: 3, title: '提示'}, function (index) {
+                    layer.confirm("确定" + tag + "吗？", {icon: 3, title: '提示'}, function (index) {    /*提交上下架信息*/
                         $.ajax({
                             url: api1 + "design_record/putawayrecord",
                             data: JSON.stringify(data),//转json
@@ -362,7 +288,7 @@
                         layer.close(index);
                     });
 
-                } else if (layEvent === 'edit') { //修改档案
+                } else if (layEvent === 'edit') {                                                         //修改档案
                     layer.confirm('确定修改吗 ?', {icon: 3, title: '提示'}, function (index) {
                         $.ajax({
                             url: api1 + "design_record/updaterecordById",

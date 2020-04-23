@@ -1,14 +1,362 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-    <script src="../../../lib/layui-v2.5.5/layui.all.js" media="all"></script>
+    <meta charset="utf-8">
+    <title>档案管理</title>
+
     <link rel="stylesheet" href="../../../lib/layui-v2.5.5/css/layui.css">
     <script src="../../../lib/jquery-3.4.1/jquery-3.4.1.min.js"></script>
-    <script src="../../../lib/common/common.js"></script>
+    <link href="../../../lib/layui-v2.5.5/css/modules/formSelects-v4.css" rel="stylesheet">
+    <script src="https://cdn.bootcss.com/vue/2.6.11/vue.js"></script>
+    <script media="all" src="../../../lib/layui-v2.5.5/layui.all.js"></script>
+    <script src="https://cdn.bootcss.com/axios/0.19.2/axios.min.js"></script>
+    <script src="https://cdn.bootcss.com/qs/6.9.3/qs.min.js"></script>
+
+    <script src="../../../lib/layui-v2.5.5/lay/modules/laydate.js"></script>
+    <script src="config/common.js"></script>
+
+    <script src="js/jquery-v3.2.1.js"></script>
+    <script src="../../../lib/layui-v2.5.5/lay/modules/formSelects-v4.js"></script>
 </head>
 <body>
-id
+
+
+</div>
+<script id="record" type="text/html">
+    <div class="layui-btn-container">
+        <button class="layui-btn layui-btn-sm" lay-event="batchDelete">批量删除</button>
+        <button class="layui-btn layui-btn-sm" lay-event="addrecord">添加档案</button>
+        <button class="layui-btn layui-btn-sm" lay-event="rload">刷新</button>
+        <button class="layui-btn layui-btn-sm" lay-event="classify">分类编辑</button>
+    </div>
+</script>
+<!--表格-->
+<table id="design_record" lay-data="design_record" lay-filter="design_record"></table>
+<!--操作按钮-->
+<script id="bardesign_record" type="text/html">
+    <a class="layui-btn  layui-btn-xs" lay-event="edit"><i class="layui-icon layui-icon-edit"></i>编辑</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs sold" lay-event="Stand_up_and_down"><i
+            class="layui-icon layui-icon-note"></i>上/下架</a>
+</script>
+
+<!--添加模态框-->
+<div id="">
+    <div id="addrecord" style="display: block;">
+        <div action="" class="layui-form" lay-filter="">
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">产品名称</label>
+                <div class="layui-input-block">
+                    <input autocomplete="off" class="layui-input " id="productName" lay-verify="title"
+                           name="productName" placeholder="请输入产品名称"
+                           type="text">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">产品简称</label>
+                <div class="layui-input-block">
+                    <input autocomplete="off" class="layui-input" id="productNick" lay-verify="title" name="productNick"
+                           placeholder="请输入产品简称"
+                           type="text">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">制造商</label>
+                <div class="layui-input-block">
+                    <input autocomplete="off" class="layui-input" id="factoryName" lay-verify="title" name="factoryName"
+                           placeholder="请输入制造商"
+                           type="text">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">用途类型</label>
+                <div class="layui-input-block">
+                    <input autocomplete="off" class="layui-input" id="type" lay-verify="title" name="type"
+                           placeholder="请输入类型"
+                           type="text">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">档次级别</label>
+                <div class="layui-input-block">
+                    <select id="productClass" id="productClass" lay-verify="required" name="productClass">
+                        <option value=""></option>
+                        <option value="高档">高档</option>
+                        <option value="中档">中档</option>
+                        <option value="低挡">低挡</option>
+                    </select>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">一级分类名称</label>
+                <div class="layui-input-block">
+                    <select id="addfirstKindName" lay-filter="addfirstKindName" lay-verify="required"
+                            name="firstKindName">
+
+                    </select>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">二级级分类名称</label>
+                <div class="layui-input-block">
+                    <select id="addsecondKindName" lay-filter="" lay-verify="required">
+
+
+                    </select>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">物料组成</label>
+                <div class="layui-input-block">
+                    <select id="materialList" name="materialList" xm-select="material_detail" xm-select-skin="normal">
+
+                    </select>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">单位</label>
+                <div class="layui-input-block">
+                    <input autocomplete="off" class="layui-input" id="amountUnit" lay-verify="title" name="amountUnit"
+                           placeholder="请输入单位"
+                           type="text">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">产品保修期</label>
+                <div class="layui-input-block">
+                    <input autocomplete="off" class="layui-input" id="warranty" lay-verify="title" name="warranty"
+                           placeholder="请输入保修期"
+                           type="text">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">市场单价</label>
+                <div class="layui-input-block">
+                    <input autocomplete="off" class="layui-input" id="listPrice" lay-verify="title" name="listPrice"
+                           readonly
+                           type="text">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">计划成本单价</label>
+                <div class="layui-input-block">
+                    <input autocomplete="off" class="layui-input" id="costPrice" lay-verify="title" name="costPrice"
+                           placeholder="请输入标题"
+                           type="text">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">成本单价</label>
+                <div class="layui-input-block">
+                    <input autocomplete="off" class="layui-input" id="realCostPrice" lay-verify="title"
+                           name="realCostPrice" placeholder="请输入成本单价"
+                           type="text">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">产品经理</label>
+                <div class="layui-input-block">
+                    <input autocomplete="off" class="layui-input" id="responsiblePerson" lay-verify="title"
+                           name="responsiblePerson" placeholder="请输入产品经理"
+                           type="text">
+                </div>
+            </div>
+            <div class="layui-form-item layui-form-text">
+                <label class="layui-form-label">产品描述</label>
+                <div class="layui-input-block">
+                    <textarea id="product_describe" name="productDescribe"></textarea>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <button class="layui-btn layui-btn-normal" id="LAY-component-form-setval" type="button">
+                        赋值
+                    </button>
+                    <button class="layui-btn layui-btn-normal" id="LAY-component-form-getval" type="button">取值</button>
+                    <button class="layui-btn" id="submit" lay-filter="demo1" lay-submit="" type="submit">立即提交</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    //table组件
+    layui.use(['table', 'laydate', 'form'], function () {
+        var form = layui.form;
+        var table = layui.table;//引用table
+        var laydate = layui.laydate;
+        var design_recordTable;
+        form.render();//初始化表单组件
+        /*一级分类的加载*/
+        firstSelectLoad();
+
+        function firstSelectLoad() {
+            $.ajax({
+                url: api1 + 'design_classify/design_classifyAll',
+                success: function (result) {
+                    var parentName = '<option value="">请选择</option>';
+                    for (var i in result.data) {
+                        if (result.data[i].pId === 0) {
+                            parentName += "<option value=" + result.data[i].kindName + ">" + result.data[i].kindName + "</option>";
+                        }
+                    }
+                    $("#addfirstKindName").html(parentName);
+                    form.render();//没有写这个，操作后没有效果
+                },
+            });
+        }
+
+        /*二级分类加载*/
+        form.on('select(addfirstKindName)', function (data) {
+            SceondselectSelectLoad();
+
+            function SceondselectSelectLoad() {
+                if (data.value == "") {
+                    return;
+                }
+                $.ajax({
+                    url: api1 + 'design_classify/selectByName',
+                    data: {kindName: data.value},
+                    success: function (result) {
+                        console.log(result);
+                        var parentName = '<option value="">请选择</option>';
+                        for (var i in result) {
+                            parentName += "<option value=" + result[i].kindName + ">" + result[i].kindName + "</option>";
+                        }
+                        $("#addsecondKindName").html(parentName);
+                        form.render();//没有写这个，操作后没有效果
+                    },
+                });
+            }
+        });
+
+    });
+</script>
+<script>
+    /^http(s*):\/\//.test(location.href) || alert('请先部署到 localhost 下再访问');
+    layui.extend({
+        tinymce: '{/}./tinymce/tinymce'
+    }).use(['tinymce', 'util', 'layer', 'form'], function () {
+        var formSelects = layui.formSelects;
+        var form = layui.form;
+        formSelects.render('material_detail');
+        var t = layui.tinymce
+        var util = layui.util;
+        var edits = t.render({
+            elem: "#product_describe",
+            width: 800
+            , height: 600
+        }, (opt) => {
+            //加载完成后回调
+        });
+
+        formSelects.data('material_detail', 'server', {
+            url: api1 + 'design_material/selectAll',
+        });
+
+        formSelects.on('material_detail', function (id, vals, val, isAdd, isDisabled) {
+            var sum = 0;
+            for (var i in vals) {
+                sum += parseInt(vals[i].value);
+            }
+            var listPrice = $("#listPrice").val(sum);
+            console.log(vals);
+
+        }, true);
+
+
+        /*获取物料选择的名称*/
+        $("#LAY-component-form-getval").click(function () {
+            var str = formSelects.value('material_detail', 'all');
+            var sum = 0;
+            var material = "";
+            for (var i in str) {
+                sum += parseInt(str[i].value);
+            }
+            console.log(sum);
+            material = formSelects.value('material_detail', 'nameStr');
+            console.log(material);
+        })
+
+
+        var materialList = "";//物料组成
+
+        $("#submit").click(function () {
+            var sum = 0;//物料总价
+            var material = "";//物料名称
+            var str = formSelects.value('material_detail', 'all');
+
+
+            /*提交事件*/
+
+            /*获取输入的产品名称*/
+            var productName = $("#productName").val();
+            /*获取输入的产品制造商*/
+            var factoryName = $("#factoryName").val();
+            /*获取输入的产品用途*/
+            var type = $("#type").val();
+            /*获取选择的的一级分类*/
+            var firstKindName = $("#addfirstKindName").val();
+            /*获取选择的的二级分类*/
+            var secondKindName = $("#addsecondKindName").val();
+            /*获取输入的物料名称*/
+            material = formSelects.value('material_detail', 'nameStr');
+            /*获取选中的档次级别*/
+            var productClass = $("#productClass").val();
+            /*获取输入的产品保修期*/
+            var warranty = $("#warranty").val();
+            /*获取输入的产品简称*/
+            var productNick = $("#productNick").val();
+            /*物料总价*/
+            for (var i in str) {
+                sum += parseInt(str[i].value);
+            }
+            /*获取输入的计划成本单价*/
+            var costPrice = $("#costPrice").val();
+            /*获取市场单价*/
+            var listPrice = $("#listPrice").val(sum);
+            var amountUnit = $("#amountUnit").val();
+            /*获取输入的实际成本单价*/
+            var realCostPrice = $("#realCostPrice").val();
+            /*获取输入的产品经理*/
+            var responsiblePerson = $("#responsiblePerson").val();
+            /*获取输入的产品描述*/
+            var product_describe = t.get('#product_describe').getContent({format: 'text'})
+            var data = {
+                productName: productName,
+                factoryName: factoryName,
+                type: type,
+                firstKindName: firstKindName,
+                secondKindName: secondKindName,
+                materialList: material,
+                productClass: productClass,
+                warranty: warranty,
+                productNick: productNick,
+                listPrice: sum,
+                costPrice: costPrice,
+                realCostPrice: realCostPrice,
+                responsiblePerson: responsiblePerson,
+                productDescribe: product_describe,
+                amountUnit: amountUnit
+            };
+            console.log(data);
+            $.ajax({
+                url: api1 + "design_record/addrecord",
+                data: JSON.stringify(data),
+                type: "post",
+                contentType: "application/json",
+                success: function (res) {
+                    layer.msg(res.message);
+                }
+            });
+
+
+        })
+
+
+    });
+</script>
+
 </body>
 </html>

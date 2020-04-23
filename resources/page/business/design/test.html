@@ -2,34 +2,35 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Layui</title>
-    <meta name="renderer" content="webkit">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <link rel="stylesheet" href="../../../lib/layui-v2.5.5/css/layui.css">
-    <script src="../../../lib/layui-v2.5.5/layui.all.js"></script>
-    <script src="../../../lib/layui-v2.5.5/layui.js"></script>
-    <script src="../../../lib/common/common.js"></script>
-    <!-- 注意：如果你直接复制所有代码到本地，上述css路径需要改成你本地的 -->
+    <meta content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no"
+          name="viewport"/>
+    <title>formSelects-v4 多选</title>
 </head>
 <body>
-<div id="apsp">
-    <div class="layui-inline"> <!-- 注意：这一层元素并不是必须的 -->
-        <input class="layui-input" id="test1" type="text">
-    </div>
-</div>
-<script>
-    layui.use('laydate', function () {
-        var laydate = layui.laydate;
 
-        //执行一个laydate实例
-        laydate.render({
-            elem: '#test1' //指定元素
-        });
-    });
-</script>
-<script src="https://cdn.bootcss.com/axios/0.19.2/axios.min.js"></script>
-<script src="https://cdn.bootcss.com/qs/6.9.3/qs.min.js"></script>
-<script src="https://cdn.bootcss.com/vue/2.6.11/vue.js"></script>
+<!-- 引入样式 -->
+<link href="//raw.githack.com/hnzzmsf/layui-formSelects/master/dist/formSelects-v4.css" rel="stylesheet"
+      type="text/css"/>
+
+<!-- 引入jquery依赖 -->
+<script charset="utf-8" src="//unpkg.com/jquery@3.3.1/dist/jquery.min.js" type="text/javascript"></script>
+<!-- 引入组件 -->
+<script charset="utf-8" src="//raw.githack.com/hnzzmsf/layui-formSelects/master/dist/formSelects-v4.js"
+        type="text/javascript"></script>
+
+<div>
+    <select name="city" xm-select="select1">
+        <option disabled="disabled" value="1">北京</option>
+        <option selected="selected" value="2">上海</option>
+        <option value="3">广州</option>
+        <option selected="selected" value="4">深圳</option>
+        <option value="5">天津</option>
+    </select>
+</div>
+
+
+<script charset="utf-8" src="https://unpkg.com/jquery@3.4.1/dist/jquery.js" type="text/javascript"></script>
+<script charset="utf-8" src="https://raw.githack.com/hnzzmsf/layui-formSelects/master/dist/formSelects-v4.min.js"
+        type="text/javascript"></script>
 </body>
 </html>
