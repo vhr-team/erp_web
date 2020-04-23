@@ -82,7 +82,7 @@
         </el-table>
         <!--数据表格结束-->
 
-        <el-dialog title="添加商品类别" :visible.sync="dialogFormVisible">
+        <el-dialog title="商品类别" :visible.sync="dialogFormVisible">
             <el-form ref="addProductTypeForm" :rules="rules" :model="form">
                 <el-form-item prop="name" label="商品类别名称" :label-width="formLabelWidth">
                     <el-input v-model="form.name" autocomplete="off" placeholder="请输入商品类别名称"></el-input>
@@ -145,7 +145,8 @@
             data: {
                 form: {
                     name: '',
-                    supperId: ''
+                    supperId: '',
+                    productTypeId: ''
                 },
                 formLabelWidth: '120px',
                 formInline: {
@@ -181,12 +182,18 @@
                     let form = addProductTypeForm;
                     this.$refs[addProductTypeForm].validate((valid) => {
                         if (valid) {
+                            let url
+                            if (this.form.productTypeId) {
+                                url = productApi + 'productType/updateProductType';
+                            } else {
+                                url = productApi + 'productType/addProductType';
+                            }
 
                             axios.post(productApi + "productType/checkProductType", {
                                 supperId: this.form.supperId,
                                 name: this.form.name
                             }).then(res => {
-                                if (res.data.code == 200) {
+                                if (res.data.code == -1) {
                                     this.$message({
                                         message: res.data.msg,
                                         type: 'warning'
@@ -195,9 +202,10 @@
                                     return false;
                                 } else {
                                     this.loading = true;
-                                    axios.post(productApi + "productType/addProductType", {
+                                    axios.post(url, {
                                         supperId: this.form.supperId,
-                                        name: this.form.name
+                                        name: this.form.name,
+                                        productTypeId: this.form.productTypeId
                                     }).then(res => {
                                         // 添加成功关系dialog
                                         this.dialogFormVisible = false;
@@ -252,10 +260,40 @@
                     });
                 },
                 handleEdit(index, row) {
-                    console.log(index, row);
+                    // 编辑
+                    this.dialogFormVisible = true;
+
+                    this.form.name = row.name;
+                    this.form.supperId = row.supperId;
+                    this.form.productTypeId = row.productTypeId;
                 },
                 handleDelete(index, row) {
                     console.log(index, row);
+                    this.$confirm(`此操作将永久删除【${row.name}】, 是否继续?`, '提示', {
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        type: 'warning'
+                    }).then(() => {
+                        axios.get(productApi + "productType/deleteProductType?productTypeId=" + row.productTypeId).then(res => {
+                            if (res.data.code == 200) {
+                                this.initTable();
+                                this.$message({
+                                    type: 'success',
+                                    message: res.data.msg
+                                });
+                            }
+                        }).catch(err => {
+                            this.$message({
+                                type: 'error',
+                                message: err.data.msg
+                            });
+                        })
+                    }).catch(() => {
+                        this.$message({
+                            type: 'info',
+                            message: '已取消删除'
+                        });
+                    });
                 }
             },
             mounted() {
