@@ -348,6 +348,9 @@
                 contentType: "application/json",
                 success: function (res) {
                     layer.msg(res.message);
+                },
+                error: function (res) {
+                    layer.msg(res.message);
                 }
             });
 

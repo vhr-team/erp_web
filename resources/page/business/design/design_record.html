@@ -134,7 +134,7 @@
                             shade: false,
                             area: ['1000px', '600px'],
                             maxmin: true,
-                            content: 'http://localhost:8888/erp_web/resources/page/business/design/design_record_add.html',
+                            content: 'design_record_add.html',
                             zIndex: layer.zIndex, //重点1
                             success: function (layero) {
                                 layer.setTop(layero); //重点2
@@ -150,7 +150,7 @@
                             shade: false,
                             area: ['1000px', '500px'],
                             maxmin: true,
-                            content: 'http://localhost:8888/erp_web/resources/page/business/design/design_classify.html',
+                            content: 'design_classify.html',
                             zIndex: layer.zIndex, //重点1
                             success: function (layero) {
                                 layer.setTop(layero); //重点2
@@ -165,6 +165,7 @@
             });
         }
 
+        var recordreload = layer.load(0, {shade: false});//加载动画
         tablerecord();//表格加载数据
         function tablerecord() {
             design_recordTable = table.render({                                                         /*表格加载*/
@@ -209,8 +210,8 @@
                     [[ //表头
                         {type: 'checkbox', fixed: 'left'} //开启多选
                         , {field: 'id', title: 'ID', type: "numbers", minWidth: 90, hide: true}
-                        , {field: 'productId', type: "numbers", title: '商品ID', width: 90, totalRowText: '合计'}
-                        , {field: 'productName', title: '商品名称(可修改)', minWidth: 90, edit: 'text'}
+                        , {field: 'productId', type: "numbers", title: '产品ID', width: 90, totalRowText: '合计'}
+                        , {field: 'productName', title: '产品名称(可修改)', minWidth: 90, edit: 'text'}
                         , {field: 'factoryName', title: '制造商', minWidth: 90,}
                         , {field: 'costPrice', title: '计划成本单价', minWidth: 90, sort: true, hide: true, totalRow: true}
                         , {field: 'listPrice', title: '市场单价', minWidth: 90, sort: true, hide: true, totalRow: true}
@@ -223,11 +224,11 @@
                             hide: true, //是否开启隐藏
                             totalRow: true //开启合计
                         }
-                        , {field: 'amountUnit', title: '单位', minWidth: 60, hide: true}
+                        , {field: 'amountUnit', title: '单位', minWidth: 60, hide: true, sort: true}
                         , {field: 'responsiblePerson', minWidth: 90, title: '产品经理', hide: true}
                         , {field: 'register', title: '登记人(可修改)', minWidth: 90, edit: 'text'}
                         , {field: 'registerTime', title: '建档时间', minWidth: 100, sort: true, hide: true}
-                        , {field: 'checkTag', title: '审核标志', minWidth: 90, hide: true}
+                        , {field: 'checkTag', title: '审核标志', minWidth: 90}
                         , {field: 'changeTag', title: '档案变更标志', minWidth: 100}
                         , {field: 'type', title: '类型', minWidth: 100}
                         , {field: 'priceChangeTag', title: '价格变更标志', minWidth: 100}
@@ -238,22 +239,31 @@
                         , {field: 'productDescribe', title: '产品描述', hide: true, minWidth: 90, edit: 'text'}
                         , {field: 'type', title: '类型', hide: true, minWidth: 90, edit: 'text'}
                         , {field: 'responsiblePerson', title: '产品经理', hide: true, minWidth: 90}
-                        , {field: 'warranty', title: '保修期', hide: true, minWidth: 90}
-                        , {field: 'fileChangeAmount', title: '变更次数', hide: true, minWidth: 90, totalRow: true}
+                        , {field: 'warranty', title: '保修期', hide: true, minWidth: 90, sort: true}
+                        , {
+                            field: 'fileChangeAmount',
+                            title: '变更次数',
+                            hide: true,
+                            minWidth: 90,
+                            totalRow: true,
+                            sort: true
+                        }
                         , {field: 'priceChangeTag', title: '价格变更标志', hide: true, minWidth: 100}
                         , {field: 'productNick', title: '产品简称', hide: true, minWidth: 100}
                         , {field: 'materialList', title: '物料组成', hide: true, minWidth: 100}
-                        , {fixed: 'right', minWidth: 170, fixed: 'right', toolbar: '#bardesign_record'}//右侧操作按钮
+                        , {fixed: 'right', minWidth: 170, title: "操作", toolbar: '#bardesign_record'}//右侧操作按钮
 
 
                     ]]
+                , done: function (res) {   //返回数据执行回调函数
+                    layer.close(recordreload);    //返回数据关闭loading
+                }
             });
 
         }
 
 
         toolRecorde();
-
         function toolRecorde() {
             //监听工具条
             table.on('tool(design_record)', function (obj) {

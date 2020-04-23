@@ -26,6 +26,7 @@
                             <label class="layui-form-label">关键词</label>
                             <div class="layui-input-inline">
                                 <input autocomplete="off" class="layui-input" id="productName" name="productName"
+                                       placeholder="请输入物料名称"
                                        type="text">
                             </div>
                         </div>
@@ -214,17 +215,17 @@
             , cols: [[
                 {type: "checkbox", fixed: "left"},
                 {field: 'id', title: '序号', align: "center", totalRowText: '合计'},
-                {field: 'designId', title: '设计编号', align: "center",},
+                {field: 'designId', title: '设计编号', align: "center", sort: true},
                 {field: 'productId', title: '物料编号', align: "center"},
                 {field: 'productName', title: '物料名称', align: "center"},
                 {field: 'firstKindName', title: '物料1级分类名称', align: "center", hide: true},
                 {field: 'secondKindName', title: '物料2级分类名称', align: "center", hide: true},
                 {field: 'moduleDescribe', title: '设计要求', align: "center", hide: true},
-                {field: 'costPriceSum', title: '物料总成本', align: "center", totalRow: true},
+                {field: 'costPriceSum', title: '物料总成本', align: "center", totalRow: true, sort: true},
                 {field: 'register', title: '登记人', align: "center", hide: true},
-                {field: 'registerTime', title: '登记时间', align: "center", hide: true},
+                {field: 'registerTime', title: '登记时间', align: "center", hide: true, sort: true},
                 {field: 'checker', title: '复核人', align: "center", hide: true},
-                {field: 'checkTime', title: '复核时间', align: "center", hide: true},
+                {field: 'checkTime', title: '复核时间', align: "center", hide: true, sort: true},
                 {field: 'changer', title: '变更人', align: "center", hide: true},
                 {field: 'changeTime', title: '变更时间', align: "center", hide: true},
                 {field: 'checkTag', title: '审核标志', align: "center"},
@@ -244,7 +245,7 @@
                         shade: false,
                         area: ['1000px', '600px'],
                         maxmin: true,
-                        content: "http://localhost:8888/erp_web/resources/page/business/design/Material_detailed.html",//打开的内容
+                        content: "Material_detailed.html",//打开的内容
                         zIndex: layer.zIndex, //重点1
                         success: function (layero) {
                             layer.setTop(layero); //重点2
@@ -324,7 +325,9 @@
             });
         }
 
+        var material_detail = layer.load(0, {shade: false});//加载动画
         tableDtail(1);
+
         function tableDtail(productId) {
             table.render({
                 elem: '#material_detail',
@@ -355,7 +358,11 @@
                     {field: 'residualAmount', title: '可用数量', align: "center"},
                     {field: 'costPrice', title: '单价', align: "center"},
                     {field: 'productDescribe', title: '描述', align: "center"},
-                ]],
+                ]]
+                , done: function (res) {   //返回数据执行回调函数
+                    layer.close(material_detail);    //返回数据关闭loading
+                }
+
             });
         }
 
