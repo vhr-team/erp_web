@@ -46,7 +46,7 @@
         <!--表格开始-->
         <table class="layui-hide" id="material" lay-filter="material"></table>
 
-        <div id="detailDiv" style="display: none">
+        <div id="detailDiv" style="display: none"><!--详细-->
             <table class="layui-hide" id="material_detail" lay-filter="material_detail"></table>
         </div>
         <!--操作按钮-->
@@ -68,7 +68,8 @@
                 <div class="layui-form-item">
                     <label class="layui-form-label">物料名称</label>
                     <div class="layui-input-block">
-                        <input name="id" type="hidden"/>
+                        <input id="updateid" lay-verify="required" name="id" type="hidden"/>
+                        <input id="updateproid" lay-verify="required" name="id" type="hidden"/>
                         <input autocomplete="off" class="layui-input" id="updateproductName" lay-verify="required"
                                name="name"
                                placeholder="请输入名称"
@@ -78,27 +79,15 @@
                 <div class="layui-form-item">
                     <label class="layui-form-label">一级分类名称</label>
                     <div class="layui-input-block">
-                        <select id="updatefirstKindName" lay-verify="required" name="firstKindName">
-                            <option value=""></option>
-                            <option value="0">北京</option>
-                            <option value="1">上海</option>
-                            <option value="2">广州</option>
-                            <option value="3">深圳</option>
-                            <option value="4">杭州</option>
+                        <select id="updatefirstKindName" lay-filter="updatefirstKindName" lay-verify="required"
+                                name="firstKindName">
                         </select>
                     </div>
                 </div>
                 <div class="layui-form-item">
                     <label class="layui-form-label">二级级分类名称</label>
                     <div class="layui-input-block">
-                        <select id="secondKindName" id="updatesecondKindName" lay-verify="required"
-                                xm-select="secondKindName">
-                            <option value=""></option>
-                            <option value="0">北京</option>
-                            <option value="1">上海</option>
-                            <option value="2">广州</option>
-                            <option value="3">深圳</option>
-                            <option value="4">杭州</option>
+                        <select id="updatesecondKindName" lay-filter="" lay-verify="required">
                         </select>
                     </div>
                 </div>
@@ -125,7 +114,7 @@
                     <label class="layui-form-label">单位</label>
                     <div class="layui-input-block">
                         <input name="id" type="hidden"/>
-                        <input autocomplete="off" class="layui-input" id="amountUnit" lay-verify="required"
+                        <input autocomplete="off" class="layui-input" id="updateamountUnit" lay-verify="required"
                                name="amountUnit"
                                placeholder="请输入名称"
                                type="text">
@@ -138,19 +127,29 @@
                         <input autocomplete="off" class="layui-input" id="cost_price_sum" lay-verify="required"
                                name="cost_price_sum"
                                placeholder="请输入名称"
+                               type="number">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">登记人</label>
+                    <div class="layui-input-block">
+                        <input name="id" type="hidden"/>
+                        <input autocomplete="off" class="layui-input" id="updatechanger" lay-verify="required"
+                               name="moduleDescribe"
+                               placeholder="请输入名称"
                                type="text">
                     </div>
                 </div>
                 <div class="layui-form-item">
                     <label class="layui-form-label">物料描述</label>
                     <div class="layui-input-block">
-                        <textarea class="layui-textarea" id="updateproduct_describe" name="remark"
+                        <textarea class="layui-textarea" id="updateproduct_describe" lay-verify="required" name="remark"
                                   placeholder="请输入物料描述"></textarea>
                     </div>
                 </div>
                 <div class="layui-form-item">
                     <div class="layui-input-block" style="text-align: center;">
-                        <a class="layui-btn " lay-filter="doSubmit" lay-submit=""><label
+                        <a class="layui-btn " id="doSubmit" lay-filter="doSubmit" lay-submit="doSubmit"><label
                                 class="layui-icon layui-icon-release"></label>提交</a>
                         <a class="layui-btn layui-btn-warm" lay-filter="data-search-btn"
                            onclick="javascript:$('#dataFrm')[0].reset()"><label
@@ -159,8 +158,6 @@
                 </div>
             </form>
         </div>
-        <!--添加和修改的弹出层结束-->
-
         <!--选择菜单和权限的弹出层开始-->
         <div id="selectMenuDiv" style="display: none;padding: 0.3125rem;">
             <table class="layui-hide" id="menuTable" lay-filter="menuTable"></table>
@@ -174,7 +171,6 @@
         var table = layui.table;
         var laydate = layui.laydate;
         var layer = layui.layer;
-
         search();//查询
         function search() {                                                              //查询档案
             $("#search").click(function () {
@@ -185,8 +181,6 @@
                 });
             });
         }
-
-
         var tableIns = table.render({
             elem: '#material',
             url: api1 + 'design_material/findPage',
@@ -219,14 +213,14 @@
             }
             , cols: [[
                 {type: "checkbox", fixed: "left"},
-                {field: 'id', title: '序号', align: "center"},
+                {field: 'id', title: '序号', align: "center", totalRowText: '合计'},
                 {field: 'designId', title: '设计编号', align: "center",},
                 {field: 'productId', title: '物料编号', align: "center"},
                 {field: 'productName', title: '物料名称', align: "center"},
                 {field: 'firstKindName', title: '物料1级分类名称', align: "center", hide: true},
                 {field: 'secondKindName', title: '物料2级分类名称', align: "center", hide: true},
                 {field: 'moduleDescribe', title: '设计要求', align: "center", hide: true},
-                {field: 'costPriceSum', title: '物料总成本', align: "center"},
+                {field: 'costPriceSum', title: '物料总成本', align: "center", totalRow: true},
                 {field: 'register', title: '登记人', align: "center", hide: true},
                 {field: 'registerTime', title: '登记时间', align: "center", hide: true},
                 {field: 'checker', title: '复核人', align: "center", hide: true},
@@ -240,19 +234,27 @@
             ]],
             page: true
         });
-
-
         //监听表头的事件
         table.on('toolbar(material)', function (obj) {
             var checkStatus = table.checkStatus(obj.config.id);
             switch (obj.event) {
                 case 'add':
-                    layer.msg("添加")
+                    layer.open({
+                        type: 2,
+                        shade: false,
+                        area: ['1000px', '600px'],
+                        maxmin: true,
+                        content: "http://localhost:8888/erp_web/resources/page/business/design/Material_detailed.html",//打开的内容
+                        zIndex: layer.zIndex, //重点1
+                        success: function (layero) {
+                            layer.setTop(layero); //重点2
+                        }
+                    });
                     break;
-
             }
             ;
         });
+
 
         toolRecorde()
 
@@ -264,9 +266,31 @@
                 var tr = obj.tr; //获得当前行 tr 的 DOM 对象（如果有的话）
                 var jsonData = JSON.stringify(data);//json转换后的json
                 if (layEvent === 'delete') { //删除
-                    layer.msg("删除")
+                    layer.confirm('确定删除吗?', {icon: 3, title: '提示'}, function (index) { //删除分类
+                        $.ajax({
+                            url: api1 + "design_material/delete_material",
+                            data: {
+                                proid: data.productId
+                            },
+                            success: function (result) {
+                                layer.msg(result.message)
+                                window.location.reload();
+                            },
+                            error: function () {
+                                layer.msg(result.message)
+                                window.location.reload();
+                            }
 
-                } else if (layEvent === 'update') {                                                         //修改档案
+                        });
+                        layer.close(index);
+                    });
+
+
+                } else if (layEvent === 'update') {             //修改
+                    $("#updateproductName").val(data.productName)
+                    $("#updatemoduleDescribe").val(data.moduleDescribe);
+                    $("#updateid").val(data.id);
+                    $("#updatechanger").val(data.changer);
                     layer.open({
                         type: 1,
                         shade: false,
@@ -277,7 +301,10 @@
                         success: function (layero) {
                             layer.setTop(layero); //重点2
                         }
+
                     });
+                    tableDtail(data.productId);
+                    console.log(desigin_material_detail);
                 } else if (layEvent === 'detail') {
                     layer.open({
                         type: 1,
@@ -292,12 +319,13 @@
                     });
                     tableDtail(data.productId);
 
+
                 }
             });
         }
 
+        tableDtail(1);
         function tableDtail(productId) {
-            console.log(productId);
             table.render({
                 elem: '#material_detail',
                 url: api1 + 'design_material_detail/selectByproductId',
@@ -305,7 +333,12 @@
                 , where: {productId: productId},
                 cellMinWidth: true
                 , parseData: function (res) { //res 即为原始返回的数据
-                    console.log(res);
+                    console.log(res.data);
+                    $("#type").val(res.data.type);
+                    $("#updateproduct_describe").val(res.data.productDescribe);
+                    $("#updateamountUnit").val(res.data.amountUnit);
+                    $("#updateproid").val(res.data.productId);
+                    desigin_material_detail = res;
                     return {
                         "code": "0", //返回的code的值 成功：0
                         "data": res, //解析数据列表
@@ -325,6 +358,144 @@
                 ]],
             });
         }
+
+
+        /*一级分类的加载*/
+        firstSelectLoad();
+
+        function firstSelectLoad() {
+            $.ajax({
+                url: api1 + 'design_classify/design_classifyAll',
+                success: function (result) {
+                    var parentName = '<option value="">请选择</option>';
+                    for (var i in result.data) {
+                        if (result.data[i].pId === 0) {
+                            parentName += "<option value=" + result.data[i].kindName + ">" + result.data[i].kindName + "</option>";
+                        }
+                    }
+                    $("#updatefirstKindName").html(parentName);
+                    form.render();//没有写这个，操作后没有效果
+                },
+            });
+        }
+
+        /*二级分类加载*/
+        form.on('select(updatefirstKindName)', function (data) {
+            SceondselectSelectLoad();
+
+            function SceondselectSelectLoad() {
+                $.ajax({
+                    url: api1 + 'design_classify/selectByName',
+                    data: {kindName: data.value},
+                    success: function (result) {
+                        console.log(result);
+                        var parentName = '<option value="">请选择</option>';
+                        for (var i in result) {
+                            parentName += "<option value=" + result[i].kindName + ">" + result[i].kindName + "</option>";
+                        }
+                        $("#updatesecondKindName").html(parentName);
+                        form.render();//没有写这个，操作后没有效果
+                    },
+                });
+            }
+        });
+
+        /*提交*/
+        //监听提交
+        $("#doSubmit").click(function () {
+            layer.confirm('请确定数据无误', {icon: 3, title: '提示'}, function (index) { //删除分类
+                var id = $("#updateid").val();
+                var type = $("#type").val();
+                var product_describe = $("#updateproduct_describe").val();
+                var firstKindName = $("#updatefirstKindName").val();
+                var secondKindName = $("#updatesecondKindName").val();
+                var productName = $("#updateproductName").val();
+                var moduleDescribe = $("#updatemoduleDescribe").val();
+                var amountUnit = $("#updateamountUnit").val();
+                var cost_price_sum = $("#cost_price_sum").val();
+                var changer = $("#updatechanger").val();
+                var proid = $("#updateproid").val();
+                if (changer.length < 0) {
+                    lay.msg("请输入登记人姓名")
+                    return;
+                }
+                if (proid.length < 1) {
+                    layer.alert("请输入物料id");
+                    return;
+                }
+                if (id.length < 1) {
+                    layer.alert("请输入id");
+                    return;
+                }
+                if (type.length < 1) {
+                    layer.alert("请输入类型");
+                    return;
+                }
+                if (product_describe.length < 1) {
+                    layer.msg("请输入类型");
+                    return;
+                }
+                if (firstKindName.length < 1) {
+                    layer.msg("请选择一级分类名称");
+                    return;
+                }
+                if (secondKindName.length < 1) {
+                    layer.msg("请选择二级分类名称");
+                    return;
+                }
+                if (productName.length < 1) {
+                    layer.msg("请输入物料名称");
+                    return;
+                }
+                if (moduleDescribe.length < 1) {
+                    layer.msg("请输入设计要求");
+                    return;
+                }
+                if (amountUnit.length < 1) {
+                    layer.msg("请输入单位");
+                    return;
+                }
+                if (cost_price_sum.length < 1) {
+                    layer.msg("请输入售价");
+                    return;
+                }
+                $.ajax({
+                    url: api1 + "design_material/updatematerial",
+                    data: {
+                        id: id,
+                        proid: proid,
+                        type: type,
+                        product_describe: product_describe,
+                        firstKindName: firstKindName,
+                        secondKindName: secondKindName,
+                        productName: productName,
+                        moduleDescribe: moduleDescribe,
+                        amountUnit: amountUnit,
+                        cost_price_sum: cost_price_sum,
+                        changer: changer
+                    },
+                    success: function (result) {
+                        layer.msg(result.message)
+                        window.location.reload();
+                    },
+                    error: function () {
+                        layer.msg(result.message)
+                        window.location.reload();
+                    }
+
+                });
+
+                /*   console.log(type);
+               console.log(product_describe);
+               console.log(firstKindName);
+               console.log(secondKindName);
+               console.log(productName);
+               console.log(moduleDescribe);
+               console.log(amountUnit)
+               console.log(cost_price_sum);*/
+            });
+            layer.close(index);
+        });
 
     });
 </script>
