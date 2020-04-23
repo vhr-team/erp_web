@@ -31,13 +31,13 @@
                         </el-form-item>
                         <el-form-item>
                             <el-button type="primary" icon="el-icon-search" @click="onSubmit">查询</el-button>
-                            <el-button @click="resetForm('formInline')">重置</el-button>
+                            <el-button @click="resetForm('formInline')" icon="el-icon-refresh-left">重置</el-button>
                         </el-form-item>
                     </el-form>
                 </div>
 
                 <div>
-                    <el-button type="primary" icon="el-icon-plus">添加</el-button>
+                    <el-button type="primary" icon="el-icon-plus" @click="dialogFormVisible = true">添加</el-button>
                 </div>
             </div>
         </fieldset>
@@ -70,17 +70,35 @@
                 <template slot-scope="scope">
                     <el-button
                             size="mini"
-                            @click="handleEdit(scope.$index, scope.row)">编辑
+                            @click="handleEdit(scope.$index, scope.row)"><i class="el-icon-edit"></i> 编辑
                     </el-button>
                     <el-button
                             size="mini"
                             type="danger"
-                            @click="handleDelete(scope.$index, scope.row)">删除
+                            @click="handleDelete(scope.$index, scope.row)"><i class="el-icon-delete"></i> 删除
                     </el-button>
                 </template>
             </el-table-column>
         </el-table>
         <!--数据表格结束-->
+
+        <el-dialog title="添加商品类别" :visible.sync="dialogFormVisible">
+            <el-form ref="addProductTypeForm" :rules="rules" :model="form">
+                <el-form-item prop="name" label="商品类别名称" :label-width="formLabelWidth">
+                    <el-input v-model="form.name" autocomplete="off" placeholder="请输入商品类别名称"></el-input>
+                </el-form-item>
+                <el-form-item prop="supperId" label="供应商" :label-width="formLabelWidth">
+                    <el-select v-model="form.supperId" placeholder="请选择">
+                        <el-option :label="item.name" :value="item.id" v-for="item in items"></el-option>
+                    </el-select>
+                </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="resetForm_two('addProductTypeForm')">取 消
+                </el-button>
+                <el-button type="primary" @click="addProductType('addProductTypeForm')">确 定</el-button>
+            </div>
+        </el-dialog>
 
         <!--分页-->
         <div style="margin-top: 10px;">
@@ -88,8 +106,10 @@
                     background
                     layout="sizes, prev, pager, next, jumper, ->, total, slot"
                     :page-size="pageSize"
-                    @current-change="currentChange"
-                    @size-change="sizeChange"
+                    @size-change="handleSizeChange"
+                    @current-change="handleCurrentChange"
+                    :current-page="page"
+                    :page-sizes="[5, 10, 15, 20, 25, 30]"
                     :total="total">
             </el-pagination>
         </div>
@@ -123,6 +143,11 @@
         new Vue({
             el: "#app",
             data: {
+                form: {
+                    name: '',
+                    supperId: ''
+                },
+                formLabelWidth: '120px',
                 formInline: {
                     name: '',
                     supperId: ''
@@ -131,22 +156,79 @@
                 tableData: [],
                 loading: true,
                 page: 1,
-                pageSize: 10,
-                total: 0
+                pageSize: 5,
+                total: 0,
+                dialogFormVisible: false,
+                rules: {
+                    name: [
+                        {required: true, message: '请输入商品类别名称', trigger: 'blur'},
+                    ],
+                    supperId: [
+                        {required: true, message: '请选择供应商', trigger: 'change'}
+                    ],
+                }
             },
             methods: {
+                handleSizeChange(val) {
+                    this.pageSize = val;
+                    this.initTable();
+                },
+                handleCurrentChange(val) {
+                    this.page = val;
+                    this.initTable();
+                },
+                addProductType(addProductTypeForm) {
+                    let form = addProductTypeForm;
+                    this.$refs[addProductTypeForm].validate((valid) => {
+                        if (valid) {
+
+                            axios.post(productApi + "productType/checkProductType", {
+                                supperId: this.form.supperId,
+                                name: this.form.name
+                            }).then(res => {
+                                if (res.data.code == 200) {
+                                    this.$message({
+                                        message: res.data.msg,
+                                        type: 'warning'
+                                    });
+                                    // 后台存在
+                                    return false;
+                                } else {
+                                    this.loading = true;
+                                    axios.post(productApi + "productType/addProductType", {
+                                        supperId: this.form.supperId,
+                                        name: this.form.name
+                                    }).then(res => {
+                                        // 添加成功关系dialog
+                                        this.dialogFormVisible = false;
+                                        // 重新加载表格数据
+                                        this.initTable();
+                                        this.$message({
+                                            message: res.data.msg,
+                                            type: 'success'
+                                        });
+
+                                        // 表单重置
+                                        this.$refs[form].resetFields();
+                                    });
+                                }
+                            }).catch(err => {
+
+                            })
+                        } else {
+                            return false;
+                        }
+                    });
+                },
                 resetForm(formName) {
                     this.$refs[formName].resetFields();
                 },
-                sizeChange(currentPageSize) {
-                    this.pageSize = currentPageSize;
-                    this.initTable();
-                },
-                currentChange(currentPage) {
-                    this.page = currentPage;
-                    this.initTable();
+                resetForm_two(formName) {
+                    this.dialogFormVisible = false;
+                    this.$refs[formName].resetFields();
                 },
                 initTable() {
+                    this.loading = true;
                     axios.get(productApi + "productType/queryAllProductType?page=" + this.page + "&pageSize=" + this.pageSize).then(res => {
                         // 关闭加载层
                         this.loading = false;
