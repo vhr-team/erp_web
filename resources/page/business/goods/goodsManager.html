@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>商品管理</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="../../../lib/layui-v2.5.5/css/layui.css" media="all">
+    <link rel="stylesheet" href="../../../css/public.css" media="all">
+
+    <!--element-ui/css-->
+    <link rel="stylesheet" href="../../../lib/plugin/element-ui/style/index.css">
+</head>
+<body>
+
+<div class="layuimini-container" id="app">
+    <div class="layuimini-main">
+
+        <!--搜索开始-->
+        <fieldset class="table-search-fieldset" style="display: flex;justify-content: space-between">
+            <legend>搜索信息</legend>
+            <div>
+                <div>
+                    <!--
+                    :rules="rules"
+                    -->
+                    <el-form :inline="true" :model="goods" ref="goodsForm" label-width="100px"
+                             class="demo-ruleForm">
+
+                        <el-form-item label="供应商" prop="providerid">
+                            <el-select v-model="goods.providerid" placeholder="请选择">
+                                <el-option :label="item.name" :value="item.id" v-for="item in items"></el-option>
+                            </el-select>
+                        </el-form-item>
+
+                        <el-form-item label="商品名称" prop="goodsname">
+                            <el-input v-model="goods.goodsname" placeholder="请输入商品名称"></el-input>
+                        </el-form-item>
+
+                        <el-form-item label="生产批号" prop="productcode">
+                            <el-input v-model="goods.productcode" placeholder="请输入生产批号"></el-input>
+                        </el-form-item>
+                        <el-form-item label="批准文号" prop="promitcode">
+                            <el-input v-model="goods.promitcode" placeholder="请输入批准文号"></el-input>
+                        </el-form-item>
+                        <el-form-item label="商品描述" prop="description">
+                            <el-input v-model="goods.description" placeholder="请输入商品描述"></el-input>
+                        </el-form-item>
+                        <el-form-item label="商品规格" prop="size">
+                            <el-input v-model="goods.size" placeholder="请输入商品规格"></el-input>
+                        </el-form-item>
+                        <el-form-item label="生产厂家" prop="producer">
+                            <el-input v-model="goods.producer" placeholder="请输入生产厂家"></el-input>
+                        </el-form-item>
+                        <el-form-item label="单位" prop="unit">
+                            <el-input v-model="goods.unit" placeholder="请输入单位"></el-input>
+                        </el-form-item>
+                        <el-form-item label="进货价格" prop="minInPrice">
+                            <el-input v-model.number="goods.minInPrice" placeholder="请输入进货价格"></el-input>
+                        </el-form-item>
+                        <el-form-item label="到" prop="maxInPrice">
+                            <el-input v-model.number="goods.maxInPrice" placeholder="请输入"></el-input>
+                        </el-form-item>
+                        <el-form-item label="销售价格" prop="minOutPrice">
+                            <el-input v-model.number="goods.minOutPrice" placeholder="请输入进货价格"></el-input>
+                        </el-form-item>
+                        <el-form-item label="到" prop="maxOutPrice">
+                            <el-input v-model.number="goods.maxOutPrice" placeholder="请输入"></el-input>
+                        </el-form-item>
+
+                        <el-form-item>
+                            <el-button type="primary" @click="submitForm('goodsForm')" icon="el-icon-search">查询
+                            </el-button>
+                            <el-button @click="resetForm('goodsForm')" icon="el-icon-refresh-left">重置</el-button>
+                        </el-form-item>
+                    </el-form>
+                </div>
+            </div>
+        </fieldset>
+
+        <div style="margin: 10px 0">
+            <el-button type="primary" icon="el-icon-plus" @click="dialogFormVisible = true">添加</el-button>
+        </div>
+
+        <!--数据表格-->
+        <el-table
+                v-loading="loading"
+                border
+                stripe
+                :data="tableData">
+            <el-table-column
+                    type="selection"
+                    width="55">
+            </el-table-column>
+            <el-table-column
+                    fixed="left"
+                    prop="goodsname"
+                    align="center"
+                    width="200"
+                    label="商品名称">
+            </el-table-column>
+            <el-table-column
+                    prop="providername"
+                    align="center"
+                    width="200"
+                    label="供应商">
+            </el-table-column>
+            <el-table-column
+                    prop="produceplace"
+                    align="center"
+                    label="产地">
+            </el-table-column>
+            <el-table-column
+                    prop="size"
+                    align="center"
+                    label="规格">
+            </el-table-column>
+            <el-table-column align="center" width="80" prop="goodsimg" label="商品图片">
+                <template scope="scope">
+                    <el-popover placement="right" title="" trigger="hover">
+                        <img :src="scope.row.goodsimg" style="height: 500px;width: 500px">
+                        <img slot="reference" :src="scope.row.goodsimg" alt=""
+                             style="max-height: 50px;max-width: 130px">
+                    </el-popover>
+                </template>
+            </el-table-column>
+            <el-table-column
+                    prop="goodspackage"
+                    align="center"
+                    label="包装">
+            </el-table-column>
+            <el-table-column
+                    prop="productcode"
+                    align="center"
+                    width="150"
+                    label="生产批号">
+            </el-table-column>
+            <el-table-column
+                    prop="promitcode"
+                    align="center"
+                    label="批准文号">
+            </el-table-column>
+            <el-table-column
+                    prop="description"
+                    align="center"
+                    width="200"
+                    label="商品描述">
+            </el-table-column>
+            <!--
+            查询库存
+            -->
+            <el-table-column
+                    prop="number"
+                    align="center"
+                    width="150"
+                    label="商品库存量">
+                <template slot-scope="scope">
+                    <el-tag
+                            :type="scope.row.number < 20 ? 'danger' : 'success'"
+                            disable-transitions>{{scope.row.number}}
+                    </el-tag>
+                </template>
+            </el-table-column>
+            <el-table-column
+                    prop="dangernum"
+                    align="center"
+                    label="预警值">
+            </el-table-column>
+            <el-table-column
+                    prop="available"
+                    align="center"
+                    width="200"
+                    label="是否上架">
+                <template slot-scope="scope">
+                    <el-tag
+                            :type="scope.row.available === '0' ? 'danger' : 'success'"
+                            disable-transitions>{{scope.row.available == 1 ? '已上架' : '已下架'}}
+                    </el-tag>
+                    <el-switch
+                            v-model="scope.row.available"
+                            :active-value="1"
+                            :inactive-value="0"
+                            @change="changeSwitch(scope.row)">
+                    </el-switch>
+                </template>
+            </el-table-column>
+            <el-table-column
+                    prop="producer"
+                    align="center"
+                    label="生产厂家">
+            </el-table-column>
+            <el-table-column
+                    prop="inprice"
+                    align="center"
+                    width="150"
+                    label="进货价格(￥)">
+            </el-table-column>
+            <el-table-column
+                    prop="price"
+                    align="center"
+                    width="150"
+                    label="销售价格(￥)">
+            </el-table-column>
+            <el-table-column
+                    prop="unit"
+                    align="center"
+                    label="单位">
+            </el-table-column>
+            <el-table-column
+                    fixed="right"
+                    width="200"
+                    align="center"
+                    label="操作">
+                <template slot-scope="scope">
+                    <el-button
+                            size="mini">
+                        <i class="el-icon-edit"></i>
+                        编辑
+                    </el-button>
+                    <el-button
+                            @click.native.prevent="deleteRow(scope.$index, tableData)"
+                            type="danger"
+                            size="mini">
+                        <i class="el-icon-delete"></i>
+                        删除
+                    </el-button>
+                </template>
+            </el-table-column>
+        </el-table>
+
+        <!--分页-->
+        <el-pagination
+                style="margin-top: 20px"
+                @size-change="handleSizeChange"
+                @current-change="handleCurrentChange"
+                :current-page="goodsVo.page"
+                :page-sizes="[5, 10, 15, 20]"
+                :page-size="goodsVo.pageSize"
+                layout="sizes, prev, pager, next, jumper, ->, total, slot"
+                :total="total">
+        </el-pagination>
+
+        <!--添加或修改-->
+        <el-dialog title="商品" :visible.sync="dialogFormVisible">
+            <el-form>
+                <el-form-item label="活动名称" :label-width="formLabelWidth">
+                    <el-input autocomplete="off"></el-input>
+                </el-form-item>
+                <el-form-item label="活动区域" :label-width="formLabelWidth">
+                    <el-select placeholder="请选择活动区域">
+                        <el-option label="区域一" value="shanghai"></el-option>
+                        <el-option label="区域二" value="beijing"></el-option>
+                    </el-select>
+                </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="dialogFormVisible = false">取 消</el-button>
+                <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+            </div>
+        </el-dialog>
+    </div>
+</div>
+
+<!--jq-->
+<script src="../../../lib/jquery-3.4.1/jquery-3.4.1.min.js"></script>
+<!--layui-->
+<script src="../../../lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
+<!--vue-->
+<script src="../../../lib/plugin/vue/vue.min.js"></script>
+<!--element-ui/index.js-->
+<script src="../../../lib/plugin/element-ui/index.js"></script>
+<!--axios-->
+<script src="../../../lib/plugin/axios/axios.min.js"></script>
+
+<!--系统文件-->
+<script src="../../../lib/common/jquery.cookie.min.js" charset="utf-8"></script>
+<script src="../../../lib/common/common.js" charset="utf-8"></script>
+
+<!--业务代码-->
+<script>
+    let goodsApi = 'http://127.0.0.1:8005/';
+    let vue;
+
+    // 入口函数
+    $(function () {
+        // http request 拦截器
+        axios.interceptors.request.use(
+            config => {
+                if (token) { //判断token是否存在
+                    config.headers.token = $.cookie("TOKEN");  //将token设置成请求头
+                }
+                return config;
+            },
+            err => {
+                return Promise.reject(err);
+            }
+        );
+
+        // 初始化Vue
+        vue = new Vue({
+            // 控制区域
+            el: '#app',
+            // 数据
+            data: {
+                formLabelWidth: '120px',
+                dialogFormVisible: false,
+                /*
+                rules: {
+                    minInPrice: [
+                        {type: 'number', message: '只能输入数字', trigger: 'blur'},
+                    ],
+                    maxInPrice: [
+                        {type: 'number', message: '只能输入数字', trigger: 'blur'},
+                    ],
+                    minOutPrice: [
+                        {type: 'number', message: '只能输入数字', trigger: 'blur'},
+                    ],
+                    maxOutPrice: [
+                        {type: 'number', message: '只能输入数字', trigger: 'blur'},
+                    ],
+                },
+                 */
+                items: [],
+                loading: true,
+                total: 10,
+                goodsVo: {
+                    page: 1,
+                    pageSize: 5
+                },
+                tableData: [],
+                goods: {
+                    providerid: '',
+                    goodsname: '',
+                    productcode: '',
+                    promitcode: '',
+                    description: '',
+                    size: '',
+                    producer: '',
+                    unit: '',
+                    minInPrice: '',
+                    maxInPrice: '',
+                    minOutPrice: '',
+                    maxOutPrice: ''
+                },
+            },
+            // 方法
+            methods: {
+                changeSwitch(row){
+                    console.log(row);
+                },
+                deleteRow(index, rows) {
+                    rows.splice(index, 1);
+                },
+                handleSizeChange(val) {
+                    this.loading = true;
+                    this.goodsVo.pageSize = val;
+                    this.queryGoodsData();
+                },
+                handleCurrentChange(val) {
+                    this.loading = true;
+                    this.goodsVo.page = val;
+                    this.queryGoodsData();
+                },
+                // 查询
+                queryGoodsData() {
+                    this.loading = true;
+                    let goods = this.goodsVo;
+                    let obj = this.goods;
+                    let params = `page=${goods.page}&pageSize=${goods.pageSize}&providerid=${obj.providerid}&goodsname=${obj.goodsname}&productcode=${obj.productcode}&promitcode=${obj.promitcode}&description=${obj.description}&size=${obj.size}&producer=${obj.producer}&unit=${obj.unit}&minInPrice=${obj.minInPrice}&maxInPrice=${obj.maxInPrice}&minOutPrice=${obj.minOutPrice}&maxOutPrice=${obj.maxOutPrice}`;
+                    axios.get(goodsApi + "goods/queryAllGoods?" + params).then(res => {
+                        this.loading = false;
+                        this.total = res.data.count;
+                        this.tableData = res.data.data;
+                    }).catch(err => {
+                        this.$message.error(err.data);
+                    })
+                },
+                submitForm(formName) {
+                    this.$refs[formName].validate((valid) => {
+                        if (valid) {
+                            this.queryGoodsData();
+                        } else {
+                            return false;
+                        }
+                    });
+                },
+                initSupplier() {
+                    axios.get(goodsApi + "supper/getAllSupper").then(res => {
+                        this.items = res.data;
+                    });
+                },
+                resetForm(formName) {
+                    this.$refs[formName].resetFields();
+                }
+            },
+            // 钩子函数
+            mounted() {
+                this.queryGoodsData();
+                this.initSupplier();
+            }
+        });
+    });
+</script>
+</body>
+</html>
