@@ -11,6 +11,69 @@
 
     <!--element-ui/css-->
     <link rel="stylesheet" href="../../../lib/plugin/element-ui/style/index.css">
+    <style>
+        .el-row {
+            margin-bottom: 20px;
+
+        &
+        :last-child {
+            margin-bottom: 0;
+        }
+
+        }
+        .el-col {
+            border-radius: 4px;
+        }
+
+        .bg-purple-dark {
+            background: #99a9bf;
+        }
+
+        .bg-purple {
+            background: #d3dce6;
+        }
+
+        .bg-purple-light {
+            background: #e5e9f2;
+        }
+
+        .grid-content {
+            border-radius: 4px;
+            min-height: 36px;
+        }
+
+        .row-bg {
+            padding: 10px 0;
+            background-color: #f9fafc;
+        }
+
+        .avatar-uploader .el-upload {
+            border: 1px dashed #d9d9d9;
+            border-radius: 6px;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .avatar-uploader .el-upload:hover {
+            border-color: #409EFF;
+        }
+
+        .avatar-uploader-icon {
+            font-size: 28px;
+            color: #8c939d;
+            width: 178px;
+            height: 178px;
+            line-height: 178px;
+            text-align: center;
+        }
+
+        .avatar {
+            width: 178px;
+            height: 178px;
+            display: block;
+        }
+    </style>
 </head>
 <body>
 
@@ -18,7 +81,7 @@
     <div class="layuimini-main">
 
         <!--搜索开始-->
-        <fieldset class="table-search-fieldset" style="display: flex;justify-content: space-between">
+        <fieldset class="table-search-fieldset">
             <legend>搜索信息</legend>
             <div>
                 <div>
@@ -27,7 +90,6 @@
                     -->
                     <el-form :inline="true" :model="goods" ref="goodsForm" label-width="100px"
                              class="demo-ruleForm">
-
                         <el-form-item label="供应商" prop="providerid">
                             <el-select v-model="goods.providerid" placeholder="请选择">
                                 <el-option :label="item.name" :value="item.id" v-for="item in items"></el-option>
@@ -63,7 +125,7 @@
                             <el-input v-model.number="goods.maxInPrice" placeholder="请输入"></el-input>
                         </el-form-item>
                         <el-form-item label="销售价格" prop="minOutPrice">
-                            <el-input v-model.number="goods.minOutPrice" placeholder="请输入进货价格"></el-input>
+                            <el-input v-model.number="goods.minOutPrice" placeholder="请输入销售价格"></el-input>
                         </el-form-item>
                         <el-form-item label="到" prop="maxOutPrice">
                             <el-input v-model.number="goods.maxOutPrice" placeholder="请输入"></el-input>
@@ -139,12 +201,13 @@
             <el-table-column
                     prop="promitcode"
                     align="center"
+                    width="200"
                     label="批准文号">
             </el-table-column>
             <el-table-column
                     prop="description"
                     align="center"
-                    width="200"
+                    width="250"
                     label="商品描述">
             </el-table-column>
             <!--
@@ -214,6 +277,7 @@
                     label="操作">
                 <template slot-scope="scope">
                     <el-button
+                            @click="handleEdit(scope.$index, scope.row)"
                             size="mini">
                         <i class="el-icon-edit"></i>
                         编辑
@@ -242,21 +306,129 @@
         </el-pagination>
 
         <!--添加或修改-->
-        <el-dialog title="商品" :visible.sync="dialogFormVisible">
-            <el-form>
-                <el-form-item label="活动名称" :label-width="formLabelWidth">
-                    <el-input autocomplete="off"></el-input>
-                </el-form-item>
-                <el-form-item label="活动区域" :label-width="formLabelWidth">
-                    <el-select placeholder="请选择活动区域">
-                        <el-option label="区域一" value="shanghai"></el-option>
-                        <el-option label="区域二" value="beijing"></el-option>
-                    </el-select>
+        <el-dialog title="商品"
+                   width="50%"
+                   :visible.sync="dialogFormVisible">
+            <el-form ref="DialogForm">
+                <el-row :gutter="20">
+                    <el-col :span="12">
+                        <el-form-item label="供应商" prop="providerid">
+                            <el-select v-model="addGoods.providerid" placeholder="请选择供应商" @change="changeProviderid()">
+                                <el-option :label="item.name" :value="item.id" v-for="item in items"></el-option>
+                            </el-select>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="12">
+                        <el-form-item label="商品类别" prop="producttypeid">
+                            <el-select v-model="addGoods.producttypeid" placeholder="请选择商品类别">
+                                <el-option :label="item.name" :value="item.productTypeId"
+                                           v-for="item in producttypeItems" :key="item.id"></el-option>
+                            </el-select>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+
+
+                <el-row :gutter="20">
+                    <el-col :span="12">
+                        <el-form-item label="商品名称" prop="goodsname">
+                            <el-input v-model="addGoods.goodsname" placeholder="请输入商品名称"></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="12">
+                        <el-form-item label="商品产地" prop="produceplace">
+                            <el-input v-model="addGoods.produceplace" placeholder="请输入商品产地"></el-input>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+
+                <el-row :gutter="20">
+                    <el-col :span="12">
+                        <el-form-item label="批准文号" prop="promitcode">
+                            <el-input v-model="addGoods.promitcode" placeholder="请输入批准文号"></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="12">
+                        <el-form-item label="生产批号" prop="productcode">
+                            <el-input v-model="addGoods.productcode" placeholder="请输入生产批号"></el-input>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+
+                <el-row :gutter="20">
+                    <el-col :span="24">
+                        <el-form-item label="商品描述" prop="description">
+                            <el-input type="textarea" v-model="addGoods.description" placeholder="请输入商品描述"></el-input>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+
+                <el-row :gutter="20">
+                    <el-col :span="12">
+                        <el-form-item label="商品规格" prop="size">
+                            <el-input v-model="addGoods.size" placeholder="请输入商品规格"></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="12">
+                        <el-form-item label="生产厂家" prop="producer">
+                            <el-input v-model="addGoods.producer" placeholder="请输入生产厂家"></el-input>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+
+                <el-row :gutter="20">
+                    <el-col :span="12">
+                        <el-form-item label="单位" prop="unit">
+                            <el-input v-model="addGoods.unit" placeholder="请输入单位"></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="12">
+                        <el-form-item label="进货价格" prop="inprice">
+                            <el-input v-model.number="addGoods.inprice" placeholder="请输入进货价格"></el-input>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+                <el-row :gutter="20">
+                    <el-col :span="12">
+                        <el-form-item label="销售价格" prop="price">
+                            <el-input v-model.number="addGoods.price" placeholder="请输入销售价格"></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="12">
+                        <el-form-item label="包装" prop="goodspackage">
+                            <el-input v-model.number="addGoods.goodspackage" placeholder="请输入包装"></el-input>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+
+                <el-row :gutter="20">
+                    <el-col :span="12">
+                        <el-form-item label="库存量" prop="number">
+                            <el-input v-model.number="addGoods.number" placeholder="请输入库存量"></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="12">
+                        <el-form-item label="预警值" prop="dangernum">
+                            <el-input v-model.number="addGoods.dangernum" placeholder="请输入预警值"></el-input>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+
+                <!--文件上传-->
+                <el-form-item label="商品图片" prop="goodsimg">
+                    <el-upload
+                            class="avatar-uploader"
+                            action=""
+                            :show-file-list="false"
+                            :before-upload="beforeAvatarUpload">
+                        <img v-if="imageUrl" :src="imageUrl" class="avatar">
+                        <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                    </el-upload>
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
-                <el-button @click="dialogFormVisible = false">取 消</el-button>
-                <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+                <el-button @click="DialogResetForm()">取 消</el-button>
+                <el-button type="primary" @click="addGoodsDialog('DialogForm')">确 定</el-button>
             </div>
         </el-dialog>
     </div>
@@ -303,6 +475,7 @@
             el: '#app',
             // 数据
             data: {
+                imageUrl: '',
                 formLabelWidth: '120px',
                 dialogFormVisible: false,
                 /*
@@ -324,6 +497,7 @@
                 items: [],
                 loading: true,
                 total: 10,
+                producttypeItems: [],
                 goodsVo: {
                     page: 1,
                     pageSize: 5
@@ -343,14 +517,92 @@
                     minOutPrice: '',
                     maxOutPrice: ''
                 },
+                addGoods: {
+                    goodsimg: ''
+                },
             },
             // 方法
             methods: {
-                changeSwitch(row){
+                handleEdit(index, row) {
+                    // 编辑
+                    this.dialogFormVisible = true;
+
+                    this.addGoods = row;
+                    this.imageUrl = row.goodsimg;
+
+                    // 处理商品图片 http://39.106.71.75:8888/group1/M00/00/00/rBGuPl6j8UeAYvX1AADYsdIfSIY082.jpg
+                    this.addGoods.goodsimg = row.goodsimg.substring(25, row.goodsimg.length);
+                    axios.get(goodsApi + "productType/queryProductTypeByProviderid?providerid=" + this.addGoods.providerid).then(res => {
+                        this.producttypeItems = res.data;
+                    }).catch(err => {
+                        vue.$message.error(err.data);
+                    });
+                },
+                changeProviderid() {
+                    axios.get(goodsApi + "productType/queryProductTypeByProviderid?providerid=" + this.addGoods.providerid).then(res => {
+                        this.producttypeItems = res.data;
+                    }).catch(err => {
+                        vue.$message.error(err.data);
+                    })
+                },
+                beforeAvatarUpload(file) {
+                    const isLt1M = file.size / 1024 / 1024 < 1
+                    if (!isLt1M) {
+                        this.$message.error('上传头像图片大小不能超过 1MB!')
+                        return false
+                    }
+                    //这里是我将file作为参数传给了我的接口
+                    this.addSwiper([file]);
+                    return false
+                },
+                addSwiper: (params) => {
+                    let [file] = params
+                    let fd = new FormData()
+                    fd.append('mf', file)
+                    axios.post(api + "file/uploadFile", fd).then(res => {
+                        vue.imageUrl = baseUrl + res.data.data.src;
+                        vue.addGoods.goodsimg = res.data.data.src;
+                        vue.$message({
+                            message: '上传成功',
+                            type: 'success'
+                        });
+                    }).catch(err => {
+                        vue.$message.error('上传失败');
+                    });
+                },
+                DialogResetForm(formName) {
+                    this.dialogFormVisible = false;
+                    this.addGoods = {};
+                    this.imageUrl = '';
+                },
+                changeSwitch(row) {
+                    /*上架下架*/
                     console.log(row);
                 },
                 deleteRow(index, rows) {
                     rows.splice(index, 1);
+                },
+                addGoodsDialog() {
+                    this.loading = false;
+                    let url = '';
+                    if (this.addGoods.id) {
+                        url = goodsApi + "goods/updateGoods";
+                    } else {
+                        url = goodsApi + "goods/addGoods";
+                    }
+                    axios.post(url, this.addGoods).then(res => {
+                        vue.$message({
+                            message: res.data.msg,
+                            type: 'success'
+                        });
+                        vue.dialogFormVisible = false;
+                        vue.queryGoodsData();
+                        this.addGoods = {};
+                        this.imageUrl = '';
+                        vue.loading = true;
+                    }).catch(err => {
+                        vue.$message.error(err);
+                    })
                 },
                 handleSizeChange(val) {
                     this.loading = true;
