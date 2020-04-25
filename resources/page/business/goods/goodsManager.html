@@ -283,7 +283,7 @@
                         编辑
                     </el-button>
                     <el-button
-                            @click.native.prevent="deleteRow(scope.$index, tableData)"
+                            @click.native.prevent="deleteRow(scope.$index, tableData,scope.row)"
                             type="danger"
                             size="mini">
                         <i class="el-icon-delete"></i>
@@ -530,8 +530,6 @@
                     this.addGoods = row;
                     this.imageUrl = row.goodsimg;
 
-                    // 处理商品图片 http://39.106.71.75:8888/group1/M00/00/00/rBGuPl6j8UeAYvX1AADYsdIfSIY082.jpg
-                    this.addGoods.goodsimg = row.goodsimg.substring(25, row.goodsimg.length);
                     axios.get(goodsApi + "productType/queryProductTypeByProviderid?providerid=" + this.addGoods.providerid).then(res => {
                         this.producttypeItems = res.data;
                     }).catch(err => {
@@ -574,13 +572,39 @@
                     this.dialogFormVisible = false;
                     this.addGoods = {};
                     this.imageUrl = '';
+                    this.producttypeItems = [];
                 },
                 changeSwitch(row) {
                     /*上架下架*/
                     console.log(row);
                 },
-                deleteRow(index, rows) {
-                    rows.splice(index, 1);
+                deleteRow(index, rows, row) {
+                    console.log(row);
+                    this.$confirm(`此操作将永久删除【${row.goodsname}】, 是否继续?`, '提示', {
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        type: 'warning'
+                    }).then(() => {
+                        axios.get(goodsApi + "goods/deleteGoods?id=" + row.id).then(res => {
+                            if (res.data.code == 200) {
+                                this.$message({
+                                    type: 'success',
+                                    message: res.data.msg
+                                });
+                                rows.splice(index, 1);
+                            }
+                        }).catch(err => {
+                            this.$message({
+                                type: 'error',
+                                message: err.data.msg
+                            });
+                        })
+                    }).catch(() => {
+                        this.$message({
+                            type: 'info',
+                            message: '已取消删除'
+                        });
+                    });
                 },
                 addGoodsDialog() {
                     this.loading = false;
