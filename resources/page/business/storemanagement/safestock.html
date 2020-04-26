@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>系统用户</title>
+    <title>安全库存</title>
     <meta name="renderer" content="webkit">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -69,58 +69,70 @@
                    lay-filter="availableSwitch" {{ d.available== 1 ? 'checked' : '' }}>
         </script>
         <!--表格结束-->
-
         <!--添加和修改的弹出层开始-->
         <div id="addOrUpdateDiv" style="display: none;padding: 0.3125rem">
             <form method="post" class="layui-form layui-form-pane" lay-filter="dataFrm" id="dataFrm">
                 <div class="layui-form-item">
                     <div class="layui-inline">
-                        <label class="layui-form-label">入库人</label>
+                        <label class="layui-form-label">产品名称</label>
                         <div class="layui-input-inline">
                             <input type="hidden" name="id"/>
-                            <input type="text" name="storer"  lay-verify="required" autocomplete="off"
+                            <input type="text" name="productName"  lay-verify="required" autocomplete="off"
                                    placeholder="请输入入库人姓名" class="layui-input">
                         </div>
                     </div>
                     <div class="layui-inline">
-                        <label class="layui-form-label">登记人</label>
+                        <label class="layui-form-label">产品编号</label>
                         <div class="layui-input-inline">
-                            <input type="text" name="register"  lay-verify="required" autocomplete="off"
+                            <input type="text" name="productId"  lay-verify="required" autocomplete="off"
                                    placeholder="请输入登陆人名称" class="layui-input">
                         </div>
                     </div>
                 </div>
                 <div class="layui-form-item">
-                    <label class="layui-form-label">入库理由</label>
-                    <div class="layui-input-block">
-                        <input type="text" name="reason" autocomplete="off" placeholder="请输入入库理由" class="layui-input">
-                    </div>
-                </div>
-                <div class="layui-form-item">
                     <div class="layui-inline">
-                        <label class="layui-form-label">总件数</label>
+                        <label class="layui-form-label">库存报警下限数</label>
                         <div class="layui-input-inline">
                             <input type="hidden" name="id"/>
-                            <input type="text" name="amountSum"  lay-verify="required" autocomplete="off"
-                                   placeholder="请输入总件数" class="layui-input">
+                            <input type="text" name="minAmount"  lay-verify="required" autocomplete="off"
+                                   placeholder="请输入入库人姓名" class="layui-input">
                         </div>
                     </div>
                     <div class="layui-inline">
-                        <label class="layui-form-label">总金额</label>
+                        <label class="layui-form-label">库存报警上限数</label>
                         <div class="layui-input-inline">
-                            <input type="text" name="costPriceSum"  lay-verify="required" autocomplete="off"
-                                   placeholder="请输入总金额" class="layui-input">
+                            <input type="text" name="maxAmount"  lay-verify="required" autocomplete="off"
+                                   placeholder="请输入登陆人名称" class="layui-input">
                         </div>
                     </div>
                 </div>
-
                 <div class="layui-form-item">
-                    <label class="layui-form-label">备注</label>
-                    <div class="layui-input-block">
-                        <input type="text" name="pemark" autocomplete="off" placeholder="请描述" class="layui-input">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">登记人</label>
+                        <div class="layui-input-inline">
+                            <input type="hidden" name="id"/>
+                            <input type="text" name="register"  lay-verify="required" autocomplete="off"
+                                   placeholder="请输入入库人姓名" class="layui-input">
+                        </div>
                     </div>
                 </div>
-
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">配置要求</label>
+                        <div class="layui-input-inline">
+                            <input type="hidden" name="id"/>
+                            <input type="text" name="config"  lay-verify="required" autocomplete="off"
+                                   placeholder="请输入入库人姓名" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">最大存储量</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="maxCapacityAmount"  lay-verify="required" autocomplete="off"
+                                   placeholder="请输入登陆人名称" class="layui-input">
+                        </div>
+                    </div>
+                </div>
                 <div class="layui-form-item">
                     <div class="layui-input-block" style="text-align: center;">
                         <a class="layui-btn " lay-submit="" lay-filter="doSubmit"><label
@@ -300,7 +312,7 @@
                 content: $("#addOrUpdateDiv"),
                 area: ['800px', '500px'],
                 success: function (index) {
-                    url = api3 + "warehouseStock/insertSecuritySheet/1";
+                    url = api3 + "warehouseStock/insertSecuritySheet/";
                     $("#dataFrm")[0].reset();
 
                     let domMgr = $("#mgr");
