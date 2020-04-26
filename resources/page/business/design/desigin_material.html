@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>物料管理</title>
+    <meta content="webkit" name="renderer">
+    <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1" name="viewport">
+    <link href="../../../css/layuicmspublic.css" rel="stylesheet">
+    <link href="../../../css/layuimini.css" rel="stylesheet">
+    <link href="../../../lib/layui-v2.5.5/css/layui.css" rel="stylesheet">
+    <script src="../../../lib/jquery-3.4.1/jquery-3.4.1.min.js"></script>
+    <script src="../../../lib/layui-v2.5.5/layui.js"></script>
+    <script src="config/common.js"></script>
+</head>
+<body>
+<div class="layuimini-container">
+    <div class="layuimini-main">
+        <!--搜索开始-->
+        <fieldset class="table-search-fieldset">
+            <legend>搜索信息</legend>
+            <div style="margin: 10px 10px 10px 10px">
+                <form class="layui-form layui-form-pane" id="searchFrm">
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">关键词</label>
+                            <div class="layui-input-inline">
+                                <input autocomplete="off" class="layui-input" id="productName" name="productName"
+                                       placeholder="请输入物料名称"
+                                       type="text">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <a class="layui-btn layui-btn-primary" id="search" lay-filter="data-search-btn"
+                               lay-submit=""><i
+                                    class="layui-icon"></i>搜索</a>
+                            <a class="layui-btn layui-btn-primary" lay-filter="data-search-btn"
+                               onclick="javascript:$('#searchFrm')[0].reset()"><i
+                                    class="layui-icon layui-icon-refresh"></i>重置</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </fieldset>
+        <!--搜索结束-->
+
+        <!--表格开始-->
+        <table class="layui-hide" id="material" lay-filter="material"></table>
+
+        <div id="detailDiv" style="display: none"><!--详细-->
+            <table class="layui-hide" id="material_detail" lay-filter="material_detail"></table>
+        </div>
+        <!--操作按钮-->
+        <script id="bardesign_material" type="text/html">
+            <a class="layui-btn  layui-btn-xs layui-btn-primary" lay-event="detail"><i
+                    class="layui-icon layui-icon-edit"></i>详细</a>
+            <a class="layui-btn  layui-btn-xs" lay-event="update"><i class="layui-icon layui-icon-edit"></i>修改</a>
+            <a class="layui-btn layui-btn-danger layui-btn-xs sold" lay-event="delete"><i
+                    class="layui-icon layui-icon-note"></i>删除</a>
+        </script>
+        <script id="roleToolBar" type="text/html">
+            <a class="layui-btn layui-btn-sm layui-btn-danger data-count-delete" lay-event="add">添加</a>
+        </script>
+        <!--表格结束-->
+
+        <!--添加和修改的弹出层开始-->
+        <div id="UpdateDiv" style="display: none;padding: 0.3125rem">
+            <form class="layui-form layui-form-pane" id="dataFrm" lay-filter="dataFrm" method="post">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">物料名称</label>
+                    <div class="layui-input-block">
+                        <input id="updateid" lay-verify="required" name="id" type="hidden"/>
+                        <input id="updateproid" lay-verify="required" name="id" type="hidden"/>
+                        <input autocomplete="off" class="layui-input" id="updateproductName" lay-verify="required"
+                               name="name"
+                               placeholder="请输入名称"
+                               type="text">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">一级分类名称</label>
+                    <div class="layui-input-block">
+                        <select id="updatefirstKindName" lay-filter="updatefirstKindName" lay-verify="required"
+                                name="firstKindName">
+                        </select>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">二级级分类名称</label>
+                    <div class="layui-input-block">
+                        <select id="updatesecondKindName" lay-filter="" lay-verify="required">
+                        </select>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">设计要求</label>
+                    <div class="layui-input-block">
+                        <input name="id" type="hidden"/>
+                        <input autocomplete="off" class="layui-input" id="updatemoduleDescribe" lay-verify="required"
+                               name="moduleDescribe"
+                               placeholder="请输入名称"
+                               type="text">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">类型</label>
+                    <div class="layui-input-block">
+                        <input name="id" type="hidden"/>
+                        <input autocomplete="off" class="layui-input" id="type" lay-verify="required" name="type"
+                               placeholder="请输入名称"
+                               type="text">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">单位</label>
+                    <div class="layui-input-block">
+                        <input name="id" type="hidden"/>
+                        <input autocomplete="off" class="layui-input" id="updateamountUnit" lay-verify="required"
+                               name="amountUnit"
+                               placeholder="请输入名称"
+                               type="text">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">售价</label>
+                    <div class="layui-input-block">
+                        <input name="id" type="hidden"/>
+                        <input autocomplete="off" class="layui-input" id="cost_price_sum" lay-verify="required"
+                               name="cost_price_sum"
+                               placeholder="请输入名称"
+                               type="number">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">登记人</label>
+                    <div class="layui-input-block">
+                        <input name="id" type="hidden"/>
+                        <input autocomplete="off" class="layui-input" id="updatechanger" lay-verify="required"
+                               name="moduleDescribe"
+                               placeholder="请输入名称"
+                               type="text">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">物料描述</label>
+                    <div class="layui-input-block">
+                        <textarea class="layui-textarea" id="updateproduct_describe" lay-verify="required" name="remark"
+                                  placeholder="请输入物料描述"></textarea>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-input-block" style="text-align: center;">
+                        <a class="layui-btn " id="doSubmit" lay-filter="doSubmit" lay-submit="doSubmit"><label
+                                class="layui-icon layui-icon-release"></label>提交</a>
+                        <a class="layui-btn layui-btn-warm" lay-filter="data-search-btn"
+                           onclick="javascript:$('#dataFrm')[0].reset()"><label
+                                class="layui-icon layui-icon-refresh"></label>重置</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <!--选择菜单和权限的弹出层开始-->
+        <div id="selectMenuDiv" style="display: none;padding: 0.3125rem;">
+            <table class="layui-hide" id="menuTable" lay-filter="menuTable"></table>
+        </div>
+
+    </div>
+</div>
+<script>
+    layui.use(['form', 'table', 'laydate', 'layer'], function () {
+        var form = layui.form;
+        var table = layui.table;
+        var laydate = layui.laydate;
+        var layer = layui.layer;
+        search();//查询
+        function search() {                                                              //查询档案
+            $("#search").click(function () {
+                var productName = $("#productName").val();//获取用户输入的物料名称
+                table.reload('material', {//表格重载
+                    url: api1 + 'design_material/findPage'
+                    , where: {productName: productName}
+                });
+            });
+        }
+        var tableIns = table.render({
+            elem: '#material',
+            url: api1 + 'design_material/findPage',
+            toolbar: "#roleToolBar",
+            cellMinWidth: true
+            , request: {
+                pageName: 'page' //页码的参数名称，默认：page
+                , limitName: 'pageSize' //每页数据量的参数名，默认：limit
+            }
+            , response: {
+                countName: 'total' //规定数据总数的字段名称，默认：count 规定返回数据的总行数实例
+                , dataName: 'rows' //规定数据列表的字段名称，默认：data 规定返回的数据示例
+            }
+            , parseData: function (res) { //res 即为原始返回的数据
+                console.log(res);
+                return {
+                    "code": "0", //返回的code的值 成功：0
+                    "total": res.total, //解析数据长度
+                    "rows": res.rows, //解析数据列表
+                };
+
+            }
+            , title: '产品物料'//excel导出的标题
+            , totalRow: true //开启合计行
+            , page: {//开启分页 设置分页样式
+                layout: ['limit', 'count', 'prev', 'page', 'next', 'skip'] //自定义分页布局
+                , groups: 1 //只显示 1 个连续页码
+                , first: false //不显示首页
+                , last: false //不显示尾页
+            }
+            , cols: [[
+                {type: "checkbox", fixed: "left"},
+                {field: 'id', title: '序号', align: "center", totalRowText: '合计'},
+                {field: 'designId', title: '设计编号', align: "center", sort: true},
+                {field: 'productId', title: '物料编号', align: "center"},
+                {field: 'productName', title: '物料名称', align: "center"},
+                {field: 'firstKindName', title: '物料1级分类名称', align: "center", hide: true},
+                {field: 'secondKindName', title: '物料2级分类名称', align: "center", hide: true},
+                {field: 'moduleDescribe', title: '设计要求', align: "center", hide: true},
+                {field: 'costPriceSum', title: '物料总成本', align: "center", totalRow: true, sort: true},
+                {field: 'register', title: '登记人', align: "center", hide: true},
+                {field: 'registerTime', title: '登记时间', align: "center", hide: true, sort: true},
+                {field: 'checker', title: '复核人', align: "center", hide: true},
+                {field: 'checkTime', title: '复核时间', align: "center", hide: true, sort: true},
+                {field: 'changer', title: '变更人', align: "center", hide: true},
+                {field: 'changeTime', title: '变更时间', align: "center", hide: true},
+                {field: 'checkTag', title: '审核标志', align: "center"},
+                {field: 'changeTag', title: '变更标志', align: "center"},
+                {fixed: 'right', title: "操作", minWidth: 170, fixed: 'right', toolbar: '#bardesign_material'}//右侧操作按钮
+
+            ]],
+            page: true
+        });
+        //监听表头的事件
+        table.on('toolbar(material)', function (obj) {
+            var checkStatus = table.checkStatus(obj.config.id);
+            switch (obj.event) {
+                case 'add':
+                    layer.open({
+                        type: 2,
+                        shade: false,
+                        area: ['1000px', '600px'],
+                        maxmin: true,
+                        content: "Material_detailed.html",//打开的内容
+                        zIndex: layer.zIndex, //重点1
+                        success: function (layero) {
+                            layer.setTop(layero); //重点2
+                        }
+                    });
+                    break;
+            }
+            ;
+        });
+
+
+        toolRecorde()
+
+        function toolRecorde() {
+            //监听工具条
+            table.on('tool(material)', function (obj) {
+                var data = obj.data; //获得当前行数据
+                var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+                var tr = obj.tr; //获得当前行 tr 的 DOM 对象（如果有的话）
+                var jsonData = JSON.stringify(data);//json转换后的json
+                if (layEvent === 'delete') { //删除
+                    layer.confirm('确定删除吗?', {icon: 3, title: '提示'}, function (index) { //删除分类
+                        $.ajax({
+                            url: api1 + "design_material/delete_material",
+                            data: {
+                                proid: data.productId
+                            },
+                            success: function (result) {
+                                layer.msg(result.message)
+                                window.location.reload();
+                            },
+                            error: function () {
+                                layer.msg(result.message)
+                                window.location.reload();
+                            }
+
+                        });
+                        layer.close(index);
+                    });
+
+
+                } else if (layEvent === 'update') {             //修改
+                    $("#updateproductName").val(data.productName)
+                    $("#updatemoduleDescribe").val(data.moduleDescribe);
+                    $("#updateid").val(data.id);
+                    $("#updatechanger").val(data.changer);
+                    layer.open({
+                        type: 1,
+                        shade: false,
+                        area: ['1000px', '600px'],
+                        maxmin: true,
+                        content: $('#UpdateDiv'),//打开的内容
+                        //zIndex: layer.zIndex, //重点1
+                        success: function (layero) {
+                            layer.setTop(layero); //重点2
+                        }
+
+                    });
+                    tableDtail(data.productId);
+                    console.log(desigin_material_detail);
+                } else if (layEvent === 'detail') {
+                    layer.open({
+                        type: 1,
+                        shade: false,
+                        area: ['1000px', '600px'],
+                        maxmin: true,
+                        content: $('#detailDiv'),//打开的内容
+                        zIndex: layer.zIndex, //重点1
+                        success: function (layero) {
+                            layer.setTop(layero); //重点2
+                        }
+                    });
+                    tableDtail(data.productId);
+
+
+                }
+            });
+        }
+
+        var material_detail = layer.load(0, {shade: false});//加载动画
+        tableDtail(1);
+
+        function tableDtail(productId) {
+            table.render({
+                elem: '#material_detail',
+                url: api1 + 'design_material_detail/selectByproductId',
+                toolbar: "#material_detail"
+                , where: {productId: productId},
+                cellMinWidth: true
+                , parseData: function (res) { //res 即为原始返回的数据
+                    console.log(res.data);
+                    $("#type").val(res.data.type);
+                    $("#updateproduct_describe").val(res.data.productDescribe);
+                    $("#updateamountUnit").val(res.data.amountUnit);
+                    $("#updateproid").val(res.data.productId);
+                    desigin_material_detail = res;
+                    return {
+                        "code": "0", //返回的code的值 成功：0
+                        "data": res, //解析数据列表
+                    };
+
+                }
+                , title: '产品物料'//excel导出的标题
+                , cols: [[
+                    {type: "checkbox", fixed: "left"},
+                    {field: 'id', title: '物料序号', align: "center"},
+                    {field: 'productId', title: '物料编号', align: "center"},
+                    {field: 'productName', title: '物料名称', align: "center"},
+                    {field: 'type', title: '类型', align: "center"},
+                    {field: 'residualAmount', title: '可用数量', align: "center"},
+                    {field: 'costPrice', title: '单价', align: "center"},
+                    {field: 'productDescribe', title: '描述', align: "center"},
+                ]]
+                , done: function (res) {   //返回数据执行回调函数
+                    layer.close(material_detail);    //返回数据关闭loading
+                }
+
+            });
+        }
+
+
+        /*一级分类的加载*/
+        firstSelectLoad();
+
+        function firstSelectLoad() {
+            $.ajax({
+                url: api1 + 'design_classify/design_classifyAll',
+                success: function (result) {
+                    var parentName = '<option value="">请选择</option>';
+                    for (var i in result.data) {
+                        if (result.data[i].pId === 0) {
+                            parentName += "<option value=" + result.data[i].kindName + ">" + result.data[i].kindName + "</option>";
+                        }
+                    }
+                    $("#updatefirstKindName").html(parentName);
+                    form.render();//没有写这个，操作后没有效果
+                },
+            });
+        }
+
+        /*二级分类加载*/
+        form.on('select(updatefirstKindName)', function (data) {
+            SceondselectSelectLoad();
+
+            function SceondselectSelectLoad() {
+                $.ajax({
+                    url: api1 + 'design_classify/selectByName',
+                    data: {kindName: data.value},
+                    success: function (result) {
+                        console.log(result);
+                        var parentName = '<option value="">请选择</option>';
+                        for (var i in result) {
+                            parentName += "<option value=" + result[i].kindName + ">" + result[i].kindName + "</option>";
+                        }
+                        $("#updatesecondKindName").html(parentName);
+                        form.render();//没有写这个，操作后没有效果
+                    },
+                });
+            }
+        });
+
+        /*提交*/
+        //监听提交
+        $("#doSubmit").click(function () {
+            layer.confirm('请确定数据无误', {icon: 3, title: '提示', zIndex: layer.zIndex,}, function (index) { //
+                var id = $("#updateid").val();
+                var type = $("#type").val();
+                var product_describe = $("#updateproduct_describe").val();
+                var firstKindName = $("#updatefirstKindName").val();
+                var secondKindName = $("#updatesecondKindName").val();
+                var productName = $("#updateproductName").val();
+                var moduleDescribe = $("#updatemoduleDescribe").val();
+                var amountUnit = $("#updateamountUnit").val();
+                var cost_price_sum = $("#cost_price_sum").val();
+                var changer = $("#updatechanger").val();
+                var proid = $("#updateproid").val();
+                if (changer.length < 0) {
+                    lay.msg("请输入登记人姓名")
+                    return;
+                }
+                if (proid.length < 1) {
+                    layer.alert("请输入物料id");
+                    return;
+                }
+                if (id.length < 1) {
+                    layer.alert("请输入id");
+                    return;
+                }
+                if (type.length < 1) {
+                    layer.alert("请输入类型");
+                    return;
+                }
+                if (product_describe.length < 1) {
+                    layer.msg("请输入类型");
+                    return;
+                }
+                if (firstKindName.length < 1) {
+                    layer.msg("请选择一级分类名称");
+                    return;
+                }
+                if (secondKindName.length < 1) {
+                    layer.msg("请选择二级分类名称");
+                    return;
+                }
+                if (productName.length < 1) {
+                    layer.msg("请输入物料名称");
+                    return;
+                }
+                if (moduleDescribe.length < 1) {
+                    layer.msg("请输入设计要求");
+                    return;
+                }
+                if (amountUnit.length < 1) {
+                    layer.msg("请输入单位");
+                    return;
+                }
+                if (cost_price_sum.length < 1) {
+                    layer.msg("请输入售价");
+                    return;
+                }
+                $.ajax({
+                    url: api1 + "design_material/updatematerial",
+                    data: {
+                        id: id,
+                        proid: proid,
+                        type: type,
+                        product_describe: product_describe,
+                        firstKindName: firstKindName,
+                        secondKindName: secondKindName,
+                        productName: productName,
+                        moduleDescribe: moduleDescribe,
+                        amountUnit: amountUnit,
+                        cost_price_sum: cost_price_sum,
+                        changer: changer
+                    },
+                    success: function (result) {
+                        layer.msg(result.message)
+                        window.location.reload();
+                    },
+                    error: function () {
+                        layer.msg(result.message)
+                        window.location.reload();
+                    }
+
+                });
+            });
+
+        });
+
+    });
+</script>
+<script>
+
+</script>
+
+</body>
+</html>

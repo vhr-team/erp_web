@@ -110,7 +110,7 @@
        var tableIns =  table.render({
             id:"provinceReload"
             ,elem: '#complainTable'
-            ,url: api5 + 'supper/getAllBasics_supper'
+            ,url:'http://127.0.0.1:8005/supper/getAllBasics_supper'
             ,page: true
             ,toolbar: '#complain_toolbar'
             ,cols: [[ //表头
@@ -170,7 +170,7 @@
                             });
 
                             params=params.substring(0,params.length-1);
-                            $.post(api5+"supper/deleteIds?params="+params,  function (res) {
+                            $.post("http://127.0.0.1:8005/supper/deleteIds?params="+params,  function (res) {
                                 tableIns.reload();
                                 layer.msg("删除成功", {
                                     icon: 1
@@ -210,7 +210,7 @@
                 case 'del':
                     var delIndex = layer.confirm('真的删除id为' + data.id + "的信息吗?", function(delIndex) {
                         $.ajax({
-                            url: api5+'supper/delsupperById?id='+data.id,
+                            url: 'http://127.0.0.1:8005/supper/delsupperById?id='+data.id,
                             success: function(suc) {
 
                                     obj.del(); //删除对应行（tr）的DOM结构，并更新缓存
@@ -232,7 +232,7 @@
          var edC=  $("#edidId").val();
             if(edC==1){
                 $.ajax({
-                    url:api5+'supper/updateSupperById',
+                    url:'http://127.0.0.1:8005/supper/updateSupperById',
                     data:data.field,
                     success: function (data) {
                         layer.msg("提交成功")
@@ -241,7 +241,7 @@
             }
          if(edC!=1){
              $.ajax({
-                 url:api5+'supper/insertSupper',
+                 url:'http://127.0.0.1:8005/supper/insertSupper',
                  data:data.field,
                  success: function (data) {
                      layer.msg("提交成功")
@@ -272,7 +272,7 @@
                     curr: 1
                 },
 
-                url: api5+'supper/sellName?name='+formData.name,
+                url: 'http://127.0.0.1:8005/supper/sellName?name='+formData.name,
             });
             return false;
         });

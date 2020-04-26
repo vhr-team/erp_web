@@ -291,7 +291,6 @@
 
         //使用ajax请求公告的查询接口
         $.get(api + "notice/loadAllNotice", {page: 1, limit: 5}, function (res) {
-            console.log(res);
             var html = "";
             $.each(res.data, function (i, item) {
                 html += '<div class="layuimini-notice">' +

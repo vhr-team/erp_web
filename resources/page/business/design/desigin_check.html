@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>审核管理</title>
+    <meta content="webkit" name="renderer">
+    <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1" name="viewport">
+    <link href="../../../css/layuicmspublic.css" rel="stylesheet">
+    <link href="../../../css/layuimini.css" rel="stylesheet">
+    <link href="../../../lib/layui-v2.5.5/css/layui.css" rel="stylesheet">
+    <script src="../../../lib/jquery-3.4.1/jquery-3.4.1.min.js"></script>
+    <script src="../../../lib/layui-v2.5.5/layui.js"></script>
+    <script src="config/common.js"></script>
+</head>
+<body>
+<div class="layuimini-container">
+    <div class="layuimini-main">
+        <!--搜索结束-->
+        <fieldset class="table-search-fieldset" style="padding: 20px">
+            <legend style="font-size: 23px">物料审核</legend>
+            <!--表格开始-->
+            <script id="toolbarmaterial" type="text/html">
+                <div class="layui-btn-container">
+                    <button class="layui-btn layui-btn-sm" lay-event="materialmultitrue">批量审核通过</button>
+                    <button class="layui-btn layui-btn-sm" lay-event="materialmultifalse">批量审核不通过</button>
+                </div>
+            </script>
+            <table class="layui-hide" id="material" lay-filter="material"></table>
+        </fieldset>
+        <fieldset class="table-search-fieldset" style="padding: 20px">
+            <legend style="font-size: 23px">档案审核</legend>
+            <div id="detailDiv"><!--详细-->
+                <script id="toolbardesign_record" type="text/html">
+                    <div class="layui-btn-container">
+
+                        <button class="layui-btn layui-btn-sm" lay-event="design_recordmultitrue">批量审核通过</button>
+                        <button class="layui-btn layui-btn-sm" lay-event="design_recordmultifalse">批量审核不通过</button>
+                    </div>
+                </script>
+                <table class="layui-hide" id="design_record" lay-filter="design_record"></table>
+            </div>
+        </fieldset>
+        <!--操作按钮-->
+        <script id="bardesign_material" type="text/html">
+            <a class="layui-btn  layui-btn-xs layui-btn-normal" lay-event="checkmaterialtrue"><i
+                    class="layui-icon layui-icon-face-smile"></i>审核通过</a>
+            <a class="layui-btn  layui-btn-xs layui-btn-danger" lay-event="checkmaterialfasle"><i
+                    class="layui-icon layui-icon-face-cry"></i>审核不通过</a>
+
+        </script>
+
+        <!--操作按钮-->
+        <script id="bardesign_record" type="text/html">
+            <a class="layui-btn  layui-btn-xs layui-btn-normal" lay-event="checkrecordtrue"><i
+                    class="layui-icon layui-icon-face-smile"></i>审核通过</a>
+            <a class="layui-btn  layui-btn-xs layui-btn-danger" lay-event="checkrecordfalse"><i
+                    class="layui-icon layui-icon-face-cry"></i>审核不通过</a>
+        </script>
+    </div>
+    <script>
+        layui.use(['form', 'table', 'laydate', 'layer'], function () {
+
+            var form = layui.form;
+            var table = layui.table;
+            var laydate = layui.laydate;
+            var layer = layui.layer;
+
+
+            table.on('toolbar(material)', function (obj) {
+                var checkStatus = table.checkStatus(obj.config.id);
+                var materialdata = checkStatus.data;
+                var data = [];
+                for (var i in materialdata) {
+                    data.push(materialdata[i].id)
+                }
+                switch (obj.event) {
+                    case 'materialmultitrue':
+                        layer.prompt({title: '请输入审核人姓名', formType: 2}, function (value, index, elem) {
+                            var checkTag = "审核通过"
+                            var checker = value;
+                            var datasource = {
+                                checker: checker,
+                                checkTag: checkTag,
+                                id: data
+                            }
+                            $.ajax({
+                                url: api1 + "design_material/miuticheck",
+                                data: JSON.stringify(datasource),
+                                contentType: "application/json",
+                                type: "post",
+                                success: function (res) {
+                                    layer.msg(res.message);
+                                    table.reload('material', {
+                                        url: api1 + 'design_material/design_materialcheck',
+                                    });
+                                },
+                                error: function (res) {
+                                    layer.msg(res.message);
+                                    table.reload('material', {
+                                        url: api1 + 'design_material/design_materialcheck',
+                                    });
+                                }
+                            })
+                            layer.close(index);
+                        });
+                        break;
+                    case 'materialmultifalse':
+                        console.log(data);
+                        layer.prompt({title: '请输入审核人姓名', formType: 2}, function (value, index, elem) {
+                            var checkTag = "审核不通过"
+                            var checker = value;
+                            var datasource = {
+                                checker: checker,
+                                checkTag: checkTag,
+                                id: data
+                            }
+                            $.ajax({
+                                url: api1 + "design_material/miuticheck",
+                                data: JSON.stringify(datasource),
+                                contentType: "application/json",
+                                type: "post",
+                                success: function (res) {
+                                    layer.msg(res.message);
+                                    table.reload('material', {
+                                        url: api1 + 'design_material/design_materialcheck',
+                                    });
+                                },
+                                error: function (res) {
+                                    layer.msg(res.message);
+                                    table.reload('material', {
+                                        url: api1 + 'design_material/design_materialcheck',
+                                    });
+                                }
+                            })
+                            layer.close(index);
+                        });
+                        break;
+                }
+                ;
+            });
+
+
+            table.on('toolbar(design_record)', function (obj) {
+                var checkStatus = table.checkStatus(obj.config.id);
+                var design_recorddata = checkStatus.data;
+                var data = [];
+                for (var i in design_recorddata) {
+                    data.push(design_recorddata[i].id)
+                }
+                switch (obj.event) {
+                    case 'design_recordmultitrue':
+                        console.log(data);
+                        layer.alert(JSON.stringify(data));
+
+                        layer.prompt({title: '请输入审核人姓名', formType: 2}, function (value, index, elem) {
+                            var checkTag = "审核通过"
+                            var checker = value;
+
+                            var datasource = {
+                                checker: checker,
+                                checkTag: checkTag,
+                                id: data
+                            }
+                            $.ajax({
+                                url: api1 + 'design_record/checkmiuti',
+                                data: JSON.stringify(datasource),
+                                contentType: "application/json",
+                                type: "post",
+                                success: function (res) {
+                                    layer.msg(res.message);
+                                    table.reload('design_record', {
+                                        url: api1 + 'design_record/reloadcheck' //数据接口
+                                    });
+                                },
+                                error: function (res) {
+                                    layer.msg(res.message);
+                                    table.reload('design_record', {
+                                        url: api1 + 'design_record/reloadcheck' //数据接口
+                                    });
+                                }
+                            })
+                            layer.close(index);
+                        });
+
+
+                        break;
+                    case 'design_recordmultifalse':
+                        console.log(data);
+                        layer.prompt({title: '请输入审核人姓名', formType: 2}, function (value, index, elem) {
+                            var checkTag = "审核不通过";
+                            var checker = value;
+                            var datasource = {
+                                checker: checker,
+                                checkTag: checkTag,
+                                id: data
+                            }
+                            $.ajax({
+                                url: api1 + 'design_record/checkmiuti',
+                                data: JSON.stringify(datasource),
+                                contentType: "application/json",
+                                type: "post",
+                                success: function (res) {
+                                    layer.msg(res.message);
+                                    table.reload('design_record', {
+                                        url: api1 + 'design_record/reloadcheck' //数据接口
+                                    });
+                                },
+                                error: function (res) {
+                                    layer.msg(res.message);
+                                    table.reload('design_record', {
+                                        url: api1 + 'design_record/reloadcheck' //数据接口
+                                    });
+                                }
+                            })
+                            layer.close(index);
+                        });
+                        break;
+                }
+                ;
+            });
+
+            var tableIns = table.render({
+                elem: '#material',
+                width: 1290,
+                height: 500, //表格高度
+                url: api1 + 'design_material/design_materialcheck',
+                toolbar: "#toolbarmaterial",
+                cellMinWidth: true
+
+                , request: {
+                    pageName: 'page' //页码的参数名称，默认：page
+                    , limitName: 'pageSize' //每页数据量的参数名，默认：limit
+                }
+                , response: {
+                    countName: 'total' //规定数据总数的字段名称，默认：count 规定返回数据的总行数实例
+                    , dataName: 'rows' //规定数据列表的字段名称，默认：data 规定返回的数据示例
+                }
+                , parseData: function (res) { //res 即为原始返回的数据
+                    return {
+                        "code": "0", //返回的code的值 成功：0
+                        "total": res.total, //解析数据长度
+                        "rows": res.rows, //解析数据列表
+                    };
+
+                }
+                , title: '产品物料'//excel导出的标题
+                , page: {//开启分页 设置分页样式
+                    layout: ['limit', 'count', 'prev', 'page', 'next', 'skip'] //自定义分页布局
+                    , groups: 1 //只显示 1 个连续页码
+                    , first: false //不显示首页
+                    , last: false //不显示尾页
+                }
+                , cols: [[
+                    {type: "checkbox", fixed: "left"},
+                    {field: 'id', title: '序号', align: "center"},
+                    {field: 'designId', title: '设计编号', minWidth: 90, align: "center",},
+                    {field: 'productId', title: '物料编号', minWidth: 90, align: "center"},
+                    {field: 'productName', title: '物料名称', minWidth: 90, align: "center"},
+                    {field: 'firstKindName', title: '物料1级分类名称', minWidth: 90, align: "center", hide: true},
+                    {field: 'secondKindName', title: '物料2级分类名称', minWidth: 90, align: "center", hide: true},
+                    {field: 'moduleDescribe', title: '设计要求', minWidth: 90, align: "center", hide: true},
+                    {field: 'costPriceSum', title: '物料总成本', minWidth: 90, align: "center"},
+                    {field: 'register', title: '登记人', minWidth: 90, align: "center", hide: true},
+                    {field: 'registerTime', title: '登记时间', minWidth: 90, align: "center", hide: true},
+                    {field: 'checker', title: '复核人', minWidth: 90, align: "center", hide: true},
+                    {field: 'checkTime', title: '复核时间', minWidth: 90, align: "center", hide: true},
+                    {field: 'changer', title: '变更人', minWidth: 90, align: "center", hide: true},
+                    {field: 'changeTime', title: '变更时间', minWidth: 90, align: "center", hide: true},
+                    {field: 'checkTag', title: '审核标志', minWidth: 90, align: "center"},
+                    {field: 'changeTag', title: '变更标志', minWidth: 90, align: "center"},
+                    {fixed: 'right', title: "操作", minWidth: 210, align: 'center', toolbar: '#bardesign_material'},//右侧操作按钮
+
+                ]],
+            });
+            /*  layer.ready(function(){
+                  layer.msg('来了呀，审核大大');
+              });*/
+
+            check()
+
+            function check() {
+                //监听工具条
+                table.on('tool(material)', function (obj) {
+                    var data = obj.data; //获得当前行数据
+                    var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+                    var tr = obj.tr; //获得当前行 tr 的 DOM 对象（如果有的话）
+                    var jsonData = JSON.stringify(data);//json转换后的json
+                    console.log(data.id);
+                    if (layEvent === 'checkmaterialtrue') {//审核通过
+                        layer.prompt({title: '请输入审核人姓名', formType: 2}, function (value, index, elem) {
+                            var checkTag = "审核通过"
+                            var id = data.id
+                            var checker = value;
+                            $.ajax({
+                                url: api1 + "design_material/check",
+                                data: {id: id, checker: checker, checkTag: checkTag},
+                                type: "post",
+                                success: function (res) {
+                                    layer.msg(res.message);
+                                    table.reload('material', {
+                                        url: api1 + 'design_material/design_materialcheck',
+                                    });
+                                },
+                                error: function (res) {
+                                    layer.msg(res.message);
+                                    table.reload('material', {
+                                        url: api1 + 'design_material/design_materialcheck',
+                                    });
+                                }
+                            })
+                            layer.close(index);
+                        });
+
+
+                    }
+                    if (layEvent === 'checkmaterialfalse') {//审核不通过
+                        layer.prompt({title: '请输入审核人姓名', formType: 2}, function (value, index, elem) {
+                            var checkTag = "审核不通过"
+                            var id = data.id
+                            var checker = value;
+                            $.ajax({
+                                url: api1 + "design_material/check",
+                                data: {id: id, checker: checker, checkTag: checkTag},
+                                type: "post",
+                                success: function (res) {
+                                    layer.msg(res.message);
+                                    table.reload('material', {
+                                        url: api1 + 'design_material/design_materialcheck',
+                                    });
+                                },
+                                error: function (res) {
+                                    layer.msg(res.message);
+                                    table.reload('material', {
+                                        url: api1 + 'design_material/design_materialcheck',
+                                    });
+                                }
+                            })
+                            layer.close(index);
+                        });
+
+
+                    }
+                });
+            }
+
+            var recordreload = layer.load(0, {shade: false});
+            tablerecord();//表格加载数据
+            function tablerecord() {
+                design_recordTable = table.render({                                                         /*表格加载*/
+                    elem: '#design_record', //示例table的Id
+                    width: 1290
+                    , height: 500 //表格高度
+                    , url: api1 + 'design_record/reloadcheck' //数据接口
+                    , toolbar: '#toolbardesign_record' //开启头部工具栏，并为其绑定左侧模板
+                    , defaultToolbar: ['filter', 'print', 'exports', {
+                        title: '提示',
+                        layEvent: 'LAYTABLE_TIPS',
+                        icon: 'layui-icon-tips'
+                    }]
+                    , request: {
+                        pageName: 'page' //页码的参数名称，默认：page
+                        , limitName: 'pageSize' //每页数据量的参数名，默认：limit
+                    }
+                    , response: {
+
+                        countName: 'total' //规定数据总数的字段名称，默认：count 规定返回数据的总行数实例
+                        , dataName: 'rows' //规定数据列表的字段名称，默认：data 规定返回的数据示例
+                    }
+                    , parseData: function (res) { //res 即为原始返回的数据
+                        console.log(res);
+                        return {
+                            "code": "0", //返回的code的值 成功：0
+                            "total": res.total, //解析数据长度
+                            "rows": res.rows, //解析数据列表
+
+                        };
+
+                    }
+                    , page: {//开启分页 设置分页样式
+                        layout: ['limit', 'count', 'prev', 'page', 'next', 'skip'] //自定义分页布局
+                        , groups: 1 //只显示 1 个连续页码
+                        , first: false //不显示首页
+                        , last: false //不显示尾页
+                    }
+
+                    , title: '产品档案登记'//excel导出的标题
+                    , cols:
+                        [[ //表头
+                            {type: 'checkbox', fixed: 'left'} //开启多选
+                            , {field: 'id', title: 'ID', type: "numbers", minWidth: 90, hide: true, align: "center"}
+                            , {
+                                field: 'productId',
+                                title: '产品ID',
+                                width: 90,
+                                align: "center"
+                            }
+                            , {field: 'productName', title: '产品名称', minWidth: 90, align: "center"}
+                            , {field: 'factoryName', title: '制造商', minWidth: 90, align: "center"}
+                            , {
+                                field: 'realCostPrice',
+                                title: '成本单价',
+                                minWidth: 90,
+                                sort: true, //排序
+                                hide: true, //是否开启隐藏
+                                align: "center"
+                            }
+                            , {field: 'amountUnit', title: '单位', minWidth: 60, hide: true, align: "center"}
+                            , {field: 'responsiblePerson', minWidth: 90, title: '产品经理', hide: true, align: "center"}
+                            , {field: 'register', title: '登记人', minWidth: 90, align: "center"}
+                            , {
+                                field: 'registerTime',
+                                title: '建档时间',
+                                minWidth: 100,
+                                sort: true,
+                                hide: true,
+                                align: "center"
+                            }
+                            , {field: 'checkTag', title: '审核标志', minWidth: 90, align: "center"}
+                            , {field: 'changeTag', title: '档案变更标志', minWidth: 100, align: "center"}
+                            , {field: 'type', title: '类型', minWidth: 100, align: "center"}
+                            , {field: 'priceChangeTag', title: '价格变更标志', minWidth: 100, align: "center"}
+                            , {field: 'deleteTag', title: '是否下架', hide: true, minWidth: 90, align: "center"}
+                            , {field: 'firstKindName', title: '一级分类', hide: true, minWidth: 90, align: "center"}
+                            , {field: 'secondKindName', title: '二级分类', hide: true, minWidth: 90, align: "center"}
+                            , {field: 'productClass', title: '档次级别', hide: true, minWidth: 90, align: "center"}
+                            , {field: 'productDescribe', title: '产品描述', hide: true, minWidth: 90, align: "center"}
+                            , {field: 'type', title: '类型', hide: true, minWidth: 90, align: "center"}
+                            , {field: 'responsiblePerson', title: '产品经理', hide: true, minWidth: 90, align: "center"}
+                            , {field: 'warranty', title: '保修期', hide: true, minWidth: 90, align: "center"}
+                            , {field: 'productNick', title: '产品简称', hide: true, minWidth: 100, align: "center"}
+                            , {field: 'materialList', title: '物料组成', hide: true, minWidth: 100, align: "center"}
+                            , {
+                                fixed: 'right',
+                                title: "操作",
+                                minWidth: 210,
+                                align: 'center',
+                                toolbar: '#bardesign_record'
+                            }//右侧操作按钮
+
+
+                        ]]
+                    , done: function (res) {   //返回数据执行回调函数
+                        layer.close(recordreload);    //返回数据关闭loading
+                    }
+                });
+
+            }
+
+            toolRecorde();
+
+            function toolRecorde() {
+                //监听工具条
+                table.on('tool(design_record)', function (obj) {
+                    var data = obj.data; //获得当前行数据
+                    var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+                    var tr = obj.tr; //获得当前行 tr 的 DOM 对象（如果有的话）
+                    var jsonData = JSON.stringify(data);//json转换后的json
+                    if (layEvent === 'checkrecordtrue') {                                                         //修改档案
+                        layer.prompt({title: '请输入审核人姓名', formType: 2}, function (value, index, elem) {
+                            var checkTag = "审核通过"
+                            var id = data.id
+                            var checker = value;
+                            $.ajax({
+                                url: api1 + "design_record/check",
+                                data: {id: id, checker: checker, checkTag: checkTag},
+                                type: "post",
+                                success: function (res) {
+                                    layer.msg(res.message);
+                                    table.reload('design_record', {
+                                        url: api1 + 'design_record/reloadcheck' //数据接口
+                                    });
+                                },
+                                error: function (res) {
+                                    layer.msg(res.message);
+                                    table.reload('design_record', {
+                                        url: api1 + 'design_record/reloadcheck' //数据接口
+                                    });
+                                }
+                            })
+                            layer.close(index);
+                        });
+                    } else if (layEvent === 'checkrecordfalse') {                                                         //修改档案
+                        layer.prompt({title: '请输入审核人姓名', formType: 2}, function (value, index, elem) {
+                            var checkTag = "审核不通过"
+                            var id = data.id
+                            var checker = value;
+                            $.ajax({
+                                url: api1 + "design_record/check",
+                                type: "post",
+                                data: {id: id, checker: checker, checkTag: checkTag},
+                                success: function (res) {
+                                    layer.msg(res.message);
+                                    table.reload('design_record', {
+                                        url: api1 + 'design_record/reloadcheck' //数据接口
+                                    });
+
+                                },
+                                error: function (res) {
+                                    layer.msg(res.message);
+                                    table.reload('design_record', {
+                                        url: api1 + 'design_record/reloadcheck' //数据接口
+                                    });
+                                }
+                            })
+                            layer.close(index);
+                        });
+                    }
+                });
+            }
+
+        });
+    </script>
+</div>
+</body>
+</html>

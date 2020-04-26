@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>商品类别管理</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="../../../lib/layui-v2.5.5/css/layui.css" media="all">
+    <link rel="stylesheet" href="../../../css/public.css" media="all">
+    <link rel="stylesheet" href="../../../lib/plugin/iview/dist/styles/iview.css">
+    <link rel="stylesheet" href="../../../lib/plugin/element-ui/style/index.css">
+</head>
+<body>
+
+<div class="layuimini-container" id="app">
+    <div class="layuimini-main">
+        <!--搜索开始-->
+        <fieldset class="table-search-fieldset">
+            <legend>搜索信息</legend>
+            <div style="display: flex;justify-content: space-between">
+                <div>
+                    <el-form ref="formInline" :inline="true" :model="formInline" class="demo-form-inline">
+                        <el-form-item label="供应商" prop="supperId">
+                            <el-select v-model="formInline.supperId" placeholder="请选择">
+                                <el-option :label="item.name" :value="item.id" v-for="item in items"></el-option>
+                            </el-select>
+                        </el-form-item>
+                        <el-form-item label="类别名称" prop="name">
+                            <el-input placeholder="请输入类别名称" v-model="formInline.name"></el-input>
+                        </el-form-item>
+                        <el-form-item>
+                            <el-button type="primary" icon="el-icon-search" @click="onSubmit">查询</el-button>
+                            <el-button @click="resetForm('formInline')" icon="el-icon-refresh-left">重置</el-button>
+                        </el-form-item>
+                    </el-form>
+                </div>
+
+                <div>
+                    <el-button type="primary" icon="el-icon-plus" @click="dialogFormVisible = true">添加</el-button>
+                </div>
+            </div>
+        </fieldset>
+        <!--搜索结束-->
+
+        <!--数据表格开始-->
+        <el-table
+                :data="tableData"
+                stripe
+                border
+                v-loading="loading"
+                element-loading-text="拼命加载中"
+                element-loading-spinner="el-icon-loading"
+                element-loading-background="rgba(0, 0, 0, 0.8)"
+                style="width: 100%">
+            <el-table-column
+                    prop="supperName"
+                    align="center"
+                    label="供应商">
+            </el-table-column>
+            <el-table-column
+                    prop="name"
+                    align="center"
+                    label="类别名称">
+            </el-table-column>
+            <el-table-column
+                    prop="address"
+                    align="center"
+                    label="操作">
+                <template slot-scope="scope">
+                    <el-button
+                            size="mini"
+                            @click="handleEdit(scope.$index, scope.row)"><i class="el-icon-edit"></i> 编辑
+                    </el-button>
+                    <el-button
+                            size="mini"
+                            type="danger"
+                            @click="handleDelete(scope.$index, scope.row)"><i class="el-icon-delete"></i> 删除
+                    </el-button>
+                </template>
+            </el-table-column>
+        </el-table>
+        <!--数据表格结束-->
+
+        <el-dialog title="商品类别" :visible.sync="dialogFormVisible">
+            <el-form ref="addProductTypeForm" :rules="rules" :model="form">
+                <el-form-item prop="name" label="商品类别名称" :label-width="formLabelWidth">
+                    <el-input v-model="form.name" autocomplete="off" placeholder="请输入商品类别名称"></el-input>
+                </el-form-item>
+                <el-form-item prop="supperId" label="供应商" :label-width="formLabelWidth">
+                    <el-select v-model="form.supperId" placeholder="请选择">
+                        <el-option :label="item.name" :value="item.id" v-for="item in items"></el-option>
+                    </el-select>
+                </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="resetForm_two('addProductTypeForm')">取 消
+                </el-button>
+                <el-button type="primary" @click="addProductType('addProductTypeForm')">确 定</el-button>
+            </div>
+        </el-dialog>
+
+        <!--分页-->
+        <div style="margin-top: 10px;">
+            <el-pagination
+                    background
+                    layout="sizes, prev, pager, next, jumper, ->, total, slot"
+                    :page-size="pageSize"
+                    @size-change="handleSizeChange"
+                    @current-change="handleCurrentChange"
+                    :current-page="page"
+                    :page-sizes="[5, 10, 15, 20, 25, 30]"
+                    :total="total">
+            </el-pagination>
+        </div>
+        <!--分页-->
+    </div>
+</div>
+<script src="../../../lib/jquery-3.4.1/jquery-3.4.1.min.js"></script>
+<script src="../../../lib/plugin/vue/vue.min.js"></script>
+<script src="../../../lib/plugin/iview/dist/iview.min.js"></script>
+<script src="../../../lib/plugin/element-ui/index.js"></script>
+<script src="../../../lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
+<script src="../../../lib/plugin/axios/axios.min.js"></script>
+<script src="../../../lib/common/jquery.cookie.min.js" charset="utf-8"></script>
+<script src="../../../lib/common/common.js" charset="utf-8"></script>
+<script>
+    let productApi = 'http://127.0.0.1:8005/';
+    $(function () {
+        // http request 拦截器
+        axios.interceptors.request.use(
+            config => {
+                if (token) { //判断token是否存在
+                    config.headers.token = $.cookie("TOKEN");  //将token设置成请求头
+                }
+                return config;
+            },
+            err => {
+                return Promise.reject(err);
+            }
+        );
+
+        new Vue({
+            el: "#app",
+            data: {
+                form: {
+                    name: '',
+                    supperId: '',
+                    productTypeId: ''
+                },
+                formLabelWidth: '120px',
+                formInline: {
+                    name: '',
+                    supperId: ''
+                },
+                items: [],
+                tableData: [],
+                loading: true,
+                page: 1,
+                pageSize: 5,
+                total: 0,
+                dialogFormVisible: false,
+                rules: {
+                    name: [
+                        {required: true, message: '请输入商品类别名称', trigger: 'blur'},
+                    ],
+                    supperId: [
+                        {required: true, message: '请选择供应商', trigger: 'change'}
+                    ],
+                }
+            },
+            methods: {
+                handleSizeChange(val) {
+                    this.pageSize = val;
+                    this.initTable();
+                },
+                handleCurrentChange(val) {
+                    this.page = val;
+                    this.initTable();
+                },
+                addProductType(addProductTypeForm) {
+                    let form = addProductTypeForm;
+                    this.$refs[addProductTypeForm].validate((valid) => {
+                        if (valid) {
+                            let url
+                            if (this.form.productTypeId) {
+                                url = productApi + 'productType/updateProductType';
+                            } else {
+                                url = productApi + 'productType/addProductType';
+                            }
+
+                            axios.post(productApi + "productType/checkProductType", {
+                                supperId: this.form.supperId,
+                                name: this.form.name
+                            }).then(res => {
+                                if (res.data.code == -1) {
+                                    this.$message({
+                                        message: res.data.msg,
+                                        type: 'warning'
+                                    });
+                                    // 后台存在
+                                    return false;
+                                } else {
+                                    this.loading = true;
+                                    axios.post(url, {
+                                        supperId: this.form.supperId,
+                                        name: this.form.name,
+                                        productTypeId: this.form.productTypeId
+                                    }).then(res => {
+                                        // 添加成功关系dialog
+                                        this.dialogFormVisible = false;
+                                        // 重新加载表格数据
+                                        this.initTable();
+                                        this.$message({
+                                            message: res.data.msg,
+                                            type: 'success'
+                                        });
+
+                                        // 表单重置
+                                        this.$refs[form].resetFields();
+                                    });
+                                }
+                            }).catch(err => {
+
+                            })
+                        } else {
+                            return false;
+                        }
+                    });
+                },
+                resetForm(formName) {
+                    this.$refs[formName].resetFields();
+                },
+                resetForm_two(formName) {
+                    this.dialogFormVisible = false;
+                    this.$refs[formName].resetFields();
+                },
+                initTable() {
+                    this.loading = true;
+                    axios.get(productApi + "productType/queryAllProductType?page=" + this.page + "&pageSize=" + this.pageSize).then(res => {
+                        // 关闭加载层
+                        this.loading = false;
+                        this.total = res.data.count;
+                        this.tableData = res.data.data;
+                    });
+                },
+                initSupplier() {
+                    axios.get(productApi + "supper/getAllSupper").then(res => {
+                        this.items = res.data;
+                    });
+                },
+                // 查询
+                onSubmit() {
+                    this.loading = true;
+                    axios.get(productApi + "productType/queryAllProductType?page=" + this.page + "&pageSize=" + this.pageSize + "&supperId=" + this.formInline.supperId + "&name=" + this.formInline.name).then(res => {
+                        // 关闭加载层
+                        this.loading = false;
+                        this.total = res.data.count;
+                        this.tableData = res.data.data;
+                    });
+                },
+                handleEdit(index, row) {
+                    // 编辑
+                    this.dialogFormVisible = true;
+
+                    this.form.name = row.name;
+                    this.form.supperId = row.supperId;
+                    this.form.productTypeId = row.productTypeId;
+                },
+                handleDelete(index, row) {
+                    this.$confirm(`此操作将永久删除【${row.name}】, 是否继续?`, '提示', {
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        type: 'warning'
+                    }).then(() => {
+                        axios.get(productApi + "productType/deleteProductType?productTypeId=" + row.productTypeId).then(res => {
+                            if (res.data.code == 200) {
+                                this.initTable();
+                                this.$message({
+                                    type: 'success',
+                                    message: res.data.msg
+                                });
+                            }
+                        }).catch(err => {
+                            this.$message({
+                                type: 'error',
+                                message: err.data.msg
+                            });
+                        })
+                    }).catch(() => {
+                        this.$message({
+                            type: 'info',
+                            message: '已取消删除'
+                        });
+                    });
+                }
+            },
+            mounted() {
+                this.initTable();
+                this.initSupplier();
+            }
+        });
+    })
+</script>
+</body>
+</html>
