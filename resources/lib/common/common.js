@@ -1,5 +1,6 @@
 let api = 'http://127.0.0.1:8001/';
 let api1 = 'http://127.0.0.1:8002/';
+let api3 = 'http://127.0.0.1:8004/';
 let baseUrl = "http://39.106.71.75:8888/";
 let loginUrl = 'http://localhost:8888/ERP_WEB/login.html';
 
