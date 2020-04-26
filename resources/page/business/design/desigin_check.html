@@ -17,7 +17,7 @@
 <div class="layuimini-container">
     <div class="layuimini-main">
         <!--搜索结束-->
-        <fieldset class="table-search-fieldset" style="padding: 20px">
+        <!--        <fieldset class="table-search-fieldset"  style="padding: 20px">-->
             <legend style="font-size: 23px">物料审核</legend>
             <!--表格开始-->
             <script id="toolbarmaterial" type="text/html">
@@ -27,9 +27,9 @@
                 </div>
             </script>
             <table class="layui-hide" id="material" lay-filter="material"></table>
-        </fieldset>
-        <fieldset class="table-search-fieldset" style="padding: 20px">
-            <legend style="font-size: 23px">档案审核</legend>
+        <!--        </fieldset>-->
+        <!--        <fieldset class="table-search-fieldset" style="padding: 20px">-->
+        <legend style="font-size: 23px">档案审核</legend>
             <div id="detailDiv"><!--详细-->
                 <script id="toolbardesign_record" type="text/html">
                     <div class="layui-btn-container">
@@ -40,7 +40,7 @@
                 </script>
                 <table class="layui-hide" id="design_record" lay-filter="design_record"></table>
             </div>
-        </fieldset>
+        <!--        </fieldset>-->
         <!--操作按钮-->
         <script id="bardesign_material" type="text/html">
             <a class="layui-btn  layui-btn-xs layui-btn-normal" lay-event="checkmaterialtrue"><i
@@ -222,7 +222,7 @@
 
             var tableIns = table.render({
                 elem: '#material',
-                width: 1290,
+
                 height: 500, //表格高度
                 url: api1 + 'design_material/design_materialcheck',
                 toolbar: "#toolbarmaterial",
@@ -348,8 +348,8 @@
             tablerecord();//表格加载数据
             function tablerecord() {
                 design_recordTable = table.render({                                                         /*表格加载*/
-                    elem: '#design_record', //示例table的Id
-                    width: 1290
+                    elem: '#design_record' //示例table的Id
+                    , Width: 1200
                     , height: 500 //表格高度
                     , url: api1 + 'design_record/reloadcheck' //数据接口
                     , toolbar: '#toolbardesign_record' //开启头部工具栏，并为其绑定左侧模板
@@ -433,7 +433,7 @@
                             , {
                                 fixed: 'right',
                                 title: "操作",
-                                minWidth: 210,
+                                minWidth: 250,
                                 align: 'center',
                                 toolbar: '#bardesign_record'
                             }//右侧操作按钮

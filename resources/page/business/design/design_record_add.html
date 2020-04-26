@@ -286,8 +286,6 @@
             var sum = 0;//物料总价
             var material = "";//物料名称
             var str = formSelects.value('material_detail', 'all');
-
-
             /*提交事件*/
 
             /*获取输入的产品名称*/
@@ -348,12 +346,13 @@
                 contentType: "application/json",
                 success: function (res) {
                     layer.msg(res.message);
+
                 },
                 error: function (res) {
                     layer.msg(res.message);
                 }
             });
-
+            window.location.reload();
 
         })
 
