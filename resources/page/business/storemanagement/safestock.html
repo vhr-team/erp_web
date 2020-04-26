@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
     <meta charset="utf-8">
-    <title>安全库存配置管理</title>
+    <title>系统用户</title>
     <meta name="renderer" content="webkit">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -16,18 +16,37 @@
         <fieldset class="table-search-fieldset">
             <legend>搜索信息</legend>
             <div style="margin: 10px 10px 10px 10px">
-                <form class="layui-form layui-form-pane" id="searchFrm">
+                <form class="layui-form layui-form-pane" action="" id="searchFrm">
                     <div class="layui-form-item">
                         <div class="layui-inline">
-                            <label class="layui-form-label">关键词</label>
+                            <label class="layui-form-label">所属部门</label>
+                            <div class="layui-input-inline">
+                                <input type="hidden" name="deptid" id="p_deptid"/>
+                                <input type="text" name="p_deptname" id="p_deptname" autocomplete="off"
+                                       class="layui-input">
+                            </div>
+                            <a class="layui-btn layui-btn-primary" id="doSelectDept"><label
+                                    class="layui-icon layui-icon-male"></label> 选 择 </a>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">用户名称</label>
                             <div class="layui-input-inline">
                                 <input type="text" name="name" autocomplete="off" class="layui-input">
                             </div>
                         </div>
                         <div class="layui-inline">
-                            <a class="layui-btn layui-btn-primary" lay-submit="" lay-filter="data-search-btn"><i class="layui-icon"></i>搜索</a>
-                            <a class="layui-btn layui-btn-primary" onclick="javascript:$('#searchFrm')[0].reset()"
-                               lay-filter="data-search-btn"><i class="layui-icon layui-icon-refresh"></i>重置</a>
+                            <label class="layui-form-label">用户备注</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="remark" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <a class="layui-btn layui-btn-primary" lay-submit="" lay-filter="data-search-btn"><label
+                                    class="layui-icon layui-icon-search"></label> 搜 索 </a>
+                            <a class="layui-btn layui-btn-primary"
+                               onclick="javascript:$('#searchFrm')[0].reset();$('#p_deptid').val('')"
+                               lay-filter="data-search-btn"><label class="layui-icon layui-icon-refresh"></label> 重 置
+                            </a>
                         </div>
                     </div>
                 </form>
@@ -36,20 +55,14 @@
         <!--搜索结束-->
 
         <!--表格开始-->
-        <table class="layui-hide" id="roleTable" lay-filter="roleTable"></table>
-        <div style="display: none" id="menuTableBar">
-            <a class="layui-btn layui-btn-xs layui-btn-warm data-count-delete menubtn_update"
-               lay-event="update">添加
-            </a>
-            <a class="layui-btn layui-btn-xs layui-btn-normal data-count-delete menubtn_update"
-               lay-event="update">审核
-            </a>
-            <script id="roleToolBar" type="text/html">
-                <a class="layui-btn layui-btn-sm layui-btn-danger data-count-delete" lay-event="add">添加</a>
-            </script>
+        <table class="layui-hide" id="userTable" lay-filter="userTable"></table>
+        <div style="display: none" id="userToolBar">
+            <a class="layui-btn layui-btn-sm layui-btn-normal userBtn_add" lay-event="add"><i
+                    class="layui-icon layui-icon-addition"></i> 添加 </a>
         </div>
-
-
+        <script type="text/html" id="userTableBar">
+            <a class="layui-btn layui-btn-xs layui-btn-normal data-count-delete" lay-event="selectRole">审核</a>
+        </script>
         <script type="text/html" id="availableTpl">
             <!-- 这里的 checked 的状态只是演示 -->
             <input type="checkbox" name="available" value="{{d.id}}" lay-skin="switch" lay-text="可用|不可用"
@@ -61,19 +74,53 @@
         <div id="addOrUpdateDiv" style="display: none;padding: 0.3125rem">
             <form method="post" class="layui-form layui-form-pane" lay-filter="dataFrm" id="dataFrm">
                 <div class="layui-form-item">
-                    <label class="layui-form-label">角色名称</label>
-                    <div class="layui-input-block">
-                        <input type="hidden" name="id"/>
-                        <input type="text" name="name" lay-verify="required" autocomplete="off" placeholder="请输入标题"
-                               class="layui-input">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">入库人</label>
+                        <div class="layui-input-inline">
+                            <input type="hidden" name="id"/>
+                            <input type="text" name="storer"  lay-verify="required" autocomplete="off"
+                                   placeholder="请输入入库人姓名" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">登记人</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="register"  lay-verify="required" autocomplete="off"
+                                   placeholder="请输入登陆人名称" class="layui-input">
+                        </div>
                     </div>
                 </div>
                 <div class="layui-form-item">
-                    <label class="layui-form-label">角色备注</label>
+                    <label class="layui-form-label">入库理由</label>
                     <div class="layui-input-block">
-                        <textarea placeholder="请输入角色备注" name="remark" class="layui-textarea"></textarea>
+                        <input type="text" name="reason" autocomplete="off" placeholder="请输入入库理由" class="layui-input">
                     </div>
                 </div>
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">总件数</label>
+                        <div class="layui-input-inline">
+                            <input type="hidden" name="id"/>
+                            <input type="text" name="amountSum"  lay-verify="required" autocomplete="off"
+                                   placeholder="请输入总件数" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">总金额</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="costPriceSum"  lay-verify="required" autocomplete="off"
+                                   placeholder="请输入总金额" class="layui-input">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">备注</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="pemark" autocomplete="off" placeholder="请描述" class="layui-input">
+                    </div>
+                </div>
+
                 <div class="layui-form-item">
                     <div class="layui-input-block" style="text-align: center;">
                         <a class="layui-btn " lay-submit="" lay-filter="doSubmit"><label
@@ -87,8 +134,8 @@
         <!--添加和修改的弹出层结束-->
 
         <!--选择菜单和权限的弹出层开始-->
-        <div id="selectMenuDiv" style="display: none;padding: 0.3125rem;">
-            <table class="layui-hide" id="menuTable" lay-filter="menuTable"></table>
+        <div id="selectRoleDiv" style="display: none;padding: 0.3125rem;">
+            <table class="layui-hide" id="roleTable" lay-filter="roleTable"></table>
         </div>
         <!--选择菜单和权限的弹出层结束-->
 
@@ -100,154 +147,195 @@
 <script src="../../../lib/jq-module/jquery.particleground.min.js" charset="utf-8"></script>
 <script src="../../../lib/common/jquery.cookie.min.js" charset="utf-8"></script>
 <script src="../../../lib/common/common.js" charset="utf-8"></script>
-<script src="E:\浏览器下载\项目\erp_web\resources\page\business\storemanagement\js\layui.js" charset="utf-8"></script>
+<script src="../../../lib/common/selectLayer.js" charset="utf-8"></script>
+<script src="../../../lib/common/Convert_Pinyin.js" charset="utf-8"></script>
+
 <script>
-    layui.use(['form', 'table', 'laydate', 'layer', 'treeTable'], function () {
+    layui.use(['form', 'table', 'laydate', 'layer'], function () {
         var form = layui.form;
         var table = layui.table;
         var laydate = layui.laydate;
         var layer = layui.layer;
-        var treeTable = layui.treeTable;
+
+        laydate.render({
+            elem: '#hiredate'
+        });
 
         var tableIns = table.render({
-            elem: '#roleTable',
+            elem: '#userTable',
             url: api3 + 'warehouseStock/querySecuritySheet/1',
-            toolbar: "#roleToolBar",
+            toolbar: "#userToolBar",
             cellMinWidth: true,
-
             cols: [[
-                {type: "numbers"},
                 {field: 'productName', title: '产品名称', align: "center"},
                 {field: 'productId', title: '产品编号', align: "center"},
                 {field: 'minAmount', title: '库存报警下限数', align: "center"},
                 {field: 'maxAmount', title: '库存报警上限数', align: "center"},
                 {field: 'register', title: '登记人', align: "center"},
-                {field: 'registerTime', title: '登记时间', align: "cent er"},
+                {field: 'registerTime', title: '登记时间', align: "center"},
                 {field: 'config', title: '配置要求', align: "center"},
                 {field: 'maxCapacityAmount', title: '最大存储量', align: "center"},
-                {title: '操作', templet: '#menuTableBar', fixed: "right", align: "center"}
+                {title: '操作', width: 300, templet: '#userTableBar', fixed: "right", align: "center"}
             ]],
             page: true
         });
-
 
         // 监听搜索操作
         form.on('submit(data-search-btn)', function (data) {
             var params = $("#searchFrm").serialize();
             //执行搜索重载
-            table.reload('roleTable', {
+            table.reload('userTable', {
                 page: {
                     curr: 1
                 }
-                , url: api + 'role/loadAllRole?' + params
+                , url: api + 'user/loadAllUser?' + params
             });
             return false;
         });
 
+
         //监听表头的事件
-        table.on('toolbar(roleTable)', function (obj) {
+        table.on('toolbar(userTable)', function (obj) {
             var checkStatus = table.checkStatus(obj.config.id);
             switch (obj.event) {
                 case 'batchdelete':
                     batchdelete();
                     break;
                 case 'add':
-                    openAddRole();
+                    openAddUser();
                     break;
             }
             ;
         });
 
+        //监听行数据的事件
+        table.on('tool(userTable)', function (obj) {
+            var data = obj.data;
+            if (obj.event === 'delete') {
+                layer.confirm('真的删除【' + data.name + '】这个用户吗么', function (index) {
+                    $.post(api + "user/deleteUser", {id: data.id}, function (res) {
+                        layer.msg(res.msg);
+                        obj.del();
+                        layer.close(index);
+                    })
+                });
+            } else if (obj.event === 'update') {
+                openUpdateUser(data);
+            } else if (obj.event === 'resetPwd') {
+                resetPwd(data);
+            } else if (obj.event === 'selectRole') {
+                openSelectRole(data);
+            }
+        });
+
+        //重置密码
+        function resetPwd(data) {
+            layer.confirm('真的重置【' + data.name + '】这个用户的密码吗?', function (index) {
+                $.post(api + "user/resetUserPwd", {id: data.id}, function (res) {
+                    layer.msg(res.msg);
+                    layer.close(index);
+                })
+            });
+        }
+
+        //监听可用操作
+        form.on('switch(availableSwitch)', function (obj) {
+            $.post(api + "user/updateUser", {id: this.value, available: obj.elem.checked ? 1 : 0}, function (res) {
+                layer.msg(res.msg);
+                tableIns.reload();
+            });
+        });
+
+        function openUpdateUser(data) {
+            mainIndex = layer.open({
+                type: 1,
+                title: '修改【' + data.name + '】用户',
+                content: $("#addOrUpdateDiv"),
+                area: ['800px', '600px'],
+                success: function (index) {
+                    url = api + "user/updateUser";
+                    $("#mgr").html("");
+                    //装载数据表格
+                    form.val("dataFrm", data);
+                    //根据部门ID查询部门名称
+                    $.get(api + "dept/getDeptById", {id: data.deptid}, function (res) {
+                        $("#deptid_name").val(res.data.title);
+                    });
+
+                    //根据领导ID查询 领导部门名称
+                    $.get(api + "user/loadUserByUserId", {userId: data.mgr}, function (data) {
+
+                        //根据部门ID查询部门名称
+                        $.get(api + "dept/getDeptById", {id: data.data.deptid}, function (res) {
+                            $("#mgrDept").val(res.data.id);
+                            $("#leadername").val(res.data.title);
+                        });
+
+                        $.post(api + "/user/queryUserByDeptId", {deptid: data.data.deptid}, function (res) {
+                            let domMgr = $("#mgr");
+                            let html = `<option value="">请选择领导</option>`;
+
+                            $.each(res.data, function (i, item) {
+                                if (data.data.id == item.id) {
+                                    html += `<option value="${item.id}" selected>${item.name}</option>`;
+                                } else {
+                                    html += `<option value="${item.id}">${item.name}</option>`;
+                                }
+                            });
+                            domMgr.html(html);
+                            form.render();// 重新渲染表单
+                        });
+                    });
+                }
+            });
+        }
+
+        //打开添加用户的弹层
+        var mainIndex;
+        var url;  //动态的url
+        function openAddUser() {
+            mainIndex = layer.open({
+                type: 1,
+                title: '添加用户',
+                content: $("#addOrUpdateDiv"),
+                area: ['800px', '500px'],
+                success: function (index) {
+                    url = api3 + "warehouseStock/insertSecuritySheet/1";
+                    $("#dataFrm")[0].reset();
+
+                    let domMgr = $("#mgr");
+                    let html = `<option value="" selected>请选择领导</option>`;
+
+                    domMgr.html(html);
+                    //查询最大排序码
+                    $.get(api + "user/queryUserMaxOrderNum", function (res) {
+                        $("#ordernum").val(res.data);
+                    })
+
+                }
+            });
+        }
+
+
+
+        //提交数据
+        form.on("submit(doSubmit)", function (data) {
+            var params = $("#dataFrm").serialize();
+            $.post(url, params, function (res) {
+                layer.msg(res.msg);
+                if (res.code == 200) {
+                    tableIns.reload();
+                }
+                layer.close(mainIndex);
+            })
+            return false;
+        });
+
+
     });
 </script>
 <script>
-    layui.use('layer', function(){ //独立版的layer无需执行这一句
-        var $ = layui.jquery, layer = layui.layer; //独立版的layer无需执行这一句
 
-        //触发事件
-        var active = {
-            setTop: function(){
-                var that = this;
-                //多窗口模式，层叠置顶
-                layer.open({
-                    type: 2 //此处以iframe举例
-                    ,title: '当你选择该窗体时，即会在最顶端'
-                    ,area: ['390px', '260px']
-                    ,shade: 0
-                    ,maxmin: true
-                    ,offset: [ //为了演示，随机坐标
-                        Math.random()*($(window).height()-300)
-                        ,Math.random()*($(window).width()-390)
-                    ]
-                    ,content: '//layer.layui.com/test/settop.html'
-                    ,btn: ['继续弹出', '全部关闭'] //只是为了演示
-                    ,yes: function(){
-                        $(that).click();
-                    }
-                    ,btn2: function(){
-                        layer.closeAll();
-                    }
-
-                    ,zIndex: layer.zIndex //重点1
-                    ,success: function(layero){
-                        layer.setTop(layero); //重点2
-                    }
-                });
-            }
-            ,confirmTrans: function(){
-                //配置一个透明的询问框
-                layer.msg('大部分参数都是可以公用的<br>合理搭配，展示不一样的风格', {
-                    time: 20000, //20s后自动关闭
-                    btn: ['明白了', '知道了', '哦']
-                });
-            }
-            ,notice: function(){
-                //示范一个公告层
-                layer.open({
-                    type: 1
-                    ,title: false //不显示标题栏
-                    ,closeBtn: false
-                    ,area: '300px;'
-                    ,shade: 0.8
-                    ,id: 'LAY_layuipro' //设定一个id，防止重复弹出
-                    ,btn: ['火速围观', '残忍拒绝']
-                    ,btnAlign: 'c'
-                    ,moveType: 1 //拖拽模式，0或者1
-                    ,content: '<div style="padding: 50px; line-height: 22px; background-color: #393D49; color: #fff; font-weight: 300;">你知道吗？亲！<br>layer ≠ layui<br><br>layer只是作为Layui的一个弹层模块，由于其用户基数较大，所以常常会有人以为layui是layerui<br><br>layer虽然已被 Layui 收编为内置的弹层模块，但仍然会作为一个独立组件全力维护、升级。<br><br>我们此后的征途是星辰大海 ^_^</div>'
-                    ,success: function(layero){
-                        var btn = layero.find('.layui-layer-btn');
-                        btn.find('.layui-layer-btn0').attr({
-                            href: 'http://www.layui.com/'
-                            ,target: '_blank'
-                        });
-                    }
-                });
-            }
-            ,offset: function(othis){
-                var type = othis.data('type')
-                    ,text = othis.text();
-
-                layer.open({
-                    type: 1
-                    ,offset: type //具体配置参考：http://www.layui.com/doc/modules/layer.html#offset
-                    ,id: 'layerDemo'+type //防止重复弹出
-                    ,content: '<div style="padding: 20px 100px;">'+ text +'</div>'
-                    ,btn: '关闭全部'
-                    ,btnAlign: 'c' //按钮居中
-                    ,shade: 0 //不显示遮罩
-                    ,yes: function(){
-                        layer.closeAll();
-                    }
-                });
-            }
-        };
-
-        $('#layerDemo .layui-btn').on('click', function(){
-            var othis = $(this), method = othis.data('method');
-            active[method] ? active[method].call(this, othis) : '';
-        });
-
-    });
 </script>
 
 </body>

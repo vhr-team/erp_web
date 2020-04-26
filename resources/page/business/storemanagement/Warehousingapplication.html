@@ -106,16 +106,15 @@
             cellMinWidth: true,
             cols: [[
                 {type: "checkbox", fixed: "left"},
-                {field: '', title: '入库单编号', align: "center"},
-                {field: '', title: '入库理由', align: "center"},
-                {field: '', title: '入库详细理由', align: "center"},
-                {field: '', title: '登记时间', align: "center"},
-                {field: '', title: '总件数', align: "center"},
-                {field: '', title: '总金额', align: "center"},
-                {field: '', title: '审核标志', align: "center"},
-                {field: '', title: '调度人', align: "center"},
-                {field: '', title: '调度时间', align: "center"},
-                {field: '', title: '库存标志', align: "center"}
+                {field: 'inboundId', title: '入库单编号', align: "center"},
+                {field: 'reason', title: '入库理由', align: "center"},
+                {field: 'registerTime', title: '登记时间', align: "center"},
+                {field: 'amountSum', title: '总件数', align: "center"},
+                {field: 'costPriceSum', title: '总金额', align: "center"},
+                {field: 'checkTag', title: '审核标志', align: "center"},
+                {field: 'attemper', title: '调度人', align: "center"},
+                {field: 'attemperTime', title: '调度时间', align: "center"},
+                {field: 'storeTag', title: '库存标志', align: "center"}
             ]],
             page: true
         });
