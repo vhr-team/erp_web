@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>产品生产工序设计</title>
+    <title>产品生产工序单设计审核</title>
     <meta name="renderer" content="webkit">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -148,7 +148,7 @@
     <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
 </script>
 <script type="text/html" id="barDemo">
-    <a class="layui-btn layui-btn-xs" lay-event="edit">制定设计单</a>
+    <a class="layui-btn layui-btn-xs" lay-event="edit">审核</a>
 </script>
 
 <script src="./../../lib/jquery-3.4.1/jquery-3.4.1.min.js" charset="utf-8"></script>
@@ -169,7 +169,7 @@
         var tableIns =  table.render({
             id:"provinceReload"
             ,elem: '#complainTable'
-            ,url:'http://localhost:8003/production/getAllProduction'
+            ,url:'http://localhost:8003/production/getAllProductionsh'
             ,page: true
             ,toolbar: '#complain_toolbar'
             ,cols: [[ //表头
