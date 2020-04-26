@@ -19,23 +19,7 @@
                 <form class="layui-form layui-form-pane" action="" id="searchFrm">
                     <div class="layui-form-item">
                         <div class="layui-inline">
-                            <label class="layui-form-label">所属部门</label>
-                            <div class="layui-input-inline">
-                                <input type="hidden" name="deptid" id="p_deptid"/>
-                                <input type="text" name="p_deptname" id="p_deptname" autocomplete="off"
-                                       class="layui-input">
-                            </div>
-                            <a class="layui-btn layui-btn-primary" id="doSelectDept"><label
-                                    class="layui-icon layui-icon-male"></label> 选 择 </a>
-                        </div>
-                        <div class="layui-inline">
-                            <label class="layui-form-label">用户名称</label>
-                            <div class="layui-input-inline">
-                                <input type="text" name="name" autocomplete="off" class="layui-input">
-                            </div>
-                        </div>
-                        <div class="layui-inline">
-                            <label class="layui-form-label">用户备注</label>
+                            <label class="layui-form-label">产品名称</label>
                             <div class="layui-input-inline">
                                 <input type="text" name="remark" autocomplete="off" class="layui-input">
                             </div>
@@ -56,17 +40,12 @@
 
         <!--表格开始-->
         <table class="layui-hide" id="userTable" lay-filter="userTable"></table>
-        <div style="display: none" id="userToolBar">
+        <script style="display: none" id="userToolBar">
             <a class="layui-btn layui-btn-sm layui-btn-normal userBtn_add" lay-event="add"><i
                     class="layui-icon layui-icon-addition"></i> 添加 </a>
-        </div>
+        </script>
         <script type="text/html" id="userTableBar">
             <a class="layui-btn layui-btn-xs layui-btn-normal data-count-delete" lay-event="selectRole">审核</a>
-        </script>
-        <script type="text/html" id="availableTpl">
-            <!-- 这里的 checked 的状态只是演示 -->
-            <input type="checkbox" name="available" value="{{d.id}}" lay-skin="switch" lay-text="可用|不可用"
-                   lay-filter="availableSwitch" {{ d.available== 1 ? 'checked' : '' }}>
         </script>
         <!--表格结束-->
         <!--添加和修改的弹出层开始-->
@@ -78,14 +57,14 @@
                         <div class="layui-input-inline">
                             <input type="hidden" name="id"/>
                             <input type="text" name="productName"  lay-verify="required" autocomplete="off"
-                                   placeholder="请输入入库人姓名" class="layui-input">
+                                   placeholder="请输入产品名称" class="layui-input">
                         </div>
                     </div>
                     <div class="layui-inline">
                         <label class="layui-form-label">产品编号</label>
                         <div class="layui-input-inline">
                             <input type="text" name="productId"  lay-verify="required" autocomplete="off"
-                                   placeholder="请输入登陆人名称" class="layui-input">
+                                   placeholder="请输入产品编号" class="layui-input">
                         </div>
                     </div>
                 </div>
@@ -95,14 +74,14 @@
                         <div class="layui-input-inline">
                             <input type="hidden" name="id"/>
                             <input type="text" name="minAmount"  lay-verify="required" autocomplete="off"
-                                   placeholder="请输入入库人姓名" class="layui-input">
+                                   placeholder="请输入库存报警下限数" class="layui-input">
                         </div>
                     </div>
                     <div class="layui-inline">
                         <label class="layui-form-label">库存报警上限数</label>
                         <div class="layui-input-inline">
                             <input type="text" name="maxAmount"  lay-verify="required" autocomplete="off"
-                                   placeholder="请输入登陆人名称" class="layui-input">
+                                   placeholder="请输入库存报警上限数" class="layui-input">
                         </div>
                     </div>
                 </div>
@@ -112,7 +91,7 @@
                         <div class="layui-input-inline">
                             <input type="hidden" name="id"/>
                             <input type="text" name="register"  lay-verify="required" autocomplete="off"
-                                   placeholder="请输入入库人姓名" class="layui-input">
+                                   placeholder="请输入登记人" class="layui-input">
                         </div>
                     </div>
                 </div>
@@ -122,14 +101,14 @@
                         <div class="layui-input-inline">
                             <input type="hidden" name="id"/>
                             <input type="text" name="config"  lay-verify="required" autocomplete="off"
-                                   placeholder="请输入入库人姓名" class="layui-input">
+                                   placeholder="请输入配置要求" class="layui-input">
                         </div>
                     </div>
                     <div class="layui-inline">
                         <label class="layui-form-label">最大存储量</label>
                         <div class="layui-input-inline">
                             <input type="text" name="maxCapacityAmount"  lay-verify="required" autocomplete="off"
-                                   placeholder="请输入登陆人名称" class="layui-input">
+                                   placeholder="请输入最大存储量" class="layui-input">
                         </div>
                     </div>
                 </div>
@@ -312,17 +291,8 @@
                 content: $("#addOrUpdateDiv"),
                 area: ['800px', '500px'],
                 success: function (index) {
-                    url = api3 + "warehouseStock/insertSecuritySheet/";
+                    url = api3 + "warehouseStock/insertSecuritySheet";
                     $("#dataFrm")[0].reset();
-
-                    let domMgr = $("#mgr");
-                    let html = `<option value="" selected>请选择领导</option>`;
-
-                    domMgr.html(html);
-                    //查询最大排序码
-                    $.get(api + "user/queryUserMaxOrderNum", function (res) {
-                        $("#ordernum").val(res.data);
-                    })
 
                 }
             });
