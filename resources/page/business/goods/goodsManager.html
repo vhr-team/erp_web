@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>商品管理</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="../../../lib/layui-v2.5.5/css/layui.css" media="all">
+    <link rel="stylesheet" href="../../../css/public.css" media="all">
+
+    <!--element-ui/css-->
+    <link rel="stylesheet" href="../../../lib/plugin/element-ui/style/index.css">
+    <style>
+        .el-row {
+            margin-bottom: 20px;
+
+        &
+        :last-child {
+            margin-bottom: 0;
+        }
+
+        }
+        .el-col {
+            border-radius: 4px;
+        }
+
+        .bg-purple-dark {
+            background: #99a9bf;
+        }
+
+        .bg-purple {
+            background: #d3dce6;
+        }
+
+        .bg-purple-light {
+            background: #e5e9f2;
+        }
+
+        .grid-content {
+            border-radius: 4px;
+            min-height: 36px;
+        }
+
+        .row-bg {
+            padding: 10px 0;
+            background-color: #f9fafc;
+        }
+
+        .avatar-uploader .el-upload {
+            border: 1px dashed #d9d9d9;
+            border-radius: 6px;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .avatar-uploader .el-upload:hover {
+            border-color: #409EFF;
+        }
+
+        .avatar-uploader-icon {
+            font-size: 28px;
+            color: #8c939d;
+            width: 178px;
+            height: 178px;
+            line-height: 178px;
+            text-align: center;
+        }
+
+        .avatar {
+            width: 178px;
+            height: 178px;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+
+<div class="layuimini-container" id="app">
+    <div class="layuimini-main">
+
+        <!--搜索开始-->
+        <fieldset class="table-search-fieldset">
+            <legend>搜索信息</legend>
+            <div>
+                <div>
+                    <!--
+                    :rules="rules"
+                    -->
+                    <el-form :inline="true" :model="goods" ref="goodsForm" label-width="100px"
+                             class="demo-ruleForm">
+                        <el-form-item label="供应商" prop="providerid">
+                            <el-select v-model="goods.providerid" placeholder="请选择">
+                                <el-option :label="item.name" :value="item.id" v-for="item in items"></el-option>
+                            </el-select>
+                        </el-form-item>
+
+                        <el-form-item label="商品名称" prop="goodsname">
+                            <el-input v-model="goods.goodsname" placeholder="请输入商品名称"></el-input>
+                        </el-form-item>
+
+                        <el-form-item label="生产批号" prop="productcode">
+                            <el-input v-model="goods.productcode" placeholder="请输入生产批号"></el-input>
+                        </el-form-item>
+                        <el-form-item label="批准文号" prop="promitcode">
+                            <el-input v-model="goods.promitcode" placeholder="请输入批准文号"></el-input>
+                        </el-form-item>
+                        <el-form-item label="商品描述" prop="description">
+                            <el-input v-model="goods.description" placeholder="请输入商品描述"></el-input>
+                        </el-form-item>
+                        <el-form-item label="商品规格" prop="size">
+                            <el-input v-model="goods.size" placeholder="请输入商品规格"></el-input>
+                        </el-form-item>
+                        <el-form-item label="生产厂家" prop="producer">
+                            <el-input v-model="goods.producer" placeholder="请输入生产厂家"></el-input>
+                        </el-form-item>
+                        <el-form-item label="单位" prop="unit">
+                            <el-input v-model="goods.unit" placeholder="请输入单位"></el-input>
+                        </el-form-item>
+                        <el-form-item label="进货价格" prop="minInPrice">
+                            <el-input v-model.number="goods.minInPrice" placeholder="请输入进货价格"></el-input>
+                        </el-form-item>
+                        <el-form-item label="到" prop="maxInPrice">
+                            <el-input v-model.number="goods.maxInPrice" placeholder="请输入"></el-input>
+                        </el-form-item>
+                        <el-form-item label="销售价格" prop="minOutPrice">
+                            <el-input v-model.number="goods.minOutPrice" placeholder="请输入销售价格"></el-input>
+                        </el-form-item>
+                        <el-form-item label="到" prop="maxOutPrice">
+                            <el-input v-model.number="goods.maxOutPrice" placeholder="请输入"></el-input>
+                        </el-form-item>
+
+                        <el-form-item>
+                            <el-button type="primary" @click="submitForm('goodsForm')" icon="el-icon-search">查询
+                            </el-button>
+                            <el-button @click="resetForm('goodsForm')" icon="el-icon-refresh-left">重置</el-button>
+                        </el-form-item>
+                    </el-form>
+                </div>
+            </div>
+        </fieldset>
+
+        <div style="margin: 10px 0">
+            <el-button type="primary" icon="el-icon-plus" @click="dialogFormVisible = true">添加</el-button>
+        </div>
+
+        <!--数据表格-->
+        <el-table
+                v-loading="loading"
+                border
+                stripe
+                :data="tableData">
+            <el-table-column
+                    type="selection"
+                    width="55">
+            </el-table-column>
+            <el-table-column
+                    fixed="left"
+                    prop="goodsname"
+                    align="center"
+                    width="200"
+                    label="商品名称">
+            </el-table-column>
+            <el-table-column
+                    prop="providername"
+                    align="center"
+                    width="200"
+                    label="供应商">
+            </el-table-column>
+            <el-table-column
+                    prop="produceplace"
+                    align="center"
+                    label="产地">
+            </el-table-column>
+            <el-table-column
+                    prop="size"
+                    align="center"
+                    label="规格">
+            </el-table-column>
+            <el-table-column align="center" width="80" prop="goodsimg" label="商品图片">
+                <template scope="scope">
+                    <el-popover placement="right" title="" trigger="hover">
+                        <img :src="scope.row.goodsimg" style="height: 500px;width: 500px">
+                        <img slot="reference" :src="scope.row.goodsimg" alt=""
+                             style="max-height: 50px;max-width: 130px">
+                    </el-popover>
+                </template>
+            </el-table-column>
+            <el-table-column
+                    prop="goodspackage"
+                    align="center"
+                    label="包装">
+            </el-table-column>
+            <el-table-column
+                    prop="productcode"
+                    align="center"
+                    width="150"
+                    label="生产批号">
+            </el-table-column>
+            <el-table-column
+                    prop="promitcode"
+                    align="center"
+                    width="200"
+                    label="批准文号">
+            </el-table-column>
+            <el-table-column
+                    prop="description"
+                    align="center"
+                    width="250"
+                    label="商品描述">
+            </el-table-column>
+            <!--
+            查询库存
+            -->
+            <el-table-column
+                    prop="number"
+                    align="center"
+                    width="150"
+                    label="商品库存量">
+                <template slot-scope="scope">
+                    <el-tag
+                            :type="scope.row.number < 20 ? 'danger' : 'success'"
+                            disable-transitions>{{scope.row.number}}
+                    </el-tag>
+                </template>
+            </el-table-column>
+            <el-table-column
+                    prop="dangernum"
+                    align="center"
+                    label="预警值">
+            </el-table-column>
+            <el-table-column
+                    prop="available"
+                    align="center"
+                    width="200"
+                    label="是否上架">
+                <template slot-scope="scope">
+                    <el-tag
+                            :type="scope.row.available === '0' ? 'danger' : 'success'"
+                            disable-transitions>{{scope.row.available == 1 ? '已上架' : '已下架'}}
+                    </el-tag>
+                    <el-switch
+                            v-model="scope.row.available"
+                            :active-value="1"
+                            :inactive-value="0"
+                            @change="changeSwitch(scope.row)">
+                    </el-switch>
+                </template>
+            </el-table-column>
+            <el-table-column
+                    prop="producer"
+                    align="center"
+                    label="生产厂家">
+            </el-table-column>
+            <el-table-column
+                    prop="inprice"
+                    align="center"
+                    width="150"
+                    label="进货价格(￥)">
+            </el-table-column>
+            <el-table-column
+                    prop="price"
+                    align="center"
+                    width="150"
+                    label="销售价格(￥)">
+            </el-table-column>
+            <el-table-column
+                    prop="unit"
+                    align="center"
+                    label="单位">
+            </el-table-column>
+            <el-table-column
+                    fixed="right"
+                    width="200"
+                    align="center"
+                    label="操作">
+                <template slot-scope="scope">
+                    <el-button
+                            @click="handleEdit(scope.$index, scope.row)"
+                            size="mini">
+                        <i class="el-icon-edit"></i>
+                        编辑
+                    </el-button>
+                    <el-button
+                            @click.native.prevent="deleteRow(scope.$index, tableData,scope.row)"
+                            type="danger"
+                            size="mini">
+                        <i class="el-icon-delete"></i>
+                        删除
+                    </el-button>
+                </template>
+            </el-table-column>
+        </el-table>
+
+        <!--分页-->
+        <el-pagination
+                style="margin-top: 20px"
+                @size-change="handleSizeChange"
+                @current-change="handleCurrentChange"
+                :current-page="goodsVo.page"
+                :page-sizes="[5, 10, 15, 20]"
+                :page-size="goodsVo.pageSize"
+                layout="sizes, prev, pager, next, jumper, ->, total, slot"
+                :total="total">
+        </el-pagination>
+
+        <!--添加或修改-->
+        <el-dialog title="商品"
+                   width="50%"
+                   :visible.sync="dialogFormVisible">
+            <el-form ref="DialogForm">
+                <el-row :gutter="20">
+                    <el-col :span="12">
+                        <el-form-item label="供应商" prop="providerid">
+                            <el-select v-model="addGoods.providerid" placeholder="请选择供应商" @change="changeProviderid()">
+                                <el-option :label="item.name" :value="item.id" v-for="item in items"></el-option>
+                            </el-select>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="12">
+                        <el-form-item label="商品类别" prop="producttypeid">
+                            <el-select v-model="addGoods.producttypeid" placeholder="请选择商品类别">
+                                <el-option :label="item.name" :value="item.productTypeId"
+                                           v-for="item in producttypeItems" :key="item.id"></el-option>
+                            </el-select>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+
+
+                <el-row :gutter="20">
+                    <el-col :span="12">
+                        <el-form-item label="商品名称" prop="goodsname">
+                            <el-input v-model="addGoods.goodsname" placeholder="请输入商品名称"></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="12">
+                        <el-form-item label="商品产地" prop="produceplace">
+                            <el-input v-model="addGoods.produceplace" placeholder="请输入商品产地"></el-input>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+
+                <el-row :gutter="20">
+                    <el-col :span="12">
+                        <el-form-item label="批准文号" prop="promitcode">
+                            <el-input v-model="addGoods.promitcode" placeholder="请输入批准文号"></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="12">
+                        <el-form-item label="生产批号" prop="productcode">
+                            <el-input v-model="addGoods.productcode" placeholder="请输入生产批号"></el-input>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+
+                <el-row :gutter="20">
+                    <el-col :span="24">
+                        <el-form-item label="商品描述" prop="description">
+                            <el-input type="textarea" v-model="addGoods.description" placeholder="请输入商品描述"></el-input>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+
+                <el-row :gutter="20">
+                    <el-col :span="12">
+                        <el-form-item label="商品规格" prop="size">
+                            <el-input v-model="addGoods.size" placeholder="请输入商品规格"></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="12">
+                        <el-form-item label="生产厂家" prop="producer">
+                            <el-input v-model="addGoods.producer" placeholder="请输入生产厂家"></el-input>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+
+                <el-row :gutter="20">
+                    <el-col :span="12">
+                        <el-form-item label="单位" prop="unit">
+                            <el-input v-model="addGoods.unit" placeholder="请输入单位"></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="12">
+                        <el-form-item label="进货价格" prop="inprice">
+                            <el-input v-model.number="addGoods.inprice" placeholder="请输入进货价格"></el-input>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+                <el-row :gutter="20">
+                    <el-col :span="12">
+                        <el-form-item label="销售价格" prop="price">
+                            <el-input v-model.number="addGoods.price" placeholder="请输入销售价格"></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="12">
+                        <el-form-item label="包装" prop="goodspackage">
+                            <el-input v-model.number="addGoods.goodspackage" placeholder="请输入包装"></el-input>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+
+                <el-row :gutter="20">
+                    <el-col :span="12">
+                        <el-form-item label="库存量" prop="number">
+                            <el-input v-model.number="addGoods.number" placeholder="请输入库存量"></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="12">
+                        <el-form-item label="预警值" prop="dangernum">
+                            <el-input v-model.number="addGoods.dangernum" placeholder="请输入预警值"></el-input>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+
+                <!--文件上传-->
+                <el-form-item label="商品图片" prop="goodsimg">
+                    <el-upload
+                            class="avatar-uploader"
+                            action=""
+                            :show-file-list="false"
+                            :before-upload="beforeAvatarUpload">
+                        <img v-if="imageUrl" :src="imageUrl" class="avatar">
+                        <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                    </el-upload>
+                </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="DialogResetForm()">取 消</el-button>
+                <el-button type="primary" @click="addGoodsDialog('DialogForm')">确 定</el-button>
+            </div>
+        </el-dialog>
+    </div>
+</div>
+
+<!--jq-->
+<script src="../../../lib/jquery-3.4.1/jquery-3.4.1.min.js"></script>
+<!--layui-->
+<script src="../../../lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
+<!--vue-->
+<script src="../../../lib/plugin/vue/vue.min.js"></script>
+<!--element-ui/index.js-->
+<script src="../../../lib/plugin/element-ui/index.js"></script>
+<!--axios-->
+<script src="../../../lib/plugin/axios/axios.min.js"></script>
+
+<!--系统文件-->
+<script src="../../../lib/common/jquery.cookie.min.js" charset="utf-8"></script>
+<script src="../../../lib/common/common.js" charset="utf-8"></script>
+
+<!--业务代码-->
+<script>
+    let goodsApi = 'http://127.0.0.1:8005/';
+    let vue;
+
+    // 入口函数
+    $(function () {
+        // http request 拦截器
+        axios.interceptors.request.use(
+            config => {
+                if (token) { //判断token是否存在
+                    config.headers.token = $.cookie("TOKEN");  //将token设置成请求头
+                }
+                return config;
+            },
+            err => {
+                return Promise.reject(err);
+            }
+        );
+
+        // 初始化Vue
+        vue = new Vue({
+            // 控制区域
+            el: '#app',
+            // 数据
+            data: {
+                imageUrl: '',
+                formLabelWidth: '120px',
+                dialogFormVisible: false,
+                /*
+                rules: {
+                    minInPrice: [
+                        {type: 'number', message: '只能输入数字', trigger: 'blur'},
+                    ],
+                    maxInPrice: [
+                        {type: 'number', message: '只能输入数字', trigger: 'blur'},
+                    ],
+                    minOutPrice: [
+                        {type: 'number', message: '只能输入数字', trigger: 'blur'},
+                    ],
+                    maxOutPrice: [
+                        {type: 'number', message: '只能输入数字', trigger: 'blur'},
+                    ],
+                },
+                 */
+                items: [],
+                loading: true,
+                total: 10,
+                producttypeItems: [],
+                goodsVo: {
+                    page: 1,
+                    pageSize: 5
+                },
+                tableData: [],
+                goods: {
+                    providerid: '',
+                    goodsname: '',
+                    productcode: '',
+                    promitcode: '',
+                    description: '',
+                    size: '',
+                    producer: '',
+                    unit: '',
+                    minInPrice: '',
+                    maxInPrice: '',
+                    minOutPrice: '',
+                    maxOutPrice: ''
+                },
+                addGoods: {
+                    goodsimg: ''
+                },
+            },
+            // 方法
+            methods: {
+                handleEdit(index, row) {
+                    // 编辑
+                    this.dialogFormVisible = true;
+
+                    this.addGoods = row;
+                    this.imageUrl = row.goodsimg;
+
+                    axios.get(goodsApi + "productType/queryProductTypeByProviderid?providerid=" + this.addGoods.providerid).then(res => {
+                        this.producttypeItems = res.data;
+                    }).catch(err => {
+                        vue.$message.error(err.data);
+                    });
+                },
+                changeProviderid() {
+                    axios.get(goodsApi + "productType/queryProductTypeByProviderid?providerid=" + this.addGoods.providerid).then(res => {
+                        this.producttypeItems = res.data;
+                    }).catch(err => {
+                        vue.$message.error(err.data);
+                    })
+                },
+                beforeAvatarUpload(file) {
+                    const isLt1M = file.size / 1024 / 1024 < 1
+                    if (!isLt1M) {
+                        this.$message.error('上传头像图片大小不能超过 1MB!')
+                        return false
+                    }
+                    //这里是我将file作为参数传给了我的接口
+                    this.addSwiper([file]);
+                    return false
+                },
+                addSwiper: (params) => {
+                    let [file] = params
+                    let fd = new FormData()
+                    fd.append('mf', file)
+                    axios.post(api + "file/uploadFile", fd).then(res => {
+                        vue.imageUrl = baseUrl + res.data.data.src;
+                        vue.addGoods.goodsimg = res.data.data.src;
+                        vue.$message({
+                            message: '上传成功',
+                            type: 'success'
+                        });
+                    }).catch(err => {
+                        vue.$message.error('上传失败');
+                    });
+                },
+                DialogResetForm(formName) {
+                    this.dialogFormVisible = false;
+                    this.addGoods = {};
+                    this.imageUrl = '';
+                    this.producttypeItems = [];
+                },
+                changeSwitch(row) {
+                    /*上架下架*/
+                    console.log(row);
+                },
+                deleteRow(index, rows, row) {
+                    console.log(row);
+                    this.$confirm(`此操作将永久删除【${row.goodsname}】, 是否继续?`, '提示', {
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        type: 'warning'
+                    }).then(() => {
+                        axios.get(goodsApi + "goods/deleteGoods?id=" + row.id).then(res => {
+                            if (res.data.code == 200) {
+                                this.$message({
+                                    type: 'success',
+                                    message: res.data.msg
+                                });
+                                rows.splice(index, 1);
+                            }
+                        }).catch(err => {
+                            this.$message({
+                                type: 'error',
+                                message: err.data.msg
+                            });
+                        })
+                    }).catch(() => {
+                        this.$message({
+                            type: 'info',
+                            message: '已取消删除'
+                        });
+                    });
+                },
+                addGoodsDialog() {
+                    this.loading = false;
+                    let url = '';
+                    if (this.addGoods.id) {
+                        url = goodsApi + "goods/updateGoods";
+                    } else {
+                        url = goodsApi + "goods/addGoods";
+                    }
+                    axios.post(url, this.addGoods).then(res => {
+                        vue.$message({
+                            message: res.data.msg,
+                            type: 'success'
+                        });
+                        vue.dialogFormVisible = false;
+                        vue.queryGoodsData();
+                        this.addGoods = {};
+                        this.imageUrl = '';
+                        vue.loading = true;
+                    }).catch(err => {
+                        vue.$message.error(err);
+                    })
+                },
+                handleSizeChange(val) {
+                    this.loading = true;
+                    this.goodsVo.pageSize = val;
+                    this.queryGoodsData();
+                },
+                handleCurrentChange(val) {
+                    this.loading = true;
+                    this.goodsVo.page = val;
+                    this.queryGoodsData();
+                },
+                // 查询
+                queryGoodsData() {
+                    this.loading = true;
+                    let goods = this.goodsVo;
+                    let obj = this.goods;
+                    let params = `page=${goods.page}&pageSize=${goods.pageSize}&providerid=${obj.providerid}&goodsname=${obj.goodsname}&productcode=${obj.productcode}&promitcode=${obj.promitcode}&description=${obj.description}&size=${obj.size}&producer=${obj.producer}&unit=${obj.unit}&minInPrice=${obj.minInPrice}&maxInPrice=${obj.maxInPrice}&minOutPrice=${obj.minOutPrice}&maxOutPrice=${obj.maxOutPrice}`;
+                    axios.get(goodsApi + "goods/queryAllGoods?" + params).then(res => {
+                        this.loading = false;
+                        this.total = res.data.count;
+                        this.tableData = res.data.data;
+                    }).catch(err => {
+                        this.$message.error(err.data);
+                    })
+                },
+                submitForm(formName) {
+                    this.$refs[formName].validate((valid) => {
+                        if (valid) {
+                            this.queryGoodsData();
+                        } else {
+                            return false;
+                        }
+                    });
+                },
+                initSupplier() {
+                    axios.get(goodsApi + "supper/getAllSupper").then(res => {
+                        this.items = res.data;
+                    });
+                },
+                resetForm(formName) {
+                    this.$refs[formName].resetFields();
+                }
+            },
+            // 钩子函数
+            mounted() {
+                this.queryGoodsData();
+                this.initSupplier();
+            }
+        });
+    });
+</script>
+</body>
+</html>
