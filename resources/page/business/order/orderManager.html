@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>订单管理</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="../../../lib/layui-v2.5.5/css/layui.css" media="all">
+    <link rel="stylesheet" href="../../../css/public.css" media="all">
+
+    <!--element-ui/css-->
+    <link rel="stylesheet" href="../../../lib/plugin/element-ui/style/index.css">
+</head>
+<body>
+
+<div class="layuimini-container" id="app">
+    <div class="layuimini-main">
+
+        <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
+            <el-tab-pane label="未审核" name="one"></el-tab-pane>
+            <el-tab-pane label="审核通过" name="two"></el-tab-pane>
+            <el-tab-pane label="审核不通过" name="three"></el-tab-pane>
+        </el-tabs>
+
+        <el-form ref="formInline" :inline="true" :model="orderQuery" class="demo-form-inline">
+            <el-form-item prop="creater" label="下单人">
+                <el-select v-model="orderQuery.creater" placeholder="请选择下单人">
+                    <el-option :label="item.name" :value="item.id" v-for="item in CreateUserItems"></el-option>
+                </el-select>
+            </el-form-item>
+            <el-form-item prop="minTotalNum" label="总量">
+                <el-input v-model="orderQuery.minTotalNum" placeholder="请输入总量"></el-input>
+            </el-form-item>
+            <el-form-item prop="maxTotalNum" label="到">
+                <el-input v-model="orderQuery.maxTotalNum" placeholder=""></el-input>
+            </el-form-item>
+            <el-form-item prop="rangeDate" label="下单时间">
+                <el-date-picker
+                        v-model="rangeDate"
+                        prefix-icon="el-icon-date"
+                        type="daterange"
+                        start-placeholder="开始日期"
+                        end-placeholder="结束日期"
+                        size="small"
+                        value-format="yyyy-MM-dd"
+                ></el-date-picker>
+            </el-form-item>
+            <br/>
+            <el-form-item prop="minTotalPrice" label="总额">
+                <el-input v-model="orderQuery.minTotalPrice" placeholder="请输入总量"></el-input>
+            </el-form-item>
+            <el-form-item prop="maxTotalPrice" label="到">
+                <el-input v-model="orderQuery.maxTotalPrice" placeholder=""></el-input>
+            </el-form-item>
+            <el-form-item>
+                <el-button type="primary" @click="onSubmit">查询</el-button>
+                <el-button @click="resetForm('formInline')" icon="el-icon-refresh-left">重置</el-button>
+            </el-form-item>
+        </el-form>
+
+        <el-table
+                :data="tableData"
+                v-loading="loading"
+                border
+                style="width: 100%">
+            <el-table-column
+                    prop="orderNum"
+                    label="订单号"
+                    align="center">
+            </el-table-column>
+            <el-table-column
+                    prop="supplierName"
+                    label="供应商"
+                    align="center">
+            </el-table-column>
+            <el-table-column
+                    prop="checkerName"
+                    label="制单人"
+                    align="center">
+            </el-table-column>
+            <el-table-column
+                    prop="createrTime"
+                    label="制单时间"
+                    align="center">
+            </el-table-column>
+            <el-table-column
+                    prop="totalNum"
+                    label="订单商品总量"
+                    align="center">
+            </el-table-column>
+            <el-table-column
+                    prop="totalPrice"
+                    label="订单总金额"
+                    align="center">
+            </el-table-column>
+            <el-table-column
+                    align="center"
+                    label="操作">
+                <template slot-scope="scope">
+                    <el-button
+                            size="mini"
+                            @click="handleEdit(scope.$index, scope.row)">编辑
+                    </el-button>
+                    <el-button
+                            size="mini"
+                            type="danger"
+                            @click="handleDelete(scope.$index, scope.row)">删除
+                    </el-button>
+                </template>
+            </el-table-column>
+        </el-table>
+
+        <el-pagination
+                style="margin-top: 20px"
+                background
+                layout="sizes, prev, pager, next, jumper, ->, total, slot"
+                :page-size="pageSize"
+                :current-page="page"
+                @size-change="handleSizeChange"
+                @current-change="handleCurrentChange"
+                :total="total">
+        </el-pagination>
+    </div>
+</div>
+
+<!--jq-->
+<script src="../../../lib/jquery-3.4.1/jquery-3.4.1.min.js"></script>
+<!--layui-->
+<script src="../../../lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
+<!--vue-->
+<script src="../../../lib/plugin/vue/vue.min.js"></script>
+<!--element-ui/index.js-->
+<script src="../../../lib/plugin/element-ui/index.js"></script>
+<!--axios-->
+<script src="../../../lib/plugin/axios/axios.min.js"></script>
+
+<!--系统文件-->
+<script src="../../../lib/common/jquery.cookie.min.js" charset="utf-8"></script>
+<script src="../../../lib/common/common.js" charset="utf-8"></script>
+
+<!--业务代码-->
+<script>
+    let orderApi = 'http://127.0.0.1:8006/';
+    let vue;
+
+    // 入口函数
+    $(function () {
+        // http request 拦截器
+        axios.interceptors.request.use(
+            config => {
+                if (token) { //判断token是否存在
+                    config.headers.token = $.cookie("TOKEN");  //将token设置成请求头
+                }
+                return config;
+            },
+            err => {
+                return Promise.reject(err);
+            }
+        );
+
+        // 初始化Vue
+        vue = new Vue({
+            // 控制区域
+            el: '#app',
+            // 数据
+            data: {
+                orderQuery: {
+                    minTotalNum: '',
+                    creater: '',
+                    maxTotalNum: '',
+                    minTotalPrice: '',
+                    maxTotalPrice: ''
+                },
+                activeName: 'one',
+                rangeDate: [],
+                tableData: [],
+                page: 1,
+                pageSize: 5,
+                total: 9,
+                loading: true,
+                CreateUserItems: [],
+                startTime: '',
+                endTime: '',
+                orderState: 1
+            },
+            watch: {
+                rangeDate: function (newVal, oldVal) {
+                    if (newVal !== null) {
+                        this.startTime = newVal[0]
+                        this.endTime = newVal[1]
+                    } else {
+                        this.startTime = null
+                        this.endTime = null
+                    }
+                }
+            },
+            // 方法
+            methods: {
+                resetForm(formName) {
+                    this.startTime = '';
+                    this.endTime = '';
+                    this.$refs[formName].resetFields();
+                },
+                onSubmit() {
+                    this.initTableData();
+                },
+                initCreateUser() {
+                    axios.get(orderApi + "ordermodel/queryAllUser").then(res => {
+                        this.CreateUserItems = res.data;
+                    }).catch(err => {
+                        this.$message.error(err);
+                    });
+                },
+                initTableData() {
+                    this.loading = true;
+                    let obj = this.orderQuery;
+                    let params = `page=${this.page}&pageSize=${this.pageSize}&creater=${obj.creater}&minTotalNum=${obj.minTotalNum}&maxTotalNum=${obj.maxTotalNum}&endTime=${this.endTime}&startTime=${this.startTime}&minTotalPrice=${obj.minTotalPrice}&maxTotalPrice=${obj.maxTotalPrice}&orderType=1&orderState=${this.orderState}`;
+                    axios.get(orderApi + "ordermodel/queryAllOrderModel?" + params).then(res => {
+                        this.loading = false;
+                        this.total = res.data.count;
+                        this.tableData = res.data.data;
+                    }).catch(err => {
+                        this.$message.error(err);
+                    })
+                },
+                handleSizeChange(val) {
+                    this.pageSize = val;
+                    this.initTableData();
+                },
+                handleCurrentChange(val) {
+                    this.page = val;
+                    this.initTableData();
+                },
+                handleClick(tab, event) {
+                    if (tab.label == '未审核') {
+                        this.orderState = 1;
+                    }
+                    if (tab.label == '审核通过') {
+                        this.orderState = 2;
+                    }
+                    if (tab.label == '审核不通过') {
+                        this.orderState = 3;
+                    }
+                    this.initTableData();
+                }
+            },
+            // 钩子函数
+            mounted() {
+                this.initTableData();
+                this.initCreateUser();
+            }
+        });
+    });
+</script>
+</body>
+</html>
