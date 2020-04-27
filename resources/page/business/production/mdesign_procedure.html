@@ -3,39 +3,44 @@
 <head>
     <meta charset="utf-8">
     <title>产品生产工序设计</title>
-    <link rel="stylesheet" href="../../../lib/layui-v2.5.5/css/layui.css" media="all">
-    <link rel="stylesheet" href="../../../css/public.css" media="all">
-    <style>
-        body{margin: 10px;}
-        .demo-carousel{height: 200px; line-height: 200px; text-align: center;}
-    </style>
     <meta name="renderer" content="webkit">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <link rel="stylesheet" href="./../../lib/layui-v2.5.5/css/layui.css" media="all">
-    <link rel="stylesheet" href="./../../css/public.css" media="all">
+    <link rel="stylesheet" href="../../../lib/layui-v2.5.5/css/layui.css" media="all">
+    <link rel="stylesheet" href="../../../css/public.css" media="all">
+    <style>
+        body {
+            margin: 10px;
+        }
+
+        .demo-carousel {
+            height: 200px;
+            line-height: 200px;
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
 <div id="addGx1">
-<div id="addG2" style="display: none;">
-    <form  class="layui-form" >
-        <div class="layui-inline">
-            <label class="layui-form-label">搜索选择框</label>
-            <div class="layui-input-inline">
-                <select name="modules" id="gxTypeVal"  lay-verify="required" lay-search="">
-                    <option value="">直接选择或搜索选择</option>
-                    <option value="1">组装</option>
-                    <option value="2">测试</option>
-                    <option value="3">包装</option>
-                </select>
+    <div id="addG2" style="display: none;">
+        <form class="layui-form">
+            <div class="layui-inline">
+                <label class="layui-form-label">搜索选择框</label>
+                <div class="layui-input-inline">
+                    <select name="modules" id="gxTypeVal" lay-verify="required" lay-search="">
+                        <option value="">直接选择或搜索选择</option>
+                        <option value="1">组装</option>
+                        <option value="2">测试</option>
+                        <option value="3">包装</option>
+                    </select>
+                </div>
             </div>
-        </div>
-    </form>
+        </form>
         <div class="layui-form-item">
             <div class="layui-input-block" style=" margin-left: 158px;
     margin-top: 42px;">
 
-                <button type="button"  id="addGxButton" style="    display: inline-block;
+                <button type="button" id="addGxButton" style="    display: inline-block;
     height: 38px;
     line-height: 38px;
     padding: 0 18px;
@@ -46,11 +51,12 @@
     font-size: 14px;
     border: none;
     border-radius: 2px;
-    cursor: pointer;">立即提交</button>
+    cursor: pointer;">立即提交
+                </button>
             </div>
         </div>
 
-</div>
+    </div>
 </div>
 <!--添加模态框-->
 <div id="">
@@ -64,13 +70,15 @@
             <div class="layui-form-item">
                 <label class="layui-form-label" style="    margin-left: 70px;">产品名称 :</label>
                 <div class="layui-input-inline">
-                <input autocomplete="off"  readonly="readonly" style="  border: 0px;   width: 307px;" class="layui-input" id="product_name" lay-verify="required" name="product_name"
-                       placeholder="" type="text">
+                    <input autocomplete="off" readonly="readonly" style="  border: 0px;   width: 307px;"
+                           class="layui-input" id="product_name" lay-verify="required" name="product_name"
+                           placeholder="" type="text">
 
-            </div>
+                </div>
                 <label class="layui-form-label" style="    margin-left: 165px;">产品编号 :</label>
                 <div class="layui-input-inline">
-                    <input autocomplete="off"  readonly="readonly" style="  border: 0px;   width: 307px;" class="layui-input" id="procedure_id" lay-verify="required" name="procedure_id"
+                    <input autocomplete="off" readonly="readonly" style="  border: 0px;   width: 307px;"
+                           class="layui-input" id="procedure_id" lay-verify="required" name="procedure_id"
                            placeholder="" type="text">
 
                 </div>
@@ -78,10 +86,15 @@
             <div class="layui-form-item">
                 <label class="layui-form-label" style="    margin-left: 70px;">设计人 :</label>
                 <div class="layui-input-inline">
-                    <input autocomplete="off"  style="    width: 307px;" class="layui-input" id="product_name" lay-verify="required" name="product_name"
+                    <input autocomplete="off" style="    width: 307px;" class="layui-input" id="product_name"
+                           lay-verify="required" name="product_name"
                            placeholder="请输入设计人的名称" type="text">
 
                 </div>
+                <input autocomplete="off" style="    width: 307px;" class="layui-input" id="prdouctId"
+                       lay-verify="required" name="prdouctId"
+                       placeholder="请输入设计人的名称" type="hidden">
+
             </div>
             <table class="layui-table" id="test3" lay-filter="test3">
 
@@ -89,13 +102,15 @@
             <div class="layui-form-item">
                 <label class="layui-form-label" style="    margin-left: 70px;">登记人 :</label>
                 <div class="layui-input-inline">
-                    <input autocomplete="off"  style="    width: 307px;" class="layui-input" id="register" lay-verify="required" name="register"
+                    <input autocomplete="off" style="    width: 307px;" class="layui-input" id="register"
+                           lay-verify="required" name="register"
                            placeholder="请输入登记人的名称" type="text">
 
                 </div>
                 <label class="layui-form-label" style="        margin-left: 137px;">登记时间 :</label>
                 <div class="layui-input-inline">
-                    <input autocomplete="off"  style="    width: 307px;" class="layui-input" id="register_time" lay-verify="required" name="register_time"
+                    <input autocomplete="off" style="    width: 307px;" class="layui-input" id="register_time"
+                           lay-verify="required" name="register_time"
                            placeholder="" type="text">
 
                 </div>
@@ -110,8 +125,10 @@
             <div class="layui-form-item">
                 <div class="layui-input-block" style="    margin-left: 400px;">
 
-                    <button type="submit" class="layui-btn" lay-submit="" lay-filter="supperSub">立即提交</button>
-                    <i class="layui-icon" id="addGx" style="display: inline-block;  height: 38px;   line-height: 38px;   padding: 0 18px;   background-color: #009688;  color: #fff;   white-space: nowrap;   text-align: center;  font-size: 14px;   border: none;    border-radius: 2px;   cursor: pointer;">添加工序</i>
+                    <input type="hidden" id="gprocuJson" name="gprocuJson">
+                    <button type="button" id="addProduction_process_design" class="layui-btn">立即提交</button>
+                    <i class="layui-icon" id="addGx"
+                       style="display: inline-block;  height: 38px;   line-height: 38px;   padding: 0 18px;   background-color: #009688;  color: #fff;   white-space: nowrap;   text-align: center;  font-size: 14px;   border: none;    border-radius: 2px;   cursor: pointer;">添加工序</i>
                 </div>
             </div>
         </form>
@@ -125,7 +142,8 @@
                 <input type="text" name="date" id="date" autocomplete="off" class="layui-input">
 
 
-            </div>至
+            </div>
+            至
             <div class="layui-input-inline">
                 <input type="text" name="date1" id="date1" autocomplete="off" class="layui-input">
 
@@ -153,48 +171,46 @@
     <a class="layui-btn layui-btn-xs" lay-event="edit">制定设计单</a>
 </script>
 
-<script src="./../../lib/jquery-3.4.1/jquery-3.4.1.min.js" charset="utf-8"></script>
-<script src="./../../lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
-<script src="./../../js/lay-config.js?v=1.0.4" charset="utf-8"></script>
-<script src="./../../lib/jq-module/jquery.particleground.min.js" charset="utf-8"></script>
-<script src="./../../lib/common/jquery.cookie.min.js" charset="utf-8"></script>
-<script src="./../../lib/common/common.js" charset="utf-8"></script>
+<script src="../../../lib/jquery-3.4.1/jquery-3.4.1.min.js" charset="utf-8"></script>
+<script src="../../../lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
+<script src="../../../js/lay-config.js?v=1.0.4" charset="utf-8"></script>
+<script src="../../../lib/jq-module/jquery.particleground.min.js" charset="utf-8"></script>
+<script src="../../../lib/common/jquery.cookie.min.js" charset="utf-8"></script>
+<script src="../../../lib/common/common.js" charset="utf-8"></script>
 <!-- 注意：如果你直接复制所有代码到本地，上述js路径需要改成你本地的 -->
 
-<script type="text/javascript" >
-    layui.use(['table','layer','form','laypage'], function(){
+<script type="text/javascript">
+    layui.use(['table', 'layer', 'form', 'laypage'], function () {
         var table = layui.table,
             layer = layui.layer,
             form = layui.form,
             laypage = layui.laypage;
 
-        var tableIns =  table.render({
-            id:"provinceReload"
-            ,elem: '#complainTable'
-            ,url:'http://localhost:8003/production/getAllProduction'
-            ,page: true
-            ,toolbar: '#complain_toolbar'
-            ,cols: [[ //表头
+        var tableIns = table.render({
+            id: "provinceReload"
+            , elem: '#complainTable'
+            , url: 'http://localhost:8003/production/getAllProduction'
+            , page: true
+            , toolbar: '#complain_toolbar'
+            , cols: [[ //表头
                 {type: 'checkbox', fixed: 'left'}
-                ,{field: 'id', title: 'ID', width:80, sort: true, fixed: 'left', totalRowText: '合计：'}
-                ,{field: 'username', title: '用户名', width:80}
-                ,{field: 'experience', title: '积分', width: 90, sort: true, totalRow: true}
-                ,{field: 'sex', title: '性别', width:80, sort: true}
-                ,{field: 'score', title: '评分', width: 80, sort: true, totalRow: true}
-                ,{field: 'city', title: '城市', width:150}
-                ,{field: 'sign', title: '签名', width: 200}
-                ,{field: 'classify', title: '职业', width: 100}
-                ,{field: 'wealth', title: '财富', width: 135, sort: true, totalRow: true}
-                ,{fixed: 'right', width: 165, align:'center', toolbar: '#barDemo'}
+                , {field: 'id', title: 'ID', hide: true}
+                , {field: 'design_id', title: '产品编号', width: 200, sort: true, fixed: 'left', totalRowText: '合计：'}
+                , {field: 'product_name', title: '产品名称', width: 280}
+                , {field: 'first_kind_id', title: '档次级别', width: 200, sort: true, totalRow: true}
+                , {field: 'product_stair_classify', title: 'I级分类', width: 240, sort: true}
+                , {field: 'product_second_classify', title: 'II级分类', width: 260, sort: true, totalRow: true}
+                , {field: 'product_second_classify', title: 'III级分类', width: 200}
+                , {fixed: 'right', width: 200, align: 'center', toolbar: '#barDemo'}
             ]]
-            ,limits: [5,10,20,50]
+            , limits: [5, 10, 20, 50]
         });
 
-        table.on('toolbar(complainList)', function(obj) {
+        table.on('toolbar(complainList)', function (obj) {
             var checkStatus = table.checkStatus(obj.config.id),
                 data = checkStatus.data;
             data = eval("(" + JSON.stringify(data) + ")");
-            switch(obj.event) {
+            switch (obj.event) {
                 case 'add':
                     break;
                 case 'getCheckData':
@@ -206,37 +222,76 @@
                     break;
             }
         });
+        $("#addProduction_process_design").click(function () {
+            var product_name = $("#product_name").val();
+            var design_idB = $("#procedure_id").val();
+            var product_designer = $("#product_designer").val();
+            var product_registrant = $("#register").val();
+            var design_date = $("#register_time").val();
+            var esign_require = $(".layui-textarea").val();
+            var prdouctId = $("#prdouctId").val(); //修改单号状态已经有设计
+            var datas = [];
+            var delIndex = layer.confirm('确定提交吗', function (delIndex) {
+                layui.use('table', function () {
+                    var table = layui.table;
 
-        table.on('tool(complainList)', function(obj) {
+                    datas = layui.table.cache["test3"];
+                    JSON.stringify(datas);//把JS对象转换为json 这个是获取所有的商品
+
+                    $.ajax({
+                        url: 'http://127.0.0.1:8003/process/insertProductionSheet',
+                        data: {
+                            'product_name': product_name,
+                            'design_idB': design_idB,
+                            'product_designer': product_designer,
+                            'product_registrant': product_registrant,
+                            'design_date': design_date,
+                            'esign_require': esign_require,
+                            'prdouctId': prdouctId,
+                            'gprocuJson1': JSON.stringify(datas)
+                        },
+                        success: function (data) {
+                            layer.msg("提交成功");
+                            window.parent.location.reload();//刷新父页面
+                            layer.closeAll();
+                        }
+                    })
+
+                })
+
+
+            });
+        })
+        table.on('tool(complainList)', function (obj) {
             var data = obj.data;
             json = JSON.stringify(data);
-            switch(obj.event) {
+            switch (obj.event) {
                 case 'detail':
                     break;
                 case 'edit':
-                    var AddData=[
-                    ];
+                    var AddData = [];
 
                     table.render({
                         elem: '#test3',
-                        height:150
-                        ,cols: [[
-                            {field:'process_name', width:120, title: '工序名称', }
-                            ,{field:'process_id', width:120, title: '工序编号'}
-                            ,{field:'process_describe', width:120, title: '工序描述', edit:true, }
-                            ,{field:'process_time_gs', width:120, title: '工时数', edit:true,}
-                            ,{field:'process_time_unitdw', title: '工时单位', width: 120, edit:true,}
-                            ,{field:'process_time_cost', width:120, title: '单位工时成本',edit:true }
-                            ,{field:'process_subtotal', width:120, title: '工时成本小计', }
-                            ,{fixed: 'right', width: 120, align:'center', toolbar: '#barDemo2'}
+                        height: 150
+                        , cols: [[
+                            {field: 'process_name', width: 120, title: '工序名称',}
+                            , {field: 'process_id', width: 120, title: '工序编号'}
+                            , {field: 'process_describe', width: 120, title: '工序描述', edit: true,}
+                            , {field: 'process_time_gs', width: 120, title: '工时数', edit: true,}
+                            , {field: 'process_time_unitdw', title: '工时单位', width: 120, edit: true,}
+                            , {field: 'process_time_cost', width: 120, title: '单位工时成本', edit: true}
+                            , {field: 'process_subtotal', width: 120, title: '工时成本小计',}
+                            , {fixed: 'right', width: 120, align: 'center', toolbar: '#barDemo2'}
 
                         ]],
-                        data:AddData
+                        data: AddData
 
                     });
 
                     $("#product_name").val(data.product_name);
                     $("#procedure_id").val(data.design_id);
+                    $("#prdouctId").val(data.id);
                     layer.open({
                         maxmin: true,
                         type: 1,//类型 信息
@@ -248,10 +303,10 @@
                     });
                     break;
                 case 'del':
-                    var delIndex = layer.confirm('真的删除id为' + data.id + "的信息吗?", function(delIndex) {
+                    var delIndex = layer.confirm('真的删除id为' + data.id + "的信息吗?", function (delIndex) {
                         $.ajax({
-                            url: 'http://127.0.0.1:8005/supper/delsupperById?id='+data.id,
-                            success: function(suc) {
+                            url: 'http://127.0.0.1:8005/supper/delsupperById?id=' + data.id,
+                            success: function (suc) {
 
                                 obj.del(); //删除对应行（tr）的DOM结构，并更新缓存
                                 layer.close(delIndex);
@@ -268,21 +323,21 @@
             }
         });
         //监听提交
-        form.on('submit(supperSub)', function(data){
-            var edC=  $("#edidId").val();
-            if(edC==1){
+        form.on('submit(supperSub)', function (data) {
+            var edC = $("#edidId").val();
+            if (edC == 1) {
                 $.ajax({
-                    url:'http://127.0.0.1:8005/supper/updateSupperById',
-                    data:data.field,
+                    url: 'http://127.0.0.1:8005/supper/updateSupperById',
+                    data: data.field,
                     success: function (data) {
                         layer.msg("提交成功")
                     }
                 })
             }
-            if(edC!=1){
+            if (edC != 1) {
                 $.ajax({
-                    url:'http://127.0.0.1:8005/supper/insertSupper',
-                    data:data.field,
+                    url: 'http://127.0.0.1:8005/supper/insertSupper',
+                    data: data.field,
                     success: function (data) {
                         layer.msg("提交成功")
                     }
@@ -294,25 +349,21 @@
             })
 
 
-
-
-
-
         });
-    $("#addGx").click(function () {
-        layer.open({
-            maxmin: true,
-            type: 1,//类型 信息
-            area: ['400px', '200px'],//定义宽和高
-            title: '工序选择',//题目
-            shadeClose: false,//点击遮罩层关闭
-            content: $('#addG2')//打开的模态框
+        $("#addGx").click(function () {
+            layer.open({
+                maxmin: true,
+                type: 1,//类型 信息
+                area: ['400px', '200px'],//定义宽和高
+                title: '工序选择',//题目
+                shadeClose: false,//点击遮罩层关闭
+                content: $('#addG2')//打开的模态框
 
-        });
-    })
+            });
+        })
 
         form.render();
-        form.on('submit(provinceSearch)', function(data) {
+        form.on('submit(provinceSearch)', function (data) {
             var formData = data.field;
             var serviceCode = formData.serviceCode,
                 compOrder = formData.compOrder,
@@ -323,17 +374,17 @@
                     curr: 1
                 },
 
-                url: 'http://127.0.0.1:8005/supper/sellName?name='+formData.name,
+                url: 'http://127.0.0.1:8005/supper/sellName?name=' + formData.name,
             });
             return false;
         });
 
     });
-    layui.use(['form', 'layedit', 'laydate'], function(){
+    layui.use(['form', 'layedit', 'laydate'], function () {
         var form = layui.form
-            ,layer = layui.layer
-            ,layedit = layui.layedit
-            ,laydate = layui.laydate;
+            , layer = layui.layer
+            , layedit = layui.layedit
+            , laydate = layui.laydate;
 
         //日期
         laydate.render({
@@ -347,9 +398,8 @@
         });
 
 
-
         //监听提交
-        form.on('submit(demo1)', function(data){
+        form.on('submit(demo1)', function (data) {
             layer.alert(JSON.stringify(data.field), {
                 title: '最终的提交信息'
             })
@@ -357,36 +407,35 @@
         });
 
         //表单赋值
-        layui.$('#LAY-component-form-setval').on('click', function(){
+        layui.$('#LAY-component-form-setval').on('click', function () {
             form.val('example', {
                 "username": "贤心" // "name": "value"
-                ,"password": "123456"
-                ,"interest": 1
-                ,"like[write]": true //复选框选中状态
-                ,"close": true //开关状态
-                ,"sex": "女"
-                ,"desc": "我爱 layui"
+                , "password": "123456"
+                , "interest": 1
+                , "like[write]": true //复选框选中状态
+                , "close": true //开关状态
+                , "sex": "女"
+                , "desc": "我爱 layui"
             });
         });
 
         //表单取值
-        layui.$('#LAY-component-form-getval').on('click', function(){
+        layui.$('#LAY-component-form-getval').on('click', function () {
             var data = form.val('example');
             alert(JSON.stringify(data));
         });
 
     });
-    layui.use('table', function(){
+    layui.use('table', function () {
         var table = layui.table;
-        var AddData=[
-        ];
-        table.on('tool(test3)', function(obj){
+        var AddData = [];
+        table.on('tool(test3)', function (obj) {
             var data = obj.data;
             //console.log(obj)
-            if(obj.event === 'del'){
-                layer.confirm('真的删除行么', function(index){
+            if (obj.event === 'del') {
+                layer.confirm('真的删除行么', function (index) {
                     console.log(index)
-                    AddData.splice($.inArray(index,AddData),1);
+                    AddData.splice($.inArray(index, AddData), 1);
                     obj.del();
                     layer.close(index);
                 });
@@ -394,31 +443,31 @@
         });
         $("#addGxButton").click(function () {
 
-            var  datas=   layui.table.cache["test3"];
+            var datas = layui.table.cache["test3"];
             var gxType = $(".layui-input").val();
-            var gId =$("#gxTypeVal").val();
-            var data1={"process_name":gxType,"process_id":gId};
+            var gId = $("#gxTypeVal").val();
+            var data1 = {"process_name": gxType, "process_id": gId};
             AddData.unshift(data1);
             console.log(AddData)
-            table.reload('test3',{
-                data : AddData
+            table.reload('test3', {
+                data: AddData
             });
 
         });
-     //  form.on('submit(test-submit-add)', function (data) {
-      //      table.cache['test3'].push(data.field);
-       //     table.reload('test3', { data: table.cache['test3']});
+        //  form.on('submit(test-submit-add)', function (data) {
+        //      table.cache['test3'].push(data.field);
+        //     table.reload('test3', { data: table.cache['test3']});
 
 
-    //    });
+        //    });
         //监听行工具事件
 
         //监听单元格编辑
-        table.on('edit(test3)', function(obj){
+        table.on('edit(test3)', function (obj) {
             var value = obj.value //得到修改后的值
-                ,data = obj.data //得到所在行所有键值
-                ,field = obj.field; //得到字段
-         //   layer.msg('[ID: '+ data.id +'] ' + field + ' 字段更改为：'+ value);
+                , data = obj.data //得到所在行所有键值
+                , field = obj.field; //得到字段
+            //   layer.msg('[ID: '+ data.id +'] ' + field + ' 字段更改为：'+ value);
         });
     });
 </script>
