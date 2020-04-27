@@ -6,8 +6,8 @@
     <meta name="renderer" content="webkit">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <link rel="stylesheet" href="./../../lib/layui-v2.5.5/css/layui.css" media="all">
-    <link rel="stylesheet" href="./../../css/public.css" media="all">
+    <link rel="stylesheet" href="../../../lib/layui-v2.5.5/css/layui.css" media="all">
+    <link rel="stylesheet" href="../../../css/public.css" media="all">
 </head>
 <body>
 <div id="addGx1">
@@ -72,8 +72,14 @@
             <div class="layui-form-item">
                 <label class="layui-form-label" style="    margin-left: 70px;">设计人 :</label>
                 <div class="layui-input-inline">
-                    <input autocomplete="off"  style="    width: 307px;" class="layui-input" id="product_designer" lay-verify="required" name="product_designer"
+                    <input autocomplete="off" readonly="readonly"  style="  border: 0 ;  width: 307px;" class="layui-input" id="product_designer" lay-verify="required" name="product_designer"
                            placeholder="请输入设计人的名称" type="text">
+
+                </div>
+                <label class="layui-form-label" style="    margin-left: 165px;">设计单编号 :</label>
+                <div class="layui-input-inline">
+                    <input autocomplete="off"  readonly="readonly" style="  border: 0px;   width: 307px;" class="layui-input" id="design_number" lay-verify="required" name="design_number"
+                           placeholder="" type="text">
 
                 </div>
                 <input autocomplete="off"  style="    width: 307px;" class="layui-input" id="prdouctId" lay-verify="required" name="prdouctId"
@@ -86,14 +92,14 @@
             <div class="layui-form-item">
                 <label class="layui-form-label" style="    margin-left: 70px;">登记人 :</label>
                 <div class="layui-input-inline">
-                    <input autocomplete="off"  style="    width: 307px;" class="layui-input" id="register" lay-verify="required" name="register"
+                    <input autocomplete="off"  readonly="readonly" style=" border: 0;    width: 307px;" class="layui-input" id="register" lay-verify="required" name="register"
                            placeholder="请输入登记人的名称" type="text">
 
                 </div>
-                <label class="layui-form-label" style="        margin-left: 137px;">登记时间 :</label>
+                <label class="layui-form-label" style="        margin-left: 137px;">审核时间 :</label>
                 <div class="layui-input-inline">
-                    <input autocomplete="off"  style="    width: 307px;" class="layui-input" id="register_time" lay-verify="required" name="register_time"
-                           placeholder="" type="text">
+                    <input autocomplete="off"   style="    width: 307px;" class="layui-input" id="audit_date" lay-verify="required" name="audit_date"
+                           placeholder="请选择审核的时间" type="text">
 
                 </div>
 
@@ -105,11 +111,13 @@
                 </div>
             </div>
             <div class="layui-form-item">
-                <div class="layui-input-block" style="    margin-left: 400px;">
-
+                <div class="layui-input-block" style="    margin-left: 370px;">
+                        <input type="radio" name="sex" value="通过" title="通过" checked="">
+                        <input type="radio" name="sex" value="未通过" title="未通过">
                     <input type="hidden" id="gprocuJson" name="gprocuJson">
+                    <input type="hidden" id="shdId" name="shdId">
+                    <input type="hidden" id="sjdId" name="sjdId">
                     <button type="button" id="addProduction_process_design" class="layui-btn"  >立即提交</button>
-                    <i class="layui-icon" id="addGx" style="display: inline-block;  height: 38px;   line-height: 38px;   padding: 0 18px;   background-color: #009688;  color: #fff;   white-space: nowrap;   text-align: center;  font-size: 14px;   border: none;    border-radius: 2px;   cursor: pointer;">添加工序</i>
                 </div>
             </div>
         </form>
@@ -145,18 +153,17 @@
 
 </script>
 <script type="text/html" id="barDemo2">
-    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
 </script>
 <script type="text/html" id="barDemo">
     <a class="layui-btn layui-btn-xs" lay-event="edit">审核</a>
 </script>
 
-<script src="./../../lib/jquery-3.4.1/jquery-3.4.1.min.js" charset="utf-8"></script>
-<script src="./../../lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
-<script src="./../../js/lay-config.js?v=1.0.4" charset="utf-8"></script>
-<script src="./../../lib/jq-module/jquery.particleground.min.js" charset="utf-8"></script>
-<script src="./../../lib/common/jquery.cookie.min.js" charset="utf-8"></script>
-<script src="./../../lib/common/common.js" charset="utf-8"></script>
+<script src="../../../lib/jquery-3.4.1/jquery-3.4.1.min.js" charset="utf-8"></script>
+<script src="../../../lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
+<script src="../../../js/lay-config.js?v=1.0.4" charset="utf-8"></script>
+<script src="../../../lib/jq-module/jquery.particleground.min.js" charset="utf-8"></script>
+<script src="../../../lib/common/jquery.cookie.min.js" charset="utf-8"></script>
+<script src="../../../lib/common/common.js" charset="utf-8"></script>
 <!-- 注意：如果你直接复制所有代码到本地，上述js路径需要改成你本地的 -->
 
 <script type="text/javascript" >
@@ -169,19 +176,19 @@
         var tableIns =  table.render({
             id:"provinceReload"
             ,elem: '#complainTable'
-            ,url:'http://localhost:8003/production/getAllProductionsh'
+            ,url:'http://localhost:8003/productaudit/getAllProduct_auditTable'
             ,page: true
             ,toolbar: '#complain_toolbar'
             ,cols: [[ //表头
                 {type: 'checkbox', fixed: 'left'}
                 ,{field: 'id', title: 'ID',  hide:true}
-                ,{field: 'design_id', title: '产品编号', width:200, sort: true, fixed: 'left', totalRowText: '合计：'}
-                ,{field: 'product_name', title: '产品名称', width:280}
-                ,{field: 'first_kind_id', title: '档次级别', width: 200, sort: true, totalRow: true}
-                ,{field: 'product_stair_classify', title: 'I级分类', width:240, sort: true}
-                ,{field: 'product_second_classify', title: 'II级分类', width: 260, sort: true, totalRow: true}
-                ,{field: 'product_second_classify', title: 'III级分类', width:200}
-                ,{fixed: 'right', width: 200, align:'center', toolbar: '#barDemo'}
+                , {field: 'design_id', title: '设计单编号', width: 240, templet: '<div>{{d.design_id.design_number}}</div>'},
+                {field: 'design_id', title: '产品编号', width: 240, templet: '<div>{{d.design_id.design_idB}}</div>'}
+                ,  {field: 'design_id', title: '产品名称', width: 220, templet: '<div>{{d.design_id.product_name}}</div>'},
+                {field: 'design_id', title: '设计人', width: 220, templet: '<div>{{d.design_id.product_registrant}}</div>'},
+                {field: 'design_id', title: '登记时间', width: 220, templet: '<div>{{d.design_id.design_date}}</div>'},
+                {field: 'manhourcost', title: '工时总陈本', width: 220,}
+                ,{fixed: 'right', width: 220, align:'center', toolbar: '#barDemo'}
             ]]
             ,limits: [5,10,20,50]
         });
@@ -203,30 +210,40 @@
             }
         });
     $("#addProduction_process_design").click(function () {
-   var product_name = $("#product_name").val();
-    var design_id = $("#procedure_id").val();
-    var product_designer  =$("#product_designer").val();
-    var product_registrant  =$("#register").val();
-    var  design_date = $("#register_time").val();
-    var  esign_require = $(".layui-textarea").val();
-    var  prdouctId =  $("#prdouctId").val(); //修改单号状态已经有设计
-        var datas =[];
         var delIndex = layer.confirm('确定提交吗', function(delIndex) {
             layui.use('table',function () {
                 var table = layui.table;
-
             datas = layui.table.cache["test3"];
-          JSON.stringify(datas);//把JS对象转换为json 这个是获取所有的商品
+                var product_name = $("#product_name").val();
+                var design_idB = $("#procedure_id").val();
+                var product_designer  =$("#product_designer").val();
+                var product_registrant  =$("#register").val();
+                var  audit_date = $("#audit_date").val();
+                var  esign_require = $(".layui-textarea").val();
+             var shState =   $("input[name='sex']:checked").val();
+            var sjdId = $("#sjdId").val();
+            var shdId = $("#shdId").val();
+        if(audit_date==""){
+            layer.msg("请选择审核时间");
+            return;
+        }
+        if(shState=='通过'){
 
-                $.ajax({
-                    url:'http://127.0.0.1:8003/process/insertProductionSheet',
-                    data:{'product_name':product_name,'design_id':design_id,'product_designer':product_designer,'product_registrant':product_registrant,'design_date':design_date,'esign_require':esign_require,'prdouctId':prdouctId,'gprocuJson1': JSON.stringify(datas)},
-                    success: function (data) {
-                        layer.msg("提交成功");
-                        window.parent.location.reload();//刷新父页面
-                        layer.closeAll();
-                    }
-                })
+            $.ajax({
+                url:'http://127.0.0.1:8003/productaudit/auditSjdShb',
+                data:{"shState":shState,"audit_date":audit_date,"sjdId":sjdId,"shdId":shdId},
+                success: function (data) {
+                    layer.msg("提交成功");
+                    window.parent.location.reload();//刷新父页面
+                    layer.closeAll();
+                }
+            })
+        }else if (shState=='未通过') {
+            layer.msg("人丑过不去");
+            return;
+            
+        }
+
 
             })
 
@@ -240,58 +257,47 @@
                 case 'detail':
                     break;
                 case 'edit':
-                    var AddData=[
-                    ];
-
+                    $("#sjdId").val(data.design_id.id);
+                    $("#shdId").val(data.design_idA)
                     table.render({
                         elem: '#test3',
+                        url:'http://localhost:8003/designprocess/getAllDid?design_id='+data.design_id.design_idB,
                         height:150
                         ,cols: [[
-                            {field:'process_name', width:120, title: '工序名称', }
-                            ,{field:'process_id', width:120, title: '工序编号'}
-                            ,{field:'process_describe', width:120, title: '工序描述', edit:true, }
-                            ,{field:'process_time_gs', width:120, title: '工时数', edit:true,}
-                            ,{field:'process_time_unitdw', title: '工时单位', width: 120, edit:true,}
-                            ,{field:'process_time_cost', width:120, title: '单位工时成本',edit:true }
+                            {field:'id', width:120, title: '序号', },
+                            {field:'process_name', width:110, title: '工序名称', }
+                            ,{field:'process_id', width:150, title: '工序编号'}
+                            ,{field:'process_describe', width:120, title: '工序描述', }
+                            ,{field:'process_time_gs', width:120, title: '工时数', }
+                            ,{field:'process_time_unitdw', title: '工时单位', width: 120, }
+                            ,{field:'process_time_cost', width:120, title: '单位工时成本'}
                             ,{field:'process_subtotal', width:120, title: '工时成本小计', }
-                            ,{fixed: 'right', width: 120, align:'center', toolbar: '#barDemo2'}
 
                         ]],
-                        data:AddData
+
 
                     });
 
-                    $("#product_name").val(data.product_name);
-                    $("#procedure_id").val(data.design_id);
+                    $("#product_name").val(data.design_id.product_name);
+                    $("#procedure_id").val(data.design_id.design_idB);
+                    $("#product_designer").val(data.design_id.product_registrant);
+                    $("#design_number").val(data.design_id.design_number);
+                    $("#register").val(data.design_id.product_registrant);
+                    $("#register_time").val(data.design_id.design_date);
+                    $(".layui-textarea").val(data.design_id.esign_require)
                     $("#prdouctId").val(data.id);
+
                     layer.open({
                         maxmin: true,
                         type: 1,//类型 信息
                         area: ['1000px', '600px'],//定义宽和高
-                        title: '制定设计单',//题目
+                        title: '设计单审核',//题目
                         shadeClose: false,//点击遮罩层关闭
                         content: $('#addSupper')//打开的模态框
 
                     });
                     break;
-                case 'del':
-                    var delIndex = layer.confirm('真的删除id为' + data.id + "的信息吗?", function(delIndex) {
-                        $.ajax({
-                            url: 'http://127.0.0.1:8005/supper/delsupperById?id='+data.id,
-                            success: function(suc) {
 
-                                obj.del(); //删除对应行（tr）的DOM结构，并更新缓存
-                                layer.close(delIndex);
-                                console.log(delIndex);
-                                layer.msg("删除成功", {
-                                    icon: 1
-                                });
-
-                            }
-                        });
-                        layer.close(delIndex);
-                    });
-                    break;
             }
         });
         //监听提交
@@ -326,17 +332,7 @@
 
 
         });
-    $("#addGx").click(function () {
-        layer.open({
-            maxmin: true,
-            type: 1,//类型 信息
-            area: ['400px', '200px'],//定义宽和高
-            title: '工序选择',//题目
-            shadeClose: false,//点击遮罩层关闭
-            content: $('#addG2')//打开的模态框
 
-        });
-    })
 
         form.render();
         form.on('submit(provinceSearch)', function(data) {
@@ -370,8 +366,10 @@
             elem: '#date1'
         });
         laydate.render({
-            elem: '#register_time'
+            elem: '#audit_date'
         });
+
+
 
 
 
