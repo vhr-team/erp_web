@@ -175,7 +175,7 @@ layui.config({
                 layer.open({                                            //打开修改分类的模态框
                     maxmin: true,
                     type: 1,//类型 信息
-                    area: ['600px', '550px'],//定义宽和高
+                    area: ['600px', '350px'],//定义宽和高
                     title: '分类编辑',//题目
                     shadeClose: false,//点击遮罩层关闭
                     content: $('#updateclassify'),//打开的模态框

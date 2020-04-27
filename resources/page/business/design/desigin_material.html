@@ -482,12 +482,13 @@
                         changer: changer
                     },
                     success: function (result) {
-                        layer.msg(result.message)
-                        window.location.reload();
+                        layer.msg(result.message);
+                        layer.closeAll();
+                        //window.location.reload();
                     },
                     error: function () {
                         layer.msg(result.message)
-                        window.location.reload();
+                        //window.location.reload();
                     }
 
                 });
