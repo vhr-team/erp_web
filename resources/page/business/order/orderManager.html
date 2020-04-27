@@ -11,6 +11,42 @@
 
     <!--element-ui/css-->
     <link rel="stylesheet" href="../../../lib/plugin/element-ui/style/index.css">
+    <style>
+        .el-row {
+            margin-bottom: 20px;
+
+        &
+        :last-child {
+            margin-bottom: 0;
+        }
+
+        }
+        .el-col {
+            border-radius: 4px;
+        }
+
+        .bg-purple-dark {
+            background: #99a9bf;
+        }
+
+        .bg-purple {
+            background: #d3dce6;
+        }
+
+        .bg-purple-light {
+            background: #e5e9f2;
+        }
+
+        .grid-content {
+            border-radius: 4px;
+            min-height: 36px;
+        }
+
+        .row-bg {
+            padding: 10px 0;
+            background-color: #f9fafc;
+        }
+    </style>
 </head>
 <body>
 
@@ -100,12 +136,10 @@
                 <template slot-scope="scope">
                     <el-button
                             size="mini"
-                            @click="handleEdit(scope.$index, scope.row)">编辑
-                    </el-button>
-                    <el-button
-                            size="mini"
-                            type="danger"
-                            @click="handleDelete(scope.$index, scope.row)">删除
+                            icon="el-icon-view"
+                            @click="detailDialog(scope.row)"
+                            type="success">
+                        详情
                     </el-button>
                 </template>
             </el-table-column>
@@ -121,6 +155,105 @@
                 @current-change="handleCurrentChange"
                 :total="total">
         </el-pagination>
+
+        <!--订单明细-->
+        <el-dialog
+                width="70%"
+                title="进货订单明细" :visible.sync="dialogFormVisible">
+            <el-form :model="orderDatailObj" :inline="true">
+                <el-row :gutter="20">
+                    <el-col :span="6">
+                        <el-form-item prop="supplierName" label="企业名称" :label-width="formLabelWidth">
+                            <el-input v-model="orderDatailObj.supplierName" :disabled="true"></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="6">
+                        <el-form-item prop="createrTime" label="下单时间" :label-width="formLabelWidth">
+                            <el-date-picker
+                                    v-model="orderDatailObj.createrTime"
+                                    :disabled="true"
+                                    type="date"
+                                    placeholder="选择日期">
+                            </el-date-picker>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="6">
+                        <el-form-item prop="checkerName" label="下单人" :label-width="formLabelWidth">
+                            <el-input v-model="orderDatailObj.checkerName" :disabled="true"></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="6">
+                        <el-form-item prop="orderNum" label="订单号" :label-width="formLabelWidth">
+                            <el-input v-model="orderDatailObj.orderNum" :disabled="true"></el-input>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+
+                <el-row :gutter="20">
+                    <el-col :span="6">
+                        <el-form-item label="订单类别" :label-width="formLabelWidth">
+                            <el-input :disabled="true"></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="6">
+                        <el-form-item label="订单状态" :label-width="formLabelWidth">
+                            <div style="margin-top: 40px;margin-left: -50px;">
+                                <el-tag>未审核</el-tag>
+                            </div>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="6">
+                        <el-form-item prop="totalNum" label="商品总量" :label-width="formLabelWidth">
+                            <el-input v-model="orderDatailObj.totalNum" :disabled="true"></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="6">
+                        <el-form-item prop="totalPrice" label="订单总额" :label-width="formLabelWidth">
+                            <el-input v-model="orderDatailObj.totalPrice" :disabled="true"></el-input>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+            </el-form>
+
+            <el-table
+                    :data="orderDatailObj.details"
+                    show-summary
+                    :summary-method="getSummaries"
+                    style="width: 100%">
+                <el-table-column
+                        prop="goods.productname"
+                        align="center"
+                        label="商品类别">
+                </el-table-column>
+                <el-table-column
+                        prop="goods.goodsname"
+                        align="center"
+                        label="商品名称">
+                </el-table-column>
+                <el-table-column
+                        prop="detailNum"
+                        align="center"
+                        label="购买数量">
+                </el-table-column>
+                <el-table-column
+                        prop="detailPrice"
+                        align="center"
+                        label="进货单价">
+                </el-table-column>
+                <el-table-column
+                        sortable
+                        :formatter="stateFormat"
+                        align="center"
+                        label="合计">
+                </el-table-column>
+            </el-table>
+
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="dialogFormVisible = false">取 消</el-button>
+                <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+            </div>
+        </el-dialog>
+
     </div>
 </div>
 
@@ -182,7 +315,10 @@
                 CreateUserItems: [],
                 startTime: '',
                 endTime: '',
-                orderState: 1
+                orderState: 1,
+                dialogFormVisible: false,
+                formLabelWidth: '120px',
+                orderDatailObj: {},
             },
             watch: {
                 rangeDate: function (newVal, oldVal) {
@@ -197,6 +333,51 @@
             },
             // 方法
             methods: {
+                getSummaries(param) {
+                    const { columns, data } = param;
+                    const sums = [];
+                    columns.forEach((column, index) => {
+                        if (index === 0) {
+                            sums[index] = '总价';
+                            return;
+                        }
+                        const values = data.map(item => Number(item[column.property]));
+                        if (!values.every(value => isNaN(value))) {
+                            sums[index] = values.reduce((prev, curr) => {
+                                const value = Number(curr);
+                                if (!isNaN(value)) {
+                                    return prev + curr;
+                                } else {
+                                    return prev;
+                                }
+                            }, 0);
+                            sums[index] += ' 元';
+                        } else {
+                            sums[index] = 'N/A';
+                        }
+                    });
+
+                    return sums;
+                },
+                stateFormat(row, column) {
+                    return row.detailPrice * row.detailNum;
+                },
+                detailDialog(row) {
+                    this.dialogFormVisible = true;
+                    this.orderDatailObj = row;
+
+                    if (row.details) {
+                        this.orderDatailObj = row.details;
+                    } else {
+                        this.orderDatailObj.details = [];
+                    }
+                    // 根据订单ID，查询订单明细
+                    axios.get(orderApi + "orderdetail/getDetailByOrderId?orderId" + this.orderDatailObj.orderId).then(res => {
+                        this.orderDatailObj.details = res.data;
+                    }).catch(err => {
+                        this.$message.error(err);
+                    });
+                },
                 resetForm(formName) {
                     this.startTime = '';
                     this.endTime = '';
