@@ -47,7 +47,7 @@
                 <input name="id" type="hidden"/>
                 <input autocomplete="off" class="layui-input" id="addmoduleDescribe" lay-verify="required"
                        name="moduleDescribe"
-                       placeholder="请输入名称"
+                       placeholder="请输入要求"
                        type="text">
             </div>
         </div>
@@ -56,7 +56,7 @@
             <div class="layui-input-block">
                 <input name="id" type="hidden"/>
                 <input autocomplete="off" class="layui-input" id="type" lay-verify="required" name="type"
-                       placeholder="请输入名称"
+                       placeholder="请输入类型"
                        type="text">
             </div>
         </div>
@@ -66,7 +66,7 @@
                 <input name="id" type="hidden"/>
                 <input autocomplete="off" class="layui-input" id="addamountUnit" lay-verify="required"
                        name="amountUnit"
-                       placeholder="请输入名称"
+                       placeholder="请输入单位"
                        type="text">
             </div>
         </div>
@@ -76,7 +76,7 @@
                 <input name="id" type="hidden"/>
                 <input autocomplete="off" class="layui-input" id="cost_price_sum" lay-verify="required"
                        name="cost_price_sum"
-                       placeholder="请输入名称"
+                       placeholder="请输入售价"
                        type="number">
             </div>
         </div>
@@ -86,7 +86,7 @@
                 <input name="id" type="hidden"/>
                 <input autocomplete="off" class="layui-input" id="addresidualAmount" lay-verify="required"
                        name="cost_price_sum"
-                       placeholder="请输入名称"
+                       placeholder="请输入数量"
                        type="number">
             </div>
         </div>
@@ -96,7 +96,7 @@
                 <input name="id" type="hidden"/>
                 <input autocomplete="off" class="layui-input" id="addchanger" lay-verify="required"
                        name="moduleDescribe"
-                       placeholder="请输入名称"
+                       placeholder="请输入登记人姓名"
                        type="text">
             </div>
         </div>
@@ -182,7 +182,7 @@
             var changer = $("#addchanger").val();
             var residualAmount = $("#addresidualAmount").val();
 
-            if (changer.length < 0) {
+            if (changer.length < 1) {
                 lay.msg("请输入登记人姓名")
                 return;
             }
@@ -238,11 +238,13 @@
                 },
                 success: function (result) {
                     layer.msg(result.message)
-                    window.location.reload();
+                    $("input[type='text']").val('');
+                    $("input[type='number']").val('');
+                    // window.location.reload();
                 },
                 error: function () {
                     layer.msg(result.message)
-                    window.location.reload();
+                    // window.location.reload();
                 }
 
             });
