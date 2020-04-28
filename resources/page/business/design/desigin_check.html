@@ -76,6 +76,10 @@
                 }
                 switch (obj.event) {
                     case 'materialmultitrue':
+                        if(data.length<1){
+                            layer.msg("请至少选中一件商品");
+                            return;
+                        }
                         layer.prompt({title: '请输入审核人姓名', formType: 2}, function (value, index, elem) {
                             var checkTag = "审核通过"
                             var checker = value;
@@ -106,7 +110,10 @@
                         });
                         break;
                     case 'materialmultifalse':
-                        console.log(data);
+                        if(data.length<1){
+                            layer.msg("请至少选中一件商品");
+                            return;
+                        }
                         layer.prompt({title: '请输入审核人姓名', formType: 2}, function (value, index, elem) {
                             var checkTag = "审核不通过"
                             var checker = value;
@@ -151,7 +158,11 @@
                 switch (obj.event) {
                     case 'design_recordmultitrue':
                         console.log(data);
-                        layer.alert(JSON.stringify(data));
+                        if(data.length<1){
+                           layer.msg("请至少选中一件商品");
+                            return;
+                        }
+
 
                         layer.prompt({title: '请输入审核人姓名', formType: 2}, function (value, index, elem) {
                             var checkTag = "审核通过"
@@ -186,7 +197,10 @@
 
                         break;
                     case 'design_recordmultifalse':
-                        console.log(data);
+                        if(data.length<1){
+                            layer.msg("请至少选中一件商品");
+                            return;
+                        }
                         layer.prompt({title: '请输入审核人姓名', formType: 2}, function (value, index, elem) {
                             var checkTag = "审核不通过";
                             var checker = value;
@@ -314,7 +328,9 @@
 
 
                     }
-                    if (layEvent === 'checkmaterialfalse') {//审核不通过
+                    if (layEvent === 'checkmaterialfasle') {//审核不通过
+
+
                         layer.prompt({title: '请输入审核人姓名', formType: 2}, function (value, index, elem) {
                             var checkTag = "审核不通过"
                             var id = data.id
