@@ -90,8 +90,9 @@
                 <el-input v-model="orderQuery.maxTotalPrice" placeholder=""></el-input>
             </el-form-item>
             <el-form-item>
-                <el-button type="primary" @click="onSubmit">查询</el-button>
+                <el-button type="primary" icon="el-icon-search" @click="onSubmit">查询</el-button>
                 <el-button @click="resetForm('formInline')" icon="el-icon-refresh-left">重置</el-button>
+                <el-button icon="el-icon-plus" @click="addDialogFormVisible = true" type="success">添加</el-button>
             </el-form-item>
         </el-form>
 
@@ -116,9 +117,12 @@
                     align="center">
             </el-table-column>
             <el-table-column
-                    prop="createrTime"
                     label="制单时间"
                     align="center">
+                <template slot-scope="scope">
+                    <i class="el-icon-time"></i>
+                    <span style="margin-left: 10px">{{ scope.row.createrTime }}</span>
+                </template>
             </el-table-column>
             <el-table-column
                     prop="totalNum"
@@ -191,14 +195,35 @@
 
                 <el-row :gutter="20">
                     <el-col :span="6">
-                        <el-form-item label="订单类别" :label-width="formLabelWidth">
-                            <el-input :disabled="true"></el-input>
+                        <el-form-item prop="orderType" label="订单类别" :label-width="formLabelWidth">
+                            <div style="margin-top: 40px;margin-left: -50px;">
+                                <el-tag v-if="orderDatailObj.orderType === 1">
+                                    采购单
+                                </el-tag>
+                                <el-tag type="success" v-else-if="orderDatailObj.orderType === 2">
+                                    运输单
+                                </el-tag>
+                                <el-tag type="warning" v-else-if="orderDatailObj.orderType === 3">
+                                    入库单
+                                </el-tag>
+                                <el-tag type="info" v-else-if="orderDatailObj.orderType === 4">
+                                    销售单
+                                </el-tag>
+                            </div>
                         </el-form-item>
                     </el-col>
                     <el-col :span="6">
-                        <el-form-item label="订单状态" :label-width="formLabelWidth">
+                        <el-form-item prop="orderState" label="订单状态" :label-width="formLabelWidth">
                             <div style="margin-top: 40px;margin-left: -50px;">
-                                <el-tag>未审核</el-tag>
+                                <el-tag v-if="orderDatailObj.orderState === 1">
+                                    未审核
+                                </el-tag>
+                                <el-tag type="success" v-else-if="orderDatailObj.orderState === 2">
+                                    审核通过
+                                </el-tag>
+                                <el-tag type="danger" v-else-if="orderDatailObj.orderState === 3">
+                                    审核不通过
+                                </el-tag>
                             </div>
                         </el-form-item>
                     </el-col>
@@ -254,6 +279,64 @@
             </div>
         </el-dialog>
 
+        <!--add dialog-->
+        <el-dialog title="下采购单"
+                   width="70%"
+                   :visible.sync="addDialogFormVisible">
+            <el-form ref="addOrderForm">
+                <el-form-item label="供应商" prop="supplierId">
+                    <el-select :disabled="showCmd" v-model="supplierId" @change="currentSel"
+                               placeholder="请选择">
+                        <el-option :label="item.name" :value="item.id" v-for="item in items"></el-option>
+                    </el-select>
+
+                    <el-button @click="AddListRow()" round style="float: right;" icon="el-icon-plus" type="success">添加
+                    </el-button>
+                </el-form-item>
+            </el-form>
+
+
+            <el-table :data="goodsItems" border>
+                <el-table-column fixed="left" label="商品类别" align="center">
+                    <template slot-scope="scope">
+                        <el-select v-model="scope.row.productTypeId" placeholder="请选择商品类别">
+                            <el-option :label="item.name" :value="item.productTypeId"
+                                       v-for="item in producttypeItems" :key="item.productTypeId"></el-option>
+                        </el-select>
+                    </template>
+                </el-table-column>
+
+                <el-table-column label="商品名称" align="center">
+                    <template slot-scope="scope">
+                        <el-select v-model="scope.row.goodsname" placeholder="请选择商品">
+                            <el-option v-for="item in goodsNameItems" :key="item.id"></el-option>
+                        </el-select>
+                    </template>
+                </el-table-column>
+                <el-table-column label="采购数量" align="center">
+                    <template slot-scope="scope">
+                        <el-input v-model="scope.row.total_num"></el-input>
+                    </template>
+                </el-table-column>
+                <el-table-column label="单价" align="center">
+                    <template slot-scope="scope">
+                        <el-input type="number"></el-input>
+                    </template>
+                </el-table-column>
+
+                <el-table-column label="操作" width="220" align="center">
+                    <template slot-scope="scope">
+                        <el-button size="mini" type="danger" @click="handleDelete(scope.$index)">删除</el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="resetAddOrderForm('addOrderForm')">取 消</el-button>
+                <el-button type="primary" @click="addDialogFormVisible = false">确 定</el-button>
+            </div>
+        </el-dialog>
+
     </div>
 </div>
 
@@ -275,6 +358,8 @@
 <!--业务代码-->
 <script>
     let orderApi = 'http://127.0.0.1:8006/';
+    let productApi = 'http://127.0.0.1:8005/';
+    let goodsApi = 'http://127.0.0.1:8005/';
     let vue;
 
     // 入口函数
@@ -319,6 +404,13 @@
                 dialogFormVisible: false,
                 formLabelWidth: '120px',
                 orderDatailObj: {},
+                addDialogFormVisible: false,
+                items: [],
+                goodsItems: [],
+                supplierId: '',
+                showCmd: false,
+                producttypeItems: [],
+                goodsNameItems: []
             },
             watch: {
                 rangeDate: function (newVal, oldVal) {
@@ -333,27 +425,51 @@
             },
             // 方法
             methods: {
+                //点击删除当前行
+                handleDelete(index) {
+                    this.goodsItems.splice(index, 1);
+                },
+                AddListRow() {
+                    this.goodsItems.push({
+                        "productTypeId": "",
+                        "goodsname": "",
+                        "total_num": "",
+                    });
+                },
+                currentSel(val) {
+                    this.showCmd = true;
+                    // 根据供应商ID，查询供应商的商品类别
+                    axios.get(goodsApi + "productType/queryProductTypeByProviderid?providerid=" + val).then(res => {
+                        this.producttypeItems = res.data;
+                    }).catch(err => {
+                        vue.$message.error(err.data);
+                    })
+                },
+                initSupplier() {
+                    axios.get(productApi + "supper/getAllSupper").then(res => {
+                        this.items = res.data;
+                    });
+                },
                 getSummaries(param) {
-                    const { columns, data } = param;
+                    const {columns, data} = param;
                     const sums = [];
                     columns.forEach((column, index) => {
                         if (index === 0) {
-                            sums[index] = '总价';
                             return;
                         }
                         const values = data.map(item => Number(item[column.property]));
-                        if (!values.every(value => isNaN(value))) {
-                            sums[index] = values.reduce((prev, curr) => {
-                                const value = Number(curr);
-                                if (!isNaN(value)) {
-                                    return prev + curr;
-                                } else {
-                                    return prev;
-                                }
-                            }, 0);
-                            sums[index] += ' 元';
-                        } else {
-                            sums[index] = 'N/A';
+                        if (index === 2) {
+                            if (!values.every(value => isNaN(value))) {
+                                sums[index] = values.reduce((prev, curr) => {
+                                    const value = Number(curr);
+                                    if (!isNaN(value)) {
+                                        return prev + curr;
+                                    } else {
+                                        return prev;
+                                    }
+                                }, 0);
+                                sums[index] += ' 件';
+                            }
                         }
                     });
 
@@ -367,20 +483,33 @@
                     this.orderDatailObj = row;
 
                     if (row.details) {
-                        this.orderDatailObj = row.details;
+                        this.orderDatailObj.details = row.details;
                     } else {
                         this.orderDatailObj.details = [];
                     }
                     // 根据订单ID，查询订单明细
-                    axios.get(orderApi + "orderdetail/getDetailByOrderId?orderId" + this.orderDatailObj.orderId).then(res => {
+                    axios.get(orderApi + "orderdetail/getDetailByOrderId?orderId=" + row.orderId).then(res => {
                         this.orderDatailObj.details = res.data;
                     }).catch(err => {
                         this.$message.error(err);
                     });
+
+                    console.log(this.orderDatailObj);
+                },
+                resetAddOrderForm(formName) {
+
+                    this.addDialogFormVisible = false;
+                    this.goodsItems = [];
+                    this.showCmd = false;
+                    this.supplierId = '';
+                    this.$refs[formName].resetFields();
                 },
                 resetForm(formName) {
                     this.startTime = '';
                     this.endTime = '';
+                    this.orderDatailObj = {};
+                    this.orderDatailObj.details = [];
+
                     this.$refs[formName].resetFields();
                 },
                 onSubmit() {
@@ -430,6 +559,7 @@
             mounted() {
                 this.initTableData();
                 this.initCreateUser();
+                this.initSupplier();
             }
         });
     });
