@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>档案管理</title>
+    <title>档案添加</title>
 
     <link rel="stylesheet" href="../../../lib/layui-v2.5.5/css/layui.css">
     <script src="../../../lib/jquery-3.4.1/jquery-3.4.1.min.js"></script>
@@ -11,39 +11,16 @@
     <script media="all" src="../../../lib/layui-v2.5.5/layui.all.js"></script>
     <script src="https://cdn.bootcss.com/axios/0.19.2/axios.min.js"></script>
     <script src="https://cdn.bootcss.com/qs/6.9.3/qs.min.js"></script>
-
     <script src="../../../lib/layui-v2.5.5/lay/modules/laydate.js"></script>
     <script src="config/common.js"></script>
-
     <script src="js/jquery-v3.2.1.js"></script>
     <script src="../../../lib/layui-v2.5.5/lay/modules/formSelects-v4.js"></script>
 </head>
 <body>
 
-
-</div>
-<script id="record" type="text/html">
-    <div class="layui-btn-container">
-        <button class="layui-btn layui-btn-sm" lay-event="batchDelete">批量删除</button>
-        <button class="layui-btn layui-btn-sm" lay-event="addrecord">添加档案</button>
-        <button class="layui-btn layui-btn-sm" lay-event="rload">刷新</button>
-        <button class="layui-btn layui-btn-sm" lay-event="classify">分类编辑</button>
-    </div>
-</script>
-<!--表格-->
-<table id="design_record" lay-data="design_record" lay-filter="design_record"></table>
-<!--操作按钮-->
-<script id="bardesign_record" type="text/html">
-    <a class="layui-btn  layui-btn-xs" lay-event="edit"><i class="layui-icon layui-icon-edit"></i>编辑</a>
-    <a class="layui-btn layui-btn-danger layui-btn-xs sold" lay-event="Stand_up_and_down"><i
-            class="layui-icon layui-icon-note"></i>上/下架</a>
-</script>
-
 <!--添加模态框-->
 <div id="">
-    <div id="addrecord" style="display: block;">
         <div action="" class="layui-form" lay-filter="">
-
             <div class="layui-form-item">
                 <label class="layui-form-label">产品名称</label>
                 <div class="layui-input-block">
@@ -130,7 +107,7 @@
                 </div>
             </div>
             <div class="layui-form-item">
-                <label class="layui-form-label">市场单价</label>
+                <label class="layui-form-label">物料总价</label>
                 <div class="layui-input-block">
                     <input autocomplete="off" class="layui-input" id="listPrice" lay-verify="title" name="listPrice"
                            readonly
@@ -159,6 +136,14 @@
                 <div class="layui-input-block">
                     <input autocomplete="off" class="layui-input" id="responsiblePerson" lay-verify="title"
                            name="responsiblePerson" placeholder="请输入产品经理"
+                           type="text">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">登记人姓名</label>
+                <div class="layui-input-block">
+                    <input autocomplete="off" class="layui-input" id="register" lay-verify="title"
+                           name="register" placeholder="请输入登记人姓名"
                            type="text">
                 </div>
             </div>
@@ -259,8 +244,6 @@
                 sum += parseInt(vals[i].value);
             }
             var listPrice = $("#listPrice").val(sum);
-            console.log(vals);
-
         }, true);
 
 
@@ -312,11 +295,14 @@
             var costPrice = $("#costPrice").val();
             /*获取市场单价*/
             var listPrice = $("#listPrice").val(sum);
+            /*单位*/
             var amountUnit = $("#amountUnit").val();
             /*获取输入的实际成本单价*/
             var realCostPrice = $("#realCostPrice").val();
             /*获取输入的产品经理*/
             var responsiblePerson = $("#responsiblePerson").val();
+            /*登记人姓名*/
+            var register=$("#register").val();
             /*获取输入的产品描述*/
             var product_describe = t.get('#product_describe').getContent({format: 'text'})
             var data = {
@@ -329,6 +315,7 @@
                 productClass: productClass,
                 warranty: warranty,
                 productNick: productNick,
+                register:register,
                 listPrice: sum,
                 costPrice: costPrice,
                 realCostPrice: realCostPrice,
@@ -350,7 +337,7 @@
                     layer.msg(res.message);
                 }
             });
-            window.location.reload();
+
 
         })
 

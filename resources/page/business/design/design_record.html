@@ -20,289 +20,463 @@
 
 </head>
 <body>
-
-<div class="layuimini-container">
-    <fieldset class="layui-elem-field" style="padding-top: 20px">
-        <legend>搜索</legend>
-        <div class="layuimini-main layui-col-lg-offset3">
-            <div>
-                <div class="layui-form-item">
-                    <label class="layui-form-label">商品名称</label>
-                    <div class="layui-input-inline">
-                        <input autocomplete="off" class="layui-input" id="proname" lay-verify="required" name="proname"
-                               placeholder="请输入商品名称" type="text">
-                    </div>
-                    <div class="layui-inline">
-                        <label class="layui-form-label">日期选择</label>
-                        <div class="layui-input-block">
-                            <input autocomplete="off" class="layui-input " id="register_time" name="date" type="text">
+<div>
+    <div class="layuimini-container">
+        <fieldset class="layui-elem-field" style="padding-top: 20px">
+            <legend>搜索</legend>
+            <div class="layuimini-main layui-col-lg-offset3">
+                <div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">商品名称</label>
+                        <div class="layui-input-inline">
+                            <input autocomplete="off" class="layui-input" id="proname" lay-verify="required"
+                                   name="proname"
+                                   placeholder="请输入商品名称" type="text">
                         </div>
-                    </div>
-                    <div class="layui-inline">
-                        <button class="layui-btn layui-btn-primary" id="search"><i
-                                class="layui-icon"></i> 搜 索
-                        </button>
-                        <button class="layui-btn layui-btn-primary" lay-filter="data-search-btn" type="reset"><i
-                                class="layui-icon layui-icon-refresh"></i> 重 置
-                        </button>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">日期选择</label>
+                            <div class="layui-input-block">
+                                <input autocomplete="off" class="layui-input " id="register_time" name="date"
+                                       type="text">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <button class="layui-btn layui-btn-primary" id="search"><i
+                                    class="layui-icon"></i> 搜 索
+                            </button>
+                            <button class="layui-btn layui-btn-primary" lay-filter="data-search-btn" type="reset"><i
+                                    class="layui-icon layui-icon-refresh"></i> 重 置
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </fieldset>
-</div>
-
-</div>
-<script type="text/html" id="record">
-    <div class="layui-btn-container">
-        <button class="layui-btn layui-btn-sm" lay-event="batchDelete">批量删除</button>
-        <button class="layui-btn layui-btn-sm" lay-event="addrecord">添加档案</button>
-        <button class="layui-btn layui-btn-sm" lay-event="rload">刷新</button>
-        <button class="layui-btn layui-btn-sm" lay-event="classify">分类编辑</button>
+        </fieldset>
     </div>
-</script>
-<!--表格-->
-<table id="design_record" lay-filter="design_record" lay-data="design_record"></table>
-<!--操作按钮-->
-<script type="text/html" id="bardesign_record">
-    <a class="layui-btn  layui-btn-xs" lay-event="edit"><i class="layui-icon layui-icon-edit"></i>编辑</a>
-    <a class="layui-btn layui-btn-danger layui-btn-xs sold" lay-event="Stand_up_and_down"><i
-            class="layui-icon layui-icon-note"></i>上/下架</a>
-</script>
 
+    <script type="text/html" id="record">
+        <div class="layui-btn-container">
+            <button class="layui-btn layui-btn-sm" lay-event="batchDelete">批量删除</button>
+            <button class="layui-btn layui-btn-sm" lay-event="addrecord">添加档案</button>
+            <button class="layui-btn layui-btn-sm" lay-event="rload">刷新</button>
+            <button class="layui-btn layui-btn-sm" lay-event="classify">分类编辑</button>
+        </div>
+    </script>
+    <!--表格-->
+    <table id="design_record" lay-filter="design_record" lay-data="design_record"></table>
+    <!--操作按钮-->
+    <script type="text/html" id="bardesign_record">
+        <a class="layui-btn  layui-btn-xs" lay-event="edit"><i class="layui-icon layui-icon-edit"></i>编辑</a>
+        <a class="layui-btn  layui-btn-xs" lay-event="detail"><i class="layui-icon layui-icon-align-center"></i>详细</a>
+    </script>
+    <div style="display: none" id="detail">
+        <div class="layui-field-box">
+            <div class="layui-form-item">
+                <label class="layui-form-label">ID:</label>
+                <div class="layui-input-block">
+                    <input type="text" name="id" lay-verify="title" style="border: none" readonly value=""
+                           autocomplete="off" placeholder="请输入标题" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">产品名称:</label>
+                <div class="layui-input-block">
+                    <input type="text" name="productName" lay-verify="title" style="border: none" readonly value="dsa"
+                           autocomplete="off" placeholder="请输入标题" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">用途:</label>
+                <div class="layui-input-block">
+                    <input type="text" name="type" lay-verify="title" style="border: none" readonly value="dsa"
+                           autocomplete="off" placeholder="请输入标题" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">保修期:</label>
+                <div class="layui-input-block">
+                    <input type="text" name="warranty" lay-verify="title" style="border: none" readonly value="dsa"
+                           autocomplete="off" placeholder="请输入标题" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">一级分类:</label>
+                <div class="layui-input-block">
+                    <input type="text" name="firstKindName" lay-verify="title"
+                           style="border:none;width: 90px;display: inline-block" readonly value="dsa" autocomplete="off"
+                           placeholder="请输入标题" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">二级分类:</label>
+                <div class="layui-input-block">
+                    <input type="text" name="secondKindName" lay-verify="title"
+                           style="border: none;display: inline-block;width: 90px" readonly value="dsa"
+                           autocomplete="off" placeholder="请输入标题" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">成本单价:</label>
+                <div class="layui-input-block">
+                    <input type="text" name="realCostPrice" lay-verify="title" style="border: none" readonly value="dsa"
+                           autocomplete="off" placeholder="请输入标题" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">产品经理:</label>
+                <div class="layui-input-block">
+                    <input type="text" name="responsiblePerson" lay-verify="title" style="border: none" readonly
+                           value="dsa" autocomplete="off" placeholder="请输入标题" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">登记人:</label>
+                <div class="layui-input-block">
+                    <input type="text" name="register" lay-verify="title" style="border: none" readonly value="dsa"
+                           autocomplete="off" placeholder="请输入标题" class="layui-input">
+                </div>
+            </div>
 
-<script>
-    //table组件
-    layui.use(['table', 'laydate', 'form'], function () {
-        var form = layui.form;
-        var table = layui.table;//引用table
-        var laydate = layui.laydate;
-        var design_recordTable;
-        form.render();//初始化表单组件
-        laydate.render({
-            elem: '#register_time' //指定元素
-        });
-        search();//查询
-        function search() {                                                              //查询档案
-            $("#search").click(function () {
-                var productName = $("#proname").val();//获取用户输入的商品名称
-                var registerTime = $("#register_time").val();//获取用户选择的日期
-                table.reload('design_record', {//表格重载
-                    url: api1 + 'design_record/findPage'
-                    , where: {productName: productName, registerTime: registerTime}
-                });
+            <div class="layui-form-item">
+                <label class="layui-form-label">物料组成:</label>
+                <div class="layui-input-block">
+                    <input type="text" name="materialList" lay-verify="title" style="border: none" readonly value="dsa"
+                           autocomplete="off" placeholder="请输入标题" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">描述: </label>
+                <div class="layui-input-block">
+                    <input type="text" name="productDescribe" lay-verify="title" style="border: none" readonly
+                           value="dsa" autocomplete="off" placeholder="请输入标题" class="layui-input">
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+    <div style="display: none" id="update">
+        <div class="layui-field-box">
+            <div class="layui-form-item" style="display: none">
+                <label class="layui-form-label">ID:</label>
+                <div class="layui-input-block">
+                    <input type="text" id="id" name="id" lay-verify="title" style="border: none" readonly value=""
+                           autocomplete="off" placeholder="请输入标题" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">产品名称:</label>
+                <div class="layui-input-block">
+                    <input type="text" id="productName" name="productName" lay-verify="title" style="" value="" autocomplete="off"
+                           placeholder="请输入标题" class="layui-input">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">用途:</label>
+                <div class="layui-input-block">
+                    <input type="text" id="type" name="type" lay-verify="title" style="" value="dsa" autocomplete="off"
+                           placeholder="请输入标题" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">保修期:</label>
+                <div class="layui-input-block">
+                    <input type="text" id="warranty" name="warranty" lay-verify="title" style="" value="dsa" autocomplete="off"
+                           placeholder="请输入标题" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">成本单价:</label>
+                <div class="layui-input-block">
+                    <input type="text" id="realCostPrice" name="realCostPrice" lay-verify="title" style="" value="dsa" autocomplete="off"
+                           placeholder="请输入标题" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">产品经理:</label>
+                <div class="layui-input-block">
+                    <input type="text" id="responsiblePerson" name="responsiblePerson" lay-verify="title" style="" value="dsa"
+                           autocomplete="off" placeholder="请输入标题" class="layui-input">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">变更人:</label>
+                <div class="layui-input-block">
+                    <input type="text" id="changer" name="changer" lay-verify="title" style="" value="dsa" autocomplete="off"
+                           placeholder="请输入标题" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item" style="display: none">
+                <label class="layui-form-label">修改次数:</label>
+                <div class="layui-input-block">
+                    <input type="text" id="fileChangeAmount" name="fileChangeAmount" lay-verify="title" style="" value="dsa" autocomplete="off"
+                           placeholder="请输入标题" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">描述: </label>
+                <div class="layui-input-block">
+                    <input type="text" id="productDescribe" name="productDescribe" lay-verify="title" style="" value="dsa" autocomplete="off"
+                           placeholder="请输入标题" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <button class="layui-btn" lay-submit id="updatesubmit" lay-filter="updatesubmit">立即提交</button>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+    <script>
+        //table组件
+        layui.use(['table', 'laydate', 'form'], function () {
+            var form = layui.form;
+            var table = layui.table;//引用table
+            var laydate = layui.laydate;
+            var design_recordTable;
+            form.render();//初始化表单组件
+            laydate.render({
+                elem: '#register_time' //指定元素
             });
-        }
+            search();//查询
+            function search() {                                                              //查询档案
+                $("#search").click(function () {
+                    var productName = $("#proname").val();//获取用户输入的商品名称
+                    var registerTime = $("#register_time").val();//获取用户选择的日期
+                    table.reload('design_record', {//表格重载
+                        url: api1 + 'design_record/findPage'
+                        , where: {productName: productName, registerTime: registerTime}
+                    });
+                });
+            }
 
-        batchDelete();
-        function batchDelete() {
-            //头工具栏事件
-            table.on('toolbar(design_record)', function (obj) {
-                //var checkStatus = table.checkStatus(obj.config.id);
-                switch (obj.event) {
-                    case 'batchDelete':
-                        var checkStatus = table.checkStatus('design_record'), data = checkStatus.data;
-                        if (data.length > 0) {//如果选中了
-                            var idx = [];//所有选中的方式
-                            for (var i in data) {
-                                idx.push(data[i].id);//获取选中的ID
+            batchDelete();
+
+            function batchDelete() {
+                //头工具栏事件
+                table.on('toolbar(design_record)', function (obj) {
+                    //var checkStatus = table.checkStatus(obj.config.id);
+                    switch (obj.event) {
+                        case 'batchDelete':
+                            var checkStatus = table.checkStatus('design_record'), data = checkStatus.data;
+                            if (data.length > 0) {//如果选中了
+                                var idx = [];//所有选中的方式
+                                for (var i in data) {
+                                    idx.push(data[i].id);//获取选中的ID
+                                }
+                                layer.confirm('确定删除选中的吗？', {icon: 3, title: '批量删除'}, function (index) { /*批量删除档案*/
+                                    $.ajax({//异步提交  批量删除
+                                        url: api1 + "design_record/deletebatch",
+                                        type: "post",
+                                        data: JSON.stringify(idx),
+                                        contentType: "application/json",
+                                        success: function (result) {//成功
+                                            layer.msg(result.message);
+                                            tablerecord();//表格加载
+                                        },
+                                        error: function (result) {//失败
+                                            layer.msg(result.message);
+                                        }
+                                    })
+                                    layer.close(index);//关闭这个提示框
+                                });
+                            } else {
+                                layer.msg("哈批！！请选中要删除的档案啊");
                             }
-                            layer.confirm('确定删除选中的吗？', {icon: 3, title: '批量删除'}, function (index) { /*批量删除档案*/
-                                $.ajax({//异步提交  批量删除
-                                    url: api1 + "design_record/deletebatch",
-                                    type: "post",
-                                    data: JSON.stringify(idx),
-                                    contentType: "application/json",
-                                    success: function (result) {//成功
-                                        layer.msg(result.message);
-                                        tablerecord();//表格加载
-
-                                    },
-                                    error: function (result) {//失败
-                                        layer.msg(result.message);
-                                    }
-                                })
-                                layer.close(index);//关闭这个提示框
+                            break;
+                        case 'addrecord':                                                                  //打开添加的页面
+                            layer.open({
+                                type: 2,
+                                shade: false,
+                                area: ['1000px', '600px'],
+                                maxmin: true,
+                                content: 'design_record_add.html',
+                                zIndex: layer.zIndex, //重点1
+                                success: function (layero) {
+                                    layer.setTop(layero); //重点2
+                                }
                             });
-                        } else {
-                            layer.msg("哈批！！请选中要删除的档案啊");
-                        }
-                        break;
-                    case 'addrecord':                                                                  //打开添加的页面
-                        layer.open({
-                            type: 2,
+                            break;
+                        case 'rload':
+                            window.location.reload();
+                            break;
+                        case 'classify':
+                            layer.open({                                                                   //打开分类的页面
+                                type: 2,
+                                shade: false,
+                                area: ['1000px', '500px'],
+                                maxmin: true,
+                                content: 'design_classify.html',
+                                zIndex: layer.zIndex, //重点1
+                                success: function (layero) {
+                                    layer.setTop(layero); //重点2
+                                }
+                            });
+                            break;
+
+                    }
+                    ;
+                });
+            }
+
+            tablerecord();//表格加载数据
+            function tablerecord() {
+                design_recordTable = table.render({                                                         /*表格加载*/
+                    elem: '#design_record' //示例table的Id
+                    , url: api1 + 'design_record/findPage' //数据接口
+                    , height: 500
+                    , toolbar: '#record' //开启头部工具栏，并为其绑定左侧模板
+                    , defaultToolbar: ['filter', 'print', 'exports', {
+                        title: '提示',
+                        layEvent: 'LAYTABLE_TIPS',
+                        icon: 'layui-icon-tips'
+                    }]
+                    , request: {
+                        pageName: 'page' //页码的参数名称，默认：page
+                        , limitName: 'pageSize' //每页数据量的参数名，默认：limit
+                    }
+                    , response: {
+                        countName: 'total' //规定数据总数的字段名称，默认：count 规定返回数据的总行数实例
+                        , dataName: 'rows' //规定数据列表的字段名称，默认：data 规定返回的数据示例
+                    }
+                    , parseData: function (res) { //res 即为原始返回的数据
+                        console.log(res);
+                        return {
+                            "code": "0", //返回的code的值 成功：0
+                            "total": res.total, //解析数据长度
+                            "rows": res.rows, //解析数据列表
+                        };
+                    }
+                    , page: {//开启分页 设置分页样式
+                        layout: ['limit', 'count', 'prev', 'page', 'next', 'skip'] //自定义分页布局
+                        , groups: 1 //只显示 1 个连续页码
+                        , first: false //不显示首页
+                        , last: false //不显示尾页
+                    }
+                    , title: '产品档案登记'//excel导出的标题
+                    , cols:
+                        [[ //表头
+                            {type: 'checkbox', fixed: 'left'} //开启多选
+                            , {field: 'id', title: '序号', width: 60}
+                            , {field: 'productId', title: '产品ID', width: 90}
+                            , {field: 'productName', title: '产品名称', minWidth: 90}
+                            , {field: 'amountUnit', title: '单位', minWidth: 60, sort: true}
+                            , {field: 'registerTime', title: '建档时间', minWidth: 100, sort: true}
+                            , {field: 'checkTag', title: '审核标志', minWidth: 90}
+                            , {field: 'type', title: '类型', minWidth: 100}
+                            , {field: 'productClass', title: '档次级别', minWidth: 90}
+                            , {field: 'materialList', title: '物料组成', minWidth: 100}
+                            , {fixed: 'right', minWidth: 170, title: "操作", toolbar: '#bardesign_record'}//右侧操作按钮
+                        ]]
+                });
+
+            }
+
+            toolRecorde();
+
+            function toolRecorde() {
+                //监听工具条
+                table.on('tool(design_record)', function (obj) {
+                    var data = obj.data; //获得当前行数据
+                    var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+                    var tr = obj.tr; //获得当前行 tr 的 DOM 对象（如果有的话）
+                    var jsonData = JSON.stringify(data);//json转换后的json
+                    if (layEvent === 'edit') {                                                         //修改档案
+                        /* console.log(data);
+                         layer.confirm('确定修改吗 ?', {icon: 3, title: '提示'}, function (index) {
+                             $.ajax({
+                                 url: api1 + "design_record/updaterecordById",
+                                 data: jsonData,
+                                 type: "post",
+                                 contentType: "application/json",
+                                 success: function (result) {
+                                     layer.msg(result.message);
+                                 },
+                                 error: function (result) {
+                                     layer.msg(result.message);
+                                 }
+                             });
+                             layer.close(index);
+                         });*/
+                        $('input[name="id"]').val(data.id);
+                        $('input[name="productName"]').val(data.productName);
+                        $('input[name="type"]').val(data.type);
+                        $('input[name="warranty"]').val(data.warranty);
+                        $('input[name="realCostPrice"]').val(data.realCostPrice);
+                        $('input[name="responsiblePerson"]').val(data.responsiblePerson);
+                        $('input[name="productDescribe"]').val(data.productDescribe);
+                        $('input[name="materialList"]').val(data.materialList);
+                        $('input[name="firstKindName"]').val(data.firstKindName);
+                        $('input[name="secondKindName"]').val(data.secondKindName);
+                        $('input[name="register"]').val(data.register);
+                        $('input[name="fileChangeAmount"]').val(data.fileChangeAmount)
+                        var index = layer.open({
+                            type: 1,
                             shade: false,
                             area: ['1000px', '600px'],
                             maxmin: true,
-                            content: 'design_record_add.html',
-                            zIndex: layer.zIndex, //重点1
-                            success: function (layero) {
-                                layer.setTop(layero); //重点2
+                            content: $('#update'),//打开的内容
+                            end: function () {
+                                $("#update").css("display", "none")
                             }
                         });
-                        break;
-                    case 'rload':
-                        window.location.reload();
-                        break;
-                    case 'classify':
-                        layer.open({                                                                   //打开分类的页面
-                            type: 2,
+                    } else if (layEvent === 'detail') {
+                        $('input[name="id"]').val(data.id);
+                        $('input[name="productName"]').val(data.productName);
+                        $('input[name="type"]').val(data.type);
+                        $('input[name="warranty"]').val(data.warranty);
+                        $('input[name="realCostPrice"]').val(data.realCostPrice);
+                        $('input[name="responsiblePerson"]').val(data.responsiblePerson);
+                        $('input[name="productDescribe"]').val(data.productDescribe);
+                        $('input[name="materialList"]').val(data.materialList);
+                        $('input[name="firstKindName"]').val(data.firstKindName);
+                        $('input[name="secondKindName"]').val(data.secondKindName);
+                        var index = layer.open({
+                            type: 1,
                             shade: false,
-                            area: ['1000px', '500px'],
+                            area: ['1000px', '600px'],
                             maxmin: true,
-                            content: 'design_classify.html',
-                            zIndex: layer.zIndex, //重点1
-                            success: function (layero) {
-                                layer.setTop(layero); //重点2
+                            content: $('#detail'),//打开的内容
+                            end: function () {
+                                $("#detail").css("display", "none")
                             }
                         });
-                        break;
-                    case 'LAYTABLE_TIPS':
-                        layer.msg('点击单元格即可修改，点击编辑可保存');
-                        break;
-                }
-                ;
-            });
-        }
-
-        var recordreload = layer.load(0, {shade: false});//加载动画
-        tablerecord();//表格加载数据
-        function tablerecord() {
-            design_recordTable = table.render({                                                         /*表格加载*/
-                elem: '#design_record' //示例table的Id
-                , height: 500 //表格高度
-                , url: api1 + 'design_record/findPage' //数据接口
-                , toolbar: '#record' //开启头部工具栏，并为其绑定左侧模板
-                , defaultToolbar: ['filter', 'print', 'exports', {
-                    title: '提示',
-                    layEvent: 'LAYTABLE_TIPS',
-                    icon: 'layui-icon-tips'
-                }]
-                , request: {
-                    pageName: 'page' //页码的参数名称，默认：page
-                    , limitName: 'pageSize' //每页数据量的参数名，默认：limit
-                }
-                , response: {
-
-                    countName: 'total' //规定数据总数的字段名称，默认：count 规定返回数据的总行数实例
-                    , dataName: 'rows' //规定数据列表的字段名称，默认：data 规定返回的数据示例
-                }
-                , parseData: function (res) { //res 即为原始返回的数据
-                    console.log(res);
-                    return {
-                        "code": "0", //返回的code的值 成功：0
-                        "total": res.total, //解析数据长度
-                        "rows": res.rows, //解析数据列表
-
-                    };
-
-                }
-                , page: {//开启分页 设置分页样式
-                    layout: ['limit', 'count', 'prev', 'page', 'next', 'skip'] //自定义分页布局
-                    , groups: 1 //只显示 1 个连续页码
-                    , first: false //不显示首页
-                    , last: false //不显示尾页
-                }
-
-                , title: '产品档案登记'//excel导出的标题
-                , totalRow: true //开启合计行
-                , cols:
-                    [[ //表头
-                        {type: 'checkbox', fixed: 'left'} //开启多选
-                        , {field: 'id', title: 'ID', type: "numbers", minWidth: 90}
-                        , {field: 'productId', title: '产品ID', width: 90, totalRowText: '合计'}
-                        , {field: 'productName', title: '产品名称(可修改)', minWidth: 90, edit: 'text'}
-                        , {field: 'factoryName', title: '制造商', minWidth: 90,}
-                        , {field: 'costPrice', title: '计划成本单价', minWidth: 90, sort: true, hide: true, totalRow: true}
-                        , {field: 'listPrice', title: '市场单价', minWidth: 90, sort: true, hide: true, totalRow: true}
-                        , {
-                            field: 'realCostPrice',
-                            title: '成本单价(可修改)',
-                            minWidth: 90,
-                            edit: 'text', //单元格可编辑
-                            sort: true, //排序
-                            hide: true, //是否开启隐藏
-                            totalRow: true //开启合计
-                        }
-                        , {field: 'amountUnit', title: '单位', minWidth: 60, hide: true, sort: true}
-                        , {field: 'responsiblePerson', minWidth: 90, title: '产品经理', hide: true}
-                        , {field: 'register', title: '登记人(可修改)', minWidth: 90, edit: 'text'}
-                        , {field: 'registerTime', title: '建档时间', minWidth: 100, sort: true, hide: true}
-                        , {field: 'checkTag', title: '审核标志', minWidth: 90}
-                        , {field: 'changeTag', title: '档案变更标志', minWidth: 100}
-                        , {field: 'type', title: '类型', minWidth: 100}
-                        , {field: 'priceChangeTag', title: '价格变更标志', minWidth: 100}
-                        , {field: 'deleteTag', title: '是否下架', hide: true, minWidth: 90}
-                        , {field: 'firstKindName', title: '一级分类', hide: true, minWidth: 90}
-                        , {field: 'secondKindName', title: '二级分类', hide: true, minWidth: 90}
-                        , {field: 'productClass', title: '档次级别', hide: true, minWidth: 90, edit: 'text'}
-                        , {field: 'productDescribe', title: '产品描述', hide: true, minWidth: 90, edit: 'text'}
-                        , {field: 'type', title: '类型', hide: true, minWidth: 90, edit: 'text'}
-                        , {field: 'responsiblePerson', title: '产品经理', hide: true, minWidth: 90}
-                        , {field: 'warranty', title: '保修期', hide: true, minWidth: 90, sort: true}
-                        , {
-                            field: 'fileChangeAmount',
-                            title: '变更次数',
-                            hide: true,
-                            minWidth: 90,
-                            totalRow: true,
-                            sort: true
-                        }
-                        , {field: 'priceChangeTag', title: '价格变更标志', hide: true, minWidth: 100}
-                        , {field: 'productNick', title: '产品简称', hide: true, minWidth: 100}
-                        , {field: 'materialList', title: '物料组成', hide: true, minWidth: 100}
-                        , {fixed: 'right', minWidth: 170, title: "操作", toolbar: '#bardesign_record'}//右侧操作按钮
-
-
-                    ]]
-                , done: function (res) {   //返回数据执行回调函数
-                    layer.close(recordreload);    //返回数据关闭loading
-                }
-            });
-
-        }
-
-
-        toolRecorde();
-        function toolRecorde() {
-            //监听工具条
-            table.on('tool(design_record)', function (obj) {
-                var data = obj.data; //获得当前行数据
-                var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
-                var tr = obj.tr; //获得当前行 tr 的 DOM 对象（如果有的话）
-                var jsonData = JSON.stringify(data);//json转换后的json
-                if (layEvent === 'Stand_up_and_down') { //上下架
-                    var tag = "";//获取上下架信息
-                    var dataTag = "";//修改上下信息
-                    if (data.deleteTag == "已下架") {                                                  /*获取上下架信息*/
-                        tag = "上架";
-                        data.deleteTag = "已上架"
-                    } else {
-                        tag = "下架";
-                        data.deleteTag = "已下架"
                     }
-                    layer.confirm("确定" + tag + "吗？", {icon: 3, title: '提示'}, function (index) {    /*提交上下架信息*/
-                        $.ajax({
-                            url: api1 + "design_record/putawayrecord",
-                            data: JSON.stringify(data),//转json
-                            type: "post",//post提交方式
-                            contentType: "application/json",//json提交
-                            success: function (result) {
-                                layer.msg(result.message);
-                                tablerecord();
-                            },
-                            error: function (result) {
-                                layer.msg(result.message);
-                            }
-                        });
-                        layer.close(index);
-                    });
-
-                } else if (layEvent === 'edit') {                                                         //修改档案
+                });
+            }
+            updatesubmit();
+            function updatesubmit() {
+                $("#updatesubmit").click(function () {
+                    var id = $('#id').val();
+                    var productName = $("#productName").val();
+                    var type = $("#type").val();
+                    var warranty = $("#warranty").val();
+                    var realCostPrice = $("#realCostPrice").val();
+                    var responsiblePerson = $("#responsiblePerson").val();
+                    var productDescribe = $("#productDescribe").val();
+                    var materialList = $("#materialList").val();
+                    var changer= $("#changer").val();
+                    var fileChangeAmount= $("#fileChangeAmount").val()
+                    var data = {
+                        id: id,
+                        productName:productName,
+                        type:type,
+                        warranty:warranty,
+                        realCostPrice:realCostPrice,
+                        responsiblePerson:responsiblePerson,
+                        productDescribe:productDescribe,
+                        materialList:materialList,
+                        changer:changer,
+                        fileChangeAmount:fileChangeAmount
+                    }
                     layer.confirm('确定修改吗 ?', {icon: 3, title: '提示'}, function (index) {
                         $.ajax({
                             url: api1 + "design_record/updaterecordById",
-                            data: jsonData,
+                            data: JSON.stringify(data),
                             type: "post",
                             contentType: "application/json",
                             success: function (result) {
@@ -314,12 +488,11 @@
                         });
                         layer.close(index);
                     });
-                }
-            });
-        }
-    });
-</script>
+                })
+            }
+        });
+    </script>
 
-
+</div>
 </body>
 </html>
