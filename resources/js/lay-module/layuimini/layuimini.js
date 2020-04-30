@@ -54,6 +54,7 @@ layui.define(["element", "jquery"], function (exports) {
                     layuimini.initClear();
                     layuimini.initMenu(data);
                     layuimini.initTab();
+                    layuimini.deleteLoader(1 || 1);
                 }
             }).fail(function () {
                 layuimini.msg_error('菜单接口有误');
@@ -70,6 +71,16 @@ layui.define(["element", "jquery"], function (exports) {
                 $('.layuimini-tool i').attr('class', 'fa fa-indent');
                 $('.layui-layout-body').attr('class', 'layui-layout-body layuimini-mini');
             }
+        };
+
+        /**
+         * 初始化加载时间
+         * @param loadingTime
+         */
+        this.deleteLoader = function (loadingTime) {
+            setTimeout(function () {
+                $('.layuimini-loader').fadeOut();
+            }, loadingTime * 1000)
         };
 
         /**

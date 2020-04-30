@@ -11,6 +11,10 @@
     <meta name="format-detection" content="telephone=no">
     <link rel="icon" href="resources/images/favicon.ico">
     <link rel="stylesheet" href="resources/lib/layui-v2.5.5/css/layui.css" media="all">
+
+    <!--element-ui/css-->
+    <link rel="stylesheet" href="resources/lib/plugin/element-ui/style/index.css">
+
     <!--[if lt IE 9]>
     <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
     <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
@@ -128,7 +132,7 @@
 </head>
 <body onload="getCookie();">
 
-<div class="layui-container">
+<div class="layui-container" id="app">
     <div class="admin-login-background">
         <div class="layui-form login-form">
             <form class="layui-form" action="">
@@ -173,7 +177,14 @@
 <script src="resources/lib/common/jquery.cookie.min.js" type="text/javascript" charset="utf-8"></script>
 <script src="resources/lib/common/common.js" type="text/javascript" charset="utf-8"></script>
 <script src="resources/lib/common/jquery.base64.js"></script>
+
+<!--vue-->
+<script src="resources/lib/plugin/vue/vue.min.js"></script>
+<!--element-ui/index.js-->
+<script src="resources/lib/plugin/element-ui/index.js"></script>
+
 <script>
+    let vue;
     //写验证码
     let keyCode = Math.floor(Math.random() * 9000 + 1000);
     $("#captchaPic").attr("src", api + 'login/captcha?codeKey=' + keyCode)
@@ -191,6 +202,20 @@
         if (pwd) {//密码存在的话把“记住用户名和密码”复选框勾选住
             $("#rememberMe").attr("checked", "checked");
         }
+
+        // 初始化Vue
+        vue = new Vue({
+            // 控制区域
+            el: '#app',
+            // 数据
+            data: {},
+            // 方法
+            methods:{},
+            // 钩子函数
+            mounted(){
+
+            }
+        });
     })
 
     layui.use(['form'], function () {
@@ -226,20 +251,26 @@
                     keyCode: keyCode
                 },
                 success: function (res) {
-                    layer.msg(res.msg);
                     if (res.code != 200) {
-                        btn.text("登 陆").attr("disabled", false).removeClass("layui-disabled");
+                        vue.$message.error(res.msg);
+                        btn.text("登 录").attr("disabled", false).removeClass("layui-disabled");
                     } else {
-                        //把token写到cookie
-                        $.cookie('TOKEN', res.token.token, {expires: 7});  //登陆成功这后把token放到cookie里面
-                        localStorage.setItem("permissions", res.token.permissions);
-                        localStorage.setItem("usertype", res.token.usertype);
-                        localStorage.setItem("user", JSON.stringify(res.token.user));
-                        window.location.href = "./index.html";
+                        vue.$message({
+                            message: '登录成功!',
+                            type: 'success'
+                        });
+                        setTimeout(function () {
+                            //把token写到cookie
+                            $.cookie('TOKEN', res.token.token, {expires: 7});  //登陆成功这后把token放到cookie里面
+                            localStorage.setItem("permissions", res.token.permissions);
+                            localStorage.setItem("usertype", res.token.usertype);
+                            localStorage.setItem("user", JSON.stringify(res.token.user));
+                            window.location.href = "./index.html";
+                        },2000);
                     }
                 },
                 error: function () {
-                    layer.msg("登录失败");
+                    vue.$message.error('登录失败');
                     btn.text("登 录").attr("disabled", "").removeClass("layui-disabled");
                 }
             });
@@ -272,6 +303,8 @@
             $("#password").val($.base64.decode(pwd));
         }
     }
+
+
 </script>
 </body>
 </html>
