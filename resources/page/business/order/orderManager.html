@@ -153,6 +153,7 @@
                 style="margin-top: 20px"
                 background
                 layout="sizes, prev, pager, next, jumper, ->, total, slot"
+                :page-sizes="[5, 10, 15, 20]"
                 :page-size="pageSize"
                 :current-page="page"
                 @size-change="handleSizeChange"
@@ -281,7 +282,7 @@
 
         <!--add dialog-->
         <el-dialog title="下采购单"
-                   width="70%"
+                   width="80%"
                    :visible.sync="addDialogFormVisible">
             <el-form ref="addOrderForm">
                 <el-form-item label="供应商" prop="supplierId">
@@ -296,10 +297,12 @@
             </el-form>
 
 
-            <el-table :data="goodsItems" border>
+            <el-table
+                    :data="goodsItems" border>
                 <el-table-column fixed="left" label="商品类别" align="center">
                     <template slot-scope="scope">
-                        <el-select v-model="scope.row.productTypeId" placeholder="请选择商品类别">
+                        <el-select @change="currentProductType(scope.$index,scope.row.productTypeId)"
+                                   v-model="scope.row.productTypeId" placeholder="请选择商品类别">
                             <el-option :label="item.name" :value="item.productTypeId"
                                        v-for="item in producttypeItems" :key="item.productTypeId"></el-option>
                         </el-select>
@@ -308,32 +311,42 @@
 
                 <el-table-column label="商品名称" align="center">
                     <template slot-scope="scope">
-                        <el-select v-model="scope.row.goodsname" placeholder="请选择商品">
-                            <el-option v-for="item in goodsNameItems" :key="item.id"></el-option>
+                        <el-select @change="currentGoods(scope.$index,scope.row.id)" v-model="scope.row.id"
+                                   placeholder="请选择商品">
+                            <el-option :label="item.goodsname" :value="item.id" v-for="item in scope.row.goodsNameItems"
+                                       :key="item.id"></el-option>
                         </el-select>
                     </template>
                 </el-table-column>
                 <el-table-column label="采购数量" align="center">
                     <template slot-scope="scope">
-                        <el-input v-model="scope.row.total_num"></el-input>
+                        <el-input type="number" v-model="scope.row.detailNum"></el-input>
                     </template>
                 </el-table-column>
                 <el-table-column label="单价" align="center">
                     <template slot-scope="scope">
-                        <el-input type="number"></el-input>
+                        <el-input v-model="scope.row.detailPrice" type="number"></el-input>
                     </template>
+                </el-table-column>
+                <el-table-column
+                        sortable
+                        :formatter="addOrderForamt"
+                        align="center"
+                        label="合计">
                 </el-table-column>
 
                 <el-table-column label="操作" width="220" align="center">
                     <template slot-scope="scope">
-                        <el-button size="mini" type="danger" @click="handleDelete(scope.$index)">删除</el-button>
+                        <el-button icon="el-icon-delete" size="mini" type="danger" @click="handleDelete(scope.$index)">
+                            删除
+                        </el-button>
                     </template>
                 </el-table-column>
             </el-table>
 
             <div slot="footer" class="dialog-footer">
                 <el-button @click="resetAddOrderForm('addOrderForm')">取 消</el-button>
-                <el-button type="primary" @click="addDialogFormVisible = false">确 定</el-button>
+                <el-button type="primary" @click="addOrderDialogForm">确 定</el-button>
             </div>
         </el-dialog>
 
@@ -410,7 +423,8 @@
                 supplierId: '',
                 showCmd: false,
                 producttypeItems: [],
-                goodsNameItems: []
+                goodsNameItems: [],
+                totalSum: 0
             },
             watch: {
                 rangeDate: function (newVal, oldVal) {
@@ -425,6 +439,35 @@
             },
             // 方法
             methods: {
+                addOrderDialogForm() {
+                    let orderModel = {
+                        productTypeId: [],
+                        goodsId: [],
+                        detailNum: [],
+                        detailPrice: [],
+                        supplierId: this.supplierId,
+                        creater: JSON.parse(localStorage.getItem("user")).id
+                    }
+
+                    for (let i = 0; i < this.goodsItems.length; i++) {
+                        orderModel.productTypeId.push(this.goodsItems[i].productTypeId);
+                        orderModel.goodsId.push(this.goodsItems[i].id);
+                        orderModel.detailNum.push(parseInt(this.goodsItems[i].detailNum));
+                        orderModel.detailPrice.push(this.goodsItems[i].detailPrice);
+                    }
+                    axios.post(orderApi + "ordermodel/addOrder", orderModel).then(res => {
+                        this.$message({
+                            message: res.data.msg,
+                            type: 'success'
+                        });
+                    }).catch(err => {
+                        this.$message.error(err);
+                    });
+                },
+                addOrderForamt(row, column, cellValue, index) {
+                    row.sum = row.detailNum * row.detailPrice;
+                    return row.sum;
+                },
                 //点击删除当前行
                 handleDelete(index) {
                     this.goodsItems.splice(index, 1);
@@ -432,9 +475,70 @@
                 AddListRow() {
                     this.goodsItems.push({
                         "productTypeId": "",
-                        "goodsname": "",
-                        "total_num": "",
+                        "id": "",
+                        "detailNum": 0,
+                        "goodsNameItems": [],
+                        "detailPrice": 0,
                     });
+                },
+                currentGoods(index, val) {
+                    let count = 0;
+                    for (let i = 0; i < this.goodsItems.length; i++) {
+                        if (val == this.goodsItems[i].id) {
+                            count++;
+                        }
+                    }
+
+                    if (count == 2) {
+                        for (let i = 0; i < this.goodsNameItems.length; i++) {
+                            if (val == this.goodsNameItems[i].id) {
+                                let index = this.goodsNameItems.indexOf(this.goodsNameItems[i]);
+                                this.goodsNameItems.splice(index, 1);
+                            }
+                        }
+                        this.$message({
+                            message: '商品已经存在',
+                            type: 'warning'
+                        });
+                        this.goodsItems[index].id = '';
+                        return false;
+                    } else {
+                        for (let i = 0; i < this.goodsItems[index].goodsNameItems.length; i++) {
+                            if (val == this.goodsItems[index].goodsNameItems[i].id) {
+                                for (let j = 0; j < this.goodsItems[index].goodsNameItems.length; j++) {
+                                    if (val == this.goodsItems[index].goodsNameItems[j].id) {
+                                        this.goodsItems[index].detailPrice = this.goodsItems[index].goodsNameItems[j].inprice;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                currentProductType(index, val) {
+                    let count = 0;
+                    for (let i = 0; i < this.goodsItems.length; i++) {
+                        // 获得商品ID
+                        let goodsId = this.goodsItems[i].id;
+                        for (let j = 0; j < this.goodsNameItems.length; j++) {
+                            if (goodsId == this.goodsNameItems[j].id) {
+                                count++;
+                            }
+                            if (count == 2) {
+                                let index = this.goodsNameItems.indexOf(this.goodsNameItems[j]);
+                                this.goodsNameItems.splice(index, 1);
+                                return false;
+                            }
+                        }
+                    }
+
+
+                    // 根据商品类别ID，查询商品
+                    axios.get(goodsApi + "goods/queryGoodsByProductTypeId?producttypeid=" + val).then(res => {
+                        this.goodsNameItems = res.data;
+                        this.goodsItems[index].goodsNameItems = res.data;
+                    }).catch(err => {
+                        vue.$message.error(err.data);
+                    })
                 },
                 currentSel(val) {
                     this.showCmd = true;
@@ -493,8 +597,6 @@
                     }).catch(err => {
                         this.$message.error(err);
                     });
-
-                    console.log(this.orderDatailObj);
                 },
                 resetAddOrderForm(formName) {
 
@@ -502,6 +604,9 @@
                     this.goodsItems = [];
                     this.showCmd = false;
                     this.supplierId = '';
+                    this.producttypeItems = [];
+                    this.goodsNameItems = [];
+
                     this.$refs[formName].resetFields();
                 },
                 resetForm(formName) {
