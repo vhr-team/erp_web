@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>订单管理</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="../../../lib/layui-v2.5.5/css/layui.css" media="all">
+    <link rel="stylesheet" href="../../../css/public.css" media="all">
+
+    <!--element-ui/css-->
+    <link rel="stylesheet" href="../../../lib/plugin/element-ui/style/index.css">
+    <style>
+        .el-row {
+            margin-bottom: 20px;
+
+        &
+        :last-child {
+            margin-bottom: 0;
+        }
+
+        }
+        .el-col {
+            border-radius: 4px;
+        }
+
+        .bg-purple-dark {
+            background: #99a9bf;
+        }
+
+        .bg-purple {
+            background: #d3dce6;
+        }
+
+        .bg-purple-light {
+            background: #e5e9f2;
+        }
+
+        .grid-content {
+            border-radius: 4px;
+            min-height: 36px;
+        }
+
+        .row-bg {
+            padding: 10px 0;
+            background-color: #f9fafc;
+        }
+    </style>
+</head>
+<body>
+
+<div class="layuimini-container" id="app">
+    <div class="layuimini-main">
+
+        <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
+            <el-tab-pane label="未审核" name="one"></el-tab-pane>
+            <el-tab-pane label="审核通过" name="two"></el-tab-pane>
+            <el-tab-pane label="审核不通过" name="three"></el-tab-pane>
+        </el-tabs>
+
+        <el-form ref="formInline" :inline="true" :model="orderQuery" class="demo-form-inline">
+            <el-form-item prop="creater" label="下单人">
+                <el-select v-model="orderQuery.creater" placeholder="请选择下单人">
+                    <el-option :label="item.name" :value="item.id" v-for="item in CreateUserItems"></el-option>
+                </el-select>
+            </el-form-item>
+            <el-form-item prop="minTotalNum" label="总量">
+                <el-input v-model="orderQuery.minTotalNum" placeholder="请输入总量"></el-input>
+            </el-form-item>
+            <el-form-item prop="maxTotalNum" label="到">
+                <el-input v-model="orderQuery.maxTotalNum" placeholder=""></el-input>
+            </el-form-item>
+            <el-form-item prop="rangeDate" label="下单时间">
+                <el-date-picker
+                        v-model="rangeDate"
+                        prefix-icon="el-icon-date"
+                        type="daterange"
+                        start-placeholder="开始日期"
+                        end-placeholder="结束日期"
+                        size="small"
+                        value-format="yyyy-MM-dd"
+                ></el-date-picker>
+            </el-form-item>
+            <br/>
+            <el-form-item prop="minTotalPrice" label="总额">
+                <el-input v-model="orderQuery.minTotalPrice" placeholder="请输入总量"></el-input>
+            </el-form-item>
+            <el-form-item prop="maxTotalPrice" label="到">
+                <el-input v-model="orderQuery.maxTotalPrice" placeholder=""></el-input>
+            </el-form-item>
+            <el-form-item>
+                <el-button type="primary" icon="el-icon-search" @click="onSubmit">查询</el-button>
+                <el-button @click="resetForm('formInline')" icon="el-icon-refresh-left">重置</el-button>
+                <el-button icon="el-icon-plus" @click="addDialogFormVisible = true" type="success">添加</el-button>
+            </el-form-item>
+        </el-form>
+
+        <el-table
+                :data="tableData"
+                v-loading="loading"
+                border
+                style="width: 100%">
+            <el-table-column
+                    prop="orderNum"
+                    label="订单号"
+                    align="center">
+            </el-table-column>
+            <el-table-column
+                    prop="supplierName"
+                    label="供应商"
+                    align="center">
+            </el-table-column>
+            <el-table-column
+                    prop="checkerName"
+                    label="制单人"
+                    align="center">
+            </el-table-column>
+            <el-table-column
+                    label="制单时间"
+                    align="center">
+                <template slot-scope="scope">
+                    <i class="el-icon-time"></i>
+                    <span style="margin-left: 10px">{{ scope.row.createrTime }}</span>
+                </template>
+            </el-table-column>
+            <el-table-column
+                    prop="totalNum"
+                    label="订单商品总量"
+                    align="center">
+            </el-table-column>
+            <el-table-column
+                    prop="totalPrice"
+                    label="订单总金额"
+                    align="center">
+            </el-table-column>
+            <el-table-column
+                    align="center"
+                    label="操作">
+                <template slot-scope="scope">
+                    <el-button
+                            size="mini"
+                            icon="el-icon-view"
+                            @click="detailDialog(scope.row)"
+                            type="success">
+                        详情
+                    </el-button>
+                </template>
+            </el-table-column>
+        </el-table>
+
+        <el-pagination
+                style="margin-top: 20px"
+                background
+                layout="sizes, prev, pager, next, jumper, ->, total, slot"
+                :page-sizes="[5, 10, 15, 20]"
+                :page-size="pageSize"
+                :current-page="page"
+                @size-change="handleSizeChange"
+                @current-change="handleCurrentChange"
+                :total="total">
+        </el-pagination>
+
+        <!--订单明细-->
+        <el-dialog
+                width="70%"
+                title="进货订单明细" :visible.sync="dialogFormVisible">
+            <el-form :model="orderDatailObj" :inline="true">
+                <el-row :gutter="20">
+                    <el-col :span="6">
+                        <el-form-item prop="supplierName" label="企业名称" :label-width="formLabelWidth">
+                            <el-input v-model="orderDatailObj.supplierName" :disabled="true"></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="6">
+                        <el-form-item prop="createrTime" label="下单时间" :label-width="formLabelWidth">
+                            <el-date-picker
+                                    v-model="orderDatailObj.createrTime"
+                                    :disabled="true"
+                                    type="date"
+                                    placeholder="选择日期">
+                            </el-date-picker>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="6">
+                        <el-form-item prop="checkerName" label="下单人" :label-width="formLabelWidth">
+                            <el-input v-model="orderDatailObj.checkerName" :disabled="true"></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="6">
+                        <el-form-item prop="orderNum" label="订单号" :label-width="formLabelWidth">
+                            <el-input v-model="orderDatailObj.orderNum" :disabled="true"></el-input>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+
+                <el-row :gutter="20">
+                    <el-col :span="6">
+                        <el-form-item prop="orderType" label="订单类别" :label-width="formLabelWidth">
+                            <div style="margin-top: 40px;margin-left: -50px;">
+                                <el-tag v-if="orderDatailObj.orderType === 1">
+                                    采购单
+                                </el-tag>
+                                <el-tag type="success" v-else-if="orderDatailObj.orderType === 2">
+                                    运输单
+                                </el-tag>
+                                <el-tag type="warning" v-else-if="orderDatailObj.orderType === 3">
+                                    入库单
+                                </el-tag>
+                                <el-tag type="info" v-else-if="orderDatailObj.orderType === 4">
+                                    销售单
+                                </el-tag>
+                            </div>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="6">
+                        <el-form-item prop="orderState" label="订单状态" :label-width="formLabelWidth">
+                            <div style="margin-top: 40px;margin-left: -50px;">
+                                <el-tag v-if="orderDatailObj.orderState === 1">
+                                    未审核
+                                </el-tag>
+                                <el-tag type="success" v-else-if="orderDatailObj.orderState === 2">
+                                    审核通过
+                                </el-tag>
+                                <el-tag type="danger" v-else-if="orderDatailObj.orderState === 3">
+                                    审核不通过
+                                </el-tag>
+                            </div>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="6">
+                        <el-form-item prop="totalNum" label="商品总量" :label-width="formLabelWidth">
+                            <el-input v-model="orderDatailObj.totalNum" :disabled="true"></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="6">
+                        <el-form-item prop="totalPrice" label="订单总额" :label-width="formLabelWidth">
+                            <el-input v-model="orderDatailObj.totalPrice" :disabled="true"></el-input>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+            </el-form>
+
+            <el-table
+                    :data="orderDatailObj.details"
+                    show-summary
+                    :summary-method="getSummaries"
+                    style="width: 100%">
+                <el-table-column
+                        prop="goods.productname"
+                        align="center"
+                        label="商品类别">
+                </el-table-column>
+                <el-table-column
+                        prop="goods.goodsname"
+                        align="center"
+                        label="商品名称">
+                </el-table-column>
+                <el-table-column
+                        prop="detailNum"
+                        align="center"
+                        label="购买数量">
+                </el-table-column>
+                <el-table-column
+                        prop="detailPrice"
+                        align="center"
+                        label="进货单价">
+                </el-table-column>
+                <el-table-column
+                        sortable
+                        :formatter="stateFormat"
+                        align="center"
+                        label="合计">
+                </el-table-column>
+            </el-table>
+
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="dialogFormVisible = false">取 消</el-button>
+                <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+            </div>
+        </el-dialog>
+
+        <!--add dialog-->
+        <el-dialog title="下采购单"
+                   width="80%"
+                   :visible.sync="addDialogFormVisible">
+            <el-form ref="addOrderForm">
+                <el-form-item label="供应商" prop="supplierId">
+                    <el-select :disabled="showCmd" v-model="supplierId" @change="currentSel"
+                               placeholder="请选择">
+                        <el-option :label="item.name" :value="item.id" v-for="item in items"></el-option>
+                    </el-select>
+
+                    <el-button @click="AddListRow()" round style="float: right;" icon="el-icon-plus" type="success">添加
+                    </el-button>
+                </el-form-item>
+            </el-form>
+
+
+            <el-table
+                    :data="goodsItems" border>
+                <el-table-column fixed="left" label="商品类别" align="center">
+                    <template slot-scope="scope">
+                        <el-select @change="currentProductType(scope.$index,scope.row.productTypeId)"
+                                   v-model="scope.row.productTypeId" placeholder="请选择商品类别">
+                            <el-option :label="item.name" :value="item.productTypeId"
+                                       v-for="item in producttypeItems" :key="item.productTypeId"></el-option>
+                        </el-select>
+                    </template>
+                </el-table-column>
+
+                <el-table-column label="商品名称" align="center">
+                    <template slot-scope="scope">
+                        <el-select @change="currentGoods(scope.$index,scope.row.id)" v-model="scope.row.id"
+                                   placeholder="请选择商品">
+                            <el-option :label="item.goodsname" :value="item.id" v-for="item in scope.row.goodsNameItems"
+                                       :key="item.id"></el-option>
+                        </el-select>
+                    </template>
+                </el-table-column>
+                <el-table-column label="采购数量" align="center">
+                    <template slot-scope="scope">
+                        <el-input type="number" v-model="scope.row.detailNum"></el-input>
+                    </template>
+                </el-table-column>
+                <el-table-column label="单价" align="center">
+                    <template slot-scope="scope">
+                        <el-input v-model="scope.row.detailPrice" type="number"></el-input>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                        sortable
+                        :formatter="addOrderForamt"
+                        align="center"
+                        label="合计">
+                </el-table-column>
+
+                <el-table-column label="操作" width="220" align="center">
+                    <template slot-scope="scope">
+                        <el-button icon="el-icon-delete" size="mini" type="danger" @click="handleDelete(scope.$index)">
+                            删除
+                        </el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="resetAddOrderForm('addOrderForm')">取 消</el-button>
+                <el-button type="primary" @click="addOrderDialogForm">确 定</el-button>
+            </div>
+        </el-dialog>
+
+    </div>
+</div>
+
+<!--jq-->
+<script src="../../../lib/jquery-3.4.1/jquery-3.4.1.min.js"></script>
+<!--layui-->
+<script src="../../../lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
+<!--vue-->
+<script src="../../../lib/plugin/vue/vue.min.js"></script>
+<!--element-ui/index.js-->
+<script src="../../../lib/plugin/element-ui/index.js"></script>
+<!--axios-->
+<script src="../../../lib/plugin/axios/axios.min.js"></script>
+
+<!--系统文件-->
+<script src="../../../lib/common/jquery.cookie.min.js" charset="utf-8"></script>
+<script src="../../../lib/common/common.js" charset="utf-8"></script>
+
+<!--业务代码-->
+<script>
+    let orderApi = 'http://127.0.0.1:8006/';
+    let productApi = 'http://127.0.0.1:8005/';
+    let goodsApi = 'http://127.0.0.1:8005/';
+    let vue;
+
+    // 入口函数
+    $(function () {
+        // http request 拦截器
+        axios.interceptors.request.use(
+            config => {
+                if (token) { //判断token是否存在
+                    config.headers.token = $.cookie("TOKEN");  //将token设置成请求头
+                }
+                return config;
+            },
+            err => {
+                return Promise.reject(err);
+            }
+        );
+
+        // 初始化Vue
+        vue = new Vue({
+            // 控制区域
+            el: '#app',
+            // 数据
+            data: {
+                orderQuery: {
+                    minTotalNum: '',
+                    creater: '',
+                    maxTotalNum: '',
+                    minTotalPrice: '',
+                    maxTotalPrice: ''
+                },
+                activeName: 'one',
+                rangeDate: [],
+                tableData: [],
+                page: 1,
+                pageSize: 5,
+                total: 9,
+                loading: true,
+                CreateUserItems: [],
+                startTime: '',
+                endTime: '',
+                orderState: 1,
+                dialogFormVisible: false,
+                formLabelWidth: '120px',
+                orderDatailObj: {},
+                addDialogFormVisible: false,
+                items: [],
+                goodsItems: [],
+                supplierId: '',
+                showCmd: false,
+                producttypeItems: [],
+                goodsNameItems: [],
+                totalSum: 0
+            },
+            watch: {
+                rangeDate: function (newVal, oldVal) {
+                    if (newVal !== null) {
+                        this.startTime = newVal[0]
+                        this.endTime = newVal[1]
+                    } else {
+                        this.startTime = null
+                        this.endTime = null
+                    }
+                }
+            },
+            // 方法
+            methods: {
+                addOrderDialogForm() {
+                    let orderModel = {
+                        productTypeId: [],
+                        goodsId: [],
+                        detailNum: [],
+                        detailPrice: [],
+                        supplierId: this.supplierId,
+                        creater: JSON.parse(localStorage.getItem("user")).id
+                    }
+
+                    for (let i = 0; i < this.goodsItems.length; i++) {
+                        orderModel.productTypeId.push(this.goodsItems[i].productTypeId);
+                        orderModel.goodsId.push(this.goodsItems[i].id);
+                        orderModel.detailNum.push(parseInt(this.goodsItems[i].detailNum));
+                        orderModel.detailPrice.push(this.goodsItems[i].detailPrice);
+                    }
+                    axios.post(orderApi + "ordermodel/addOrder", orderModel).then(res => {
+                        this.$message({
+                            message: res.data.msg,
+                            type: 'success'
+                        });
+                    }).catch(err => {
+                        this.$message.error(err);
+                    });
+                },
+                addOrderForamt(row, column, cellValue, index) {
+                    row.sum = row.detailNum * row.detailPrice;
+                    return row.sum;
+                },
+                //点击删除当前行
+                handleDelete(index) {
+                    this.goodsItems.splice(index, 1);
+                },
+                AddListRow() {
+                    this.goodsItems.push({
+                        "productTypeId": "",
+                        "id": "",
+                        "detailNum": 0,
+                        "goodsNameItems": [],
+                        "detailPrice": 0,
+                    });
+                },
+                currentGoods(index, val) {
+                    let count = 0;
+                    for (let i = 0; i < this.goodsItems.length; i++) {
+                        if (val == this.goodsItems[i].id) {
+                            count++;
+                        }
+                    }
+
+                    if (count == 2) {
+                        for (let i = 0; i < this.goodsNameItems.length; i++) {
+                            if (val == this.goodsNameItems[i].id) {
+                                let index = this.goodsNameItems.indexOf(this.goodsNameItems[i]);
+                                this.goodsNameItems.splice(index, 1);
+                            }
+                        }
+                        this.$message({
+                            message: '商品已经存在',
+                            type: 'warning'
+                        });
+                        this.goodsItems[index].id = '';
+                        return false;
+                    } else {
+                        for (let i = 0; i < this.goodsItems[index].goodsNameItems.length; i++) {
+                            if (val == this.goodsItems[index].goodsNameItems[i].id) {
+                                for (let j = 0; j < this.goodsItems[index].goodsNameItems.length; j++) {
+                                    if (val == this.goodsItems[index].goodsNameItems[j].id) {
+                                        this.goodsItems[index].detailPrice = this.goodsItems[index].goodsNameItems[j].inprice;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                currentProductType(index, val) {
+                    let count = 0;
+                    for (let i = 0; i < this.goodsItems.length; i++) {
+                        // 获得商品ID
+                        let goodsId = this.goodsItems[i].id;
+                        for (let j = 0; j < this.goodsNameItems.length; j++) {
+                            if (goodsId == this.goodsNameItems[j].id) {
+                                count++;
+                            }
+                            if (count == 2) {
+                                let index = this.goodsNameItems.indexOf(this.goodsNameItems[j]);
+                                this.goodsNameItems.splice(index, 1);
+                                return false;
+                            }
+                        }
+                    }
+
+
+                    // 根据商品类别ID，查询商品
+                    axios.get(goodsApi + "goods/queryGoodsByProductTypeId?producttypeid=" + val).then(res => {
+                        this.goodsNameItems = res.data;
+                        this.goodsItems[index].goodsNameItems = res.data;
+                    }).catch(err => {
+                        vue.$message.error(err.data);
+                    })
+                },
+                currentSel(val) {
+                    this.showCmd = true;
+                    // 根据供应商ID，查询供应商的商品类别
+                    axios.get(goodsApi + "productType/queryProductTypeByProviderid?providerid=" + val).then(res => {
+                        this.producttypeItems = res.data;
+                    }).catch(err => {
+                        vue.$message.error(err.data);
+                    })
+                },
+                initSupplier() {
+                    axios.get(productApi + "supper/getAllSupper").then(res => {
+                        this.items = res.data;
+                    });
+                },
+                getSummaries(param) {
+                    const {columns, data} = param;
+                    const sums = [];
+                    columns.forEach((column, index) => {
+                        if (index === 0) {
+                            return;
+                        }
+                        const values = data.map(item => Number(item[column.property]));
+                        if (index === 2) {
+                            if (!values.every(value => isNaN(value))) {
+                                sums[index] = values.reduce((prev, curr) => {
+                                    const value = Number(curr);
+                                    if (!isNaN(value)) {
+                                        return prev + curr;
+                                    } else {
+                                        return prev;
+                                    }
+                                }, 0);
+                                sums[index] += ' 件';
+                            }
+                        }
+                    });
+
+                    return sums;
+                },
+                stateFormat(row, column) {
+                    return row.detailPrice * row.detailNum;
+                },
+                detailDialog(row) {
+                    this.dialogFormVisible = true;
+                    this.orderDatailObj = row;
+
+                    if (row.details) {
+                        this.orderDatailObj.details = row.details;
+                    } else {
+                        this.orderDatailObj.details = [];
+                    }
+                    // 根据订单ID，查询订单明细
+                    axios.get(orderApi + "orderdetail/getDetailByOrderId?orderId=" + row.orderId).then(res => {
+                        this.orderDatailObj.details = res.data;
+                    }).catch(err => {
+                        this.$message.error(err);
+                    });
+                },
+                resetAddOrderForm(formName) {
+
+                    this.addDialogFormVisible = false;
+                    this.goodsItems = [];
+                    this.showCmd = false;
+                    this.supplierId = '';
+                    this.producttypeItems = [];
+                    this.goodsNameItems = [];
+
+                    this.$refs[formName].resetFields();
+                },
+                resetForm(formName) {
+                    this.startTime = '';
+                    this.endTime = '';
+                    this.orderDatailObj = {};
+                    this.orderDatailObj.details = [];
+
+                    this.$refs[formName].resetFields();
+                },
+                onSubmit() {
+                    this.initTableData();
+                },
+                initCreateUser() {
+                    axios.get(orderApi + "ordermodel/queryAllUser").then(res => {
+                        this.CreateUserItems = res.data;
+                    }).catch(err => {
+                        this.$message.error(err);
+                    });
+                },
+                initTableData() {
+                    this.loading = true;
+                    let obj = this.orderQuery;
+                    let params = `page=${this.page}&pageSize=${this.pageSize}&creater=${obj.creater}&minTotalNum=${obj.minTotalNum}&maxTotalNum=${obj.maxTotalNum}&endTime=${this.endTime}&startTime=${this.startTime}&minTotalPrice=${obj.minTotalPrice}&maxTotalPrice=${obj.maxTotalPrice}&orderType=1&orderState=${this.orderState}`;
+                    axios.get(orderApi + "ordermodel/queryAllOrderModel?" + params).then(res => {
+                        this.loading = false;
+                        this.total = res.data.count;
+                        this.tableData = res.data.data;
+                    }).catch(err => {
+                        this.$message.error(err);
+                    })
+                },
+                handleSizeChange(val) {
+                    this.pageSize = val;
+                    this.initTableData();
+                },
+                handleCurrentChange(val) {
+                    this.page = val;
+                    this.initTableData();
+                },
+                handleClick(tab, event) {
+                    if (tab.label == '未审核') {
+                        this.orderState = 1;
+                    }
+                    if (tab.label == '审核通过') {
+                        this.orderState = 2;
+                    }
+                    if (tab.label == '审核不通过') {
+                        this.orderState = 3;
+                    }
+                    this.initTableData();
+                }
+            },
+            // 钩子函数
+            mounted() {
+                this.initTableData();
+                this.initCreateUser();
+                this.initSupplier();
+            }
+        });
+    });
+</script>
+</body>
+</html>
