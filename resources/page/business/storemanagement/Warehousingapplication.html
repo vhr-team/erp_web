@@ -38,7 +38,7 @@
         <!--表格开始-->
         <table class="layui-hide" id="roleTable" lay-filter="roleTable"></table>
         <script type="text/html" id="roleToolBar">
-            <a class="layui-btn layui-btn-sm layui-btn-danger data-count-delete" lay-event="batchdelete">确认入库</a>
+            <a class="layui-btn layui-btn-sm layui-btn-danger data-count-delete" lay-event="storage">申请入库</a>
         </script>
         <script type="text/html" id="availableTpl">
             <!-- 这里的 checked 的状态只是演示 -->
@@ -136,8 +136,8 @@
         table.on('toolbar(roleTable)', function (obj) {
             var checkStatus = table.checkStatus(obj.config.id);
             switch (obj.event) {
-                case 'batchdelete':
-                    batchdelete();
+                case 'storage':
+                    storage();
                     break;
                 case 'add':
                     openAddRole();
