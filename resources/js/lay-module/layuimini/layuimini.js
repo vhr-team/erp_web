@@ -152,9 +152,9 @@ layui.define(["element", "jquery"], function (exports) {
                 leftMenuHtml += '<ul class="layui-nav layui-nav-tree layui-left-nav-tree ' + leftMenuCheckDefault + '" id="' + key + '">\n';
                 var menuList = val.child;
                 $.each(menuList, function (index, menu) {
-                    if(menu.spread){
+                    if (menu.spread) {
                         leftMenuHtml += '<li class="layui-nav-item layui-nav-itemed">\n';
-                    }else{
+                    } else {
                         leftMenuHtml += '<li class="layui-nav-item">\n';
                     }
                     if (menu.child != undefined && menu.child != []) {
@@ -301,7 +301,7 @@ layui.define(["element", "jquery"], function (exports) {
                     menuLeftHover: '#3b3f4b',
                 },
                 {
-                    headerRight: '#000', //头部右侧背景色
+                    headerRight: '#001529', //头部右侧背景色
                     headerRightThis: '#000', //头部右侧选中背景色,
                     headerLogo: '#20222A', //logo背景颜色,
                     menuLeft: '#001529', //左侧菜单背景,
@@ -316,12 +316,11 @@ layui.define(["element", "jquery"], function (exports) {
                     menuLeftHover: '#1f1f1f',
                 },
                 {
-                    headerRight: '#1aa094',
-                    headerRightThis: '#197971',
-                    headerLogo: '#0c0c0c',
-                    menuLeft: '#23262e',
-                    menuLeftThis: '#1aa094',
-                    menuLeftHover: '#3b3f4b',
+                    headerRight: '#000', //头部右侧背景色
+                    headerRightThis: '#000', //头部右侧选中背景色,
+                    headerLogo: '#20222A', //logo背景颜色,
+                    menuLeft: '#001529', //左侧菜单背景,
+                    menuLeftThis: '#1E9FFF', //左侧菜单选中背景,
                 },
                 {
                     headerRight: '#1e9fff',
