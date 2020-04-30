@@ -117,3 +117,6 @@ if (usertype == 1) {
 //给页面显示登陆用户名
 let user = JSON.parse(localStorage.getItem("user"));
 $(".login_name").html(user.name);
+
+$("#userImages").attr("src",baseUrl+user.imgpath);
+$("#user-avatar").attr("src",baseUrl+user.imgpath);
