@@ -78,7 +78,7 @@ layui.define(["element", "jquery"], function (exports) {
          */
         this.initHome = function () {
             sessionStorage.setItem('layuiminiHomeHref', "resources/page/welcome-1.html?mpi=m-p-i-0");
-            $('#layuiminiHomeTabId').html('<i class="fa fa-home"></i> <span> 首页 </span>');
+            $('#layuiminiHomeTabId').html('<i class="fa fa-desktop"></i> <span> 控制台 </span>');
             $('#layuiminiHomeTabId').attr('lay-id', "resources/page/welcome-1.html?mpi=m-p-i-0");
             $('#layuiminiHomeTabIframe').html('<iframe width="100%" height="100%" frameborder="0"  src="resources/page/welcome-1.html?mpi=m-p-i-0"></iframe>');
         };
@@ -290,10 +290,10 @@ layui.define(["element", "jquery"], function (exports) {
                     menuLeftHover: '#3b3f4b',
                 },
                 {
-                    headerRight: '#3a3f51', //头部右侧背景色
-                    headerRightThis: '#a8a8a8', //头部右侧选中背景色,
-                    headerLogo: '#3a3f51', //logo背景颜色,
-                    menuLeft: '#3a3f51', //左侧菜单背景,
+                    headerRight: '#000', //头部右侧背景色
+                    headerRightThis: '#000', //头部右侧选中背景色,
+                    headerLogo: '#20222A', //logo背景颜色,
+                    menuLeft: '#001529', //左侧菜单背景,
                     menuLeftThis: '#1E9FFF', //左侧菜单选中背景,
                 },
                 {
