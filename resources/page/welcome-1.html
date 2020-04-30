@@ -146,11 +146,112 @@
             height: 16px;
             color: #999;
         }
+
+        #febs-index .welcome-info {
+            border: 1px solid #f1f1f1;
+            margin-bottom: .5rem;
+            padding: .5rem;
+        }
+
+        #febs-index .welcome-info-wrapper {
+            padding: .2rem;
+            display: inline-block
+        }
+
+        #febs-index .welcome-info-wrapper .user-header {
+            display: inline-block;
+            vertical-align: middle
+        }
+
+        #febs-index .welcome-info-wrapper .user-header img {
+            width: 5rem;
+            margin: .5rem 1rem;
+            border-radius: 50%
+        }
+
+        #febs-index .welcome-info-wrapper .user-info {
+            display: inline-block;
+            vertical-align: middle
+        }
+
+        #febs-index .welcome-info-wrapper .user-info .random-message {
+            font-size: 1rem;
+            margin-bottom: .2rem;
+            max-width: 21rem
+        }
+
+        #febs-index .welcome-info-wrapper .user-info .user-dept, #febs-index .welcome-info-wrapper .user-info .user-login-info {
+            color: rgba(0, 0, 0, 0.45);
+        }
+
+        #febs-index .login-count-table {
+            width: 100%;
+            margin: 1rem;
+        }
+
+        #febs-index .login-count-table .count {
+            padding-top: .8rem;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #1890ff
+        }
+
+        #febs-index .project-table {
+            padding: .5rem;
+            border: 1px solid #f1f1f1;
+            width: 100%
+        }
+
+        #febs-index .project-table-td {
+            padding: .5rem 0.7rem;
+            border: 1px solid #f1f1f1;
+        }
+
+        #febs-index .project-table-td a {
+            color: #42b983;
+            font-size: .9rem;
+            font-weight: 600;
+        }
+
+        #febs-index .project-desc {
+            color: rgba(0, 0, 0, 0.45);
+        }
     </style>
+    <link rel="stylesheet" href="../lib/plugin/febs/css/febs.css">
+
 </head>
 <body>
 <div class="layuimini-container">
     <div class="layuimini-main">
+
+        <!-- 、、、、、、、、、、、、 -->
+        <div id="febs-index" class="febs-anim-up layui-col-md12 layui-col-sm12 layui-col-xs12">
+            <div class="layui-card">
+                <div class="layui-card-body layui-anim layui-anim-fadein">
+                    <div class="layui-row welcome-info">
+                        <div class="layui-col-md6 layui-col-sm12 layui-col-xs12">
+                            <div class="layui-row welcome-info-wrapper">
+                                <div class="user-header">
+                                    <img alt="头像" id="user-avatar">
+                                </div>
+                                <div class="user-info">
+                                    <div class="layui-row">
+                                        <div class="random-message">
+                                            <span id="welcome-message"></span>
+                                        </div>
+                                        <div class="user-login-info">
+                                            <span id="nowTime"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- 、、、、、、、、、、、、 -->
+
         <div class="layui-row layui-col-space15">
             <div class="layui-col-md8">
                 <div class="layui-row layui-col-space15">
@@ -279,16 +380,126 @@
 <script src="../js/lay-config.js?v=1.0.4" charset="utf-8"></script>
 <script src="../lib/jquery-3.4.1/jquery-3.4.1.min.js" charset="utf-8"></script>
 <script src="../lib/layui-v2.5.5/layui.js?v=1.0.4" charset="utf-8"></script>
+
 <script src="../js/lay-config.js?v=1.0.4" charset="utf-8"></script>
 <script src="../lib/common/jquery.cookie.min.js" charset="utf-8"></script>
 <script src="../lib/common/common.js" charset="utf-8"></script>
 <script>
-    layui.use(['layer', 'layuimini', 'echarts'], function () {
+    layui.use(['layer', 'layuimini', 'echarts', 'jquery', 'util'], function () {
         var $ = layui.jquery,
             layer = layui.layer,
+            util = layui.util,
+            $view = $('#febs-index'),
             layuimini = layui.layuimini,
             echarts = layui.echarts;
 
+        function handleSuccess() {
+            var hour = new Date().getHours();
+            var time = hour < 6 ? '早上好' : (hour <= 11 ? '上午好' : (hour <= 13 ? '中午好' : (hour <= 18 ? '下午好' : '晚上好')));
+            var welcomeArr = [
+                '喝杯咖啡休息下吧☕',
+                '要不要和朋友打局LOL',
+                '今天又写了几个Bug呢',
+                '今天在群里吹水了吗',
+                '今天吃了什么好吃的呢',
+                '今天您微笑了吗😊',
+                '今天帮助别人了吗',
+                '准备吃些什么呢',
+                '周末要不要去看电影？'
+            ];
+            var index = Math.floor((Math.random() * welcomeArr.length));
+            var welcomeMessage = time + `，<a id="febs-index-user">${JSON.parse(localStorage.getItem("user")).name}</a>，` + welcomeArr[index];
+
+            var currentTime = new Date().getTime();
+            var yourVisitCount = [];
+            var totalVisitCount = [];
+            var lastTenDays = [
+                util.toDateString(new Date(currentTime - 1000 * 9 * 86400), 'MM-dd'),
+                util.toDateString(new Date(currentTime - 1000 * 8 * 86400), 'MM-dd'),
+                util.toDateString(new Date(currentTime - 1000 * 7 * 86400), 'MM-dd'),
+                util.toDateString(new Date(currentTime - 1000 * 6 * 86400), 'MM-dd'),
+                util.toDateString(new Date(currentTime - 1000 * 5 * 86400), 'MM-dd'),
+                util.toDateString(new Date(currentTime - 1000 * 4 * 86400), 'MM-dd'),
+                util.toDateString(new Date(currentTime - 1000 * 3 * 86400), 'MM-dd'),
+                util.toDateString(new Date(currentTime - 1000 * 2 * 86400), 'MM-dd'),
+                util.toDateString(new Date(currentTime - 1000 * 86400), 'MM-dd'),
+                util.toDateString(new Date(currentTime), 'MM-dd')
+            ];
+
+            var options = {
+                chart: {
+                    height: 350,
+                    type: 'area',
+                    toolbar: {
+                        show: false
+                    }
+                },
+                colors: ['#1890ff', '#0acf97'],
+                plotOptions: {
+                    bar: {
+                        horizontal: false,
+                        columnWidth: '32rem'
+                    }
+                },
+                dataLabels: {
+                    enabled: false
+                },
+                stroke: {
+                    width: [3, 3],
+                    curve: 'smooth'
+                },
+                series: [{
+                    name: '总数',
+                    data: totalVisitCount
+                }, {
+                    name: '您',
+                    data: yourVisitCount
+                }],
+                xaxis: {
+                    categories: lastTenDays,
+                    axisTicks: {
+                        show: true
+                    },
+                    axisBorder: {
+                        show: true,
+                        color: '#f1f1f1'
+                    }
+                },
+                fill: {
+                    type: 'gradient',
+                    gradient: {
+                        shadeIntensity: 1,
+                        inverseColors: false,
+                        opacityFrom: 0.5,
+                        opacityTo: 0,
+                        stops: [0, 90, 100]
+                    }
+                },
+                title: {
+                    text: '近10天系统访问记录',
+                    align: 'left',
+                    style: {
+                        color: 'rgba(0, 0, 0, .65)'
+                    }
+                },
+                tooltip: {
+                    y: {
+                        formatter: function (val) {
+                            return "访问次数 " + val + " 次"
+                        }
+                    }
+                },
+                grid: {
+                    row: {
+                        colors: ['transparent', 'transparent'],
+                        opacity: 0.2
+                    },
+                    borderColor: '#f1f1f1'
+                }
+            };
+
+            $("#welcome-message").html(welcomeMessage);
+        }
         //使用ajax请求公告的查询接口
         $.get(api + "notice/loadAllNotice", {page: 1, limit: 5}, function (res) {
             var html = "";
@@ -309,22 +520,22 @@
          **/
         $('body').on('click', '.layuimini-notice', function () {
             var title = $(this).children('.show_title').text();
-            var  noticeTime = $(this).children('.show_createtime').text();
-            var  opername = $(this).children('.show_opername').text();
-            var  content = $(this).children('.show_content').html();
+            var noticeTime = $(this).children('.show_createtime').text();
+            var opername = $(this).children('.show_opername').text();
+            var content = $(this).children('.show_content').html();
             var html = '<div style="padding:15px 20px; text-align:justify; line-height: 22px;border-bottom:1px solid #e2e2e2;background-color: #2f4056;color: #ffffff">\n' +
                 '<div style="text-align: center;margin-bottom: 20px;font-weight: bold;border-bottom:1px solid #718fb5;padding-bottom: 5px"><h4 class="text-danger">' + title + '</h4></div>\n' +
                 '<div style="font-size: 12px">' + content + '</div>\n' +
                 '</div>\n';
             parent.layer.open({
                 type: 1,
-                title: '系统公告'+'<span style="float: right;right: 1px;font-size: 12px;color: #b1b3b9;margin-top: 1px">发布时间:'+noticeTime+' 发布人:'+opername+'</span>',
+                title: '系统公告' + '<span style="float: right;right: 1px;font-size: 12px;color: #b1b3b9;margin-top: 1px">发布时间:' + noticeTime + ' 发布人:' + opername + '</span>',
                 area: '800px;',
                 shade: 0.8,
                 btn: ['关闭'],
                 btnAlign: 'c',
                 moveType: 1,
-                content:html
+                content: html
             });
         });
 
@@ -393,7 +604,34 @@
             echartsRecords.resize();
         }
 
+        handleSuccess();
+        getLangDate();
     });
+
+    //值小于10时，在前面补0
+    function dateFilter(date) {
+        if (date < 10) {
+            return "0" + date;
+        }
+        return date;
+    }
+    function getLangDate() {
+        let userName = JSON.parse(localStorage.getItem("user")).name;
+        var dateObj = new Date(); //表示当前系统时间的Date对象
+        var year = dateObj.getFullYear(); //当前系统时间的完整年份值
+        var month = dateObj.getMonth() + 1; //当前系统时间的月份值
+        var date = dateObj.getDate(); //当前系统时间的月份中的日
+        var day = dateObj.getDay(); //当前系统时间中的星期值
+        var weeks = ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"];
+        var week = weeks[day]; //根据星期值，从数组中获取对应的星期字符串
+        var hour = dateObj.getHours(); //当前系统时间的小时值
+        var minute = dateObj.getMinutes(); //当前系统时间的分钟值
+        var second = dateObj.getSeconds(); //当前系统时间的秒钟值
+        var timeValue = "" + ((hour >= 12) ? (hour >= 18) ? "晚上" : "下午" : "上午"); //当前时间属于上午、晚上还是下午
+        newDate = dateFilter(year) + "年" + dateFilter(month) + "月" + dateFilter(date) + "日 " + " " + dateFilter(hour) + ":" + dateFilter(minute) + ":" + dateFilter(second);
+        document.getElementById("nowTime").innerHTML = "亲爱的【" + userName + "】，" + timeValue + "好！ 欢迎使用进销存管理系统。当前时间为： " + newDate + "　" + week;
+        setTimeout("getLangDate()", 1000);
+    }
 </script>
 </body>
 </html>
