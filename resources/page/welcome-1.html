@@ -232,7 +232,7 @@
                         <div class="layui-col-md6 layui-col-sm12 layui-col-xs12">
                             <div class="layui-row welcome-info-wrapper">
                                 <div class="user-header">
-                                    <img alt="头像" id="user-avatar" data-th-src="@{febs/images/avatar/empty.jpg}">
+                                    <img alt="头像" id="user-avatar">
                                 </div>
                                 <div class="user-info">
                                     <div class="layui-row">
@@ -240,32 +240,10 @@
                                             <span id="welcome-message"></span>
                                         </div>
                                         <div class="user-login-info">
-                                            上次登录时间：<span id="last-login-time">2019-05-23 18:45:12</span>
+                                            <span id="nowTime"></span>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                        <div class="layui-col-md6 layui-col-sm12 layui-col-xs12">
-                            <div class="layui-col-md-offset5">
-                                <table class="login-count-table">
-                                    <tr>
-                                        <td>今日IP</td>
-                                        <td>今日访问</td>
-                                        <td>总访问量</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="count" id="today-ip">
-                                            0
-                                        </td>
-                                        <td class="count" id="today-visit-count">
-                                            0
-                                        </td>
-                                        <td class="count" id="total-visit-count">
-                                            0
-                                        </td>
-                                    </tr>
-                                </table>
                             </div>
                         </div>
                     </div>
@@ -520,10 +498,8 @@
                 }
             };
 
-            console.log(lastTenDays);
             $("#welcome-message").html(welcomeMessage);
         }
-
         //使用ajax请求公告的查询接口
         $.get(api + "notice/loadAllNotice", {page: 1, limit: 5}, function (res) {
             var html = "";
@@ -629,7 +605,33 @@
         }
 
         handleSuccess();
+        getLangDate();
     });
+
+    //值小于10时，在前面补0
+    function dateFilter(date) {
+        if (date < 10) {
+            return "0" + date;
+        }
+        return date;
+    }
+    function getLangDate() {
+        let userName = JSON.parse(localStorage.getItem("user")).name;
+        var dateObj = new Date(); //表示当前系统时间的Date对象
+        var year = dateObj.getFullYear(); //当前系统时间的完整年份值
+        var month = dateObj.getMonth() + 1; //当前系统时间的月份值
+        var date = dateObj.getDate(); //当前系统时间的月份中的日
+        var day = dateObj.getDay(); //当前系统时间中的星期值
+        var weeks = ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"];
+        var week = weeks[day]; //根据星期值，从数组中获取对应的星期字符串
+        var hour = dateObj.getHours(); //当前系统时间的小时值
+        var minute = dateObj.getMinutes(); //当前系统时间的分钟值
+        var second = dateObj.getSeconds(); //当前系统时间的秒钟值
+        var timeValue = "" + ((hour >= 12) ? (hour >= 18) ? "晚上" : "下午" : "上午"); //当前时间属于上午、晚上还是下午
+        newDate = dateFilter(year) + "年" + dateFilter(month) + "月" + dateFilter(date) + "日 " + " " + dateFilter(hour) + ":" + dateFilter(minute) + ":" + dateFilter(second);
+        document.getElementById("nowTime").innerHTML = "亲爱的【" + userName + "】，" + timeValue + "好！ 欢迎使用进销存管理系统。当前时间为： " + newDate + "　" + week;
+        setTimeout("getLangDate()", 1000);
+    }
 </script>
 </body>
 </html>
