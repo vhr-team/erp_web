@@ -193,6 +193,7 @@
                                 supperId: this.form.supperId,
                                 name: this.form.name
                             }).then(res => {
+                                console.log(res);
                                 if (res.data.code == -1) {
                                     this.$message({
                                         message: res.data.msg,
