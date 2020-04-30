@@ -460,6 +460,15 @@
                             message: res.data.msg,
                             type: 'success'
                         });
+
+                        this.addDialogFormVisible = false;
+                        this.goodsItems = [];
+                        this.showCmd = false;
+                        this.supplierId = '';
+                        this.producttypeItems = [];
+                        this.goodsNameItems = [];
+
+                        this.initTableData();
                     }).catch(err => {
                         this.$message.error(err);
                     });
