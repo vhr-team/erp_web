@@ -54,6 +54,7 @@ layui.define(["element", "jquery"], function (exports) {
                     layuimini.initClear();
                     layuimini.initMenu(data);
                     layuimini.initTab();
+                    layuimini.deleteLoader(1 || 1);
                 }
             }).fail(function () {
                 layuimini.msg_error('菜单接口有误');
@@ -73,12 +74,22 @@ layui.define(["element", "jquery"], function (exports) {
         };
 
         /**
+         * 初始化加载时间
+         * @param loadingTime
+         */
+        this.deleteLoader = function (loadingTime) {
+            setTimeout(function () {
+                $('.layuimini-loader').fadeOut();
+            }, loadingTime * 1000)
+        };
+
+        /**
          * 初始化首页信息
          * @param data
          */
         this.initHome = function () {
             sessionStorage.setItem('layuiminiHomeHref', "resources/page/welcome-1.html?mpi=m-p-i-0");
-            $('#layuiminiHomeTabId').html('<i class="fa fa-home"></i> <span> 首页 </span>');
+            $('#layuiminiHomeTabId').html('<i class="fa fa-desktop"></i> <span> 控制台 </span>');
             $('#layuiminiHomeTabId').attr('lay-id', "resources/page/welcome-1.html?mpi=m-p-i-0");
             $('#layuiminiHomeTabIframe').html('<iframe width="100%" height="100%" frameborder="0"  src="resources/page/welcome-1.html?mpi=m-p-i-0"></iframe>');
         };
@@ -90,7 +101,7 @@ layui.define(["element", "jquery"], function (exports) {
         this.initLogo = function () {
             var html = '<a href="javascript:;">\n' +
                 '<img src="resources/images/logo.png" alt="logo">\n' +
-                '<h1>管理系统</h1>\n' +
+                '<h1>进销存系统</h1>\n' +
                 '</a>';
             $('.layui-layout-admin .layui-logo').html(html);
         };
@@ -141,9 +152,9 @@ layui.define(["element", "jquery"], function (exports) {
                 leftMenuHtml += '<ul class="layui-nav layui-nav-tree layui-left-nav-tree ' + leftMenuCheckDefault + '" id="' + key + '">\n';
                 var menuList = val.child;
                 $.each(menuList, function (index, menu) {
-                    if(menu.spread){
+                    if (menu.spread) {
                         leftMenuHtml += '<li class="layui-nav-item layui-nav-itemed">\n';
-                    }else{
+                    } else {
                         leftMenuHtml += '<li class="layui-nav-item">\n';
                     }
                     if (menu.child != undefined && menu.child != []) {
@@ -290,10 +301,10 @@ layui.define(["element", "jquery"], function (exports) {
                     menuLeftHover: '#3b3f4b',
                 },
                 {
-                    headerRight: '#3a3f51', //头部右侧背景色
-                    headerRightThis: '#a8a8a8', //头部右侧选中背景色,
-                    headerLogo: '#3a3f51', //logo背景颜色,
-                    menuLeft: '#3a3f51', //左侧菜单背景,
+                    headerRight: '#001529', //头部右侧背景色
+                    headerRightThis: '#000', //头部右侧选中背景色,
+                    headerLogo: '#20222A', //logo背景颜色,
+                    menuLeft: '#001529', //左侧菜单背景,
                     menuLeftThis: '#1E9FFF', //左侧菜单选中背景,
                 },
                 {
@@ -305,12 +316,11 @@ layui.define(["element", "jquery"], function (exports) {
                     menuLeftHover: '#1f1f1f',
                 },
                 {
-                    headerRight: '#1aa094',
-                    headerRightThis: '#197971',
-                    headerLogo: '#0c0c0c',
-                    menuLeft: '#23262e',
-                    menuLeftThis: '#1aa094',
-                    menuLeftHover: '#3b3f4b',
+                    headerRight: '#000', //头部右侧背景色
+                    headerRightThis: '#000', //头部右侧选中背景色,
+                    headerLogo: '#20222A', //logo背景颜色,
+                    menuLeft: '#001529', //左侧菜单背景,
+                    menuLeftThis: '#1E9FFF', //左侧菜单选中背景,
                 },
                 {
                     headerRight: '#1e9fff',
