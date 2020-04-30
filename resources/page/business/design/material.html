@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>档案设计管理</title>
+    <title>物料组成设计</title>
     <!-- import CSS -->
     <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
     <link rel="stylesheet" href="../../../lib/layui-v2.5.5/css/layui.css">
@@ -15,9 +15,8 @@
     <script src="https://cdn.bootcss.com/element-ui/2.8.2/index.js"></script>
     <script src="../../../lib/layui-v2.5.5/layui.all.js"></script>
     <script src="../../../lib/layui-v2.5.5/layui.js"></script>
-    <script src="https://cdn.bootcdn.net/ajax/libs/axios/0.19.2/axios.js"></script>
     <script src="../../../lib/jquery-3.4.1/jquery-3.4.1.min.js"></script>
-    <script src="../../../lib/common/jquery.cookie.min.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/axios/0.19.2/axios.js"></script>
     <script src="https://cdn.bootcdn.net/ajax/libs/qs/6.9.3/qs.js"></script>
     <script src="config/common.js"></script>
     <style>
@@ -36,8 +35,6 @@
             width: 50%;
         }
     </style>
-
-
 </head>
 <body>
 <div id="app">
@@ -57,11 +54,12 @@
                 </el-date-picker>
                 <el-button type="primary" @click="findPage()" icon="el-icon-search">搜索</el-button>
                 <el-tooltip class="item" effect="dark" content="添加档案" placement="top-start">
-                    <el-button type="primary" title="" @click="recordAdd=true,getUser()" icon="el-icon-plus">添加档案</el-button>
+                    <el-button type="primary" title="" @click="recordAdd=true" icon="el-icon-plus">添加档案</el-button>
                 </el-tooltip>
             </div>
         </fieldset>
         <div>
+
             <el-table
                     :data="recordList"
                     ref="multipleTable"
@@ -76,9 +74,6 @@
                 <el-table-column type="expand" label="详细" width="50">
                     <template slot-scope="props">
                         <el-form label-position="left" inline class="demo-table-expand">
-                            <el-form-item label="产品ID">
-                                <span>{{ props.row.productId }}</span>
-                            </el-form-item>
                             <el-form-item label="产品名称">
                                 <span>{{ props.row.productName }}</span>
                             </el-form-item>
@@ -102,9 +97,6 @@
                             </el-form-item>
                             <el-form-item label="产品经理">
                                 <span>{{ props.row.responsiblePerson  }}</span>
-                            </el-form-item>
-                            <el-form-item label="登记人">
-                                <span>{{ props.row.register  }}</span>
                             </el-form-item>
                             <el-form-item label="产品描述">
                                 <span>{{ props.row. productDescribe }}</span>
@@ -134,11 +126,11 @@
                     <template slot-scope="scope">
                         <el-button-group>
                             <el-tooltip class="item" effect="dark" content="修改档案" placement="top-start">
-                                <el-button type="primary" @click="recordUpdate = true,recordUpdateList(scope.row),getUse()"
+                                <el-button type="primary" @click="recordUpdate = true,recordUpdateList(scope.row)"
                                            size="small" icon="el-icon-edit"></el-button>
                             </el-tooltip>
                             <el-tooltip class="item" effect="dark" content="删除档案" placement="top-start">
-                                <el-button type="danger" title="" @click="deleterecord(scope.row)" size="small"
+                                <el-button type="primary" title="" @click="deleterecord(scope.row)" size="small"
                                            icon="el-icon-delete"></el-button>
                             </el-tooltip>
                         </el-button-group>
@@ -365,10 +357,8 @@
                         vm.findPage()
                     });
                 },
-                /*获取复选框选中的值*/
                 handleSelectionChange(value) {
                     this.deleterecords=value;
-                    console.log(this.deleterecords);
                 },
                 /*关闭添加的模态框*/
                 recordAddClose(done) {
@@ -417,7 +407,7 @@
                     console.log(data);
                     layer.confirm('请确认数据无误！', {icon: 3, title: '提示'}, function (index) {
                         axios.post(api1 + "design_record/updaterecord", data).then(res => {
-                            if (res.data.success) {
+                            if (res.success) {
                                 vm.findPage();
                                 vm.$message({//修改成功
                                     showClose: true,
@@ -510,32 +500,7 @@
                 },
                 /*删除档案*/
                 deleterecord(value) {
-                    layer.confirm('删除后将会进入回收站', {icon: 3, title:'确定删除吗？'}, function(index){
-                        axios.post(api1+"/design_record/deleterecord",value).then(res=>{
-                            if (res.data.success) {
-                                vm.findPage();
-                                vm.$message({//回收成功
-                                    showClose: true,
-                                    message: res.data.message,
-                                    type: 'success'
-                                });
-                            } else {
-                                vm.$message({//回收失败
-                                    showClose: true,
-                                    message: res.data.message,
-                                    type: 'error'
-                                });
-                            }
-                        }).catch(err=>{
-                            vm.$message({//异常
-                                showClose: true,
-                                message: "系统异常",
-                                type: 'error'
-                            });
-                        })
 
-                        layer.close(index);
-                    });
                 },
 
 
