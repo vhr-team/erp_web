@@ -53,13 +53,6 @@
 
 <div class="layuimini-container" id="app">
     <div class="layuimini-main">
-
-        <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
-            <el-tab-pane label="未审核" name="one"></el-tab-pane>
-            <el-tab-pane label="审核通过" name="two"></el-tab-pane>
-            <el-tab-pane label="审核不通过" name="three"></el-tab-pane>
-        </el-tabs>
-
         <el-form ref="formInline" :inline="true" :model="orderQuery" class="demo-form-inline">
             <el-form-item prop="creater" label="下单人">
                 <el-select v-model="orderQuery.creater" placeholder="请选择下单人">
@@ -93,9 +86,17 @@
             <el-form-item>
                 <el-button type="primary" icon="el-icon-search" @click="onSubmit">查询</el-button>
                 <el-button @click="resetForm('formInline')" icon="el-icon-refresh-left">重置</el-button>
-                <el-button icon="el-icon-plus" @click="addDialogFormVisible = true" type="success">添加</el-button>
+                <el-button icon="el-icon-plus" @click="addDialogFormVisible = true,dialogTile='下采购单'" type="success">
+                    添加
+                </el-button>
             </el-form-item>
         </el-form>
+
+        <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
+            <el-tab-pane label="未审核" name="one"></el-tab-pane>
+            <el-tab-pane label="审核通过" name="two"></el-tab-pane>
+            <el-tab-pane label="审核不通过" name="three"></el-tab-pane>
+        </el-tabs>
 
         <el-table
                 :data="tableData"
@@ -145,6 +146,15 @@
                             @click="detailDialog(scope.row)"
                             type="success">
                         详情
+                    </el-button>
+                    <el-button
+                            v-if="scope.row.orderState === 3"
+                            size="mini"
+                            plain
+                            icon="el-icon-edit"
+                            @click="updateDetailDialog(scope.row)"
+                            type="warning">
+                        修改
                     </el-button>
                 </template>
             </el-table-column>
@@ -276,13 +286,33 @@
             </el-table>
 
             <div slot="footer" class="dialog-footer">
-                <el-button @click="dialogFormVisible = false">取 消</el-button>
-                <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+                <el-button icon="el-icon-date" type="warning" @click="operationLogFn">操 作 日 志</el-button>
+                <el-button icon="el-icon-switch-button" @click="cancelDialogFormVisible">取 消</el-button>
+                <el-button icon="el-icon-position" type="primary" @click="dialogFormVisible = false">确 定</el-button>
             </div>
         </el-dialog>
 
+        <!--操作日志-->
+        <el-drawer
+                size="30%"
+                title="审批信息"
+                :visible.sync="drawer"
+                :direction="direction">
+            <div class="block">
+                <el-timeline>
+                    <el-timeline-item v-for="item in consoleItems" :timestamp="item.optTime" placement="top">
+                        <el-card>
+                            <h4>审核人：{{item.userName}}</h4>
+                            <p>审核内容：{{item.note}}</p>
+                        </el-card>
+                    </el-timeline-item>
+                </el-timeline>
+            </div>
+        </el-drawer>
+        <!--操作日志-->
+
         <!--add dialog-->
-        <el-dialog title="下采购单"
+        <el-dialog :title="dialogTile"
                    width="80%"
                    :visible.sync="addDialogFormVisible">
             <el-form ref="addOrderForm">
@@ -326,7 +356,7 @@
                 </el-table-column>
                 <el-table-column label="单价" align="center">
                     <template slot-scope="scope">
-                        <el-input v-model="scope.row.detailPrice" type="number"></el-input>
+                        <el-input :disabled="true" v-model="scope.row.detailPrice" type="number"></el-input>
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -346,8 +376,8 @@
             </el-table>
 
             <div slot="footer" class="dialog-footer">
-                <el-button @click="resetAddOrderForm('addOrderForm')">取 消</el-button>
-                <el-button type="primary" @click="addOrderDialogForm">确 定</el-button>
+                <el-button icon="el-icon-switch-button" @click="resetAddOrderForm('addOrderForm')">取 消</el-button>
+                <el-button icon="el-icon-position" type="primary" @click="addOrderDialogForm">确 定</el-button>
             </div>
         </el-dialog>
 
@@ -425,7 +455,12 @@
                 showCmd: false,
                 producttypeItems: [],
                 goodsNameItems: [],
-                totalSum: 0
+                totalSum: 0,
+                orderId: null,
+                drawer: false,
+                direction: 'rtl',
+                consoleItems: [],
+                dialogTile: '下采购单'
             },
             watch: {
                 rangeDate: function (newVal, oldVal) {
@@ -440,6 +475,15 @@
             },
             // 方法
             methods: {
+                operationLogFn() {
+                    this.drawer = true;
+                    // 发送请求查询，审批日志信息
+                    axios.get(orderApi + "consolelog/getConsoleLogByOrderId?entityId=" + this.orderId + "&tableName=bus_orderModel&optType=审核订单").then(res => {
+                        this.consoleItems = res.data;
+                    }).catch(err => {
+                        this.$message.error(err);
+                    });
+                },
                 addOrderDialogForm() {
                     let orderModel = {
                         productTypeId: [],
@@ -447,8 +491,10 @@
                         detailNum: [],
                         detailPrice: [],
                         supplierId: this.supplierId,
-                        creater: JSON.parse(localStorage.getItem("user")).id
+                        creater: JSON.parse(localStorage.getItem("user")).id,
+                        orderId: this.orderId
                     }
+                    let url = '';
 
                     for (let i = 0; i < this.goodsItems.length; i++) {
                         orderModel.productTypeId.push(this.goodsItems[i].productTypeId);
@@ -456,7 +502,15 @@
                         orderModel.detailNum.push(parseInt(this.goodsItems[i].detailNum));
                         orderModel.detailPrice.push(this.goodsItems[i].detailPrice);
                     }
-                    axios.post(orderApi + "ordermodel/addOrder", orderModel).then(res => {
+
+                    // 有订单ID就是修改
+                    if (orderModel.orderId) {
+                        url = orderApi + "ordermodel/updateOrder";
+                    } else {
+                        // 没有就是添加
+                        url = orderApi + "ordermodel/addOrder";
+                    }
+                    axios.post(url, orderModel).then(res => {
                         this.$message({
                             message: res.data.msg,
                             type: 'success'
@@ -592,9 +646,15 @@
                 stateFormat(row, column) {
                     return row.detailPrice * row.detailNum;
                 },
+                cancelDialogFormVisible() {
+                    this.dialogFormVisible = false;
+                    this.orderDatailObj = {};
+                    this.orderId = null;
+                },
                 detailDialog(row) {
                     this.dialogFormVisible = true;
                     this.orderDatailObj = row;
+                    this.orderId = row.orderId;
 
                     if (row.details) {
                         this.orderDatailObj.details = row.details;
@@ -616,6 +676,7 @@
                     this.supplierId = '';
                     this.producttypeItems = [];
                     this.goodsNameItems = [];
+                    this.orderId = null;
 
                     this.$refs[formName].resetFields();
                 },
@@ -668,6 +729,38 @@
                         this.orderState = 3;
                     }
                     this.initTableData();
+                },
+                // 修改采购单
+                updateDetailDialog(row) {
+                    this.addDialogFormVisible = true;
+                    this.dialogTile = '修改采购单'
+                    this.supplierId = row.supplierId;
+                    this.currentSel(row.supplierId);
+                    this.orderId = row.orderId;
+
+                    axios.get(orderApi + "orderdetail/getDetailByOrderId?orderId=" + row.orderId).then(res => {
+                        for (let i = 0; i < res.data.length; i++) {
+
+                            vue.goodsItems.push({
+                                "productTypeId": res.data[i].goods.producttypeid,
+                                "id": res.data[i].goods.id,
+                                "detailNum": res.data[i].detailNum,
+                                "goodsNameItems": [],
+                                "detailPrice": res.data[i].detailPrice,
+                            });
+
+                            // 根据商品类别ID，查询商品
+                            axios.get(goodsApi + "goods/queryGoodsByProductTypeId?producttypeid=" + res.data[i].goods.producttypeid).then(res => {
+                                this.goodsNameItems = res.data;
+                                this.goodsItems[i].goodsNameItems = res.data;
+                            }).catch(err => {
+                                vue.$message.error(err.data);
+                            })
+                        }
+                    }).catch(err => {
+                        this.$message.error(err);
+                    });
+
                 }
             },
             // 钩子函数

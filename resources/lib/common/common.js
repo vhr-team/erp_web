@@ -40,10 +40,13 @@ if (token == undefined) {
 
 let pers = localStorage.getItem("permissions");
 let usertype = localStorage.getItem("usertype");
+let auditBtn = null;
+
 if (usertype == 1) {
     if (pers != null) {
         let permissions = pers.split(",");
 
+        auditBtn = permissions.indexOf("order:audit");
         // 部门权限开始
         if (permissions.indexOf("dept:add") < 0) {
             $(".btn_add").hide();
