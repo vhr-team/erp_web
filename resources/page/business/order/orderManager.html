@@ -275,10 +275,30 @@
             </el-table>
 
             <div slot="footer" class="dialog-footer">
-                <el-button @click="dialogFormVisible = false">取 消</el-button>
-                <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+                <el-button icon="el-icon-date" type="warning" @click="operationLogFn">操 作 日 志</el-button>
+                <el-button icon="el-icon-switch-button" @click="dialogFormVisible = false">取 消</el-button>
+                <el-button icon="el-icon-position" type="primary" @click="dialogFormVisible = false">确 定</el-button>
             </div>
         </el-dialog>
+
+        <!--操作日志-->
+        <el-drawer
+                size="30%"
+                title="审批信息"
+                :visible.sync="drawer"
+                :direction="direction">
+            <div class="block">
+                <el-timeline>
+                    <el-timeline-item v-for="item in consoleItems" :timestamp="item.optTime" placement="top">
+                        <el-card>
+                            <h4>审核人：{{item.userName}}</h4>
+                            <p>审核内容：{{item.note}}</p>
+                        </el-card>
+                    </el-timeline-item>
+                </el-timeline>
+            </div>
+        </el-drawer>
+        <!--操作日志-->
 
         <!--add dialog-->
         <el-dialog title="下采购单"
@@ -424,7 +444,11 @@
                 showCmd: false,
                 producttypeItems: [],
                 goodsNameItems: [],
-                totalSum: 0
+                totalSum: 0,
+                orderId: null,
+                drawer: false,
+                direction: 'rtl',
+                consoleItems: []
             },
             watch: {
                 rangeDate: function (newVal, oldVal) {
@@ -439,6 +463,15 @@
             },
             // 方法
             methods: {
+                operationLogFn() {
+                    this.drawer = true;
+                    // 发送请求查询，审批日志信息
+                    axios.get(orderApi + "consolelog/getConsoleLogByOrderId?entityId=" + this.orderId + "&tableName=bus_orderModel&optType=审核订单").then(res => {
+                        this.consoleItems = res.data;
+                    }).catch(err => {
+                        this.$message.error(err);
+                    });
+                },
                 addOrderDialogForm() {
                     let orderModel = {
                         productTypeId: [],
@@ -594,6 +627,7 @@
                 detailDialog(row) {
                     this.dialogFormVisible = true;
                     this.orderDatailObj = row;
+                    this.orderId = row.orderId;
 
                     if (row.details) {
                         this.orderDatailObj.details = row.details;

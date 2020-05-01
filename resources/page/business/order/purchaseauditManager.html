@@ -287,8 +287,8 @@
             </el-table>
 
             <div slot="footer" class="dialog-footer">
-                <el-button @click="dialogFormVisible = false">取 消</el-button>
-                <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+                <el-button icon="el-icon-switch-button" @click="dialogFormVisible = false">取 消</el-button>
+                <el-button icon="el-icon-position" type="primary" @click="dialogFormVisible = false">确 定</el-button>
             </div>
         </el-dialog>
         <!--订单明细-->
@@ -384,7 +384,10 @@
                 items: [],
                 dialogVisible: false,
                 textarea: '',
-                orderId: null
+                orderId: null,
+                drawer: false,
+                direction: 'rtl',
+                consoleItems: []
             },
             watch: {
                 rangeDate: function (newVal, oldVal) {
@@ -447,6 +450,7 @@
                 detailDialog(row) {
                     this.dialogFormVisible = true;
                     this.orderDatailObj = row;
+                    this.orderId = row.orderId;
 
                     if (row.details) {
                         this.orderDatailObj.details = row.details;
@@ -542,7 +546,7 @@
                     }).catch(err => {
                         this.$message.error(err);
                     });
-                }
+                },
             },
             // 钩子函数
             mounted() {
