@@ -53,12 +53,6 @@
 <div class="layuimini-container" id="app">
     <div class="layuimini-main">
 
-        <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
-            <el-tab-pane label="未审核" name="one"></el-tab-pane>
-            <el-tab-pane label="审核通过" name="two"></el-tab-pane>
-            <el-tab-pane label="审核不通过" name="three"></el-tab-pane>
-        </el-tabs>
-
         <el-form ref="formInline" :inline="true" :model="orderQuery" class="demo-form-inline">
             <el-form-item prop="creater" label="下单人">
                 <el-select v-model="orderQuery.creater" placeholder="请选择下单人">
@@ -94,6 +88,12 @@
                 <el-button @click="resetForm('formInline')" icon="el-icon-refresh-left">重置</el-button>
             </el-form-item>
         </el-form>
+
+        <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
+            <el-tab-pane label="未审核" name="one"></el-tab-pane>
+            <el-tab-pane label="审核通过" name="two"></el-tab-pane>
+            <el-tab-pane label="审核不通过" name="three"></el-tab-pane>
+        </el-tabs>
 
         <!--数据表格-->
         <el-table
@@ -146,7 +146,7 @@
                         详情
                     </el-button>
                     <el-button
-                            v-if="scope.row.orderState == 1"
+                            v-if="scope.row.orderState == 1 && flag"
                             size="mini"
                             plain
                             @click="auditDialog(scope.row)"
@@ -360,6 +360,7 @@
             el: '#app',
             // 数据
             data: {
+                flag: auditBtn < 0 ? false : true,
                 orderQuery: {
                     minTotalNum: '',
                     creater: '',
