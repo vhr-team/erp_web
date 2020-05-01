@@ -45,22 +45,33 @@
         <fieldset class="layui-elem-field">
             <legend>搜索信息</legend>
             <div class="layui-field-box" style="margin-left: 300px ">
-                <label for="">产品档案名称： </label>
+                <label for="">名称： </label>
                 <el-input v-model="record.productName" style="display: inline-block;width: 200px"
-                          placeholder="请输入内容"></el-input>
-                <label for="">建档日期： </label>
+                          placeholder="产品档案名称"></el-input>
+                <label for="">日期： </label>
                 <el-date-picker
                         v-model="record.registerTime"
                         type="date"
                         value-format="yyyy-MM-dd"
-                        placeholder="选择日期">
+                        placeholder="选择建档日期">
                 </el-date-picker>
                 <el-button type="primary" @click="findPage()" icon="el-icon-search">搜索</el-button>
-                <el-tooltip class="item" effect="dark" content="添加档案" placement="top-start">
-                    <el-button type="primary" title="" @click="recordAdd=true,getUser()" icon="el-icon-plus">添加档案</el-button>
-                </el-tooltip>
+
             </div>
         </fieldset>
+        <div style="margin-left: 50px">
+            <div style="margin-right: 5px;display: inline-block">
+                <el-tooltip class="item" effect="dark" content="添加档案" placement="top-start">
+                    <el-button type="success" size="small" @click="recordAdd=true,getUser()" icon="el-icon-plus">添加档案
+                    </el-button>
+                </el-tooltip>
+            </div>
+            <div style="display: inline-block">
+                <el-badge :value="recovernum" class="item" type="primary">
+                    <el-button size="small" icon="el-icon-delete-solid" @click="recycle()">回收站</el-button>
+                </el-badge>
+            </div>
+        </div>
         <div>
             <el-table
                     :data="recordList"
@@ -134,7 +145,8 @@
                     <template slot-scope="scope">
                         <el-button-group>
                             <el-tooltip class="item" effect="dark" content="修改档案" placement="top-start">
-                                <el-button type="primary" @click="recordUpdate = true,recordUpdateList(scope.row),getUse()"
+                                <el-button type="primary"
+                                           @click="recordUpdate = true,recordUpdateList(scope.row),getUse()"
                                            size="small" icon="el-icon-edit"></el-button>
                             </el-tooltip>
                             <el-tooltip class="item" effect="dark" content="删除档案" placement="top-start">
@@ -144,7 +156,6 @@
                         </el-button-group>
                     </template>
                 </el-table-column>
-            </el-table>
             </el-table>
             <el-pagination
                     @size-change="handleSizeChange"
@@ -162,7 +173,7 @@
 
                 :visible.sync="recordUpdate"
                 :before-close="recordUpdateClose">
-            <el-form ref="form" size="small" label-width="80px">
+            <el-form ref="form" size="small" label-width="100px">
                 <el-input style="display: none" v-model="recordUpdates.id"></el-input>
                 <el-form-item label="产品名称">
                     <el-input style="width: 200px" v-model="recordUpdates.productName"></el-input>
@@ -180,14 +191,17 @@
                         </el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="保修期">
-                    <el-input style="width: 200px" v-model="recordUpdates.warranty"></el-input>
+                <el-form-item label="保修期"
+                              :rules="[  { required: true, message: '保修期不能为空'}, { type: 'number', message: '保修期必须为数字值'} ]">
+                    <el-input style="width: 200px" type="number" v-model="recordUpdates.warranty"></el-input>
                 </el-form-item>
-                <el-form-item label="市场单价">
-                    <el-input style="width: 200px" v-model="recordUpdates.listPrice"></el-input>
+                <el-form-item label="市场单价"
+                              :rules="[  { required: true, message: '单价不能为空'}, { type: 'number', message: '单价必须为数字值'} ]">
+                    <el-input style="width: 200px" type="number" v-model="recordUpdates.listPrice"></el-input>
                 </el-form-item>
-                <el-form-item label="成本单价">
-                    <el-input style="width: 200px" v-model="recordUpdates.realCostPrice"></el-input>
+                <el-form-item label="成本单价"
+                              :rules="[  { required: true, message: '成本单价不能为空'}, { type: 'number', message: '成本单价必须为数字值'} ]">
+                    <el-input style="width: 200px" type="number" v-model="recordUpdates.realCostPrice"></el-input>
                 </el-form-item>
                 <el-form-item label="单位">
                     <el-input style="width: 200px" v-model="recordUpdates.amountUnit"></el-input>
@@ -213,14 +227,14 @@
 
             :visible.sync="recordAdd"
             :before-close="recordAddClose">
-        <el-form ref="form" size="small" label-width="80px">
-            <el-form-item label="*产品名称">
+        <el-form ref="form" size="small" label-width="100px">
+            <el-form-item label="产品名称">
                 <el-input style="width: 200px" v-model="recordAdds.productName"></el-input>
             </el-form-item>
-            <el-form-item label="*厂商">
+            <el-form-item label="厂商">
                 <el-input style="width: 200px" v-model="recordAdds.factoryName"></el-input>
             </el-form-item>
-            <el-form-item label="*档次">
+            <el-form-item label="档次">
                 <el-select style="width: 200px" v-model="recordAdds.productClass" clearable placeholder="请选择">
                     <el-option
                             v-for="item in productClassSelect"
@@ -230,22 +244,25 @@
                     </el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item label="*保修期">
-                <el-input style="width: 200px" v-model="recordAdds.warranty"></el-input>
+            <el-form-item label="保修期"
+                          :rules="[  { required: true, message: '保修期不能为空'}, { type: 'number', message: '保修期必须为数字值'} ]">
+                <el-input style="width: 200px" type="number" v-model="recordAdds.warranty"></el-input>
             </el-form-item>
-            <el-form-item label="*市场单价">
-                <el-input style="width: 200px" v-model="recordAdds.listPrice"></el-input>
+            <el-form-item label="市场单价"
+                          :rules="[  { required: true, message: '单价不能为空'}, { type: 'number', message: '单价必须为数字值'} ]">
+                <el-input style="width: 200px" type="number" v-model="recordAdds.listPrice"></el-input>
             </el-form-item>
-            <el-form-item label="*成本单价">
-                <el-input style="width: 200px" v-model="recordAdds.realCostPrice"></el-input>
+            <el-form-item label="成本单价"
+                          :rules="[  { required: true, message: '成本单价不能为空'}, { type: 'number', message: '成本单价必须为数字值'} ]">
+                <el-input style="width: 200px" type="number" v-model="recordAdds.realCostPrice"></el-input>
             </el-form-item>
-            <el-form-item label="*单位">
+            <el-form-item label="单位">
                 <el-input style="width: 200px" v-model="recordAdds.amountUnit"></el-input>
             </el-form-item>
-            <el-form-item label="*产品经理">
+            <el-form-item label="产品经理">
                 <el-input style="width: 200px" v-model="recordAdds.responsiblePerson"></el-input>
             </el-form-item>
-            <el-form-item label="*登记人">
+            <el-form-item label="登记人">
                 <el-input style="width: 200px" :disabled="true" v-model="recordAdds.register"></el-input>
             </el-form-item>
             <el-form-item label="产品描述">
@@ -311,13 +328,15 @@
                     registerTime: ""//建档时间
                 },
                 recordAdds: {},
-                deleterecords:[],
+                deleterecords: [],
+                recovernum: 0,
             },
             methods: {
                 /*获取当前用户名*/
                 getUser() {
-                    var register = window.localStorage.getItem("username")
-                    this.recordAdds.register = register;
+                    var register = $.parseJSON( window.localStorage.getItem("user") );
+                    this.recordAdds.register = register.name;
+
                 },
                 /*//获取点击的行数据*/
                 recordUpdateList(row) {
@@ -328,7 +347,7 @@
                     axios.post(api1 + "/design_record/findPage?page=" + this.page + "&pageSize=" + this.pageSize, this.record).then(res => {
                         this.total = res.data.total;
                         this.recordList = res.data.data;
-                        this.loading=false;
+                        this.loading = false;
                     }).catch(err => {
                         vm.$message({//异常
                             showClose: true,
@@ -367,7 +386,7 @@
                 },
                 /*获取复选框选中的值*/
                 handleSelectionChange(value) {
-                    this.deleterecords=value;
+                    this.deleterecords = value;
                     console.log(this.deleterecords);
                 },
                 /*关闭添加的模态框*/
@@ -508,10 +527,10 @@
                         layer.close(index);
                     });
                 },
-                /*删除档案*/
+                /*回收·档案*/
                 deleterecord(value) {
-                    layer.confirm('删除后将会进入回收站', {icon: 3, title:'确定删除吗？'}, function(index){
-                        axios.post(api1+"/design_record/deleterecord",value).then(res=>{
+                    layer.confirm('删除后将会进入回收站', {icon: 3, title: '确定删除吗？'}, function (index) {
+                        axios.post(api1 + "/design_record/deleterecord", value).then(res => {
                             if (res.data.success) {
                                 vm.findPage();
                                 vm.$message({//回收成功
@@ -526,7 +545,8 @@
                                     type: 'error'
                                 });
                             }
-                        }).catch(err=>{
+                            vm.seachrecycle();
+                        }).catch(err => {
                             vm.$message({//异常
                                 showClose: true,
                                 message: "系统异常",
@@ -537,7 +557,16 @@
                         layer.close(index);
                     });
                 },
-
+                /*跳转到回收页面*/
+                recycle() {
+                    $(location).prop('href', 'record_recycle.html');
+                },
+                /*查询已回收的数量*/
+                seachrecycle() {
+                    axios.get(api1 + "design_record/recovernum").then(res => {
+                        this.recovernum = res.data;
+                    }).catch()
+                }
 
             },
             created() {
@@ -545,6 +574,8 @@
                 this.findPage();
                 /*登记人信息*/
                 this.getUser();
+                /*获取回收站信息*/
+                this.seachrecycle();
             }
         });
     });

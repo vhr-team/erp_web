@@ -43,15 +43,15 @@
         <fieldset class="layui-elem-field">
             <legend>搜索信息</legend>
             <div class="layui-field-box" style="margin-left: 300px ">
-                <label for="">产品档案名称： </label>
+                <label for="">名称： </label>
                 <el-input v-model="record.productName" style="display: inline-block;width: 200px"
-                          placeholder="请输入内容"></el-input>
-                <label for="">建档日期： </label>
+                          placeholder="产品档案名称"></el-input>
+                <label for="">日期： </label>
                 <el-date-picker
                         v-model="record.registerTime"
                         type="date"
                         value-format="yyyy-MM-dd"
-                        placeholder="选择日期">
+                        placeholder="选择建档日期">
                 </el-date-picker>
                 <el-button type="primary" @click="findPage()" icon="el-icon-search">搜索</el-button>
             </div>

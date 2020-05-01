@@ -2,7 +2,8 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>产品档案审核</title>
+    <title>档案设计管理</title>
+    <!-- import CSS -->
     <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
     <link rel="stylesheet" href="../../../lib/layui-v2.5.5/css/layui.css">
     <link href="https://cdn.bootcss.com/element-ui/2.8.2/theme-chalk/index.css" rel="stylesheet">
@@ -35,6 +36,8 @@
             width: 50%;
         }
     </style>
+
+
 </head>
 <body>
 <div id="app">
@@ -42,50 +45,493 @@
         <fieldset class="layui-elem-field">
             <legend>搜索信息</legend>
             <div class="layui-field-box" style="margin-left: 300px ">
-                <label for="">产品档案名称： </label>
+                <label for="">名称： </label>
                 <el-input v-model="record.productName" style="display: inline-block;width: 200px"
-                          placeholder="请输入内容"></el-input>
-                <label for="">建档日期： </label>
+                          placeholder="产品档案名称"></el-input>
+                <label for="">日期： </label>
                 <el-date-picker
                         v-model="record.registerTime"
                         type="date"
                         value-format="yyyy-MM-dd"
-                        placeholder="选择日期">
+                        placeholder="选择建档日期">
                 </el-date-picker>
                 <el-button type="primary" @click="findPage()" icon="el-icon-search">搜索</el-button>
             </div>
         </fieldset>
-    </div>
-    <div>
         <el-tabs v-model="activeName" @tab-click="handleClick">
-            <el-tab-pane label="待审核" name="待审核">待审核</el-tab-pane>
-            <el-tab-pane label="审核通过" name="审核通过">审核通过</el-tab-pane>
-            <el-tab-pane label="审核未通过" name="审核未通过">审核未通过</el-tab-pane>
+            <el-tab-pane label="待审核" name="等待审核">
+                <div>
+                    <el-table
+                            :data="recordList"
+                            ref="multipleTable"
+                            v-loading="loading"
+                            border
+                            @selection-change="handleSelectionChange"
+                            style="width: 100%;margin: 0 auto">
+                        <el-table-column
+                                type="selection"
+                                width="55">
+                        </el-table-column>
+                        <el-table-column type="expand" label="详细" width="50">
+                            <template slot-scope="props">
+                                <el-form label-position="left" inline class="demo-table-expand">
+                                    <el-form-item label="产品ID">
+                                        <span>{{ props.row.productId }}</span>
+                                    </el-form-item>
+                                    <el-form-item label="产品名称">
+                                        <span>{{ props.row.productName }}</span>
+                                    </el-form-item>
+                                    <el-form-item label="厂商">
+                                        <span>{{ props.row.factoryName }}</span>
+                                    </el-form-item>
+                                    <el-form-item label="配置">
+                                        <span>{{ props.row.productClass }}</span>
+                                    </el-form-item>
+                                    <el-form-item label="保修期">
+                                        <span>{{ props.row.warranty }}</span>
+                                    </el-form-item>
+                                    <el-form-item label="市场单价">
+                                        <span>{{ props.row.listPrice }}</span>
+                                    </el-form-item>
+                                    <el-form-item label="成本单价">
+                                        <span>{{ props.row.realCostPrice }}</span>
+                                    </el-form-item>
+                                    <el-form-item label="单位">
+                                        <span>{{ props.row.amountUnit }}</span>
+                                    </el-form-item>
+                                    <el-form-item label="产品经理">
+                                        <span>{{ props.row.responsiblePerson  }}</span>
+                                    </el-form-item>
+                                    <el-form-item label="登记人">
+                                        <span>{{ props.row.register  }}</span>
+                                    </el-form-item>
+                                    <el-form-item label="产品描述">
+                                        <span>{{ props.row. productDescribe }}</span>
+                                    </el-form-item>
+                                    <el-form-item label="建档时间">
+                                        <span>{{ props.row.registerTime }}</span>
+                                    </el-form-item>
+                                </el-form>
+                            </template>
+                        </el-table-column>
+                        <el-table-column
+                                label="ID"
+                                prop="id">
+                        </el-table-column>
+                        <el-table-column
+                                label="商品名称"
+                                prop="productName">
+                        </el-table-column>
+                        <el-table-column
+                                label="描述"
+                                prop="productDescribe">
+                        </el-table-column>
+                        <el-table-column
+                                fixed="right"
+                                label="操作"
+                                width="160">
+                            <template slot-scope="scope">
+                                <el-button-group>
+                                    <el-tooltip class="item" effect="dark" content="修改档案" placement="top-start">
+                                        <el-button type="primary" @click="show(scope.row)"
+                                                   size="small" icon="el-icon-edit" ></el-button>
+                                    </el-tooltip>
+                                    <el-tooltip class="item" effect="dark" content="删除档案" placement="top-start">
+                                        <el-button type="danger" title=""  size="small"
+                                                   icon="el-icon-delete"></el-button>
+                                    </el-tooltip>
+                                </el-button-group>
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                    <el-pagination
+                            @size-change="handleSizeChange"
+                            @current-change="handleCurrentChange"
+                            :current-page="page"
+                            :page-sizes="[10, 20, 30, 40,50,60]"
+                            :page-size="pageSize"
+                            layout="total, sizes, prev, pager, next, jumper"
+                            :total="total">
+                    </el-pagination>
+                </div>
+            </el-tab-pane>
+            <el-tab-pane label="审核通过" name="审核通过">
+                <div>
+                    <el-table
+                            :data="recordList"
+                            ref="multipleTable"
+                            v-loading="loading"
+                            border
+                            @selection-change="handleSelectionChange"
+                            style="width: 100%;margin: 0 auto">
+                        <el-table-column
+                                type="selection"
+                                width="55">
+                        </el-table-column>
+                        <el-table-column type="expand" label="详细" width="50">
+                            <template slot-scope="props">
+                                <el-form label-position="left" inline class="demo-table-expand">
+                                    <el-form-item label="产品ID">
+                                        <span>{{ props.row.productId }}</span>
+                                    </el-form-item>
+                                    <el-form-item label="产品名称">
+                                        <span>{{ props.row.productName }}</span>
+                                    </el-form-item>
+                                    <el-form-item label="厂商">
+                                        <span>{{ props.row.factoryName }}</span>
+                                    </el-form-item>
+                                    <el-form-item label="配置">
+                                        <span>{{ props.row.productClass }}</span>
+                                    </el-form-item>
+                                    <el-form-item label="保修期">
+                                        <span>{{ props.row.warranty }}</span>
+                                    </el-form-item>
+                                    <el-form-item label="市场单价">
+                                        <span>{{ props.row.listPrice }}</span>
+                                    </el-form-item>
+                                    <el-form-item label="成本单价">
+                                        <span>{{ props.row.realCostPrice }}</span>
+                                    </el-form-item>
+                                    <el-form-item label="单位">
+                                        <span>{{ props.row.amountUnit }}</span>
+                                    </el-form-item>
+                                    <el-form-item label="产品经理">
+                                        <span>{{ props.row.responsiblePerson  }}</span>
+                                    </el-form-item>
+                                    <el-form-item label="登记人">
+                                        <span>{{ props.row.register  }}</span>
+                                    </el-form-item>
+                                    <el-form-item label="产品描述">
+                                        <span>{{ props.row. productDescribe }}</span>
+                                    </el-form-item>
+                                    <el-form-item label="建档时间">
+                                        <span>{{ props.row.registerTime }}</span>
+                                    </el-form-item>
+                                </el-form>
+                            </template>
+                        </el-table-column>
+                        <el-table-column
+                                label="ID"
+                                prop="id">
+                        </el-table-column>
+                        <el-table-column
+                                label="商品名称"
+                                prop="productName">
+                        </el-table-column>
+                        <el-table-column
+                                label="描述"
+                                prop="productDescribe">
+                        </el-table-column>
+                        <el-table-column
+                                fixed="right"
+                                label="操作"
+                                width="160">
+                            <template slot-scope="scope">
+                                <el-button-group>
+                                    <el-tooltip class="item" effect="dark" content="修改档案" placement="top-start">
+                                        <el-button type="primary"
+                                                   size="small" icon="el-icon-edit"></el-button>
+                                    </el-tooltip>
+                                    <el-tooltip class="item" effect="dark" content="删除档案" placement="top-start">
+                                        <el-button type="danger" title=""  size="small"
+                                                   icon="el-icon-delete"></el-button>
+                                    </el-tooltip>
+                                </el-button-group>
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                    <el-pagination
+                            @size-change="handleSizeChange"
+                            @current-change="handleCurrentChange"
+                            :current-page="page"
+                            :page-sizes="[10, 20, 30, 40,50,60]"
+                            :page-size="pageSize"
+                            layout="total, sizes, prev, pager, next, jumper"
+                            :total="total">
+                    </el-pagination>
+                </div>
+            </el-tab-pane>
+            <el-tab-pane label="审核未通过" name="审核未通过">
+                <div>
+                    <el-table
+                            :data="recordList"
+                            ref="multipleTable"
+                            v-loading="loading"
+                            border
+                            @selection-change="handleSelectionChange"
+                            style="width: 100%;margin: 0 auto">
+                        <el-table-column
+                                type="selection"
+                                width="55">
+                        </el-table-column>
+                        <el-table-column type="expand" label="详细" width="50">
+                            <template slot-scope="props">
+                                <el-form label-position="left" inline class="demo-table-expand">
+                                    <el-form-item label="产品ID">
+                                        <span>{{ props.row.productId }}</span>
+                                    </el-form-item>
+                                    <el-form-item label="产品名称">
+                                        <span>{{ props.row.productName }}</span>
+                                    </el-form-item>
+                                    <el-form-item label="厂商">
+                                        <span>{{ props.row.factoryName }}</span>
+                                    </el-form-item>
+                                    <el-form-item label="配置">
+                                        <span>{{ props.row.productClass }}</span>
+                                    </el-form-item>
+                                    <el-form-item label="保修期">
+                                        <span>{{ props.row.warranty }}</span>
+                                    </el-form-item>
+                                    <el-form-item label="市场单价">
+                                        <span>{{ props.row.listPrice }}</span>
+                                    </el-form-item>
+                                    <el-form-item label="成本单价">
+                                        <span>{{ props.row.realCostPrice }}</span>
+                                    </el-form-item>
+                                    <el-form-item label="单位">
+                                        <span>{{ props.row.amountUnit }}</span>
+                                    </el-form-item>
+                                    <el-form-item label="产品经理">
+                                        <span>{{ props.row.responsiblePerson  }}</span>
+                                    </el-form-item>
+                                    <el-form-item label="登记人">
+                                        <span>{{ props.row.register  }}</span>
+                                    </el-form-item>
+                                    <el-form-item label="产品描述">
+                                        <span>{{ props.row. productDescribe }}</span>
+                                    </el-form-item>
+                                    <el-form-item label="建档时间">
+                                        <span>{{ props.row.registerTime }}</span>
+                                    </el-form-item>
+                                </el-form>
+                            </template>
+                        </el-table-column>
+                        <el-table-column
+                                label="ID"
+                                prop="id">
+                        </el-table-column>
+                        <el-table-column
+                                label="商品名称"
+                                prop="productName">
+                        </el-table-column>
+                        <el-table-column
+                                label="描述"
+                                prop="productDescribe">
+                        </el-table-column>
+                        <el-table-column
+                                fixed="right"
+                                label="操作"
+                                width="160">
+                            <template slot-scope="scope">
+                                <el-button-group>
+                                    <el-tooltip class="item" effect="dark" content="修改档案" placement="top-start">
+                                        <el-button type="primary"
+                                                   size="small" icon="el-icon-edit"></el-button>
+                                    </el-tooltip>
+                                    <el-tooltip class="item" effect="dark" content="删除档案" placement="top-start">
+                                        <el-button type="danger" title=""  size="small"
+                                                   icon="el-icon-delete"></el-button>
+                                    </el-tooltip>
+                                </el-button-group>
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                    <el-pagination
+                            @size-change="handleSizeChange"
+                            @current-change="handleCurrentChange"
+                            :current-page="page"
+                            :page-sizes="[10, 20, 30, 40,50,60]"
+                            :page-size="pageSize"
+                            layout="total, sizes, prev, pager, next, jumper"
+                            :total="total">
+                    </el-pagination>
+                </div>
+            </el-tab-pane>
         </el-tabs>
+     <!--   <div>
+            <el-table
+                    :data="recordList"
+                    ref="multipleTable"
+                    v-loading="loading"
+                    border
+                    @selection-change="handleSelectionChange"
+                    style="width: 100%;margin: 0 auto">
+                <el-table-column
+                        type="selection"
+                        width="55">
+                </el-table-column>
+                <el-table-column type="expand" label="详细" width="50">
+                    <template slot-scope="props">
+                        <el-form label-position="left" inline class="demo-table-expand">
+                            <el-form-item label="产品ID">
+                                <span>{{ props.row.productId }}</span>
+                            </el-form-item>
+                            <el-form-item label="产品名称">
+                                <span>{{ props.row.productName }}</span>
+                            </el-form-item>
+                            <el-form-item label="厂商">
+                                <span>{{ props.row.factoryName }}</span>
+                            </el-form-item>
+                            <el-form-item label="配置">
+                                <span>{{ props.row.productClass }}</span>
+                            </el-form-item>
+                            <el-form-item label="保修期">
+                                <span>{{ props.row.warranty }}</span>
+                            </el-form-item>
+                            <el-form-item label="市场单价">
+                                <span>{{ props.row.listPrice }}</span>
+                            </el-form-item>
+                            <el-form-item label="成本单价">
+                                <span>{{ props.row.realCostPrice }}</span>
+                            </el-form-item>
+                            <el-form-item label="单位">
+                                <span>{{ props.row.amountUnit }}</span>
+                            </el-form-item>
+                            <el-form-item label="产品经理">
+                                <span>{{ props.row.responsiblePerson  }}</span>
+                            </el-form-item>
+                            <el-form-item label="登记人">
+                                <span>{{ props.row.register  }}</span>
+                            </el-form-item>
+                            <el-form-item label="产品描述">
+                                <span>{{ props.row. productDescribe }}</span>
+                            </el-form-item>
+                            <el-form-item label="建档时间">
+                                <span>{{ props.row.registerTime }}</span>
+                            </el-form-item>
+                        </el-form>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                        label="ID"
+                        prop="id">
+                </el-table-column>
+                <el-table-column
+                        label="商品名称"
+                        prop="productName">
+                </el-table-column>
+                <el-table-column
+                        label="描述"
+                        prop="productDescribe">
+                </el-table-column>
+                <el-table-column
+                        fixed="right"
+                        label="操作"
+                        width="160">
+                    <template slot-scope="scope">
+                        <el-button-group>
+                            <el-tooltip class="item" effect="dark" content="修改档案" placement="top-start">
+                                <el-button type="primary" @click="recordUpdate = true,recordUpdateList(scope.row),getUse()"
+                                           size="small" icon="el-icon-edit"></el-button>
+                            </el-tooltip>
+                            <el-tooltip class="item" effect="dark" content="删除档案" placement="top-start">
+                                <el-button type="danger" title="" @click="deleterecord(scope.row)" size="small"
+                                           icon="el-icon-delete"></el-button>
+                            </el-tooltip>
+                        </el-button-group>
+                    </template>
+                </el-table-column>
+            </el-table>
+            <el-pagination
+                    @size-change="handleSizeChange"
+                    @current-change="handleCurrentChange"
+                    :current-page="page"
+                    :page-sizes="[10, 20, 30, 40,50,60]"
+                    :page-size="pageSize"
+                    layout="total, sizes, prev, pager, next, jumper"
+                    :total="total">
+            </el-pagination>
+        </div>-->
     </div>
 </div>
+</div>
 </body>
+<!-- import Vue before Element -->
+<script src="https://unpkg.com/vue/dist/vue.js"></script>
+<!-- import JavaScript -->
+<script src="https://unpkg.com/element-ui/lib/index.js"></script>
 <script>
-    new Vue({
-        el: '#app',
-        data: {
-            record: {//查询的条件
-                productName: "",//产品名称
-                registerTime: "",//建档时间
-                checkTag:"等待审核",
+
+    layui.use(['layer', 'form'], function () {
+        var layer = layui.layer
+            , form = layui.form;
+
+        var vm = new Vue({
+            el: '#app',
+            data: {
+                activeName: '等待审核',
+                /*加载动画*/
+                loading: true,
+                page: 1,//页码
+                pageSize: 10,//行数
+                total: 0,//总记录数
+                recordList: [],//展示的数据
+                record: {//查询的条件
+                    productName: "",//产品名称
+                    registerTime: "",//建档时间
+                    checkTag:"等待审核",//审核标志
+                },
             },
-            activeName: '待审核',
-            date:''
-        },
-        methods:{
-            handleClick(tab, event) {
-
-                console.log(tab);
+            methods: {
+                /*获取点击的tab*/
+                handleClick(tab, event) {
+                    this.record.checkTag=tab.name;
+                    this.findPage();
+                },
+                /*//获取点击的行数据*/
+                recordUpdateList(row) {
+                    this.recordUpdates = row;//绑定到修改的实体
+                },
+                /*分页条件查询*/
+                findPage() {
+                    axios.post(api1 + "/design_record/findPagecheck?page=" + this.page + "&pageSize=" + this.pageSize, this.record).then(res => {
+                        this.total = res.data.total;
+                        this.recordList = res.data.data;
+                        this.loading=false;
+                    }).catch(err => {
+                        vm.$message({//异常
+                            showClose: true,
+                            message: "获取超时，请检查网络",
+                            type: 'error'
+                        });
+                    })
+                },
+                /*设置行数*/
+                handleSizeChange(pageSize) {
+                    this.pageSize = pageSize;
+                    // console.log(`每页 ${pageSize} 条`);
+                },
+                /*获取页码*/
+                handleCurrentChange(page) {
+                    this.page = page;
+                    this.findPage();
+                },
+                /*全选*/
+                toggleSelection(rows) {//全选选中
+                    if (rows) {
+                        rows.forEach(row => {
+                            this.$refs.multipleTable.toggleRowSelection(row);
+                        });
+                    } else {
+                        this.$refs.multipleTable.clearSelection();
+                    }
+                },
+                /*获取复选框选中的值*/
+                handleSelectionChange(value) {
+                    this.deleterecords=value;
+                    console.log(this.deleterecords);
+                },
+                /*查看点击选中行*/
+                show(value){
+                    console.log(value);
+                }
+            },
+            created() {
+                /*页面加载*/
+                this.findPage();
             }
-        },
-        created(){
+        });
+    });
 
-        }
-    })
 </script>
 </html>
