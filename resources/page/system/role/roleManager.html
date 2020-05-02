@@ -49,12 +49,12 @@
                 <i class="layui-icon layui-icon-addition"></i>
                 添 加
             </button>
-            <a class="layui-btn layui-btn-sm layui-btn-danger data-count-delete" lay-event="batchdelete">批量删除</a>
+            <a class="layui-btn layui-btn-sm layui-btn-danger data-count-delete roleBtn_batchdelete" lay-event="batchdelete"><i class="layui-icon layui-icon-delete"></i> 批 量 删 除 </a>
         </script>
         <div style="display: none" id="roleTableBar">
-            <a class="layui-btn layui-btn-xs layui-btn-warm data-count-delete roleBtn_update" lay-event="update">修改</a>
-            <a class="layui-btn layui-btn-xs layui-btn-danger data-count-delete roleBtn_delete" lay-event="delete">删除</a>
-            <a class="layui-btn layui-btn-xs layui-btn-normal data-count-delete" lay-event="selectMenu">分配权限</a>
+            <a class="layui-btn layui-btn-xs layui-btn-warm data-count-delete roleBtn_update" lay-event="update"><i class="layui-icon layui-icon-edit"></i> 修 改 </a>
+            <a class="layui-btn layui-btn-xs layui-btn-danger data-count-delete roleBtn_delete" lay-event="delete"><i class="layui-icon layui-icon-delete"></i> 删 除 </a>
+            <a class="layui-btn layui-btn-xs layui-btn-normal data-count-delete roleBtn_empowerment" lay-event="selectMenu"><i class="layui-icon layui-icon-auz"></i> 分 配 权 限 </a>
         </div>
         <script type="text/html" id="availableTpl">
             <!-- 这里的 checked 的状态只是演示 -->
@@ -84,7 +84,7 @@
                     <div class="layui-input-block" style="text-align: center;">
                         <a class="layui-btn " lay-submit="" lay-filter="doSubmit"><label
                                 class="layui-icon layui-icon-release"></label>提交</a>
-                        <a class="layui-btn layui-btn-warm" onclick="javascript:$('#dataFrm')[0].reset()"
+                        <a class="layui-btn layui-btn-warm btn_reset" onclick="javascript:$('#dataFrm')[0].reset()"
                            lay-filter="data-search-btn"><label class="layui-icon layui-icon-refresh"></label>重置</a>
                     </div>
                 </div>
@@ -121,6 +121,7 @@
             url: api + 'role/loadAllRole',
             toolbar: "#roleToolBar",
             cellMinWidth: true,
+            height: "full-170",
             cols: [[
                 {type: "checkbox", fixed: "left"},
                 {field: 'id', title: 'ID', align: "center"},
