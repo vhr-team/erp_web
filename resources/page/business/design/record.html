@@ -36,6 +36,8 @@
             width: 50%;
         }
     </style>
+    <link rel="stylesheet" href="../../../lib/bootstarp/css/bootstrap.css">
+    <script src="../../../lib/bootstarp/js/bootstrap.js"></script>
 
 
 </head>
@@ -123,6 +125,9 @@
                             <el-form-item label="建档时间">
                                 <span>{{ props.row.registerTime }}</span>
                             </el-form-item>
+                            <el-form-item label="组成编号">
+                                <span>{{ props.row.materielArchivesId }}</span>
+                            </el-form-item>
                         </el-form>
                     </template>
                 </el-table-column>
@@ -149,6 +154,11 @@
                                            @click="recordUpdate = true,recordUpdateList(scope.row),getUse()"
                                            size="small" icon="el-icon-edit"></el-button>
                             </el-tooltip>
+                            <el-tooltip class="item" effect="dark" content="查看物料" placement="top-start">
+                                <el-button type="success" title="" data-toggle="modal" data-target="#myModal"
+                                           @click="show(scope.row)" size="small"
+                                           icon="el-icon-s-promotion"></el-button>
+                            </el-tooltip>
                             <el-tooltip class="item" effect="dark" content="删除档案" placement="top-start">
                                 <el-button type="danger" title="" @click="deleterecord(scope.row)" size="small"
                                            icon="el-icon-delete"></el-button>
@@ -167,22 +177,80 @@
                     :total="total">
             </el-pagination>
         </div>
-        <!--修改的模态框-->
-        <el-drawer
-                title="修改档案"
+        <div>
+            <!--修改的模态框-->
+            <el-drawer
+                    title="修改档案"
 
-                :visible.sync="recordUpdate"
-                :before-close="recordUpdateClose">
+                    :visible.sync="recordUpdate"
+                    :before-close="recordUpdateClose">
+                <el-form ref="form" size="small" label-width="100px">
+                    <el-input style="display: none" v-model="recordUpdates.id"></el-input>
+                    <el-form-item label="产品名称">
+                        <el-input style="width: 200px" v-model="recordUpdates.productName"></el-input>
+                    </el-form-item>
+                    <el-form-item label="厂商">
+                        <el-input style="width: 200px" v-model="recordUpdates.factoryName"></el-input>
+                    </el-form-item>
+                    <el-form-item label="档次">
+                        <el-select style="width: 200px" v-model="recordUpdates.productClass" clearable
+                                   placeholder="请选择">
+                            <el-option
+                                    v-for="item in productClassSelect"
+                                    :key="item.value"
+                                    :label="item.label"
+                                    :value="item.value">
+                            </el-option>
+                        </el-select>
+                    </el-form-item>
+                    <el-form-item label="保修期"
+                                  :rules="[  { required: true, message: '保修期不能为空'}, { type: 'number', message: '保修期必须为数字值'} ]">
+                        <el-input style="width: 200px" type="number" v-model="recordUpdates.warranty"></el-input>
+                    </el-form-item>
+                    <el-form-item label="市场单价"
+                                  :rules="[  { required: true, message: '单价不能为空'}, { type: 'number', message: '单价必须为数字值'} ]">
+                        <el-input style="width: 200px" type="number" v-model="recordUpdates.listPrice"></el-input>
+                    </el-form-item>
+                    <el-form-item label="成本单价"
+                                  :rules="[  { required: true, message: '成本单价不能为空'}, { type: 'number', message: '成本单价必须为数字值'} ]">
+                        <el-input style="width: 200px" type="number" v-model="recordUpdates.realCostPrice"></el-input>
+                    </el-form-item>
+                    <el-form-item label="单位">
+                        <el-input style="width: 200px" v-model="recordUpdates.amountUnit"></el-input>
+                    </el-form-item>
+                    <el-form-item label="产品经理">
+                        <el-input style="width: 200px" v-model="recordUpdates.responsiblePerson"></el-input>
+                    </el-form-item>
+                    <el-form-item label="登记人">
+                        <el-input style="width: 200px" :disabled="true" v-model="recordUpdates.register"></el-input>
+                    </el-form-item>
+                    <el-form-item label="产品描述">
+                        <el-input type="textarea" style="width: 200px"
+                                  v-model="recordUpdates.productDescribe"></el-input>
+                    </el-form-item>
+                    <el-form-item>
+                        <el-button type="primary" @click="updaterecord">修改</el-button>
+                    </el-form-item>
+                </el-form>
+            </el-drawer>
+        </div>
+    </div>
+    <div>
+        <!--添加的模态框-->
+        <el-drawer
+                title="添加档案"
+
+                :visible.sync="recordAdd"
+                :before-close="recordAddClose">
             <el-form ref="form" size="small" label-width="100px">
-                <el-input style="display: none" v-model="recordUpdates.id"></el-input>
                 <el-form-item label="产品名称">
-                    <el-input style="width: 200px" v-model="recordUpdates.productName"></el-input>
+                    <el-input style="width: 200px" v-model="recordAdds.productName"></el-input>
                 </el-form-item>
                 <el-form-item label="厂商">
-                    <el-input style="width: 200px" v-model="recordUpdates.factoryName"></el-input>
+                    <el-input style="width: 200px" v-model="recordAdds.factoryName"></el-input>
                 </el-form-item>
                 <el-form-item label="档次">
-                    <el-select style="width: 200px" v-model="recordUpdates.productClass" clearable placeholder="请选择">
+                    <el-select style="width: 200px" v-model="recordAdds.productClass" clearable placeholder="请选择">
                         <el-option
                                 v-for="item in productClassSelect"
                                 :key="item.value"
@@ -193,88 +261,87 @@
                 </el-form-item>
                 <el-form-item label="保修期"
                               :rules="[  { required: true, message: '保修期不能为空'}, { type: 'number', message: '保修期必须为数字值'} ]">
-                    <el-input style="width: 200px" type="number" v-model="recordUpdates.warranty"></el-input>
+                    <el-input style="width: 200px" type="number" v-model="recordAdds.warranty"></el-input>
                 </el-form-item>
                 <el-form-item label="市场单价"
                               :rules="[  { required: true, message: '单价不能为空'}, { type: 'number', message: '单价必须为数字值'} ]">
-                    <el-input style="width: 200px" type="number" v-model="recordUpdates.listPrice"></el-input>
+                    <el-input style="width: 200px" type="number" v-model="recordAdds.listPrice"></el-input>
                 </el-form-item>
                 <el-form-item label="成本单价"
                               :rules="[  { required: true, message: '成本单价不能为空'}, { type: 'number', message: '成本单价必须为数字值'} ]">
-                    <el-input style="width: 200px" type="number" v-model="recordUpdates.realCostPrice"></el-input>
+                    <el-input style="width: 200px" type="number" v-model="recordAdds.realCostPrice"></el-input>
                 </el-form-item>
                 <el-form-item label="单位">
-                    <el-input style="width: 200px" v-model="recordUpdates.amountUnit"></el-input>
+                    <el-input style="width: 200px" v-model="recordAdds.amountUnit"></el-input>
                 </el-form-item>
                 <el-form-item label="产品经理">
-                    <el-input style="width: 200px" v-model="recordUpdates.responsiblePerson"></el-input>
+                    <el-input style="width: 200px" v-model="recordAdds.responsiblePerson"></el-input>
                 </el-form-item>
                 <el-form-item label="登记人">
-                    <el-input style="width: 200px" :disabled="true" v-model="recordUpdates.register"></el-input>
+                    <el-input style="width: 200px" :disabled="true" v-model="recordAdds.register"></el-input>
                 </el-form-item>
                 <el-form-item label="产品描述">
-                    <el-input type="textarea" style="width: 200px" v-model="recordUpdates.productDescribe"></el-input>
+                    <el-input type="textarea" style="width: 200px" v-model="recordAdds.productDescribe"></el-input>
                 </el-form-item>
                 <el-form-item>
-                    <el-button type="primary" @click="updaterecord">修改</el-button>
+                    <el-button type="primary" @click="addrecord">添加</el-button>
                 </el-form-item>
             </el-form>
         </el-drawer>
     </div>
-    <!--添加的模态框-->
-    <el-drawer
-            title="添加档案"
+    <!--添加物料的模态框-->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">物料组成</h4>
+                </div>
+                <div class="modal-body">
+                    <blockquote class="layui-elem-quote layui-quote-nm">
+                        产品编号：{{proID}}
+                        产品名称：{{proName}}
+                    </blockquote>
 
-            :visible.sync="recordAdd"
-            :before-close="recordAddClose">
-        <el-form ref="form" size="small" label-width="100px">
-            <el-form-item label="产品名称">
-                <el-input style="width: 200px" v-model="recordAdds.productName"></el-input>
-            </el-form-item>
-            <el-form-item label="厂商">
-                <el-input style="width: 200px" v-model="recordAdds.factoryName"></el-input>
-            </el-form-item>
-            <el-form-item label="档次">
-                <el-select style="width: 200px" v-model="recordAdds.productClass" clearable placeholder="请选择">
-                    <el-option
-                            v-for="item in productClassSelect"
-                            :key="item.value"
-                            :label="item.label"
-                            :value="item.value">
-                    </el-option>
-                </el-select>
-            </el-form-item>
-            <el-form-item label="保修期"
-                          :rules="[  { required: true, message: '保修期不能为空'}, { type: 'number', message: '保修期必须为数字值'} ]">
-                <el-input style="width: 200px" type="number" v-model="recordAdds.warranty"></el-input>
-            </el-form-item>
-            <el-form-item label="市场单价"
-                          :rules="[  { required: true, message: '单价不能为空'}, { type: 'number', message: '单价必须为数字值'} ]">
-                <el-input style="width: 200px" type="number" v-model="recordAdds.listPrice"></el-input>
-            </el-form-item>
-            <el-form-item label="成本单价"
-                          :rules="[  { required: true, message: '成本单价不能为空'}, { type: 'number', message: '成本单价必须为数字值'} ]">
-                <el-input style="width: 200px" type="number" v-model="recordAdds.realCostPrice"></el-input>
-            </el-form-item>
-            <el-form-item label="单位">
-                <el-input style="width: 200px" v-model="recordAdds.amountUnit"></el-input>
-            </el-form-item>
-            <el-form-item label="产品经理">
-                <el-input style="width: 200px" v-model="recordAdds.responsiblePerson"></el-input>
-            </el-form-item>
-            <el-form-item label="登记人">
-                <el-input style="width: 200px" :disabled="true" v-model="recordAdds.register"></el-input>
-            </el-form-item>
-            <el-form-item label="产品描述">
-                <el-input type="textarea" style="width: 200px" v-model="recordAdds.productDescribe"></el-input>
-            </el-form-item>
-            <el-form-item>
-                <el-button type="primary" @click="addrecord">添加</el-button>
-            </el-form-item>
-        </el-form>
-    </el-drawer>
+                    <div>
+                        <button type="button" class="layui-btn" @click="matarual_herf()">添加产品物料</button>
+                    </div>
+                    <div>
+                        <table class="layui-table">
+                            <colgroup>
+                                <col width="150">
+                                <col width="200">
+                                <col>
+                            </colgroup>
+                            <thead>
+                            <tr>
+                                <th>物料id</th>
+                                <th>名称</th>
+                                <th>所需数量</th>
+                                <th>描述</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr v-for="matarual in matarual_constitute">
+                                <td>{{matarual.materialid}}</td>
+                                <td>{{matarual.materialname}}</td>
+                                <td>{{matarual.materialnum}}</td>
+                                <td>{{matarual.materialremark}}</td>
+                            </tr>
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
-</div>
+
 </body>
 <!-- import Vue before Element -->
 <script src="https://unpkg.com/vue/dist/vue.js"></script>
@@ -327,14 +394,29 @@
                     productName: "",//产品名称
                     registerTime: ""//建档时间
                 },
-                recordAdds: {},
-                deleterecords: [],
-                recovernum: 0,
+                recordAdds: {},//添加的实体
+                deleterecords: [],//删除的id
+                recovernum: 0,//回收站数量
+                proID:"",//产品id
+                proName:"",//产品名称
+                matarual_constitute:[]//物料组成
             },
             methods: {
+                /*查看物料组成*/
+                show(value){
+                    this.proID=value.productId
+                    this.proName=value.productName;
+                    console.log(value);
+                    axios.get(api1+"design_record/selectBymaterielArchivesId?materielArchivesId="+value.materielArchivesId).then(res=>{
+                        this.matarual_constitute=res.data;
+                        console.log(this.matarual_constitute);
+                    }).catch(err=>{
+
+                    })
+                },
                 /*获取当前用户名*/
                 getUser() {
-                    var register = $.parseJSON( window.localStorage.getItem("user") );
+                    var register = $.parseJSON(window.localStorage.getItem("user"));
                     this.recordAdds.register = register.name;
 
                 },
@@ -560,6 +642,10 @@
                 /*跳转到回收页面*/
                 recycle() {
                     $(location).prop('href', 'record_recycle.html');
+                },
+                /*跳转到回收页面*/
+                matarual_herf() {
+                    $(location).prop('href', 'matarual_constitute.html');
                 },
                 /*查询已回收的数量*/
                 seachrecycle() {
