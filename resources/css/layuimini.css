@@ -42,14 +42,17 @@
 .layuimini-tool i {display:block;color:#fff;width:32px;height:32px;line-height:32px;border-radius:3px;text-align:center;margin-top:15px;cursor:pointer;}
 
 /**tab选项卡 */
+#top_tabs_box{
+    height: 45px !important;
+    background: #F5F7F9 !important;
+}
 .layui-tab-title li cite {font-style:normal;padding-left:5px;}
 #top_tabs_box>.layui-tab-title {color:#acafb1;}
 #top_tabs_box>.layui-tab-title li:hover {color:#2D8CF0;background-color:#e7ebed;}
 #top_tabs_box .layui-tab-close {font-size:12px!important;width:14px!important;height:14px!important;line-height:16px!important;}
 #top_tabs_box .layui-tab-close:hover {border-radius:4em;background:#ff5722;}
 #top_tabs_box>.layui-tab-title>.layui-this>i:first-child {color:#2D8CF0;}
-#top_tabs_box>.layui-tab-title li {font-size: 12.5px!important;}
-#top_tabs_box>.layui-tab-title .layui-this {color:#2D8CF0;background: #e7ebed !important;}
+#top_tabs_box>.layui-tab-title .layui-this {color:#2D8CF0;font-size: 14px !important;}
 #top_tabs_box>.layui-tab-title .layui-this:after {margin-top:-13px;width: 100%;border: none !important;}
 #top_tabs_box {padding-right:138px;height:34px;}
 #top_tabs_box > .layui-tab-title ,#top_tabs_box > .closeBox {margin-left: 10px;height:35px !important;}
@@ -67,10 +70,10 @@
 .closeBox {position:absolute;right:15px;background-color:#fff !important;color:#000;padding:0 10px !important;}
 .closeBox .layui-nav-item {line-height:40px;}
 .closeBox .layui-nav-item > a,.closeBox .layui-nav-item > a:hover {color:#000;}
-.closeBox .layui-nav-child {top:40px;}
+.closeBox .layui-nav-child {left: -60px;top:40px;}
 .closeBox .layui-nav-bar {display:none;}
 .closeBox a i.caozuo {font-size:20px;position:absolute;top:1px;left:0;}
-.closeBox a span.layui-nav-more {border-color:#333 transparent transparent;}
+.closeBox a span.layui-nav-more {right: 13px !important;border-color:#333 transparent transparent;}
 .closeBox a span.layui-nav-more.layui-nav-mored {border-color:transparent transparent #333;}
 
 /**左侧菜单栏 (通用) */
@@ -1079,4 +1082,13 @@
     .layuimini-multi-module.layuimini-mini .layuimini-header-content .layui-layout-right {
         display: none;
     }
+}
+
+.navBtn{
+    margin-top: 4px !important;
+    width: 40px;
+    cursor: pointer;
+    padding-right: 10px !important;
+    margin-right: 15px;
+    box-sizing: border-box;
 }
