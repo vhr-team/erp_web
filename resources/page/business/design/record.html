@@ -116,7 +116,7 @@
                             <el-form-item label="产品经理">
                                 <span>{{ props.row.responsiblePerson  }}</span>
                             </el-form-item>
-                            <el-form-item label="登记人">
+                            <el-form-item label="登记人" >
                                 <span>{{ props.row.register  }}</span>
                             </el-form-item>
                             <el-form-item label="产品描述">
@@ -221,7 +221,7 @@
                     <el-form-item label="产品经理">
                         <el-input style="width: 200px" v-model="recordUpdates.responsiblePerson"></el-input>
                     </el-form-item>
-                    <el-form-item label="登记人">
+                    <el-form-item label="登记人" style="display: none">
                         <el-input style="width: 200px" :disabled="true" v-model="recordUpdates.register"></el-input>
                     </el-form-item>
                     <el-form-item label="产品描述">
@@ -277,7 +277,7 @@
                 <el-form-item label="产品经理">
                     <el-input style="width: 200px" v-model="recordAdds.responsiblePerson"></el-input>
                 </el-form-item>
-                <el-form-item label="登记人">
+                <el-form-item label="登记人" style="display: none">
                     <el-input style="width: 200px" :disabled="true" v-model="recordAdds.register"></el-input>
                 </el-form-item>
                 <el-form-item label="产品描述">
@@ -289,7 +289,7 @@
             </el-form>
         </el-drawer>
     </div>
-    <!--添加物料的模态框-->
+    <!--查看物料的模态框-->
     <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
@@ -329,7 +329,6 @@
                                 <td>{{matarual.materialnum}}</td>
                                 <td>{{matarual.materialremark}}</td>
                             </tr>
-
                             </tbody>
                         </table>
                     </div>

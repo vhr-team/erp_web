@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>档案设计管理</title>
+    <title>档案审核</title>
     <!-- import CSS -->
     <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
     <link rel="stylesheet" href="../../../lib/layui-v2.5.5/css/layui.css">
@@ -36,6 +36,8 @@
             width: 50%;
         }
     </style>
+    <link rel="stylesheet" href="../../../lib/bootstarp/css/bootstrap.css">
+    <script src="../../../lib/bootstarp/js/bootstrap.js"></script>
 
 
 </head>
@@ -132,14 +134,11 @@
                                 width="160">
                             <template slot-scope="scope">
                                 <el-button-group>
-                                    <el-tooltip class="item" effect="dark" content="修改档案" placement="top-start">
-                                        <el-button type="primary" @click="show(scope.row)"
+                                    <el-tooltip class="item" effect="dark" content="审核" placement="top-start">
+                                        <el-button type="primary" @click="show(scope.row)" data-toggle="modal" data-target="#myModal"
                                                    size="small" icon="el-icon-edit" ></el-button>
                                     </el-tooltip>
-                                    <el-tooltip class="item" effect="dark" content="删除档案" placement="top-start">
-                                        <el-button type="danger" title=""  size="small"
-                                                   icon="el-icon-delete"></el-button>
-                                    </el-tooltip>
+
                                 </el-button-group>
                             </template>
                         </el-table-column>
@@ -228,13 +227,9 @@
                                 width="160">
                             <template slot-scope="scope">
                                 <el-button-group>
-                                    <el-tooltip class="item" effect="dark" content="修改档案" placement="top-start">
-                                        <el-button type="primary"
+                                    <el-tooltip class="item" effect="dark" content="审核" placement="top-start">
+                                        <el-button type="primary" @click="show(scope.row)" data-toggle="modal" data-target="#myModal"
                                                    size="small" icon="el-icon-edit"></el-button>
-                                    </el-tooltip>
-                                    <el-tooltip class="item" effect="dark" content="删除档案" placement="top-start">
-                                        <el-button type="danger" title=""  size="small"
-                                                   icon="el-icon-delete"></el-button>
                                     </el-tooltip>
                                 </el-button-group>
                             </template>
@@ -324,13 +319,9 @@
                                 width="160">
                             <template slot-scope="scope">
                                 <el-button-group>
-                                    <el-tooltip class="item" effect="dark" content="修改档案" placement="top-start">
-                                        <el-button type="primary"
+                                    <el-tooltip class="item" effect="dark" content="审核" placement="top-start">
+                                        <el-button type="primary" @click="show(scope.row)" data-toggle="modal" data-target="#myModal"
                                                    size="small" icon="el-icon-edit"></el-button>
-                                    </el-tooltip>
-                                    <el-tooltip class="item" effect="dark" content="删除档案" placement="top-start">
-                                        <el-button type="danger" title=""  size="small"
-                                                   icon="el-icon-delete"></el-button>
                                     </el-tooltip>
                                 </el-button-group>
                             </template>
@@ -348,100 +339,53 @@
                 </div>
             </el-tab-pane>
         </el-tabs>
-     <!--   <div>
-            <el-table
-                    :data="recordList"
-                    ref="multipleTable"
-                    v-loading="loading"
-                    border
-                    @selection-change="handleSelectionChange"
-                    style="width: 100%;margin: 0 auto">
-                <el-table-column
-                        type="selection"
-                        width="55">
-                </el-table-column>
-                <el-table-column type="expand" label="详细" width="50">
-                    <template slot-scope="props">
-                        <el-form label-position="left" inline class="demo-table-expand">
-                            <el-form-item label="产品ID">
-                                <span>{{ props.row.productId }}</span>
-                            </el-form-item>
-                            <el-form-item label="产品名称">
-                                <span>{{ props.row.productName }}</span>
-                            </el-form-item>
-                            <el-form-item label="厂商">
-                                <span>{{ props.row.factoryName }}</span>
-                            </el-form-item>
-                            <el-form-item label="配置">
-                                <span>{{ props.row.productClass }}</span>
-                            </el-form-item>
-                            <el-form-item label="保修期">
-                                <span>{{ props.row.warranty }}</span>
-                            </el-form-item>
-                            <el-form-item label="市场单价">
-                                <span>{{ props.row.listPrice }}</span>
-                            </el-form-item>
-                            <el-form-item label="成本单价">
-                                <span>{{ props.row.realCostPrice }}</span>
-                            </el-form-item>
-                            <el-form-item label="单位">
-                                <span>{{ props.row.amountUnit }}</span>
-                            </el-form-item>
-                            <el-form-item label="产品经理">
-                                <span>{{ props.row.responsiblePerson  }}</span>
-                            </el-form-item>
-                            <el-form-item label="登记人">
-                                <span>{{ props.row.register  }}</span>
-                            </el-form-item>
-                            <el-form-item label="产品描述">
-                                <span>{{ props.row. productDescribe }}</span>
-                            </el-form-item>
-                            <el-form-item label="建档时间">
-                                <span>{{ props.row.registerTime }}</span>
-                            </el-form-item>
-                        </el-form>
-                    </template>
-                </el-table-column>
-                <el-table-column
-                        label="ID"
-                        prop="id">
-                </el-table-column>
-                <el-table-column
-                        label="商品名称"
-                        prop="productName">
-                </el-table-column>
-                <el-table-column
-                        label="描述"
-                        prop="productDescribe">
-                </el-table-column>
-                <el-table-column
-                        fixed="right"
-                        label="操作"
-                        width="160">
-                    <template slot-scope="scope">
-                        <el-button-group>
-                            <el-tooltip class="item" effect="dark" content="修改档案" placement="top-start">
-                                <el-button type="primary" @click="recordUpdate = true,recordUpdateList(scope.row),getUse()"
-                                           size="small" icon="el-icon-edit"></el-button>
-                            </el-tooltip>
-                            <el-tooltip class="item" effect="dark" content="删除档案" placement="top-start">
-                                <el-button type="danger" title="" @click="deleterecord(scope.row)" size="small"
-                                           icon="el-icon-delete"></el-button>
-                            </el-tooltip>
-                        </el-button-group>
-                    </template>
-                </el-table-column>
-            </el-table>
-            <el-pagination
-                    @size-change="handleSizeChange"
-                    @current-change="handleCurrentChange"
-                    :current-page="page"
-                    :page-sizes="[10, 20, 30, 40,50,60]"
-                    :page-size="pageSize"
-                    layout="total, sizes, prev, pager, next, jumper"
-                    :total="total">
-            </el-pagination>
-        </div>-->
+        <!--查看物料的模态框-->
+        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="myModalLabel">物料组成</h4>
+                    </div>
+                    <div class="modal-body">
+                        <blockquote class="layui-elem-quote layui-quote-nm">
+                            产品编号：{{proID}}
+                            产品名称：{{proName}}
+                        </blockquote>
+                        <div>
+                            <table class="layui-table">
+                                <colgroup>
+                                    <col width="150">
+                                    <col width="200">
+                                    <col>
+                                </colgroup>
+                                <thead>
+                                <tr>
+                                    <th>物料id</th>
+                                    <th>名称</th>
+                                    <th>所需数量</th>
+                                    <th>描述</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr v-for="matarual in matarual_constitute">
+                                    <td>{{matarual.materialid}}</td>
+                                    <td>{{matarual.materialname}}</td>
+                                    <td>{{matarual.materialnum}}</td>
+                                    <td>{{matarual.materialremark}}</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <el-button type="primary" @click="checkrecord('审核通过')">审核通过</el-button>
+                        <el-button type="warning" @click="checkrecord('审核未通过')">审核不通过</el-button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 </div>
@@ -471,8 +415,17 @@
                     registerTime: "",//建档时间
                     checkTag:"等待审核",//审核标志
                 },
+                proID:"",//产品id
+                proName:"",//产品名称
+                matarual_constitute:[],//物料组成
+                checkers:{
+                    id:"",
+                    checker:"",
+                    checkTag:"",
+                }
             },
             methods: {
+
                 /*获取点击的tab*/
                 handleClick(tab, event) {
                     this.record.checkTag=tab.name;
@@ -523,7 +476,48 @@
                 },
                 /*查看点击选中行*/
                 show(value){
+                    this.checkers.id=value.id;
+                    this.proID=value.productId
+                    this.proName=value.productName;
                     console.log(value);
+                    var checker = $.parseJSON(window.localStorage.getItem("user"));
+                    this.checkers.checker = checker.name;
+                    axios.get(api1+"design_record/selectBymaterielArchivesId?materielArchivesId="+value.materielArchivesId).then(res=>{
+                        this.matarual_constitute=res.data;
+                    }).catch(err=>{
+                        vm.$message({//异常
+                            showClose: true,
+                            message: "获取超时，请检查网络",
+                            type: 'error'
+                        });
+                    })
+                },
+                checkrecord(value){//
+                    this.checkers.checkTag=value;
+                    console.log(this.checkers);
+                    if(this.checkers!=null){
+                        axios.post(api1+"design_record/updatecheck",this.checkers).then(res=>{
+                            if(res.data.success){
+                                vm.$message({
+                                    showClose: true,
+                                    message: res.data.message,
+                                    type: 'success'
+                                });
+                            }else{
+                                vm.$message({
+                                    showClose: true,
+                                    message: res.data.message,
+                                    type: 'error'
+                                });
+                            }
+                        }).catch(err=>{
+                            vm.$message({//异常
+                                showClose: true,
+                                message: "系统异常",
+                                type: 'error'
+                            });
+                        })
+                    }
                 }
             },
             created() {
