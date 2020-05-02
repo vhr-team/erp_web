@@ -1,178 +1,216 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
+    <meta charset="UTF-8">
     <title>出入库调度管理</title>
     <meta name="renderer" content="webkit">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="../../../lib/plugin/iview/dist/styles/iview.css">
+    <!--element-ui/css-->
+    <link rel="stylesheet" href="../../../lib/plugin/element-ui/style/index.css">
+
     <link rel="stylesheet" href="../../../lib/layui-v2.5.5/css/layui.css" media="all">
     <link rel="stylesheet" href="../../../css/public.css" media="all">
+
 </head>
 <body>
-<div class="layuimini-container">
+
+<div class="layuimini-container" id="app">
     <div class="layuimini-main">
-        <!--搜索开始-->
-        <fieldset class="table-search-fieldset">
-            <legend>搜索信息</legend>
-            <div style="margin: 10px 10px 10px 10px">
-                <form class="layui-form layui-form-pane" id="searchFrm">
-                    <div class="layui-form-item">
-                        <div class="layui-inline">
-                            <label class="layui-form-label">关键词</label>
-                            <div class="layui-input-inline">
-                                <input type="text" name="name" autocomplete="off" class="layui-input">
-                            </div>
-                        </div>
-                        <div class="layui-inline">
-                            <a class="layui-btn layui-btn-primary" lay-submit="" lay-filter="data-search-btn"><i class="layui-icon"></i>搜索</a>
-                            <a class="layui-btn layui-btn-primary" onclick="javascript:$('#searchFrm')[0].reset()"
-                               lay-filter="data-search-btn"><i class="layui-icon layui-icon-refresh"></i>重置</a>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </fieldset>
-        <!--搜索结束-->
 
-        <!--表格开始-->
-        <table class="layui-hide" id="roleTable" lay-filter="roleTable"></table>
-        <script type="text/html" id="availableTpl">
-            <!-- 这里的 checked 的状态只是演示 -->
-            <input type="checkbox" name="available" value="{{d.id}}" lay-skin="switch" lay-text="可用|不可用"
-                   lay-filter="availableSwitch" {{ d.available== 1 ? 'checked' : '' }}>
-        </script>
-        <!--表格结束-->
+        <!--标签页-->
+        <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
+            <el-tab-pane label="入库调度" name="one">
 
-        <!--添加和修改的弹出层开始-->
-        <div id="addOrUpdateDiv" style="display: none;padding: 0.3125rem">
-            <form method="post" class="layui-form layui-form-pane" lay-filter="dataFrm" id="dataFrm">
-                <div class="layui-form-item">
-                    <label class="layui-form-label">角色名称</label>
-                    <div class="layui-input-block">
-                        <input type="hidden" name="id"/>
-                        <input type="text" name="name" lay-verify="required" autocomplete="off" placeholder="请输入标题"
-                               class="layui-input">
-                    </div>
-                </div>
-                <div class="layui-form-item">
-                    <label class="layui-form-label">角色备注</label>
-                    <div class="layui-input-block">
-                        <textarea placeholder="请输入角色备注" name="remark" class="layui-textarea"></textarea>
-                    </div>
-                </div>
-                <div class="layui-form-item">
-                    <div class="layui-input-block" style="text-align: center;">
-                        <a class="layui-btn " lay-submit="" lay-filter="doSubmit"><label
-                                class="layui-icon layui-icon-release"></label>提交</a>
-                        <a class="layui-btn layui-btn-warm" onclick="javascript:$('#dataFrm')[0].reset()"
-                           lay-filter="data-search-btn"><label class="layui-icon layui-icon-refresh"></label>重置</a>
-                    </div>
-                </div>
-            </form>
-        </div>
-        <!--添加和修改的弹出层结束-->
+            </el-tab-pane>
+            <el-tab-pane label="出库调度" name="two"></el-tab-pane>
+        </el-tabs>
+        <!--标签页-->
 
-        <!--选择菜单和权限的弹出层开始-->
-        <div id="selectMenuDiv" style="display: none;padding: 0.3125rem;">
-            <table class="layui-hide" id="menuTable" lay-filter="menuTable"></table>
-        </div>
-        <!--选择菜单和权限的弹出层结束-->
+        <!--数据表格-->
+        <i-table :loading="loading" border :columns="columns" :data="Tabledata">
+            <template slot-scope="{ row }" slot="name">
+                <strong>{{ row.name }}</strong>
+            </template>
+            <template slot-scope="{ row, index }" slot="action">
+                <i-button type="primary" size="small" style="margin-right: 5px" icon="md-return-right"
+                          @click="openDialog"> 入 库 调 度
+                </i-button>
+            </template>
+        </i-table>
+        <!--数据表格-->
 
+        <!--分页-->
+        <el-pagination
+                style="margin-top: 20px;"
+                background
+                :current-page="page"
+                :page-sizes="[5, 10, 15, 20]"
+                :page-size="pageSize"
+                @size-change="sizeChange"
+                @current-change="onChange"
+                layout="sizes, prev, pager, next, jumper, ->, total, slot	"
+                :total="total">
+        </el-pagination>
+        <!--分页-->
+
+        <!--抽屉-->
+        <Drawer
+                width="60%"
+                title="入库调度单" :closable="false" v-model="Drawervalue">
+            <i-form ref="storageSchedulingForm" inline>
+                <Row :gutter="16">
+                    <i-col span="12">
+                        入库单编号：
+                        <i-input style="width: 300px" :disabled="true"></i-input>
+                    </i-col>
+                    <i-col span="12">
+                    </i-col>
+                </Row>
+                <Row style="margin-top: 20px" :gutter="16">
+                    <i-col span="12">
+                        &nbsp;&nbsp;&nbsp;&nbsp;入库理由：
+                        <i-input style="width: 300px" :disabled="true"></i-input>
+                    </i-col>
+                    <i-col span="12">
+                        入库详细理由：
+                        <i-input style="width: 300px" :disabled="true"></i-input>
+                    </i-col>
+                </Row>
+
+                <Row style="margin-top: 20px" :gutter="16">
+                    <i-table border :columns="storageColumns" :data="storageData"></i-table>
+                </Row>
+
+                <Row style="margin-top: 20px" :gutter="16">
+                    <i-col span="12">
+                        应入库总件数：
+                        <i-input style="width: 300px" :disabled="true"></i-input>
+                    </i-col>
+                    <i-col span="12">
+                        应入库总成本：
+                        <i-input style="width: 300px" :disabled="true"></i-input>
+                    </i-col>
+                </Row>
+                <Row style="margin-top: 20px" :gutter="16">
+                    <i-col span="12">
+                        已入库总件数：
+                        <i-input style="width: 300px" :disabled="true"></i-input>
+                    </i-col>
+                    <i-col span="12">
+                        已入库总成本：
+                        <i-input style="width: 300px" :disabled="true"></i-input>
+                    </i-col>
+                </Row>
+            </i-form>
+
+        </Drawer>
+        <!--抽屉-->
     </div>
 </div>
-<script src="../../../lib/jquery-3.4.1/jquery-3.4.1.min.js" charset="utf-8"></script>
+
+<!--jq-->
+<script src="../../../lib/jquery-3.4.1/jquery-3.4.1.min.js"></script>
+
+<script src="../../../lib/plugin/vue/vue.min.js"></script>
+<script src="../../../lib/plugin/iview/dist/iview.min.js"></script>
+<!--element-ui/index.js-->
+<script src="../../../lib/plugin/element-ui/index.js"></script>
+
+<!--layui-->
 <script src="../../../lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
-<script src="../../../js/lay-config.js?v=1.0.4" charset="utf-8"></script>
-<script src="../../../lib/jq-module/jquery.particleground.min.js" charset="utf-8"></script>
+
+<!--axios-->
+<script src="../../../lib/plugin/axios/axios.min.js"></script>
+
+<!--系统文件-->
 <script src="../../../lib/common/jquery.cookie.min.js" charset="utf-8"></script>
 <script src="../../../lib/common/common.js" charset="utf-8"></script>
 
 <script>
-    layui.use(['form', 'table', 'laydate', 'layer', 'treeTable'], function () {
-        var form = layui.form;
-        var table = layui.table;
-        var laydate = layui.laydate;
-        var layer = layui.layer;
-        var treeTable = layui.treeTable;
+    let api4 = 'http://127.0.0.1:8004/';
+    let vue;
 
-        var tableIns = table.render({
-            elem: '#roleTable',
-            url: api + 'role/loadAllRole',
-            toolbar: "#roleToolBar",
-            cellMinWidth: true,
-            cols: [[
-                {field: '', title: '出入库编号', align: "center"},
-                {field: '', title: '出库详细理由', align: "center"},
-                {field: '', title: '登记时间', align: "center"},
-                {field: '', title: '总件数', align: "center"},
-                {field: '', title: '总金额', align: "center"},
-                {field: '', title: '审核标志', align: "center"},
-                {field: '', title: '调度人', align: "center"},
-                {field: '', title: '调度时间', align: "center"},
-                {field: '', title: '库存标志', align: "center"}
-            ]],
-            page: true
-        });
-
-        // 监听搜索操作
-        form.on('submit(data-search-btn)', function (data) {
-            var params = $("#searchFrm").serialize();
-            //执行搜索重载
-            table.reload('roleTable', {
-                page: {
-                    curr: 1
+    // 入口函数
+    $(function () {
+        // http request 拦截器
+        axios.interceptors.request.use(
+            config => {
+                if (token) { //判断token是否存在
+                    config.headers.token = $.cookie("TOKEN");  //将token设置成请求头
                 }
-                , url: api + 'role/loadAllRole?' + params
-            });
-            return false;
-        });
-
-        //监听表头的事件
-        table.on('toolbar(roleTable)', function (obj) {
-            var checkStatus = table.checkStatus(obj.config.id);
-            switch (obj.event) {
-                case 'batchdelete':
-                    batchdelete();
-                    break;
-                case 'add':
-                    openAddRole();
-                    break;
+                return config;
+            },
+            err => {
+                return Promise.reject(err);
             }
-            ;
-        });
+        );
 
-        //监听行数据的事件
-        table.on('tool(roleTable)', function (obj) {
-            var data = obj.data;
-            if (obj.event === 'delete') {
-                layer.confirm('真的删除【' + data.name + '】这个角色吗么', function (index) {
-                    $.post(api + "role/deleteRole", {id: data.id}, function (res) {
-                        layer.msg(res.msg);
-                        obj.del();
-                        layer.close(index);
+        // 初始化Vue
+        vue = new Vue({
+            // 控制区域
+            el: '#app',
+            // 数据
+            data: {
+                total: 9,
+                page: 1,
+                pageSize: 10,
+                loading: true,
+                activeName: 'one',
+                Drawervalue: false,
+                columns: [
+                    {title: '入库单编号', key: 'inboundId', align: 'center',},
+                    {title: '入库理由', key: 'reason', align: 'center',},
+                    {title: '登记时间', key: 'registerTime', align: 'center',},
+                    {title: '总件数', key: 'amountSum', align: 'center',},
+                    {title: '总金额(元)', key: 'costPriceSum', align: 'center',},
+                    {title: '入库调度', slot: 'action', width: 150, align: 'center'}
+                ],
+                Tabledata: [],
+                storageColumns: [
+                    {title: '序号', align: 'center', key: 'name'},
+                    {title: '产品名称', key: 'age', align: 'center',},
+                    {title: '产品编号', key: 'address', align: 'center',},
+                    {title: '应入库件数', key: 'address', align: 'center',},
+                    {title: '已入库件数', key: 'address', align: 'center',},
+                    {title: '存放地址集合', key: 'address', align: 'center',},
+                    {title: '调度', key: 'address', align: 'center',},
+                ],
+                storageData: []
+            },
+            // 方法
+            methods: {
+                openDialog(){
+                    this.Drawervalue = true
+                },
+                sizeChange(val) {
+                    this.pageSize = val;
+                    this.initTableDataOne();
+                },
+                onChange(val) {
+                    this.page = val;
+                    this.initTableDataOne();
+                },
+                handleClick(tab, event) {
+                    console.log(tab, event);
+                },
+                initTableDataOne() {
+                    this.loading = true;
+                    axios.get(api3 + "warehouseInboundDetailed/queryInboundLimit?page="+this.page+"&limit="+this.pageSize+"&checkTag=1").then(res=>{
+                        this.Tabledata = res.data.data;
+                        this.loading = false;
+                    }).catch(err=>{
+                        this.$Message.error('服务器繁忙，请稍后再试！');
                     })
-                });
-            } else if (obj.event === 'update') {
-                openUpdateRole(data);
-            } else if (obj.event === 'selectMenu') {
-                openSelectMenu(data);
+                }
+            },
+            // 钩子函数
+            mounted() {
+                this.initTableDataOne();
             }
-        });
-        //监听可用操作
-        form.on('switch(availableSwitch)', function (obj) {
-            $.post(api + "role/updateRole", {id: this.value, available: obj.elem.checked ? 1 : 0}, function (res) {
-                layer.msg(res.msg);
-                tableIns.reload();
-            })
-        });
-
-
+        })
     });
 </script>
-<script>
-
-</script>
-
 </body>
 </html>
