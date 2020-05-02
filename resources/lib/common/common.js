@@ -69,6 +69,12 @@ if (usertype == 1) {
         if (permissions.indexOf("role:delete") < 0) {
             $(".roleBtn_delete").hide();
         }
+        if (permissions.indexOf("role:empowerment") < 0) {
+            $(".roleBtn_empowerment").hide();
+        }
+        if (permissions.indexOf("role:batchdelete") < 0) {
+            $(".roleBtn_batchdelete").hide();
+        }
         // 角色权限结束
 
         // 菜单和权限
@@ -93,6 +99,12 @@ if (usertype == 1) {
         if (permissions.indexOf("user:delete") < 0) {
             $(".userBtn_delete").hide();
         }
+        if (permissions.indexOf("user:distributionrole") < 0) {
+            $(".userBtn_distributionrole").hide();
+        }
+        if (permissions.indexOf("user:resetpassword") < 0) {
+            $(".userBtn_resetpassword").hide();
+        }
         // 用户
 
     } else {
@@ -107,10 +119,14 @@ if (usertype == 1) {
         $(".roleBtn_add").hide();
         $(".roleBtn_update").hide();
         $(".roleBtn_delete").hide();
+        $(".roleBtn_empowerment").hide();
+        $(".roleBtn_batchdelete").hide();
 
         $(".userBtn_add").hide();
         $(".userBtn_update").hide();
         $(".userBtn_delete").hide();
+        $(".userBtn_distributionrole").hide();
+        $(".userBtn_resetpassword").hide();
 
         $(".btn_dispatch").hide();
         $(".btn_reset").hide();
@@ -119,7 +135,7 @@ if (usertype == 1) {
 
 //给页面显示登陆用户名
 let user = JSON.parse(localStorage.getItem("user"));
-$(".login_name").html(user.name);
+$("#userInfoABtn").append(user.name);
 
 $("#userImages").attr("src",baseUrl+user.imgpath);
 $("#user-avatar").attr("src",baseUrl+user.imgpath);
