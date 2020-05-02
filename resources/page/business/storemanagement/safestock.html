@@ -38,6 +38,26 @@
         </fieldset>
         <!--搜索结束-->
 
+        <!--选项卡-->
+        <div class="layui-tab" lay-filter="tab-all">
+            <ul class="layui-tab-title">
+                <li data-status="0" class="layui-this">未审核</li>
+                <li data-status="1">审核通过</li>
+                <li data-status="2">审核不通过</li>
+            </ul>
+            <div class="layui-tab-content">
+                <div class="layui-tab-item layui-show">
+                    <table class="layui-hide" id="toAudit"></table>
+                </div>
+                <div class="layui-tab-item">
+                    <table class="layui-hide" id="approved"></table>
+                </div>
+                <div class="layui-tab-item">
+                    <table class="layui-hide" id="notThrough"></table>
+                </div>
+            </div>
+        </div>
+
         <!--表格开始-->
         <table class="layui-hide" id="userTable" lay-filter="userTable"></table>
         <script type="text/html" id="userToolBar">
@@ -145,42 +165,65 @@
 <script src="../../../lib/common/Convert_Pinyin.js" charset="utf-8"></script>
 
 <script>
-    layui.use(['form','table', 'laydate', 'layer'], function () {
+    layui.use(['form','element','table', 'laydate', 'layer'], function () {
         var form = layui.form;
+        var element = layui.element;
         var table = layui.table;
         var laydate = layui.laydate;
         var layer = layui.layer;
 
+        getList('#toAudit', '#approved', '#notThrough')
+
+        element.on('tab(tab-all)', function (data) {
+        // console.log(this); // 当前Tab标题所在的原始DOM元素
+        // console.log(data.index); // 得到当前Tab的所在下标
+        // console.log(data.elem); // 得到当前的Tab大容器
+            var status = $(this).attr('data-status')
+            var position = ''
+            switch (status) {
+                case '0': position = '#toAudit'; break;
+                case '1': position = '#approved'; break;
+                case '2': position = '#notThrough'; break;
+            }
+            getList(position, status)
+        })
 
         laydate.render({
             elem: '#hiredate'
         });
 
-        var tableIns = table.render({
-            elem: '#userTable',
-            url: api3 + 'warehouseStock/querySecuritySheet/1',
-            toolbar: "#userToolBar",
-            cellMinWidth: true,
-            page: {//开启分页 设置分页样式
-                layout: ['limit', 'count', 'prev', 'page', 'next', 'skip'] //自定义分页布局
-                , groups: 1 //只显示 1 个连续页码
-                , first: false //不显示首页
-                , last: false //不显示尾页
-            }
-            ,cols: [[
-                {field: 'id', title: '序号', align: "center"},
-                {field: 'productName', title: '产品名称', align: "center"},
-                {field: 'productId', title: '产品编号', align: "center"},
-                {field: 'minAmount', title: '库存报警下限数', align: "center", edit: 'text'},
-                {field: 'maxAmount', title: '库存报警上限数', align: "center", edit: 'text'},
-                {field: 'register', title: '登记人', align: "center"},
-                {field: 'registerTime', title: '登记时间', align: "center"},
-                {field: 'config', title: '配置要求', align: "center"},
-                {field: 'maxCapacityAmount', title: '最大存储量', align: "center", edit: 'text'},
-                {title: '操作', width: 300, templet: '#userTableBar', fixed: "right", align: "center"}
-            ]],
-            page: true
-        });
+        function getList(position, status) {
+            console.log(position);
+            console.log(status);
+            var tableIns = table.render({
+                elem: position,
+                url: api3 + 'warehouseStock/querySecuritySheet',
+                where: {
+                    check_tag:status
+                },
+                toolbar: "#userToolBar",
+                cellMinWidth: true,
+                page: {//开启分页 设置分页样式
+                    layout: ['limit', 'count', 'prev', 'page', 'next', 'skip'] //自定义分页布局
+                    , groups: 1 //只显示 1 个连续页码
+                    , first: false //不显示首页
+                    , last: false //不显示尾页
+                }
+                ,cols: [[
+                    {field: 'id', title: '序号', align: "center"},
+                    {field: 'productName', title: '产品名称', align: "center"},
+                    {field: 'productId', title: '产品编号', align: "center"},
+                    {field: 'minAmount', title: '库存报警下限数', align: "center", edit: 'text'},
+                    {field: 'maxAmount', title: '库存报警上限数', align: "center", edit: 'text'},
+                    {field: 'register', title: '登记人', align: "center"},
+                    {field: 'registerTime', title: '登记时间', align: "center"},
+                    {field: 'config', title: '配置要求', align: "center"},
+                    {field: 'maxCapacityAmount', title: '最大存储量', align: "center", edit: 'text'},
+                    {title: '操作', width: 300, templet: '#userTableBar', fixed: "right", align: "center"}
+                ]],
+                page: true
+            });
+        }
 
         // 监听搜索操作
         form.on('submit(data-search-btn)', function (data) {
