@@ -123,6 +123,81 @@
         </form>
     </div>
 </div>
+
+<div id="editSupper1">
+
+    <div id="editSupper" style="display: none;">
+        <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+            <legend style="    margin-left: 404px;">变更设计单</legend>
+        </fieldset>
+
+        <form action="" class="layui-form" lay-filter="">
+            <div class="layui-form-item">
+                <label class="layui-form-label" style="    margin-left: 70px;">产品名称 :</label>
+                <div class="layui-input-inline">
+                    <input autocomplete="off"  readonly="readonly" style="  border: 0px;   width: 307px;" class="layui-input" id="product_name1" lay-verify="required" name="product_name1"
+                           placeholder="" type="text">
+
+                </div>
+                <label class="layui-form-label" style="    margin-left: 165px;">产品编号 :</label>
+                <div class="layui-input-inline">
+                    <input autocomplete="off"  readonly="readonly" style="  border: 0px;   width: 307px;" class="layui-input" id="procedure_id1" lay-verify="required" name="procedure_id1"
+                           placeholder="" type="text">
+
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label" style="    margin-left: 70px;">设计人 :</label>
+                <div class="layui-input-inline">
+                    <input autocomplete="off" readonly="readonly"  style="  border: 0 ;  width: 307px;" class="layui-input" id="product_designer1" lay-verify="required" name="product_designer1"
+                           placeholder="请输入设计人的名称" type="text">
+
+                </div>
+                <label class="layui-form-label" style="    margin-left: 165px;">设计单编号 :</label>
+                <div class="layui-input-inline">
+                    <input autocomplete="off"  readonly="readonly" style="  border: 0px;   width: 307px;" class="layui-input" id="design_number1" lay-verify="required" name="design_number1"
+                           placeholder="" type="text">
+
+                </div>
+                <input autocomplete="off"  style="    width: 307px;" class="layui-input" id="prdouctId1" lay-verify="required" name="prdouctId1"
+                       placeholder="请输入设计人的名称" type="hidden">
+
+            </div>
+            <table class="layui-table" id="test4" lay-filter="test4">
+
+            </table>
+            <div class="layui-form-item">
+                <label class="layui-form-label" style="    margin-left: 70px;">登记人 :</label>
+                <div class="layui-input-inline">
+                    <input autocomplete="off"  readonly="readonly" style=" border: 0;    width: 307px;" class="layui-input" id="register1" lay-verify="required" name="register1"
+                           placeholder="请输入登记人的名称" type="text">
+
+                </div>
+                <label class="layui-form-label" style="        margin-left: 137px;">修改时间 :</label>
+                <div class="layui-input-inline">
+                    <input autocomplete="off"   style="    width: 307px;" class="layui-input" id="audit_date1" lay-verify="required" name="audit_date1"
+                           placeholder="请选择修改的时间" type="text">
+
+                </div>
+
+            </div>
+            <div class="layui-form-item layui-form-text">
+                <label class="layui-form-label">设计要求</label>
+                <div class="layui-input-block">
+                    <textarea placeholder="请输入内容" class="layui-textarea"></textarea>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-input-block" style="    margin-left: 370px;">
+                    <input type="hidden" id="gprocuJson1" name="gprocuJson">
+                    <input type="hidden" id="shdId1" name="shdId1">
+                    <input type="hidden" id="sjdId1" name="shdId1">
+                    <button type="button" id="addProduction_process_design1" class="layui-btn"  >立即提交</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
 <blockquote class="layui-elem-quote news_search" style=" border-left: 0px solid #009688;">
     <div class="layui-row">
         <form class="layui-form layui-col-md12 x-so" id="complain_search">
@@ -156,6 +231,7 @@
 </script>
 <script type="text/html" id="barDemo">
     <a class="layui-btn layui-btn-xs" lay-event="edit">审核</a>
+    <a class="layui-btn layui-btn-xs" lay-event="edit1">修改</a>
 </script>
 
 <script src="../../../lib/jquery-3.4.1/jquery-3.4.1.min.js" charset="utf-8"></script>
@@ -239,7 +315,8 @@
                 }
             })
         }else if (shState=='未通过') {
-            layer.msg("人丑过不去");
+            window.parent.location.reload();//刷新父页面
+            layer.closeAll();
             return;
             
         }
@@ -250,6 +327,52 @@
 
         });
     })
+
+        $("#addProduction_process_design1").click(function () {
+            var delIndex = layer.confirm('确定提交吗', function(delIndex) {
+                layui.use('table',function () {
+                    var table = layui.table;
+                    datas = layui.table.cache["test4"];
+                    var product_name = $("#product_name1").val();
+                    var design_idB = $("#procedure_id1").val();
+                    var product_designer  =$("#product_designer1").val();
+                    var product_registrant  =$("#register1").val();
+                    var  audit_date = $("#audit_date1").val();
+                    var  esign_require = $(".layui-textarea").val();
+                    var sjdId = $("#sjdId1").val();
+                    var shdId = $("#shdId1").val();
+                    if(audit_date==""){
+                        layer.msg("请选择修改时间");
+                        return;
+                    }
+                        $.ajax({
+                            url:'http://127.0.0.1:8003/productaudit/edittSjdShb',
+                            data:{
+                                'product_name': product_name,
+                                'design_idB': design_idB,
+                                'product_designer': product_designer,
+                                'product_registrant': product_registrant,
+                                'edie_date': audit_date,
+                                'sjdId':sjdId,
+                                'shdId':shdId,
+                                'gprocuJson1': JSON.stringify(datas)
+                            },
+                            success: function (data) {
+                                layer.msg("提交成功");
+                                window.parent.location.reload();//刷新父页面
+                                layer.closeAll();
+                            }
+                        })
+
+
+
+
+
+                })
+
+
+            });
+        })
         table.on('tool(complainList)', function(obj) {
             var data = obj.data;
             json = JSON.stringify(data);
@@ -297,7 +420,47 @@
 
                     });
                     break;
+                case 'edit1':
+                    $("#sjdId1").val(data.design_id.id);
+                    $("#shdId1").val(data.design_idA)
+                    table.render({
+                        elem: '#test4',
+                        url:'http://localhost:8003/designprocess/getAllDid?design_id='+data.design_id.design_idB,
+                        height:150
+                        ,cols: [[
+                            {field:'id', width:120, title: '序号', },
+                            {field:'process_name', width:130, title: '工序名称',edit:true, }
+                            ,{field:'process_id', width:150, title: '工序编号',edit:true,}
+                            ,{field:'process_describe', width:130, title: '工序描述', edit:true,}
+                            ,{field:'process_time_gs', width:150, title: '工时数',edit:true, }
+                            ,{field:'process_time_unitdw', title: '工时单位', width: 150, edit:true,}
+                            ,{field:'process_time_cost', width:150, title: '单位工时成本',edit:true,}
 
+                        ]],
+
+
+                    });
+
+                    $("#product_name1").val(data.design_id.product_name);
+                    $("#procedure_id1").val(data.design_id.design_idB);
+                    $("#product_designer1").val(data.design_id.product_registrant);
+                    $("#design_number1").val(data.design_id.design_number);
+                    $("#register1").val(data.design_id.product_registrant);
+                    $("#register_time1").val(data.design_id.design_date);
+                    $(".layui-textarea").val(data.design_id.esign_require)
+                    $("#prdouctId1").val(data.id);
+
+                    layer.open({
+                        maxmin: true,
+                        type: 1,//类型 信息
+                        area: ['1000px', '600px'],//定义宽和高
+                        title: '设计单审核',//题目
+                        shadeClose: false,//点击遮罩层关闭
+                        content: $('#editSupper')//打开的模态框
+
+                    });
+
+                    break;
             }
         });
         //监听提交
@@ -368,7 +531,9 @@
         laydate.render({
             elem: '#audit_date'
         });
-
+        laydate.render({
+            elem: '#audit_date1'
+        });
 
 
 
