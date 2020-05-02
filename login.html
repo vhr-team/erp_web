@@ -239,7 +239,7 @@
 
             // 发送Ajax请求去后台进行  认证
             let btn = $(this);
-            btn.text("登 录 中 ...").attr("disabled", "disabled").addClass("layui-disabled");
+            btn.html(`登 录 中 <i class="layui-icon layui-icon-loading layui-anim layui-anim-rotate layui-anim-loop"></i>`).attr("disabled", "disabled").addClass("layui-disabled");
 
             $.ajax({
                 url: api + "login/doLogin",
@@ -271,7 +271,7 @@
                 },
                 error: function () {
                     vue.$message.error('登录失败');
-                    btn.text("登 录").attr("disabled", "").removeClass("layui-disabled");
+                    btn.html("登 录").attr("disabled", "").removeClass("layui-disabled");
                 }
             });
 
