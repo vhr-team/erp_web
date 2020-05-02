@@ -3,8 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <title>运输任务指派</title>
+    <link rel="stylesheet" href="../../../lib/plugin/iview/dist/styles/iview.css">
 </head>
 <body>
 
+<div class="layuimini-container" id="app">
+    <div class="layuimini-main">
+    </div>
+</div>
+
+<!--jq-->
+<script src="../../../lib/jquery-3.4.1/jquery-3.4.1.min.js"></script>
+<script src="../../../lib/plugin/vue/vue.min.js"></script>
+<script src="../../../lib/plugin/iview/dist/iview.min.js"></script>
+
+<!--axios-->
+<script src="../../../lib/plugin/axios/axios.min.js"></script>
+
+<!--系统文件-->
+<script src="../../../lib/common/jquery.cookie.min.js" charset="utf-8"></script>
+<script src="../../../lib/common/common.js" charset="utf-8"></script>
+<script>
+    let vue;
+
+    // 入口函数
+    $(function(){
+        // http request 拦截器
+        axios.interceptors.request.use(
+            config => {
+                if (token) { //判断token是否存在
+                    config.headers.token = $.cookie("TOKEN");  //将token设置成请求头
+                }
+                return config;
+            },
+            err => {
+                return Promise.reject(err);
+            }
+        );
+
+        // 初始化Vue
+        vue = new Vue({
+            // 控制区域
+            el: '#app',
+            // 数据
+            data: {},
+            // 方法
+            methods: {},
+            // 钩子函数
+            mounted() {}
+        })
+    });
+</script>
 </body>
 </html>
