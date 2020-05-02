@@ -279,14 +279,12 @@
                         });
                         return;
                     }
-                    console.log(this.addconstituteList);
                      $.ajax({
                          url:api1+"material_archives/addarchives",
                          method:"post",
                          contentType: "application/json; charset=utf-8",
                          data:JSON.stringify(this.addconstituteList),
                          success: function(data){
-                             console.log(data);
                              if(data.success){
                                  vm.$message({//添加成功
                                      showClose: true,
@@ -313,7 +311,6 @@
                 /*//获取点击的行数据*/
                 recordmessage(row) {
                     this.recordmessageList = row;//绑定到修改的实体
-                    console.log(this.recordmessageList);
                    axios.get(api1+"material_archives/selectByproId?productId="+row.productId).then(res=>{
                        if(res.data!=null){
                            this.addconstituteList.archives=res.data;
@@ -337,7 +334,6 @@
                 /*设置行数*/
                 handleSizeChange(pageSize) {
                     this.pageSize = pageSize;
-                    // console.log(`每页 ${pageSize} 条`);
                 },
                 /*获取页码*/
                 handleCurrentChange(page) {
@@ -357,11 +353,9 @@
                 /*获取复选框选中的值*/
                 handleSelectionChange(value) {
                     this.deleterecords = value;
-                    console.log(this.deleterecords);
                 },
                 selectAll() {
                     axios.get(api1 + "design_material/selectAll").then(res => {
-                        console.log(res);
                         this.options = res.data;
                     }).catch()
                 }

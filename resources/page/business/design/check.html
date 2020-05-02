@@ -452,7 +452,6 @@
                 /*设置行数*/
                 handleSizeChange(pageSize) {
                     this.pageSize = pageSize;
-                    // console.log(`每页 ${pageSize} 条`);
                 },
                 /*获取页码*/
                 handleCurrentChange(page) {
@@ -472,14 +471,12 @@
                 /*获取复选框选中的值*/
                 handleSelectionChange(value) {
                     this.deleterecords=value;
-                    console.log(this.deleterecords);
                 },
                 /*查看点击选中行*/
                 show(value){
                     this.checkers.id=value.id;
                     this.proID=value.productId
                     this.proName=value.productName;
-                    console.log(value);
                     var checker = $.parseJSON(window.localStorage.getItem("user"));
                     this.checkers.checker = checker.name;
                     axios.get(api1+"design_record/selectBymaterielArchivesId?materielArchivesId="+value.materielArchivesId).then(res=>{
@@ -494,7 +491,6 @@
                 },
                 checkrecord(value){//
                     this.checkers.checkTag=value;
-                    console.log(this.checkers);
                     if(this.checkers!=null){
                         axios.post(api1+"design_record/updatecheck",this.checkers).then(res=>{
                             if(res.data.success){

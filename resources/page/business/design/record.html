@@ -405,10 +405,8 @@
                 show(value){
                     this.proID=value.productId
                     this.proName=value.productName;
-                    console.log(value);
                     axios.get(api1+"design_record/selectBymaterielArchivesId?materielArchivesId="+value.materielArchivesId).then(res=>{
                         this.matarual_constitute=res.data;
-                        console.log(this.matarual_constitute);
                     }).catch(err=>{
 
                     })
@@ -440,7 +438,6 @@
                 /*设置行数*/
                 handleSizeChange(pageSize) {
                     this.pageSize = pageSize;
-                    // console.log(`每页 ${pageSize} 条`);
                 },
                 /*获取页码*/
                 handleCurrentChange(page) {
@@ -468,7 +465,6 @@
                 /*获取复选框选中的值*/
                 handleSelectionChange(value) {
                     this.deleterecords = value;
-                    console.log(this.deleterecords);
                 },
                 /*关闭添加的模态框*/
                 recordAddClose(done) {
@@ -514,7 +510,6 @@
                         vm.$message({showClose: true, message: "请输入产品经理", type: 'error'});
                         return;
                     }
-                    console.log(data);
                     layer.confirm('请确认数据无误！', {icon: 3, title: '提示'}, function (index) {
                         axios.post(api1 + "design_record/updaterecord", data).then(res => {
                             if (res.data.success) {

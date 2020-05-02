@@ -279,7 +279,6 @@
                 /*设置行数*/
                 handleSizeChange(pageSize) {
                     this.pageSize = pageSize;
-                    // console.log(`每页 ${pageSize} 条`);
                 },
                 /*获取页码*/
                 handleCurrentChange(page) {
@@ -299,7 +298,6 @@
                 /*获取复选框选中的值*/
                 handleSelectionChange(value) {
                     this.deleterecords = value;
-                    console.log(this.deleterecords);
                 },
                 /*关闭添加的模态框*/
                 materialAddClose(done) {
@@ -366,7 +364,6 @@
                 /*修改物料*/
                 updatematerial(){
                     var data = this.materialUpdates;
-                    console.log(data);
                     if (data.productName == null || data.productName === "") {
                         vm.$message({showClose: true, message: "请输入物料名称", type: 'error'});
                         return;
