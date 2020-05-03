@@ -17,27 +17,31 @@
     <div class="layuimini-main">
 
         <!--条件查询-->
-        <i-form :label-width="100">
+        <i-form ref="orderModelObj" :model="orderModelObj" :label-width="100">
             <Row :gutter="16">
                 <i-col span="6">
-                    <Form-Item label="下单开始时间">
-                        <date-picker type="datetime" v-model="orderModelObj.startTime" placeholder="请选择开始时间" :options="startTimeOption" @on-change="onStartTimeChange"></date-picker>
+                    <Form-Item label="下单开始时间" prop="startTime">
+                        <date-picker format="yyyy-MM-dd" type="datetime" v-model="orderModelObj.startTime"
+                                     placeholder="请选择开始时间" :options="startTimeOption"
+                                     @on-change="onStartTimeChange"></date-picker>
                     </Form-Item>
                 </i-col>
                 <i-col span="6">
-                    <Form-Item label="结束时间">
-                        <date-picker type="datetime" v-model="orderModelObj.endTime" placeholder="请选择结束时间" :options="endTimeOption" @on-change="onEndTimeChange"></date-picker>
+                    <Form-Item label="结束时间" prop="endTime">
+                        <date-picker format="yyyy-MM-dd" type="datetime" v-model="orderModelObj.endTime"
+                                     placeholder="请选择结束时间" :options="endTimeOption"
+                                     @on-change="onEndTimeChange"></date-picker>
                     </Form-Item>
                 </i-col>
                 <i-col span="6">
-                    <Form-Item label="供应商">
+                    <Form-Item label="供应商" prop="supplierId">
                         <i-select v-model="orderModelObj.supplierId" style="width:200px">
                             <i-option v-for="item in items" :value="item.id">{{ item.name }}</i-option>
                         </i-select>
                     </Form-Item>
                 </i-col>
                 <i-col span="6">
-                    <Form-Item label="下单人">
+                    <Form-Item label="下单人" prop="createrName">
                         <i-input v-model="orderModelObj.createrName" style="width:200px" placeholder="请输入下单人"></i-input>
                     </Form-Item>
                 </i-col>
@@ -45,17 +49,19 @@
 
             <Row :gutter="16">
                 <i-col span="6">
-                    <Form-Item label="审核开始时间">
-                        <date-picker type="datetime" v-model="orderModelObj.auditStartTime" placeholder="请选择开始时间" :options="startTimeOption" @on-change="onStartTimeChange"></date-picker>
+                    <Form-Item label="审核开始时间" prop="auditStartTime">
+                        <date-picker type="datetime" v-model="orderModelObj.auditStartTime" placeholder="请选择开始时间"
+                                     :options="startTimeOption" @on-change="onStartTimeChange"></date-picker>
                     </Form-Item>
                 </i-col>
                 <i-col span="6">
-                    <Form-Item label="结束时间">
-                        <date-picker type="datetime" v-model="orderModelObj.auditEndTime" placeholder="请选择结束时间" :options="endTimeOption" @on-change="onEndTimeChange"></date-picker>
+                    <Form-Item label="结束时间" prop="auditEndTime">
+                        <date-picker type="datetime" v-model="orderModelObj.auditEndTime" placeholder="请选择结束时间"
+                                     :options="endTimeOption" @on-change="onEndTimeChange"></date-picker>
                     </Form-Item>
                 </i-col>
                 <i-col span="6">
-                    <Form-Item label="发货方式">
+                    <Form-Item label="发货方式" prop="ndeeds">
                         <i-select v-model="orderModelObj.ndeeds" style="width:200px">
                             <i-option value="1">送货</i-option>
                             <i-option value="2">自提</i-option>
@@ -63,7 +69,7 @@
                     </Form-Item>
                 </i-col>
                 <i-col span="6">
-                    <Form-Item label="审核人">
+                    <Form-Item label="审核人" prop="checkerName">
                         <i-input v-model="orderModelObj.checkerName" style="width:200px" placeholder="请输入审核人"></i-input>
                     </Form-Item>
                 </i-col>
@@ -71,8 +77,9 @@
 
             <Row :gutter="16">
                 <i-col span="6">
-                    <Form-Item label="跟单人">
-                        <i-input v-model="orderModelObj.completerName" style="width:210px" placeholder="请输入跟单人"></i-input>
+                    <Form-Item label="跟单人" prop="completerName">
+                        <i-input v-model="orderModelObj.completerName" style="width:210px"
+                                 placeholder="请输入跟单人"></i-input>
                     </Form-Item>
                 </i-col>
                 <i-col span="6">
@@ -96,8 +103,8 @@
                 <i-col span="6">
                 </i-col>
                 <i-col span="6">
-                    <i-button type="info" icon="ios-search" @click="queryOrderModel"> 查 询 </i-button>
-                    <i-button type="success" icon="md-refresh"> 重 置 </i-button>
+                    <i-button type="info" icon="ios-search" @click="queryOrderModel"> 查 询</i-button>
+                    <i-button type="success" icon="md-refresh" @click="handleReset('orderModelObj')"> 重 置</i-button>
                 </i-col>
             </Row>
 
@@ -221,7 +228,6 @@
                     auditStartTime: '',
                     auditEndTime: '',
                     ndeeds: '',
-
                     supplierId: '',
                     createrName: '',
                     checkerName: '',
@@ -231,9 +237,6 @@
 
                 startTimeOption: {},
                 endTimeOption: {},
-
-
-
                 items: [],
             },
             // 方法
@@ -242,6 +245,9 @@
                     axios.get(productApi + "supper/getAllSupper").then(res => {
                         this.items = res.data;
                     });
+                },
+                p(s) {
+                    return s < 10 ? '0' + s : s
                 },
                 // 当前页发生改变
                 currentPageChange(val) {
@@ -261,8 +267,15 @@
                     // 开启表格加载
                     this.loading = true;
 
+                    if (this.orderModelObj.ndeeds == undefined) {
+                        this.orderModelObj.ndeeds = '';
+                    }
+                    if (this.orderModelObj.supplierId == undefined) {
+                        this.orderModelObj.supplierId = '';
+                    }
+
                     // 查询条件
-                    let params = `page=${this.page}&pageSize=${this.pageSize}&orderType=1&orderState=2`;
+                    let params = `page=${this.page}&pageSize=${this.pageSize}&orderType=1&orderState=2&startTime=${this.orderModelObj.startTime}&endTime=${this.orderModelObj.endTime}&auditStartTime=${this.orderModelObj.auditStartTime}&auditEndTime=${this.orderModelObj.auditEndTime}&ndeeds=${this.orderModelObj.ndeeds}&supplierId=${this.orderModelObj.supplierId}&createrName=${this.orderModelObj.createrName}&checkerName=${this.orderModelObj.checkerName}&completerName=${this.orderModelObj.completerName}`
                     axios.get(orderApi + "ordermodel/queryAllTaskList?" + params).then(res => {
                         this.data1 = res.data.data;
                         this.total = res.data.count;
@@ -299,8 +312,32 @@
                         }
                     }
                 },
-                queryOrderModel(){
-                    console.log(this.orderModelObj);
+                queryOrderModel() {
+
+                    if (this.orderModelObj.startTime) {
+                        let d = new Date(this.orderModelObj.startTime);
+                        this.orderModelObj.startTime = d.getFullYear() + '-' + this.p((d.getMonth() + 1)) + '-' + this.p(d.getDate())
+                    }
+
+                    if (this.orderModelObj.endTime) {
+                        let e = new Date(this.orderModelObj.endTime);
+                        this.orderModelObj.endTime = e.getFullYear() + '-' + this.p((e.getMonth() + 1)) + '-' + this.p(e.getDate())
+                    }
+
+                    if (this.orderModelObj.auditStartTime) {
+                        let f = new Date(this.orderModelObj.auditStartTime);
+                        this.orderModelObj.auditStartTime = f.getFullYear() + '-' + this.p((f.getMonth() + 1)) + '-' + this.p(f.getDate())
+                    }
+
+                    if (this.orderModelObj.auditEndTime) {
+                        let g = new Date(this.orderModelObj.auditEndTime);
+                        this.orderModelObj.auditEndTime = g.getFullYear() + '-' + this.p((g.getMonth() + 1)) + '-' + this.p(g.getDate())
+                    }
+
+                    this.initTable1();
+                },
+                handleReset(name) {
+                    this.$refs[name].resetFields();
                 }
             },
             // 钩子函数
@@ -324,6 +361,7 @@
             }
         })
     });
+
 </script>
 </body>
 </html>
