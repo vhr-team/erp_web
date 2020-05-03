@@ -37,15 +37,19 @@
 
         <!--表格开始-->
         <table class="layui-hide" id="roleTable" lay-filter="roleTable"></table>
-        <script type="text/html" id="roleToolBar">
-            <a class="layui-btn layui-btn-sm layui-btn-danger data-count-delete" lay-event="storage">申请入库</a>
-        </script>
-        <script type="text/html" id="availableTpl">
-            <!-- 这里的 checked 的状态只是演示 -->
-            <input type="checkbox" name="available" value="{{d.id}}" lay-skin="switch" lay-text="可用|不可用"
-                   lay-filter="availableSwitch" {{ d.available== 1 ? 'checked' : '' }}>
-        </script>
-        <!--表格结束-->
+        <div style="display: none" id="roleToolBar">
+            <button lay-event="add" class="layui-btn layui-btn-sm layui-btn-normal data-delete-btn roleBtn_add"
+                    id="addMenuBtn">
+                <i class="layui-icon layui-icon-addition"></i>
+                添加入库单
+            </button>
+            <a class="layui-btn layui-btn-sm layui-btn-danger data-count-delete roleBtn_batchdelete" lay-event="batchdelete"><i class="layui-icon layui-icon-delete"></i> 批 量 删 除 </a>
+        </div>
+        <div style="display: none" id="roleTableBar">
+            <a class="layui-btn layui-btn-xs layui-btn-warm data-count-delete roleBtn_update" lay-event="update"><i class="layui-icon layui-icon-edit"></i> 修 改 </a>
+            <a class="layui-btn layui-btn-xs layui-btn-danger data-count-delete roleBtn_delete" lay-event="delete"><i class="layui-icon layui-icon-delete"></i> 删 除 </a>
+            <a class="layui-btn layui-btn-xs layui-btn-normal data-count-delete roleBtn_empowerment" lay-event="selectMenu"><i class="layui-icon layui-icon-auz"></i> 分 配 权 限 </a>
+        </div>
 
         <!--添加和修改的弹出层开始-->
         <div id="addOrUpdateDiv" style="display: none;padding: 0.3125rem">
@@ -62,14 +66,6 @@
                     <label class="layui-form-label">角色备注</label>
                     <div class="layui-input-block">
                         <textarea placeholder="请输入角色备注" name="remark" class="layui-textarea"></textarea>
-                    </div>
-                </div>
-                <div class="layui-form-item">
-                    <div class="layui-input-block" style="text-align: center;">
-                        <a class="layui-btn " lay-submit="" lay-filter="doSubmit"><label
-                                class="layui-icon layui-icon-release"></label>提交</a>
-                        <a class="layui-btn layui-btn-warm" onclick="javascript:$('#dataFrm')[0].reset()"
-                           lay-filter="data-search-btn"><label class="layui-icon layui-icon-refresh"></label>重置</a>
                     </div>
                 </div>
             </form>
@@ -132,12 +128,29 @@
             return false;
         });
 
+        //打开添加用户的弹层
+        var mainIndex;
+        var url;  //动态的url
+        function openAddUser() {
+            mainIndex = layer.open({
+                type: 1,
+                title: '添加入库单',
+                content: $("#addOrUpdateDiv"),
+                area: ['800px', '500px'],
+                success: function (index) {
+                    url = api3 + "warehouseStock/insertSecuritySheet";
+                    $("#dataFrm")[0].reset();
+
+                }
+            });
+        }
+
         //监听表头的事件
         table.on('toolbar(roleTable)', function (obj) {
             var checkStatus = table.checkStatus(obj.config.id);
             switch (obj.event) {
-                case 'storage':
-                    storage();
+                case 'batchdelete':
+                    batchdelete();
                     break;
                 case 'add':
                     openAddRole();
@@ -145,6 +158,7 @@
             }
             ;
         });
+
 
         //监听行数据的事件
         table.on('tool(roleTable)', function (obj) {
