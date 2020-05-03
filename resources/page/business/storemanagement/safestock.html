@@ -47,29 +47,28 @@
             </ul>
             <div class="layui-tab-content">
                 <div class="layui-tab-item layui-show">
-                    <table class="layui-hide" id="toAudit"></table>
+                    <table class="layui-hide" id="toAudit" lay-filter="toAudit"></table>
+                    <script type="text/html" id="audit">
+                        <a class="layui-btn layui-btn-xs layui-btn-normal data-count-delete" lay-event="delete">审核</a>
+                    </script>
                 </div>
                 <div class="layui-tab-item">
-                    <table class="layui-hide" id="approved"></table>
+                    <table class="layui-hide" id="approved" lay-filter="userTable"></table>
+                    <script type="text/html" id="userToolBar">
+                        <a class="layui-btn layui-btn-sm layui-btn-normal userBtn_add" lay-event="add"><i
+                                class="layui-icon layui-icon-addition"></i> 添加安全库存 </a>
+                    </script>
+                    <script type="text/html" id="userTableBar">
+                        <a class="layui-btn layui-btn-xs layui-btn-normal data-count-delete" lay-event="delete">删除</a>
+                        <a class="layui-btn layui-btn-xs layui-btn-normal data-count-delete" lay-event="update">修改</a>
+                    </script>
                 </div>
                 <div class="layui-tab-item">
-                    <table class="layui-hide" id="notThrough"></table>
+                    <table class="layui-hide" id="notThrough" lay-filter="notThrough"></table>
                 </div>
             </div>
         </div>
 
-        <!--表格开始-->
-        <table class="layui-hide" id="userTable" lay-filter="userTable"></table>
-        <script type="text/html" id="userToolBar">
-            <a class="layui-btn layui-btn-sm layui-btn-normal userBtn_add" lay-event="add"><i
-                    class="layui-icon layui-icon-addition"></i> 添加安全库存 </a>
-            <a class="layui-btn layui-btn-sm layui-btn-normal " lay-event="audit"><i
-                    class="layui-icon"></i> 审核 </a>
-        </script>
-        <script type="text/html" id="userTableBar">
-            <a class="layui-btn layui-btn-xs layui-btn-normal data-count-delete" lay-event="delete">删除</a>
-            <a class="layui-btn layui-btn-xs layui-btn-normal data-count-delete" lay-event="update">修改</a>
-        </script>
         <!--表格结束-->
         <!--添加和修改的弹出层开始-->
         <div id="addOrUpdateDiv" style="display: none;padding: 0.3125rem">
@@ -78,7 +77,6 @@
                     <div class="layui-inline">
                         <label class="layui-form-label">产品名称</label>
                         <div class="layui-input-inline">
-                            <input type="hidden" name="id"/>
                             <input type="text" name="productName"  lay-verify="required" autocomplete="off"
                                    placeholder="请输入产品名称" class="layui-input">
                         </div>
@@ -95,7 +93,6 @@
                     <div class="layui-inline">
                         <label class="layui-form-label">库存报警下限数</label>
                         <div class="layui-input-inline">
-                            <input type="hidden" name="id"/>
                             <input type="text" name="minAmount"  lay-verify="required" autocomplete="off"
                                    placeholder="请输入库存报警下限数" class="layui-input">
                         </div>
@@ -112,7 +109,6 @@
                     <div class="layui-inline">
                         <label class="layui-form-label">登记人</label>
                         <div class="layui-input-inline">
-                            <input type="hidden" name="id"/>
                             <input type="text" name="register"  lay-verify="required" autocomplete="off"
                                    placeholder="请输入登记人" class="layui-input">
                         </div>
@@ -122,7 +118,6 @@
                     <div class="layui-inline">
                         <label class="layui-form-label">配置要求</label>
                         <div class="layui-input-inline">
-                            <input type="hidden" name="id"/>
                             <input type="text" name="config"  lay-verify="required" autocomplete="off"
                                    placeholder="请输入配置要求" class="layui-input">
                         </div>
@@ -172,7 +167,7 @@
         var laydate = layui.laydate;
         var layer = layui.layer;
 
-        getList('#toAudit', '#approved', '#notThrough')
+        getList('#toAudit', '0')
 
         element.on('tab(tab-all)', function (data) {
         // console.log(this); // 当前Tab标题所在的原始DOM元素
@@ -193,8 +188,6 @@
         });
 
         function getList(position, status) {
-            console.log(position);
-            console.log(status);
             var tableIns = table.render({
                 elem: position,
                 url: api3 + 'warehouseStock/querySecuritySheet',
@@ -225,6 +218,31 @@
             });
         }
 
+        //监听表头的事件
+        table.on('tab(tab-all)', function (data) {
+            console.log("0")
+            var status = $(this).attr('data-status');
+            switch (status) {
+                case '0':
+                    console.log("0")
+                    break;
+                case '1':
+                    openAddUser();
+                    break;
+                case '2':
+                    openauditUser();
+                    break;
+            };
+        });
+
+        form.on('#audit(toAudit)',function (data) {
+            switch (obj.event) {
+                case 'audit':
+                    openauditUser();
+                    break;
+            }
+        })
+
         // 监听搜索操作
         form.on('submit(data-search-btn)', function (data) {
             var params = $("#searchFrm").serialize();
@@ -249,11 +267,7 @@
                 case 'add':
                     openAddUser();
                     break;
-                case 'audit':
-                    openauditUser();
-                    break;
-            }
-            ;
+            };
         });
 
         //监听行数据的事件
