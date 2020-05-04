@@ -17,54 +17,70 @@
     <div class="layuimini-main">
 
         <!--条件查询-->
-        <i-form ref="orderModelObj" :model="orderModelObj" :label-width="100">
-            <Row :gutter="16">
-                <i-col span="6">
-                    <Form-Item label="供应商" prop="supplierId">
-                        <i-select v-model="orderModelObj.supplierId" style="width:200px">
-                            <i-option v-for="item in items" :value="item.id">{{ item.name }}</i-option>
-                        </i-select>
-                    </Form-Item>
-                </i-col>
-                <i-col span="6">
-                    <Form-Item label="发货方式" prop="ndeeds">
-                        <i-select v-model="orderModelObj.ndeeds" style="width:200px">
-                            <i-option value="1">送货</i-option>
-                            <i-option value="2">自提</i-option>
-                        </i-select>
-                    </Form-Item>
-                </i-col>
-                <i-col span="6">
+        <fieldset class="table-search-fieldset">
+            <legend>搜索信息</legend>
+            <i-form ref="orderModelObj" :model="orderModelObj" :label-width="100">
+                <Row :gutter="16">
+                    <i-col span="6">
+                        <Form-Item label="供应商" prop="supplierId">
+                            <i-select v-model="orderModelObj.supplierId" style="width:200px">
+                                <i-option v-for="item in items" :value="item.id">{{ item.name }}</i-option>
+                            </i-select>
+                        </Form-Item>
+                    </i-col>
+                    <i-col span="6">
+                        <Form-Item label="发货方式" prop="ndeeds">
+                            <i-select v-model="orderModelObj.ndeeds" style="width:200px">
+                                <i-option value="1">送货</i-option>
+                                <i-option value="2">自提</i-option>
+                            </i-select>
+                        </Form-Item>
+                    </i-col>
+                    <i-col span="6">
 
-                </i-col>
-                <i-col span="6">
+                    </i-col>
+                    <i-col span="6">
 
-                </i-col>
-            </Row>
+                    </i-col>
+                </Row>
 
-            <Row
-                    style="margin-bottom: 10px;"
-                    :gutter="16">
-                <i-col span="6">
-                </i-col>
-                <i-col span="6">
-                </i-col>
-                <i-col span="6">
-                </i-col>
-                <i-col span="6">
-                    <i-button type="info" icon="ios-search" @click="queryOrderModel"> 查 询</i-button>
-                    <i-button type="success" icon="md-refresh" @click="handleReset('orderModelObj')"> 重 置</i-button>
-                </i-col>
-            </Row>
+                <Row
+                        style="margin-bottom: 10px;"
+                        :gutter="16">
+                    <i-col span="6">
+                    </i-col>
+                    <i-col span="6">
+                    </i-col>
+                    <i-col span="6">
+                    </i-col>
+                    <i-col span="6">
+                        <i-button type="info" icon="ios-search" @click="queryOrderModel"> 查 询</i-button>
+                        <i-button type="success" icon="md-refresh" @click="handleReset('orderModelObj')"> 重 置</i-button>
+                    </i-col>
+                </Row>
 
-        </i-form>
-
+            </i-form>
+        </fieldset>
         <!--条件查询-->
+
+        <Tabs active-key="one">
+            <Tab-pane label=" 待 采 购 " key="one"></Tab-pane>
+            <Tab-pane label=" 采 购 中 " key="two"></Tab-pane>
+        </Tabs>
 
         <!--数据表格-->
         <i-table :loading="loading" border :columns="columns1" :data="data1">
             <template slot-scope="{ row }" slot="basicsSupper">
                 {{row.basicsSupper.name}}
+            </template>
+            <template slot-scope="{ row }" slot="contact">
+                {{row.basicsSupper.contact}}
+            </template>
+            <template slot-scope="{ row }" slot="contactWay">
+                {{row.basicsSupper.number}}
+            </template>
+            <template slot-scope="{ row }" slot="address">
+                {{row.basicsSupper.address}}
             </template>
             <template slot-scope="{ row }" slot="orderType">
                 <Tag checkable color="blue" v-if="row.orderType == 1">
@@ -80,9 +96,6 @@
                     销售单
                 </Tag>
             </template>
-            <template slot-scope="{ row }" slot="user">
-                {{row.user.name}}
-            </template>
             <template slot-scope="{ row }" slot="delivery">
                 <Tag checkable color="green" v-if="row.basicsSupper.ndeeds == 1">
                     送货
@@ -92,8 +105,8 @@
                 </Tag>
             </template>
             <template slot-scope="{ row, index }" slot="action">
-                <i-button type="success" @click="taskAssigned(row)" icon="md-create" size="small"
-                          style="margin-right: 5px"> 任 务 指 派
+                <i-button type="info" ghost @click="taskAssigned(row)" icon="md-arrow-forward" size="small"
+                          style="margin-right: 5px"> 详 情
                 </i-button>
             </template>
         </i-table>
@@ -249,13 +262,12 @@
                 loading: true,
                 columns1: [
                     {title: '订单类别', slot: 'orderType', align: 'center', fixed: 'left'},
-                    {title: '下单时间', key: 'createrTime', align: 'center'},
-                    {title: '制单人', slot: 'user', align: 'center'},
-                    {title: '审核时间', key: 'checkTime', align: 'center'},
-                    {title: '审核人', key: 'checkerName', align: 'center'},
                     {title: '供应商', slot: 'basicsSupper', align: 'center'},
                     {title: '发货方式', slot: 'delivery', align: 'center'},
-                    {title: '跟单人', slot: 'action', width: 150, align: 'center', fixed: 'right',}
+                    {title: '联系人', slot: 'contact', align: 'center'},
+                    {title: '联系方式', slot: 'contactWay', align: 'center'},
+                    {title: '地址', slot: 'address', align: 'center'},
+                    {title: '操作', slot: 'action', width: 150, align: 'center', fixed: 'right',}
                 ],
                 data1: [],
                 columns2: [
