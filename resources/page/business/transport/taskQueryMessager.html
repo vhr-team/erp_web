@@ -63,7 +63,8 @@
         </fieldset>
         <!--条件查询-->
 
-        <Tabs active-key="one">
+        <Tabs active-key="one"
+            @on-click="tabFn">
             <Tab-pane label=" 待 采 购 " key="one"></Tab-pane>
             <Tab-pane label=" 采 购 中 " key="two"></Tab-pane>
         </Tabs>
@@ -205,14 +206,12 @@
                         <strong>{{ row.goods.goodsname }}</strong>
                     </template>
                 </i-table>
-
-                <!--派单人-->
-                <Form-item style="margin-top: 10px;" label="指派人">
-                    <i-select v-model="model15" style="width:260px">
-                        <i-option v-for="item in cityList" :value="item.id">{{ item.name }}</i-option>
-                    </i-select>
-                </Form-item>
             </i-form>
+
+            <div slot="footer">
+                <i-button  type="primary" @click="okFn" icon="md-checkbox-outline"> 确 认 去 取 货 </i-button>
+                <i-button type="success" ghost icon="md-close" @click="modal8 = false">取消</i-button>
+            </div>
         </Modal>
         <!--Modal-->
     </div>
@@ -319,22 +318,33 @@
                 cityList: [],
                 model15: '',
 
-                orderId: null
+                orderId: null,
+
+                orderState: 1
             },
             // 方法
             methods: {
+                tabFn(val){
+                    if(val == 0){
+                        this.orderState = 1;
+                    }
+                    if(val == 1){
+                        this.orderState = 3;
+                    }
+
+                    this.initTable1();
+                },
                 okFn(){
-                    axios.post(orderApi + "ordermodel/tranOrderAssginOrder",
+                    axios.post(orderApi + "ordermodel/taskOrderPickGoods",
                         {
-                            orderId: this.orderId,
-                            completer: this.model15
+                            orderId: this.orderId
                         }
                     ).then(res=>{
                         if(res.data.code==200){
                             this.$Message.success(res.data.msg);
 
                             this.orderId = null;
-                            this.model15 = '';
+                            this.model15 = false;
 
                             // 重新渲染表格数据
                             this.initTable1();
@@ -399,7 +409,7 @@
                     }
 
                     // 查询条件
-                    let params = `page=${this.page}&pageSize=${this.pageSize}&orderType=2&orderState=1&startTime=${this.orderModelObj.startTime}&endTime=${this.orderModelObj.endTime}&auditStartTime=${this.orderModelObj.auditStartTime}&auditEndTime=${this.orderModelObj.auditEndTime}&ndeeds=${this.orderModelObj.ndeeds}&supplierId=${this.orderModelObj.supplierId}&createrName=${this.orderModelObj.createrName}&checkerName=${this.orderModelObj.checkerName}&completerName=${this.orderModelObj.completerName}`
+                    let params = `page=${this.page}&pageSize=${this.pageSize}&orderType=2&orderState=${this.orderState}&startTime=${this.orderModelObj.startTime}&endTime=${this.orderModelObj.endTime}&auditStartTime=${this.orderModelObj.auditStartTime}&auditEndTime=${this.orderModelObj.auditEndTime}&ndeeds=${this.orderModelObj.ndeeds}&supplierId=${this.orderModelObj.supplierId}&createrName=${this.orderModelObj.createrName}&checkerName=${this.orderModelObj.checkerName}&completerName=${this.orderModelObj.completerName}`
                     axios.get(orderApi + "ordermodel/queryAllTaskList?" + params).then(res => {
                         this.data1 = res.data.data;
                         this.total = res.data.count;
