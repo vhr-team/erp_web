@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>运输任务查询</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="../../../lib/plugin/iview/dist/styles/iview.css">
+
+    <link rel="stylesheet" href="../../../lib/layui-v2.5.5/css/layui.css" media="all">
+    <link rel="stylesheet" href="../../../css/public.css" media="all">
+</head>
+<body>
+
+<div class="layuimini-container" id="app">
+    <div class="layuimini-main">
+
+        <!--条件查询-->
+        <i-form ref="orderModelObj" :model="orderModelObj" :label-width="100">
+            <Row :gutter="16">
+                <i-col span="6">
+                    <Form-Item label="供应商" prop="supplierId">
+                        <i-select v-model="orderModelObj.supplierId" style="width:200px">
+                            <i-option v-for="item in items" :value="item.id">{{ item.name }}</i-option>
+                        </i-select>
+                    </Form-Item>
+                </i-col>
+                <i-col span="6">
+                    <Form-Item label="发货方式" prop="ndeeds">
+                        <i-select v-model="orderModelObj.ndeeds" style="width:200px">
+                            <i-option value="1">送货</i-option>
+                            <i-option value="2">自提</i-option>
+                        </i-select>
+                    </Form-Item>
+                </i-col>
+                <i-col span="6">
+
+                </i-col>
+                <i-col span="6">
+
+                </i-col>
+            </Row>
+
+            <Row
+                    style="margin-bottom: 10px;"
+                    :gutter="16">
+                <i-col span="6">
+                </i-col>
+                <i-col span="6">
+                </i-col>
+                <i-col span="6">
+                </i-col>
+                <i-col span="6">
+                    <i-button type="info" icon="ios-search" @click="queryOrderModel"> 查 询</i-button>
+                    <i-button type="success" icon="md-refresh" @click="handleReset('orderModelObj')"> 重 置</i-button>
+                </i-col>
+            </Row>
+
+        </i-form>
+
+        <!--条件查询-->
+
+        <!--数据表格-->
+        <i-table :loading="loading" border :columns="columns1" :data="data1">
+            <template slot-scope="{ row }" slot="basicsSupper">
+                {{row.basicsSupper.name}}
+            </template>
+            <template slot-scope="{ row }" slot="orderType">
+                <Tag checkable color="blue" v-if="row.orderType == 1">
+                    采购单
+                </Tag>
+                <Tag checkable color="yellow" v-if="row.orderType == 2">
+                    运输单
+                </Tag>
+                <Tag checkable color="green" v-if="row.orderType == 3">
+                    入库单
+                </Tag>
+                <Tag checkable color="purple" v-if="row.orderType == 4">
+                    销售单
+                </Tag>
+            </template>
+            <template slot-scope="{ row }" slot="user">
+                {{row.user.name}}
+            </template>
+            <template slot-scope="{ row }" slot="delivery">
+                <Tag checkable color="green" v-if="row.basicsSupper.ndeeds == 1">
+                    送货
+                </Tag>
+                <Tag checkable color="purple" v-if="row.basicsSupper.ndeeds == 2">
+                    自提
+                </Tag>
+            </template>
+            <template slot-scope="{ row, index }" slot="action">
+                <i-button type="success" @click="taskAssigned(row)" icon="md-create" size="small"
+                          style="margin-right: 5px"> 任 务 指 派
+                </i-button>
+            </template>
+        </i-table>
+        <!--数据表格-->
+
+        <!--分页-->
+        <Page
+                :page-size-opts=[5,10,15,20]
+                :current="page"
+                :page-size="pageSize"
+                style="margin-top: 20px"
+                :total="total"
+                @on-change="currentPageChange"
+                @on-page-size-change="currentPageSizeChange"
+                show-total
+                show-sizer
+                show-elevator/>
+        <!--分页-->
+
+        <!--Modal-->
+        <Modal
+                @on-ok="okFn"
+                width="1100"
+                title="任务指派"
+                v-model="modal8"
+                :mask-closable="false">
+            <i-form :label-width="100" inline>
+                <Row :gutter="16">
+                    <i-col span="6">
+                        <Form-item label="企业名称">
+                            <i-input v-model="basicsSupperObj.name" :disabled="true"></i-input>
+                        </Form-item>
+                    </i-col>
+                    <i-col span="6">
+                        <Form-item label="订单类型">
+                            <Tag checkable color="blue" v-if="detailObj.orderType == 1">
+                                采购单
+                            </Tag>
+                            <Tag checkable color="yellow" v-if="detailObj.orderType == 2">
+                                运输单
+                            </Tag>
+                            <Tag checkable color="green" v-if="detailObj.orderType == 3">
+                                入库单
+                            </Tag>
+                            <Tag checkable color="purple" v-if="detailObj.orderType == 4">
+                                销售单
+                            </Tag>
+                        </Form-item>
+                    </i-col>
+                    <i-col span="6">
+                        <Form-item label="提货方式">
+                            <Tag checkable color="green" v-if="basicsSupperObj.ndeeds == 1">
+                                送货
+                            </Tag>
+                            <Tag checkable color="purple" v-if="basicsSupperObj.ndeeds == 2">
+                                自提
+                            </Tag>
+                        </Form-item>
+                    </i-col>
+                    <i-col span="6">
+                        <Form-item label="订单号">
+                            <i-input v-model="detailObj.orderNum" :disabled="true"></i-input>
+                        </Form-item>
+                    </i-col>
+                </Row>
+
+                <Row :gutter="16">
+                    <i-col span="6">
+                        <Form-item label="联系人">
+                            <i-input v-model="basicsSupperObj.contact" :disabled="true"></i-input>
+                        </Form-item>
+                    </i-col>
+                    <i-col span="6">
+                        <Form-item label="联系方式">
+                            <i-input v-model="basicsSupperObj.number" :disabled="true"></i-input>
+                        </Form-item>
+                    </i-col>
+                    <i-col span="6">
+                        <Form-item label="商品总量">
+                            <i-input v-model="detailObj.totalNum" :disabled="true"></i-input>
+                        </Form-item>
+                    </i-col>
+                    <i-col span="6">
+                        <Form-item label="地址">
+                            <i-input v-model="basicsSupperObj.address" :disabled="true"></i-input>
+                        </Form-item>
+                    </i-col>
+                </Row>
+
+
+                <i-table border :columns="columns2" :data="data2">
+                    <template slot-scope="{ row, index }" slot="productType">
+                        <strong>{{ row.goods.productname }}</strong>
+                    </template>
+                    <template slot-scope="{ row, index }" slot="goodsName">
+                        <strong>{{ row.goods.goodsname }}</strong>
+                    </template>
+                </i-table>
+
+                <!--派单人-->
+                <Form-item style="margin-top: 10px;" label="指派人">
+                    <i-select v-model="model15" style="width:260px">
+                        <i-option v-for="item in cityList" :value="item.id">{{ item.name }}</i-option>
+                    </i-select>
+                </Form-item>
+            </i-form>
+        </Modal>
+        <!--Modal-->
+    </div>
+</div>
+
+<!--jq-->
+<script src="../../../lib/jquery-3.4.1/jquery-3.4.1.min.js"></script>
+<script src="../../../lib/plugin/vue/vue.min.js"></script>
+<script src="../../../lib/plugin/iview/dist/iview.min.js"></script>
+
+<!--layui-->
+<script src="../../../lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
+
+<!--axios-->
+<script src="../../../lib/plugin/axios/axios.min.js"></script>
+
+<!--系统文件-->
+<script src="../../../lib/common/jquery.cookie.min.js" charset="utf-8"></script>
+<script src="../../../lib/common/common.js" charset="utf-8"></script>
+<script>
+    let orderApi = 'http://127.0.0.1:8006/';
+    let productApi = 'http://127.0.0.1:8005/';
+    let vue;
+
+    // 入口函数
+    $(function () {
+        // http request 拦截器
+        axios.interceptors.request.use(
+            config => {
+                if (token) { //判断token是否存在
+                    config.headers.token = $.cookie("TOKEN");  //将token设置成请求头
+                }
+                return config;
+            },
+            err => {
+                return Promise.reject(err);
+            }
+        );
+
+        // 初始化Vue
+        vue = new Vue({
+            // 控制区域
+            el: '#app',
+            // 数据
+            data: {
+                // 表格加载动画
+                loading: true,
+                columns1: [
+                    {title: '订单类别', slot: 'orderType', align: 'center', fixed: 'left'},
+                    {title: '下单时间', key: 'createrTime', align: 'center'},
+                    {title: '制单人', slot: 'user', align: 'center'},
+                    {title: '审核时间', key: 'checkTime', align: 'center'},
+                    {title: '审核人', key: 'checkerName', align: 'center'},
+                    {title: '供应商', slot: 'basicsSupper', align: 'center'},
+                    {title: '发货方式', slot: 'delivery', align: 'center'},
+                    {title: '跟单人', slot: 'action', width: 150, align: 'center', fixed: 'right',}
+                ],
+                data1: [],
+                columns2: [
+                    {
+                        title: '商品类别',
+                        slot: 'productType',
+                        align: 'center'
+                    },
+                    {
+                        title: '商品名称',
+                        slot: 'goodsName',
+                        align: 'center'
+                    },
+                    {
+                        title: '购买数量',
+                        key: 'detailNum',
+                        align: 'center'
+                    }
+                ],
+                data2: [],
+
+                // 分页
+                page: 1,
+                pageSize: 10,
+                total: 9,
+
+                orderModelObj: {
+                    startTime: '',
+                    endTime: '',
+                    auditStartTime: '',
+                    auditEndTime: '',
+                    ndeeds: '',
+                    supplierId: '',
+                    createrName: '',
+                    checkerName: '',
+                    completerName: ''
+                },
+
+
+                startTimeOption: {},
+                endTimeOption: {},
+                items: [],
+
+                modal8: false,
+
+                detailObj: {},
+                basicsSupperObj: {},
+
+                cityList: [],
+                model15: '',
+
+                orderId: null
+            },
+            // 方法
+            methods: {
+                okFn(){
+                    axios.post(orderApi + "ordermodel/tranOrderAssginOrder",
+                        {
+                            orderId: this.orderId,
+                            completer: this.model15
+                        }
+                    ).then(res=>{
+                        if(res.data.code==200){
+                            this.$Message.success(res.data.msg);
+
+                            this.orderId = null;
+                            this.model15 = '';
+
+                            // 重新渲染表格数据
+                            this.initTable1();
+                        }
+                    }).catch(err=>{
+                        this.$Message.error('对方不想说话，并且向你抛出了一个异常');
+                    });
+                },
+                taskAssigned(row) {
+                    this.detailObj = row;
+
+                    this.basicsSupperObj = this.detailObj.basicsSupper;
+
+                    this.orderId = this.detailObj.orderId;
+
+                    // 根据订单ID，查询订单明细
+                    axios.get(orderApi + "orderdetail/getDetailByOrderId?orderId=" + this.detailObj.orderId).then(res => {
+                        this.data2 = res.data;
+                    }).catch(err => {
+                        this.$message.error(err);
+                    });
+
+                    axios.get(orderApi + "ordermodel/loadTransportUsers").then(res => {
+                        this.cityList = res.data.data;
+                    }).catch(err => {
+                        this.$message.error(err);
+                    });
+
+                    this.modal8 = true;
+                },
+                initSupplier() {
+                    axios.get(productApi + "supper/getAllSupper").then(res => {
+                        this.items = res.data;
+                    });
+                },
+                p(s) {
+                    return s < 10 ? '0' + s : s
+                },
+                // 当前页发生改变
+                currentPageChange(val) {
+                    this.page = val;
+
+                    // 重新渲染表格数据
+                    this.initTable1();
+                },
+                // 当前页显示条数发生改变
+                currentPageSizeChange(val) {
+                    this.pageSize = val;
+
+                    // 重新渲染表格数据
+                    this.initTable1();
+                },
+                initTable1() {
+                    // 开启表格加载
+                    this.loading = true;
+
+                    if (this.orderModelObj.ndeeds == undefined) {
+                        this.orderModelObj.ndeeds = '';
+                    }
+                    if (this.orderModelObj.supplierId == undefined) {
+                        this.orderModelObj.supplierId = '';
+                    }
+
+                    // 查询条件
+                    let params = `page=${this.page}&pageSize=${this.pageSize}&orderType=2&orderState=1&startTime=${this.orderModelObj.startTime}&endTime=${this.orderModelObj.endTime}&auditStartTime=${this.orderModelObj.auditStartTime}&auditEndTime=${this.orderModelObj.auditEndTime}&ndeeds=${this.orderModelObj.ndeeds}&supplierId=${this.orderModelObj.supplierId}&createrName=${this.orderModelObj.createrName}&checkerName=${this.orderModelObj.checkerName}&completerName=${this.orderModelObj.completerName}`
+                    axios.get(orderApi + "ordermodel/queryAllTaskList?" + params).then(res => {
+                        this.data1 = res.data.data;
+                        this.total = res.data.count;
+
+                        // 关闭表格加载
+                        this.loading = false;
+                    }).catch(err => {
+                        this.$Message.error('服务器不见啦！');
+                    });
+                },
+                /**
+                 * 开始时间发生变化时触发,设置结束时间不可选择的日期
+                 * 结束时间应大于等于开始时间,且小于等于当前时间
+                 * @param {string} startTime 格式化后的日期
+                 * @param {string} type 当前的日期类型
+                 */
+                onStartTimeChange(startTime, type) {
+                    this.endTimeOption = {
+                        disabledDate(endTime) {
+                            return endTime < new Date(startTime) || endTime > Date.now()
+                        }
+                    }
+                },
+                /**
+                 * 结束时间发生变化时触发,设置开始时间不可选择的日期
+                 * 开始时间小于等于结束时间,且小于等于当前时间
+                 * @param {string} date 格式化后的日期
+                 * @param {string} type 当前的日期类型
+                 */
+                onEndTimeChange(endTime, type) {
+                    this.startTimeOption = {
+                        disabledDate(startTime) {
+                            return startTime > new Date(endTime) || startTime > Date.now()
+                        }
+                    }
+                },
+                queryOrderModel() {
+
+                    if (this.orderModelObj.startTime) {
+                        let d = new Date(this.orderModelObj.startTime);
+                        this.orderModelObj.startTime = d.getFullYear() + '-' + this.p((d.getMonth() + 1)) + '-' + this.p(d.getDate())
+                    }
+
+                    if (this.orderModelObj.endTime) {
+                        let e = new Date(this.orderModelObj.endTime);
+                        this.orderModelObj.endTime = e.getFullYear() + '-' + this.p((e.getMonth() + 1)) + '-' + this.p(e.getDate())
+                    }
+
+                    if (this.orderModelObj.auditStartTime) {
+                        let f = new Date(this.orderModelObj.auditStartTime);
+                        this.orderModelObj.auditStartTime = f.getFullYear() + '-' + this.p((f.getMonth() + 1)) + '-' + this.p(f.getDate())
+                    }
+
+                    if (this.orderModelObj.auditEndTime) {
+                        let g = new Date(this.orderModelObj.auditEndTime);
+                        this.orderModelObj.auditEndTime = g.getFullYear() + '-' + this.p((g.getMonth() + 1)) + '-' + this.p(g.getDate())
+                    }
+
+                    this.initTable1();
+                },
+                handleReset(name) {
+                    this.$refs[name].resetFields();
+                }
+            },
+            // 钩子函数
+            mounted() {
+                this.orderModelObj.startTime = ''
+                this.orderModelObj.endTime = ''
+
+                this.orderModelObj.auditStartTime = ''
+                this.orderModelObj.auditEndTime = ''
+
+                this.onStartTimeChange(this.orderModelObj.startTime)
+                this.onEndTimeChange(this.orderModelObj.endTime)
+
+                this.onStartTimeChange(this.orderModelObj.auditStartTime)
+                this.onEndTimeChange(this.orderModelObj.auditEndTime)
+
+                this.initTable1();
+
+                // 加载供应商
+                this.initSupplier();
+            }
+        })
+    });
+
+</script>
+</body>
+</html>
