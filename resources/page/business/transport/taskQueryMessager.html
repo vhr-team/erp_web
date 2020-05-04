@@ -64,7 +64,7 @@
         <!--条件查询-->
 
         <Tabs active-key="one"
-            @on-click="tabFn">
+              @on-click="tabFn">
             <Tab-pane label=" 待 采 购 " key="one"></Tab-pane>
             <Tab-pane label=" 采 购 中 " key="two"></Tab-pane>
         </Tabs>
@@ -209,8 +209,13 @@
             </i-form>
 
             <div slot="footer">
-                <i-button  type="primary" @click="okFn" icon="md-checkbox-outline"> 确 认 去 取 货 </i-button>
-                <i-button type="success" ghost icon="md-close" @click="modal8 = false">取消</i-button>
+                <i-button v-if="indexVal == 0" type="primary" @click="okFn" icon="md-checkbox-outline"> 确 认 去 取 货
+                </i-button>
+                <i-button type="success" ghost icon="md-close" @click="modal8 = false"> 取 消</i-button>
+
+                <i-button v-if="indexVal == 1" @click="tranOrderFn" type="primary" ghost
+                          icon="md-checkmark-circle-outline"> 结 单
+                </i-button>
             </div>
         </Modal>
         <!--Modal-->
@@ -320,36 +325,57 @@
 
                 orderId: null,
 
-                orderState: 1
+                orderState: 1,
+                indexVal: 0
             },
             // 方法
             methods: {
-                tabFn(val){
-                    if(val == 0){
+                tabFn(val) {
+                    this.indexVal = val;
+                    if (val == 0) {
                         this.orderState = 1;
                     }
-                    if(val == 1){
+                    if (val == 1) {
                         this.orderState = 3;
                     }
 
                     this.initTable1();
                 },
-                okFn(){
-                    axios.post(orderApi + "ordermodel/taskOrderPickGoods",
+                tranOrderFn() {
+                    axios.post(orderApi + "ordermodel/finishTranOrder",
                         {
                             orderId: this.orderId
                         }
-                    ).then(res=>{
-                        if(res.data.code==200){
+                    ).then(res => {
+                        if (res.data.code == 200) {
                             this.$Message.success(res.data.msg);
 
                             this.orderId = null;
-                            this.model15 = false;
+                            this.modal8 = false;
 
                             // 重新渲染表格数据
                             this.initTable1();
                         }
-                    }).catch(err=>{
+                    }).catch(err => {
+                        this.$Message.error('对方不想说话，并且向你抛出了一个异常');
+                    });
+                },
+                okFn() {
+                    axios.post(orderApi + "ordermodel/taskOrderPickGoods",
+                        {
+                            orderId: this.orderId
+                        }
+                    ).then(res => {
+                        if (res.data.code == 200) {
+                            this.$Message.success(res.data.msg);
+
+                            this.orderId = null;
+                            this.modal8 = false;
+
+                            // 重新渲染表格数据
+                            this.initTable1();
+                        }
+                    }).catch(err => {
                         this.$Message.error('对方不想说话，并且向你抛出了一个异常');
                     });
                 },
