@@ -69,7 +69,7 @@ if (usertype == 1) {
         if (permissions.indexOf("role:delete") < 0) {
             $(".roleBtn_delete").hide();
         }
-        if (permissions.indexOf("role:empowerment") < 0) {
+        if (permissions.indexOf("role:assignpermissions") < 0) {
             $(".roleBtn_empowerment").hide();
         }
         if (permissions.indexOf("role:batchdelete") < 0) {

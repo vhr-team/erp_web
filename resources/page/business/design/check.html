@@ -419,9 +419,14 @@
                 proName:"",//产品名称
                 matarual_constitute:[],//物料组成
                 checkers:{
-                    id:"",
-                    checker:"",
-                    checkTag:"",
+                    id:"",//产品序号
+                    productId:"",//商品id
+                    productName:"",//产品名称
+                    productClass:"",//产品档次
+                    register:"",//设计人
+                    registerTime:"",//登记时间
+                    checker:"",//审核人
+                    checkTag:"",//审核状态
                 }
             },
             methods: {
@@ -474,6 +479,13 @@
                 },
                 /*查看点击选中行*/
                 show(value){
+
+                    this.checkers.productId=value.productId;
+                    this.checkers.productName=value.productName;
+                    this.checkers.productClass=value.productClass;
+                    this.checkers.register=value.register;
+                    this.checkers.registerTime=value.registerTime;
+                    console.log(this.checkers);
                     this.checkers.id=value.id;
                     this.proID=value.productId
                     this.proName=value.productName;
