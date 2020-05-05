@@ -53,41 +53,44 @@
 <div class="layuimini-container" id="app">
     <div class="layuimini-main">
 
-        <el-form ref="formInline" :inline="true" :model="orderQuery" class="demo-form-inline">
-            <el-form-item prop="creater" label="下单人">
-                <el-select v-model="orderQuery.creater" placeholder="请选择下单人">
-                    <el-option :label="item.name" :value="item.id" v-for="item in CreateUserItems"></el-option>
-                </el-select>
-            </el-form-item>
-            <el-form-item prop="minTotalNum" label="总量">
-                <el-input v-model="orderQuery.minTotalNum" placeholder="请输入总量"></el-input>
-            </el-form-item>
-            <el-form-item prop="maxTotalNum" label="到">
-                <el-input v-model="orderQuery.maxTotalNum" placeholder=""></el-input>
-            </el-form-item>
-            <el-form-item prop="rangeDate" label="下单时间">
-                <el-date-picker
-                        v-model="rangeDate"
-                        prefix-icon="el-icon-date"
-                        type="daterange"
-                        start-placeholder="开始日期"
-                        end-placeholder="结束日期"
-                        size="small"
-                        value-format="yyyy-MM-dd"
-                ></el-date-picker>
-            </el-form-item>
-            <br/>
-            <el-form-item prop="minTotalPrice" label="总额">
-                <el-input v-model="orderQuery.minTotalPrice" placeholder="请输入总量"></el-input>
-            </el-form-item>
-            <el-form-item prop="maxTotalPrice" label="到">
-                <el-input v-model="orderQuery.maxTotalPrice" placeholder=""></el-input>
-            </el-form-item>
-            <el-form-item>
-                <el-button type="primary" icon="el-icon-search" @click="onSubmit">查询</el-button>
-                <el-button @click="resetForm('formInline')" icon="el-icon-refresh-left">重置</el-button>
-            </el-form-item>
-        </el-form>
+        <fieldset class="table-search-fieldset">
+            <legend>搜索信息</legend>
+            <el-form ref="formInline" :inline="true" :model="orderQuery" class="demo-form-inline">
+                <el-form-item prop="creater" label="下单人">
+                    <el-select v-model="orderQuery.creater" placeholder="请选择下单人">
+                        <el-option :label="item.name" :value="item.id" v-for="item in CreateUserItems"></el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item prop="minTotalNum" label="总量">
+                    <el-input v-model="orderQuery.minTotalNum" placeholder="请输入总量"></el-input>
+                </el-form-item>
+                <el-form-item prop="maxTotalNum" label="到">
+                    <el-input v-model="orderQuery.maxTotalNum" placeholder=""></el-input>
+                </el-form-item>
+                <el-form-item prop="rangeDate" label="下单时间">
+                    <el-date-picker
+                            v-model="rangeDate"
+                            prefix-icon="el-icon-date"
+                            type="daterange"
+                            start-placeholder="开始日期"
+                            end-placeholder="结束日期"
+                            size="small"
+                            value-format="yyyy-MM-dd"
+                    ></el-date-picker>
+                </el-form-item>
+                <br/>
+                <el-form-item prop="minTotalPrice" label="总额">
+                    <el-input v-model="orderQuery.minTotalPrice" placeholder="请输入总量"></el-input>
+                </el-form-item>
+                <el-form-item prop="maxTotalPrice" label="到">
+                    <el-input v-model="orderQuery.maxTotalPrice" placeholder=""></el-input>
+                </el-form-item>
+                <el-form-item>
+                    <el-button type="primary" icon="el-icon-search" @click="onSubmit">查询</el-button>
+                    <el-button @click="resetForm('formInline')" icon="el-icon-refresh-left">重置</el-button>
+                </el-form-item>
+            </el-form>
+        </fieldset>
 
         <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
             <el-tab-pane label="未审核" name="one"></el-tab-pane>
