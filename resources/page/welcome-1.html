@@ -329,24 +329,68 @@
                                 <div class="welcome-module">
                                     <div class="layui-row layui-col-space10 layuimini-qiuck">
                                         <div class="layui-col-xs3 layuimini-qiuck-module">
-                                            <a href="javascript:;" data-iframe-tab="page/menu.html" data-title="菜单管理"
+                                            <a href="javascript:;"
+                                               data-iframe-tab="resources/page/system/menu/menuManager.html"
+                                               data-title="菜单管理"
                                                data-icon="fa fa-window-maximize">
                                                 <i class="fa fa-window-maximize"></i>
                                                 <cite>菜单管理</cite>
                                             </a>
                                         </div>
                                         <div class="layui-col-xs3 layuimini-qiuck-module">
-                                            <a href="javascript:;" data-iframe-tab="page/icon.html" data-title="图标列表"
+                                            <a href="javascript:;"
+                                               data-iframe-tab="resources/page/system/icon/icon.html" data-title="图标列表"
                                                data-icon="fa fa-dot-circle-o">
                                                 <i class="fa fa-dot-circle-o"></i>
                                                 <cite>图标列表</cite>
                                             </a>
                                         </div>
                                         <div class="layui-col-xs3 layuimini-qiuck-module">
-                                            <a href="javascript:;" data-iframe-tab="page/form.html" data-title="表单示例"
-                                               data-icon="fa fa-calendar">
+                                            <a href="javascript:;"
+                                               data-iframe-tab="resources/page/system/notice/noticeManager.html"
+                                               data-title="系统公告"
+                                               data-icon="fa fa-file-text">
+                                                <i class="fa fa-file-text"></i>
+                                                <cite>系统公告</cite>
+                                            </a>
+                                        </div>
+                                        <div class="layui-col-xs3 layuimini-qiuck-module">
+                                            <a href="javascript:;"
+                                               data-iframe-tab="resources/page/system/user/userManager.html"
+                                               data-title="用户管理"
+                                               data-icon="fa fa-gears">
+                                                <i class="fa fa-gears"></i>
+                                                <cite>用户管理</cite>
+                                            </a>
+                                        </div>
+                                        <div class="layui-col-xs3 layuimini-qiuck-module">
+                                            <a href="javascript:;"
+                                               data-iframe-tab="resources/page/system/task/taskManager.html"
+                                               data-title="我的待办任务"
+                                               data-icon="fa fa-hourglass-end">
+                                                <i class="fa fa-hourglass-end"></i>
+                                                <cite>我的待办任务</cite>
+                                            </a>
+                                        </div>
+                                        <div class="layui-col-xs3 layuimini-qiuck-module">
+                                            <a href="javascript:;" data-iframe-tab="https://www.baidu.com"
+                                               data-title="百度搜索" data-icon="fa fa-search">
+                                                <i class="fa fa-search"></i>
+                                                <cite>百度搜索</cite>
+                                            </a>
+                                        </div>
+                                        <div class="layui-col-xs3 layuimini-qiuck-module">
+                                            <a href="javascript:;" data-iframe-tab="http://127.0.0.1:8001/druid/"
+                                               data-title="数据源监控" data-icon="fa fa-calendar">
                                                 <i class="fa fa-calendar"></i>
-                                                <cite>表单示例</cite>
+                                                <cite>数据源监控</cite>
+                                            </a>
+                                        </div>
+                                        <div class="layui-col-xs3 layuimini-qiuck-module">
+                                            <a href="javascript:;" data-iframe-tab="resources/page/system/dept/deptManager.html"
+                                               data-title="部门管理" data-icon="fa fa-snowflake-o">
+                                                <i class="fa fa-snowflake-o"></i>
+                                                <cite>部门管理</cite>
                                             </a>
                                         </div>
                                     </div>
@@ -500,6 +544,7 @@
 
             $("#welcome-message").html(welcomeMessage);
         }
+
         //使用ajax请求公告的查询接口
         $.get(api + "notice/loadAllNotice", {page: 1, limit: 5}, function (res) {
             var html = "";
@@ -615,6 +660,7 @@
         }
         return date;
     }
+
     function getLangDate() {
         let userName = JSON.parse(localStorage.getItem("user")).name;
         var dateObj = new Date(); //表示当前系统时间的Date对象
