@@ -18,7 +18,14 @@
 
 
         <!--数据表格-->
-        <i-table :columns="columns1" :data="data1"></i-table>
+        <i-table
+                context-menu
+                show-context-menu
+                :columns="columns1" :data="data1">
+            <template slot-scope="{ row, index }" slot="action">
+                <i-button type="primary" size="small" style="margin-right: 5px"> 指 定 </i-button>
+            </template>
+        </i-table>
         <!--数据表格-->
 
     </div>
@@ -64,15 +71,44 @@
             data: {
                 columns1: [
                     {
-                        title: 'Name',
+                        title: '产品编号',
+                        align: 'center',
                         key: 'name'
                     },
                     {
-                        title: 'Age',
+                        title: '产品名称',
+                        align: 'center',
                         key: 'age'
                     },
                     {
-                        title: 'Address',
+                        title: '用途类型',
+                        align: 'center',
+                        key: 'address'
+                    },
+                    {
+                        title: '档次级别',
+                        align: 'center',
+                        key: 'address'
+                    },
+                    {
+                        title: '1级分类',
+                        align: 'center',
+                        key: 'address'
+                    },
+                    {
+                        title: '2级分类',
+                        align: 'center',
+                        key: 'address'
+                    },
+                    {
+                        title: '3级分类',
+                        align: 'center',
+                        key: 'address'
+                    },
+                    {
+                        title: '指定',
+                        align: 'center',
+                        slot: 'action',
                         key: 'address'
                     }
                 ],
