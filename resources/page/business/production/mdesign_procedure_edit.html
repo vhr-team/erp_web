@@ -316,7 +316,7 @@
             window.parent.location.reload();//刷新父页面
             layer.closeAll();
             return;
-            
+
         }
 
 
@@ -340,6 +340,7 @@
                     var sjdId = $("#sjdId1").val();
                     var shdId = $("#shdId1").val();
                     let userName = JSON.parse(localStorage.getItem("user"));
+
                     if(audit_date==""){
                         layer.msg("请选择修改时间");
                         return;

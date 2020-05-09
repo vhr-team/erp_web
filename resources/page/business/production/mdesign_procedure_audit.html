@@ -291,6 +291,7 @@
                 var table = layui.table;
             datas = layui.table.cache["test3"];
                 var product_name = $("#product_name").val();
+                var procedure_id = $("#procedure_id").val();
                 var design_idB = $("#procedure_id").val();
                 var product_designer  =$("#product_designer").val();
                 var product_registrant  =$("#register").val();
@@ -299,6 +300,7 @@
              var shState =   $("input[name='sex']:checked").val();
             var sjdId = $("#sjdId").val();
             var shdId = $("#shdId").val();
+                let userName = JSON.parse(localStorage.getItem("user"));
         if(audit_date==""){
             layer.msg("请选择审核时间");
             return;
@@ -307,7 +309,7 @@
 
             $.ajax({
                 url:'http://127.0.0.1:8003/productaudit/auditSjdShb',
-                data:{"shState":shState,"audit_date":audit_date,"sjdId":sjdId,"shdId":shdId},
+                data:{"shState":shState,"audit_date":audit_date,"sjdId":sjdId,"shdId":shdId,"product_name":product_name,"product_designer":product_designer,"procedure_id":procedure_id,'auditor_name':userName.name},
                 success: function (data) {
                     layer.msg("提交成功");
                     window.parent.location.reload();//刷新父页面
@@ -342,6 +344,7 @@
                     var sjdId = $("#sjdId1").val();
                     var shdId = $("#shdId1").val();
                     let userName = JSON.parse(localStorage.getItem("user"));
+
                     if(audit_date==""){
                         layer.msg("请选择修改时间");
                         return;
@@ -349,7 +352,7 @@
                         $.ajax({
                             url:'http://127.0.0.1:8003/productaudit/edittSjdShb',
                             data:{
-                                'userName':userName,
+                                'userName':userName.name,
                                 'product_name': product_name,
                                 'design_idB': design_idB,
                                 'product_designer': product_designer,

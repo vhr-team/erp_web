@@ -195,12 +195,10 @@
             , cols: [[ //表头
                 {type: 'checkbox', fixed: 'left'}
                 , {field: 'id', title: 'ID', hide: true}
-                , {field: 'design_id', title: '产品编号', width: 200, sort: true, fixed: 'left', totalRowText: '合计：'}
-                , {field: 'product_name', title: '产品名称', width: 280}
-                , {field: 'first_kind_id', title: '档次级别', width: 200, sort: true, totalRow: true}
-                , {field: 'product_stair_classify', title: 'I级分类', width: 240, sort: true}
-                , {field: 'product_second_classify', title: 'II级分类', width: 260, sort: true, totalRow: true}
-                , {field: 'product_second_classify', title: 'III级分类', width: 200}
+                , {field: 'design_id', title: '产品编号', width: 300, sort: true, fixed: 'left', totalRowText: '合计：'}
+                , {field: 'product_stair_classify', title: '档次级别', width: 380}
+                , {field: 'register', title: '设计人', width: 300, sort: true, totalRow: true}
+                , {field: 'register_time', title: '设计时间', width: 420, sort: true}
                 , {fixed: 'right', width: 200, align: 'center', toolbar: '#barDemo'}
             ]]
             , limits: [5, 10, 20, 50]
@@ -236,7 +234,7 @@
                     var table = layui.table;
 
                     datas = layui.table.cache["test3"];
-                    JSON.stringify(datas);//把JS对象转换为json 这个是获取所有的商品
+                    JSON.stringify(datas);//把JS对象转换为json 这个是获取所有
 
                     $.ajax({
                         url: 'http://127.0.0.1:8003/process/insertProductionSheet',
