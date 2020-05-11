@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>指定安全库存配置单</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="../../../lib/plugin/iview/dist/styles/iview.css">
+
+    <link rel="stylesheet" href="../../../lib/layui-v2.5.5/css/layui.css" media="all">
+    <link rel="stylesheet" href="../../../css/public.css" media="all">
+</head>
+<body>
+
+<div class="layuimini-container" id="app">
+    <div class="layuimini-main">
+
+
+        <!--数据表格-->
+        <i-table
+                context-menu
+                show-context-menu
+                :columns="columns1" :data="data1">
+            <template slot-scope="{ row, index }" slot="action">
+                <i-button type="primary" size="small" style="margin-right: 5px"> 指 定</i-button>
+            </template>
+        </i-table>
+        <!--数据表格-->
+
+    </div>
+</div>
+
+<!--jq-->
+<script src="../../../lib/jquery-3.4.1/jquery-3.4.1.min.js"></script>
+<script src="../../../lib/plugin/vue/vue.min.js"></script>
+<script src="../../../lib/plugin/iview/dist/iview.min.js"></script>
+
+<!--layui-->
+<script src="../../../lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
+
+<!--axios-->
+<script src="../../../lib/plugin/axios/axios.min.js"></script>
+
+<!--系统文件-->
+<script src="../../../lib/common/jquery.cookie.min.js" charset="utf-8"></script>
+<script src="../../../lib/common/common.js" charset="utf-8"></script>
+<script>
+    let vue;
+    let safeApi = 'http://127.0.0.1:8004/';
+
+    // 入口函数
+    $(function () {
+        // http request 拦截器
+        axios.interceptors.request.use(
+            config => {
+                if (token) { //判断token是否存在
+                    config.headers.token = $.cookie("TOKEN");  //将token设置成请求头
+                }
+                return config;
+            },
+            err => {
+                return Promise.reject(err);
+            }
+        );
+
+        // 初始化Vue
+        vue = new Vue({
+            // 控制区域
+            el: '#app',
+            // 数据
+            data: {
+                columns1: [
+                    {
+                        title: '产品编号',
+                        align: 'center',
+                        key: 'name'
+                    },
+                    {
+                        title: '产品名称',
+                        align: 'center',
+                        key: 'age'
+                    },
+                    {
+                        title: '用途类型',
+                        align: 'center',
+                        key: 'address'
+                    },
+                    {
+                        title: '档次级别',
+                        align: 'center',
+                        key: 'address'
+                    },
+                    {
+                        title: '1级分类',
+                        align: 'center',
+                        key: 'address'
+                    },
+                    {
+                        title: '2级分类',
+                        align: 'center',
+                        key: 'address'
+                    },
+                    {
+                        title: '3级分类',
+                        align: 'center',
+                        key: 'address'
+                    },
+                    {
+                        title: '指定',
+                        align: 'center',
+                        slot: 'action',
+                        key: 'address'
+                    }
+                ],
+                data1: [],
+
+                page: 1,
+                pageSize: 5,
+                total: 9
+            },
+            // 方法
+            methods: {
+                loadInventoryAllocationSheet() {
+                    axios.get(safeApi + "warehouseStock/findPagecheck?page="+this.page+"&limit="+this.pageSize+"&checkTag=审核通过").then(res => {
+                        console.log(res.data);
+                    }).catch(err => {
+                        this.$Message.error('对方不想说话，并且向你抛出了一个异常');
+                    });
+                }
+            },
+            // 钩子函数
+            mounted() {
+                this.loadInventoryAllocationSheet();
+            }
+        })
+    });
+</script>
+</body>
+</html>
