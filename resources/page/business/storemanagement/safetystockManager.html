@@ -23,7 +23,7 @@
                 show-context-menu
                 :columns="columns1" :data="data1">
             <template slot-scope="{ row, index }" slot="action">
-                <i-button type="primary" size="small" style="margin-right: 5px"> 指 定 </i-button>
+                <i-button type="primary" size="small" style="margin-right: 5px"> 指 定</i-button>
             </template>
         </i-table>
         <!--数据表格-->
@@ -47,9 +47,10 @@
 <script src="../../../lib/common/common.js" charset="utf-8"></script>
 <script>
     let vue;
+    let safeApi = 'http://127.0.0.1:8004/';
 
     // 入口函数
-    $(function(){
+    $(function () {
         // http request 拦截器
         axios.interceptors.request.use(
             config => {
@@ -112,37 +113,26 @@
                         key: 'address'
                     }
                 ],
-                data1: [
-                    {
-                        name: 'John Brown',
-                        age: 18,
-                        address: 'New York No. 1 Lake Park',
-                        date: '2016-10-03'
-                    },
-                    {
-                        name: 'Jim Green',
-                        age: 24,
-                        address: 'London No. 1 Lake Park',
-                        date: '2016-10-01'
-                    },
-                    {
-                        name: 'Joe Black',
-                        age: 30,
-                        address: 'Sydney No. 1 Lake Park',
-                        date: '2016-10-02'
-                    },
-                    {
-                        name: 'Jon Snow',
-                        age: 26,
-                        address: 'Ottawa No. 2 Lake Park',
-                        date: '2016-10-04'
-                    }
-                ]
+                data1: [],
+
+                page: 1,
+                pageSize: 5,
+                total: 9
             },
             // 方法
-            methods: {},
+            methods: {
+                loadInventoryAllocationSheet() {
+                    axios.get(safeApi + "warehouseStock/findPagecheck?page="+this.page+"&limit="+this.pageSize+"&checkTag=审核通过").then(res => {
+                        console.log(res.data);
+                    }).catch(err => {
+                        this.$Message.error('对方不想说话，并且向你抛出了一个异常');
+                    });
+                }
+            },
             // 钩子函数
-            mounted() {}
+            mounted() {
+                this.loadInventoryAllocationSheet();
+            }
         })
     });
 </script>
