@@ -6,6 +6,7 @@
     <meta name="renderer" content="webkit">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
     <link rel="stylesheet" href="../lib/layui-v2.5.5/css/layui.css" media="all">
     <link rel="stylesheet" href="../lib/font-awesome-4.7.0/css/font-awesome.min.css" media="all">
     <link rel="stylesheet" href="../css/public.css" media="all">
@@ -216,208 +217,164 @@
         #febs-index .project-desc {
             color: rgba(0, 0, 0, 0.45);
         }
+
+        .top-panel {
+            border: 1px solid #eceff9;
+            border-radius: 5px;
+            text-align: center;
+        }
+
+        .top-panel > .layui-card-body {
+            height: 60px;
+        }
+
+        .top-panel-number {
+            line-height: 60px;
+            font-size: 30px;
+            border-right: 1px solid #eceff9;
+        }
+
+        .top-panel-tips {
+            line-height: 30px;
+            font-size: 12px
+        }
     </style>
     <link rel="stylesheet" href="../lib/plugin/febs/css/febs.css">
-
 </head>
-<body>
+<body class="console console1 ok-body-scroll">
 <div class="layuimini-container">
-    <div class="layuimini-main">
+    <div class="layuimini-main" style="padding-top: 5px">
 
         <!-- 、、、、、、、、、、、、 -->
         <div id="febs-index" class="febs-anim-up layui-col-md12 layui-col-sm12 layui-col-xs12">
-            <div class="layui-card">
-                <div class="layui-card-body layui-anim layui-anim-fadein">
-                    <div class="layui-row welcome-info">
-                        <div class="layui-col-md6 layui-col-sm12 layui-col-xs12">
-                            <div class="layui-row welcome-info-wrapper">
-                                <div class="user-header">
-                                    <img alt="头像" id="user-avatar">
-                                </div>
-                                <div class="user-info">
-                                    <div class="layui-row">
-                                        <div class="random-message">
-                                            <span id="welcome-message"></span>
-                                        </div>
-                                        <div class="user-login-info">
-                                            <span id="nowTime"></span>
+            <div class="layui-col-md15">
+                <div class="layui-card">
+                    <div class="layui-card-body layui-anim layui-anim-fadein">
+                        <div class="layui-row welcome-info">
+                            <div class="layui-col-md6 layui-col-sm12 layui-col-xs12">
+                                <div class="layui-row welcome-info-wrapper">
+                                    <div class="user-header">
+                                        <img alt="头像" id="user-avatar">
+                                    </div>
+                                    <div class="user-info">
+                                        <div class="layui-row">
+                                            <div class="random-message">
+                                                <span id="welcome-message"></span>
+                                            </div>
+                                            <div class="user-login-info">
+                                                <span id="nowTime"></span>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <!-- 、、、、、、、、、、、、 -->
+
+        <!-- 第二块 -->
+        <div class="layui-row layui-col-space15">
+            <div class="layui-col-xs12 layui-col-md3">
+
+                <div class="layui-card top-panel">
+                    <div class="layui-card-header">要展示的指标名称</div>
+                    <div class="layui-card-body">
+                        <div class="layui-row layui-col-space5">
+                            <div class="layui-col-xs9 layui-col-md9 top-panel-number">
+                                9,054,056
+                            </div>
+                            <div class="layui-col-xs3 layui-col-md3 top-panel-tips">
+                                比昨天 <a style="color: #1aa094">▲0.12</a><br>
+                                比七日 <a style="color: #bd3004">▼0.06</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="layui-col-xs12 layui-col-md3">
+
+                <div class="layui-card top-panel">
+                    <div class="layui-card-header">要展示的指标名称</div>
+                    <div class="layui-card-body">
+                        <div class="layui-row layui-col-space5">
+                            <div class="layui-col-xs9 layui-col-md9 top-panel-number">
+                                9,054,056
+                            </div>
+                            <div class="layui-col-xs3 layui-col-md3 top-panel-tips">
+                                比昨天 <a style="color: #1aa094">▲0.12</a><br>
+                                比七日 <a style="color: #bd3004">▼0.06</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="layui-col-xs12 layui-col-md3">
+
+                <div class="layui-card top-panel">
+                    <div class="layui-card-header">要展示的指标名称</div>
+                    <div class="layui-card-body">
+                        <div class="layui-row layui-col-space5">
+                            <div class="layui-col-xs9 layui-col-md9 top-panel-number">
+                                9,054,056
+                            </div>
+                            <div class="layui-col-xs3 layui-col-md3 top-panel-tips">
+                                比昨天 <a style="color: #1aa094">▲0.12</a><br>
+                                比七日 <a style="color: #bd3004">▼0.06</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="layui-col-xs12 layui-col-md3">
+
+                <div class="layui-card top-panel">
+                    <div class="layui-card-header">要展示的指标名称</div>
+                    <div class="layui-card-body">
+                        <div class="layui-row layui-col-space5">
+                            <div class="layui-col-xs9 layui-col-md9 top-panel-number">
+                                666
+                            </div>
+                            <div class="layui-col-xs3 layui-col-md3 top-panel-tips">
+                                比昨天 <a style="color: #1aa094">▲0.12</a><br>
+                                比七日 <a style="color: #bd3004">▼0.06</a>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <!-- 、、、、、、、、、、、、 -->
+        <!-- 第二块 -->
 
+        <!--报表-->
         <div class="layui-row layui-col-space15">
-            <div class="layui-col-md8">
-                <div class="layui-row layui-col-space15">
-                    <div class="layui-col-md6">
-                        <div class="layui-card">
-                            <div class="layui-card-header"><i class="fa fa-warning icon"></i>数据统计</div>
-                            <div class="layui-card-body">
-                                <div class="welcome-module">
-                                    <div class="layui-row layui-col-space10">
-                                        <div class="layui-col-xs6">
-                                            <div class="panel layui-bg-number">
-                                                <div class="panel-body">
-                                                    <div class="panel-title">
-                                                        <span class="label pull-right layui-bg-blue">实时</span>
-                                                        <h5>客户统计</h5>
-                                                    </div>
-                                                    <div class="panel-content">
-                                                        <h1 class="no-margins">1234</h1>
-                                                        <small>当前客户总记录数</small>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="layui-col-xs6">
-                                            <div class="panel layui-bg-number">
-                                                <div class="panel-body">
-                                                    <div class="panel-title">
-                                                        <span class="label pull-right layui-bg-cyan">实时</span>
-                                                        <h5>商品统计</h5>
-                                                    </div>
-                                                    <div class="panel-content">
-                                                        <h1 class="no-margins">1234</h1>
-                                                        <small>当前商品总记录数</small>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="layui-col-xs6">
-                                            <div class="panel layui-bg-number">
-                                                <div class="panel-body">
-                                                    <div class="panel-title">
-                                                        <span class="label pull-right layui-bg-orange">实时</span>
-                                                        <h5>供应商统计</h5>
-                                                    </div>
-                                                    <div class="panel-content">
-                                                        <h1 class="no-margins">1234</h1>
-                                                        <small>当前供应商总记录数</small>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="layui-col-xs6">
-                                            <div class="panel layui-bg-number">
-                                                <div class="panel-body">
-                                                    <div class="panel-title">
-                                                        <span class="label pull-right layui-bg-green">实时</span>
-                                                        <h5>订单统计</h5>
-                                                    </div>
-                                                    <div class="panel-content">
-                                                        <h1 class="no-margins">1234</h1>
-                                                        <small>当前订单总记录数</small>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="layui-col-md6">
-                        <div class="layui-card">
-                            <div class="layui-card-header"><i class="fa fa-credit-card icon icon-blue"></i>快捷入口</div>
-                            <div class="layui-card-body">
-                                <div class="welcome-module">
-                                    <div class="layui-row layui-col-space10 layuimini-qiuck">
-                                        <div class="layui-col-xs3 layuimini-qiuck-module">
-                                            <a href="javascript:;"
-                                               data-iframe-tab="resources/page/system/menu/menuManager.html"
-                                               data-title="菜单管理"
-                                               data-icon="fa fa-window-maximize">
-                                                <i class="fa fa-window-maximize"></i>
-                                                <cite>菜单管理</cite>
-                                            </a>
-                                        </div>
-                                        <div class="layui-col-xs3 layuimini-qiuck-module">
-                                            <a href="javascript:;"
-                                               data-iframe-tab="resources/page/system/icon/icon.html" data-title="图标列表"
-                                               data-icon="fa fa-dot-circle-o">
-                                                <i class="fa fa-dot-circle-o"></i>
-                                                <cite>图标列表</cite>
-                                            </a>
-                                        </div>
-                                        <div class="layui-col-xs3 layuimini-qiuck-module">
-                                            <a href="javascript:;"
-                                               data-iframe-tab="resources/page/system/notice/noticeManager.html"
-                                               data-title="系统公告"
-                                               data-icon="fa fa-file-text">
-                                                <i class="fa fa-file-text"></i>
-                                                <cite>系统公告</cite>
-                                            </a>
-                                        </div>
-                                        <div class="layui-col-xs3 layuimini-qiuck-module">
-                                            <a href="javascript:;"
-                                               data-iframe-tab="resources/page/system/user/userManager.html"
-                                               data-title="用户管理"
-                                               data-icon="fa fa-gears">
-                                                <i class="fa fa-gears"></i>
-                                                <cite>用户管理</cite>
-                                            </a>
-                                        </div>
-                                        <div class="layui-col-xs3 layuimini-qiuck-module">
-                                            <a href="javascript:;"
-                                               data-iframe-tab="resources/page/system/task/taskManager.html"
-                                               data-title="我的待办任务"
-                                               data-icon="fa fa-hourglass-end">
-                                                <i class="fa fa-hourglass-end"></i>
-                                                <cite>我的待办任务</cite>
-                                            </a>
-                                        </div>
-                                        <div class="layui-col-xs3 layuimini-qiuck-module">
-                                            <a href="javascript:;" data-iframe-tab="https://www.baidu.com"
-                                               data-title="百度搜索" data-icon="fa fa-search">
-                                                <i class="fa fa-search"></i>
-                                                <cite>百度搜索</cite>
-                                            </a>
-                                        </div>
-                                        <div class="layui-col-xs3 layuimini-qiuck-module">
-                                            <a href="javascript:;" data-iframe-tab="http://127.0.0.1:8001/druid/"
-                                               data-title="数据源监控" data-icon="fa fa-calendar">
-                                                <i class="fa fa-calendar"></i>
-                                                <cite>数据源监控</cite>
-                                            </a>
-                                        </div>
-                                        <div class="layui-col-xs3 layuimini-qiuck-module">
-                                            <a href="javascript:;" data-iframe-tab="resources/page/system/dept/deptManager.html"
-                                               data-title="部门管理" data-icon="fa fa-snowflake-o">
-                                                <i class="fa fa-snowflake-o"></i>
-                                                <cite>部门管理</cite>
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-                    <div class="layui-col-md12">
-                        <div class="layui-card">
-                            <div class="layui-card-header"><i class="fa fa-line-chart icon"></i>报表统计</div>
-                            <div class="layui-card-body">
-                                <div id="echarts-records" style="width: 100%;min-height:500px"></div>
-                            </div>
-                        </div>
-                    </div>
+            <div class="layui-col-md15">
+                <div class="layui-card">
+                    <div id="echarts-records" style="background-color:#ffffff;min-height:400px;padding: 10px"></div>
                 </div>
             </div>
+        </div>
+        <!--报表-->
 
-            <div class="layui-col-md4">
-
+        <!--第三块-->
+        <div class="layui-row layui-col-space15">
+            <div class="layui-col-md9">
+                <div id="echarts-dataset" style="background-color:#ffffff;min-height:300px;padding: 10px"></div>
+            </div>
+            <div class="layui-col-md3">
                 <div class="layui-card">
                     <div class="layui-card-header"><i class="fa fa-bullhorn icon icon-tip"></i>系统公告</div>
                     <div class="layui-card-body layui-text" id="notice_area"></div>
                 </div>
             </div>
         </div>
+        <!--第三块-->
     </div>
 </div>
 <script src="../lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
@@ -437,6 +394,134 @@
             layuimini = layui.layuimini,
             echarts = layui.echarts;
 
+        /**
+         * 报表功能
+         */
+        var echartsRecords = echarts.init(document.getElementById('echarts-records'), 'walden');
+
+        var optionRecords = {
+            title: {
+                text: '指标名称-报表图'
+            },
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: {
+                    type: 'cross',
+                    label: {
+                        backgroundColor: '#6a7985'
+                    }
+                }
+            },
+            legend: {
+                data: ['邮件营销', '联盟广告', '视频广告', '直接访问', '搜索引擎']
+            },
+            toolbox: {
+                feature: {
+                    saveAsImage: {}
+                }
+            },
+            grid: {
+                left: '3%',
+                right: '4%',
+                bottom: '3%',
+                containLabel: true
+            },
+            xAxis: [
+                {
+                    type: 'category',
+                    boundaryGap: false,
+                    data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
+                }
+            ],
+            yAxis: [
+                {
+                    type: 'value'
+                }
+            ],
+            series: [
+                {
+                    name: '邮件营销',
+                    type: 'line',
+                    stack: '总量',
+                    areaStyle: {},
+                    data: [120, 132, 101, 134, 90, 230, 210]
+                },
+                {
+                    name: '联盟广告',
+                    type: 'line',
+                    areaStyle: {},
+                    data: [220, 182, 191, 234, 290, 330, 310]
+                },
+                {
+                    name: '视频广告',
+                    type: 'line',
+                    stack: '总量',
+                    areaStyle: {},
+                    data: [150, 232, 201, 154, 190, 330, 410]
+                },
+                {
+                    name: '直接访问',
+                    type: 'line',
+                    stack: '总量',
+                    areaStyle: {},
+                    data: [320, 332, 301, 334, 390, 330, 320]
+                },
+                {
+                    name: '搜索引擎',
+                    type: 'line',
+                    stack: '总量',
+                    label: {
+                        normal: {
+                            show: true,
+                            position: 'top'
+                        }
+                    },
+                    areaStyle: {},
+                    data: [820, 932, 901, 934, 1290, 1330, 1320]
+                }
+            ]
+        };
+        echartsRecords.setOption(optionRecords);
+
+        /**
+         * 柱状图
+         */
+        var echartsDataset = echarts.init(document.getElementById('echarts-dataset'), 'walden');
+
+        var optionDataset = {
+            legend: {},
+            tooltip: {},
+            dataset: {
+                dimensions: ['product', '2015', '2016', '2017'],
+                source: [
+                    {product: 'Matcha Latte', '2015': 43.3, '2016': 85.8, '2017': 93.7},
+                    {product: 'Milk Tea', '2015': 83.1, '2016': 73.4, '2017': 55.1},
+                    {product: 'Cheese Cocoa', '2015': 86.4, '2016': 65.2, '2017': 82.5},
+                    {product: 'Walnut Brownie', '2015': 72.4, '2016': 53.9, '2017': 39.1}
+                ]
+            },
+            xAxis: {type: 'category'},
+            yAxis: {},
+            // Declare several bar series, each will be mapped
+            // to a column of dataset.source by default.
+            series: [
+                {type: 'bar'},
+                {type: 'bar'},
+                {type: 'bar'}
+            ]
+        };
+
+        echartsDataset.setOption(optionDataset);
+
+        // echarts 窗口缩放自适应
+        window.onresize = function () {
+            echartsRecords.resize();
+        }
+        /**
+         * 报表功能
+         */
+
+        /* 系统 */
         function handleSuccess() {
             var hour = new Date().getHours();
             var time = hour < 6 ? '早上好' : (hour <= 11 ? '上午好' : (hour <= 13 ? '中午好' : (hour <= 18 ? '下午好' : '晚上好')));
@@ -453,7 +538,6 @@
             ];
             var index = Math.floor((Math.random() * welcomeArr.length));
             var welcomeMessage = time + `，<a id="febs-index-user">${JSON.parse(localStorage.getItem("user")).name}</a>，` + welcomeArr[index];
-
             var currentTime = new Date().getTime();
             var yourVisitCount = [];
             var totalVisitCount = [];
@@ -469,7 +553,6 @@
                 util.toDateString(new Date(currentTime - 1000 * 86400), 'MM-dd'),
                 util.toDateString(new Date(currentTime), 'MM-dd')
             ];
-
             var options = {
                 chart: {
                     height: 350,
@@ -541,7 +624,6 @@
                     borderColor: '#f1f1f1'
                 }
             };
-
             $("#welcome-message").html(welcomeMessage);
         }
 
@@ -559,7 +641,6 @@
 
             $("#notice_area").html(html);
         });
-
         /**
          * 查看公告信息
          **/
@@ -583,74 +664,9 @@
                 content: html
             });
         });
-
-        /**
-         * 报表功能
-         */
-        var echartsRecords = echarts.init(document.getElementById('echarts-records'), 'walden');
-        var optionRecords = {
-            tooltip: {
-                trigger: 'axis'
-            },
-            legend: {
-                data: ['邮件营销', '联盟广告', '视频广告', '直接访问', '搜索引擎']
-            },
-            grid: {
-                left: '3%',
-                right: '4%',
-                bottom: '3%',
-                containLabel: true
-            },
-            toolbox: {
-                feature: {
-                    saveAsImage: {}
-                }
-            },
-            xAxis: {
-                type: 'category',
-                boundaryGap: false,
-                data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
-            },
-            yAxis: {
-                type: 'value'
-            },
-            series: [
-                {
-                    name: '邮件营销',
-                    type: 'line',
-                    data: [120, 132, 101, 134, 90, 230, 210]
-                },
-                {
-                    name: '联盟广告',
-                    type: 'line',
-                    data: [220, 182, 191, 234, 290, 330, 310]
-                },
-                {
-                    name: '视频广告',
-                    type: 'line',
-                    data: [150, 232, 201, 154, 190, 330, 410]
-                },
-                {
-                    name: '直接访问',
-                    type: 'line',
-                    data: [320, 332, 301, 334, 390, 330, 320]
-                },
-                {
-                    name: '搜索引擎',
-                    type: 'line',
-                    data: [820, 932, 901, 934, 1290, 1330, 1320]
-                }
-            ]
-        };
-        echartsRecords.setOption(optionRecords);
-
-        // echarts 窗口缩放自适应
-        window.onresize = function () {
-            echartsRecords.resize();
-        }
-
         handleSuccess();
         getLangDate();
+        /* 系统 */
     });
 
     //值小于10时，在前面补0
