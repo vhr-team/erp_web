@@ -19,14 +19,107 @@
 
         <!--数据表格-->
         <i-table
+                :loading="loading"
                 context-menu
                 show-context-menu
                 :columns="columns1" :data="data1">
             <template slot-scope="{ row, index }" slot="action">
-                <i-button type="primary" size="small" style="margin-right: 5px"> 指 定</i-button>
+                <i-button @click="developFn(row)" type="primary" icon="md-checkmark" size="small"
+                          style="margin-right: 5px">
+                    制 定
+                </i-button>
             </template>
         </i-table>
         <!--数据表格-->
+
+        <!--分页-->
+        <Page
+                style="margin-top: 10px"
+                :current="page"
+                :page-size="pageSize"
+                show-elevator
+                :total="total"
+                show-total
+                show-sizer></Page>
+        <!--分页-->
+
+        <!--抽屉-->
+        <Drawer
+                width="70%"
+                title="安全库存配置单" :closable="false" v-model="drawerValue">
+            <i-form style="text-align: center" inline label-position="left" :label-width="120">
+                <Row :gutter="16">
+                    <Col span="12">
+                    <Form-item label="产品名称">
+                        <i-input :disabled="true" v-model="developObj.productName"></i-input>
+                    </Form-item>
+                    </Col>
+                    <Col span="12">
+                    <Form-item label="产品编号">
+                        <i-input :disabled="true" v-model="developObj.productId"></i-input>
+                    </Form-item>
+                    </Col>
+                </Row>
+                <Row :gutter="16">
+                    <Col span="12">
+                    <Form-item label="库存报警下限数">
+                        <Input-number v-model="developObj.min_amount" style="width: 200px;"></Input-number>
+                    </Form-item>
+                    </Col>
+                    <Col span="12">
+                    <Form-item label="库存报警上限数">
+                        <Input-number v-model="developObj.max_amount" style="width: 200px;"></Input-number>
+                    </Form-item>
+                    </Col>
+                </Row>
+                <Row :gutter="16">
+                    <Col span="6">
+                    <Form-item label="设计人">
+                        <i-input :disabled="true" v-model="developObj.responsiblePerson"></i-input>
+                    </Form-item>
+                    </Col>
+                    <Col span="6">
+
+                    </Col>
+                    <Col span="6">
+
+                    </Col>
+                    <Col span="6">
+
+                    </Col>
+                </Row>
+            </i-form>
+
+            <i-table border :columns="columns2" :data="data2">
+                <template slot-scope="{ row, index }" slot="max_capacity_amount">
+                    <i-input v-model="developObj.max_capacity_amount"></i-input>
+                </template>
+            </i-table>
+
+            <i-form style="margin-top: 10px;text-align: center" label-position="left" :label-width="120">
+                <Row :gutter="16">
+                    <Col span="12">
+                    <Form-item label="登记人">
+                        <i-input v-model="developObj.register"></i-input>
+                    </Form-item>
+                    </Col>
+                    <Col span="12">
+                    </Col>
+                </Row>
+                <Row :gutter="16">
+                    <Col span="12">
+                    <Form-item label="配置要求">
+                        <i-input v-model="developObj.config" type="textarea" placeholder="请输入配置要求"></i-input>
+                    </Form-item>
+                    </Col>
+                    <Col span="12">
+                    </Col>
+                </Row>
+            </i-form>
+
+            <i-button type="primary" icon="md-checkmark" @click="addOrUpdate"> 提 交</i-button>
+        </Drawer>
+        <!--抽屉-->
 
     </div>
 </div>
@@ -70,26 +163,29 @@
             el: '#app',
             // 数据
             data: {
+                loading: true,
+                drawerValue: false,
+
                 columns1: [
                     {
                         title: '产品编号',
                         align: 'center',
-                        key: 'name'
+                        key: 'productId'
                     },
                     {
                         title: '产品名称',
                         align: 'center',
-                        key: 'age'
+                        key: 'productName'
                     },
                     {
                         title: '用途类型',
                         align: 'center',
-                        key: 'address'
+                        key: ''
                     },
                     {
                         title: '档次级别',
                         align: 'center',
-                        key: 'address'
+                        key: 'productClass'
                     },
                     {
                         title: '1级分类',
@@ -107,7 +203,7 @@
                         key: 'address'
                     },
                     {
-                        title: '指定',
+                        title: '操作',
                         align: 'center',
                         slot: 'action',
                         key: 'address'
@@ -117,13 +213,74 @@
 
                 page: 1,
                 pageSize: 5,
-                total: 9
+                total: 9,
+
+                columns2: [
+                    {title: '序号', align: 'center', key: 'Safetid'},
+                    {title: '库房名称', align: 'center', key: 'name'},
+                    {title: '存储地址编号', align: 'center', key: 'addressId'},
+                    {title: '存储地址名称', align: 'center', key: 'addressName'},
+                    {title: '存储单元简称', align: 'center', key: 'address'},
+                    {
+                        title: '最大存储量',
+                        align: 'center',
+                        slot: 'max_capacity_amount'
+                    },
+                    {title: '存储单位', align: 'center', key: 'address'},
+                ],
+                data2: [
+                    {Safetid: 1, name: '成品库', addressId: '01-01-01', addressName: '电子-计算机-服务器', max_capacity_amount: 0}
+                ],
+
+                developObj: {},
             },
             // 方法
             methods: {
+                addOrUpdate() {
+                    let obj = {
+                        productName: this.developObj.productName,
+                        productId: this.developObj.productId,
+                        min_amount: this.developObj.min_amount,
+                        max_amount: this.developObj.max_amount,
+                        max_capacity_amount: this.developObj.max_capacity_amount,
+                        register: this.developObj.register,
+                        config: this.developObj.config,
+                    }
+
+                    axios.post(safeApi + 'warehouseStock/insertSecuritySheet', obj).then(res => {
+                        if (res.data.success) {
+                            this.$Message.success(res.data.message);
+                        }
+
+                        this.loadInventoryAllocationSheet();
+                        this.drawerValue = false;
+
+                    }).catch(err => {
+                        this.$Message.error('对方不想说话，并且向你抛出了一个异常');
+                    })
+                },
+                handleEdit(row) {
+                    this.$set(row, '$isEdit', true)
+
+                },
+                handleSave(row) {
+                    this.$set(row, '$isEdit', false)
+                },
+                developFn(row) {
+                    this.developObj = row;
+
+
+                    console.log(row);
+
+                    this.drawerValue = true;
+                },
                 loadInventoryAllocationSheet() {
-                    axios.get(safeApi + "warehouseStock/findPagecheck?page="+this.page+"&limit="+this.pageSize+"&checkTag=审核通过").then(res => {
-                        console.log(res.data);
+                    this.loading = true;
+                    axios.get(safeApi + "warehouseStock/findPagecheck?page=" + this.page + "&limit=" + this.pageSize + "&checkTag=审核通过&inventoryStatus=0").then(res => {
+                        this.data1 = res.data.data;
+                        this.total = res.data.total;
+
+                        this.loading = false;
                     }).catch(err => {
                         this.$Message.error('对方不想说话，并且向你抛出了一个异常');
                     });
