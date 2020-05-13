@@ -365,6 +365,7 @@
                                 type: 'success'
                             });
                         }
+                        this.loadTableData();
                     }).catch(err=>{
                         this.$message.error('网络不佳,请稍后再试!');
                     })
