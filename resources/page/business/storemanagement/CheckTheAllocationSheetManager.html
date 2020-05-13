@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>配置单复核管理</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="../../../lib/layui-v2.5.5/css/layui.css" media="all">
+    <link rel="stylesheet" href="../../../css/public.css" media="all">
+
+    <!--element-ui/css-->
+    <link rel="stylesheet" href="../../../lib/plugin/element-ui/style/index.css">
+
+    <style>
+        .el-row {
+            margin-bottom: 20px;
+
+        &
+        :last-child {
+            margin-bottom: 0;
+        }
+
+        }
+        .el-col {
+            border-radius: 4px;
+        }
+
+        .bg-purple-dark {
+            background: #99a9bf;
+        }
+
+        .bg-purple {
+            background: #d3dce6;
+        }
+
+        .bg-purple-light {
+            background: #e5e9f2;
+        }
+
+        .grid-content {
+            border-radius: 4px;
+            min-height: 36px;
+        }
+
+        .row-bg {
+            padding: 10px 0;
+            background-color: #f9fafc;
+        }
+    </style>
+</head>
+<body>
+
+<div id="app">
+    <div class="layuimini-container">
+        <div class="layuimini-main">
+
+            <el-form :model="ruleForm" ref="ruleForm" style="margin-top: 30px !important;" :inline="true"
+                     class="demo-form-inline">
+                <el-form-item prop="product_name" label="产品名称">
+                    <el-input v-model="ruleForm.product_name" placeholder="请输入产品名称"></el-input>
+                </el-form-item>
+                <el-form-item>
+                    <el-tooltip class="item" effect="dark" content="查询" placement="bottom-start">
+                        <el-button icon="el-icon-search" @click="queryFnBtn" circle></el-button>
+                    </el-tooltip>
+
+                    <el-tooltip class="item" effect="dark" content="重置" placement="bottom-start">
+                        <el-button @click="resetForm('ruleForm')" type="primary" icon="el-icon-refresh-left"
+                                   circle></el-button>
+                    </el-tooltip>
+                </el-form-item>
+            </el-form>
+
+        </div>
+    </div>
+
+    <div class="layuimini-container" style="margin-top: 10px;">
+        <div class="layuimini-main">
+
+            <!--数据表格-->
+            <el-table
+                    v-loading="loading"
+                    element-loading-text="拼命加载中"
+                    element-loading-spinner="el-icon-loading"
+                    element-loading-background="rgba(0, 0, 0, 0.8)"
+                    border
+                    stripe
+                    :default-sort="{prop: 'date', order: 'descending'}"
+                    :data="tableData"
+                    style="width: 100%">
+                <el-table-column
+                        prop="stockId"
+                        label="配置单编号"
+                        align="center"
+                >
+                </el-table-column>
+                <el-table-column
+                        prop="productId"
+                        label="产品编号"
+                        align="center"
+                >
+                </el-table-column>
+                <el-table-column
+                        prop="productName"
+                        label="产品名称"
+                        align="center"
+                >
+                </el-table-column>
+                <el-table-column
+                        prop="name"
+                        label="用途类型"
+                        align="center"
+                >
+                </el-table-column>
+                <el-table-column
+                        prop="name"
+                        label="1级分类"
+                        align="center"
+                >
+                </el-table-column>
+                <el-table-column
+                        prop="name"
+                        label="2级分类"
+                        align="center"
+                >
+                </el-table-column>
+                <el-table-column
+                        prop="name"
+                        label="3级分类"
+                        align="center"
+                >
+                </el-table-column>
+                <el-table-column
+                        prop="registerTime"
+                        label="登记时间"
+                        align="center"
+                >
+                </el-table-column>
+                <el-table-column
+                        fixed="right"
+                        prop="address"
+                        label="操作"
+                        align="center"
+                >
+                    <template slot-scope="scope">
+                        <el-tooltip class="item" effect="dark" content=" 复 核 " placement="left-start">
+                            <el-button @click="reviewFn(scope.row)" type="success" icon="el-icon-check"
+                                       circle></el-button>
+                        </el-tooltip>
+                    </template>
+                </el-table-column>
+            </el-table>
+            <!--数据表格-->
+
+        </div>
+    </div>
+
+    <!--底部-->
+    <div class="layuimini-container" style="margin-top: 10px;">
+        <div class="layuimini-main">
+            <el-pagination
+                    @size-change="handleSizeChange"
+                    @current-change="handleCurrentChange"
+                    :current-page="page"
+                    :page-sizes="[5, 10, 15, 20]"
+                    :page-size="pageSize"
+                    layout="total, sizes, prev, pager, next, jumper"
+                    :total="total">
+            </el-pagination>
+        </div>
+    </div>
+    <!--底部-->
+
+    <!--弹出层-->
+    <el-dialog
+            title="安全库存配置单"
+            :visible.sync="centerDialogVisible"
+            width="60%"
+            center>
+        <div style="margin: 0 150px">
+
+            <el-row :gutter="20">
+                <el-col :span="12">
+                    配置单编号: {{diaObj.stockId}}
+                </el-col>
+                <el-col :span="12"></el-col>
+            </el-row>
+
+            <el-row :gutter="20">
+                <el-col :span="12">
+                    产品名称: {{diaObj.productName}}
+                </el-col>
+                <el-col :span="12">
+                    产品编号: {{diaObj.productId}}
+                </el-col>
+            </el-row>
+
+            <el-row :gutter="20">
+                <el-form inline label-width="110px">
+                    <el-col :span="12">
+                        <el-form-item label="库存报警下限数">
+                            <el-input :disabled="true" v-model="diaObj.minAmount"></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="12">
+                        <el-form-item label="库存报警上限数">
+                            <el-input :disabled="true" v-model="diaObj.maxAmount"></el-input>
+                        </el-form-item>
+                    </el-col>
+                </el-form>
+            </el-row>
+
+            <el-row :gutter="20">
+                <el-col :span="12">
+                    设计人: {{diaObj.stockId}}
+                </el-col>
+                <el-col :span="12"></el-col>
+            </el-row>
+        </div>
+
+        <span slot="footer" class="dialog-footer">
+            <el-button @click="centerDialogVisible = false" icon="el-icon-switch-button">取 消</el-button>
+            <el-button type="primary" @click="centerDialogVisible = false" icon="el-icon-position">确 定</el-button>
+        </span>
+    </el-dialog>
+    <!--弹出层-->
+</div>
+
+<!--jq-->
+<script src="../../../lib/jquery-3.4.1/jquery-3.4.1.min.js"></script>
+<!--layui-->
+<script src="../../../lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
+<!--vue-->
+<script src="../../../lib/plugin/vue/vue.min.js"></script>
+<!--element-ui/index.js-->
+<script src="../../../lib/plugin/element-ui/index.js"></script>
+<!--axios-->
+<script src="../../../lib/plugin/axios/axios.min.js"></script>
+
+<!--系统文件-->
+<script src="../../../lib/common/jquery.cookie.min.js" charset="utf-8"></script>
+<script src="../../../lib/common/common.js" charset="utf-8"></script>
+
+<!--业务代码-->
+<script>
+    let safeApi = 'http://127.0.0.1:8004/';
+    let vue;
+
+    // 入口函数
+    $(function () {
+        // http request 拦截器
+        axios.interceptors.request.use(
+            config => {
+                if (token) { //判断token是否存在
+                    config.headers.token = $.cookie("TOKEN");  //将token设置成请求头
+                }
+                return config;
+            },
+            err => {
+                return Promise.reject(err);
+            }
+        );
+
+        // 初始化Vue
+        vue = new Vue({
+            // 控制区域
+            el: '#app',
+            // 数据
+            data: {
+                tableData: [],
+
+                /*分页*/
+                page: 1,
+                pageSize: 10,
+                total: 9,
+                /*分页*/
+
+                /*查询条件*/
+                ruleForm: {
+                    product_name: ''
+                },
+                /*查询条件*/
+
+                /*表格加载动画*/
+                loading: true,
+                /*表格加载动画*/
+
+                /*弹出层*/
+                centerDialogVisible: false,
+                /*弹出层*/
+
+                /*diaobj*/
+                diaObj: {}
+                /*diaobj*/
+            },
+            // 方法
+            methods: {
+                reviewFn(row) {
+                    this.centerDialogVisible = true;
+
+                    this.diaObj = row;
+                },
+                queryFnBtn() {
+                    this.loadTableData();
+                },
+                loadTableData() {
+                    // 开启加载动画
+                    this.loading = true;
+
+                    let queryObj = `page=${this.page}&limit=${this.pageSize}&product_name=${this.ruleForm.product_name}&check_tag=0`;
+                    axios.get(safeApi + 'warehouseStock/querySecuritySheet?' + queryObj).then(res => {
+                        this.tableData = res.data.data;
+                        this.total = res.data.count;
+
+                        // 关闭加载动画
+                        this.loading = false;
+                    }).catch(err => {
+                        this.$message.error('网络不佳,请稍后再试!');
+                    });
+                },
+                handleSizeChange(val) {
+                    this.pageSize = val;
+                    this.loadTableData();
+                },
+                handleCurrentChange(val) {
+                    this.page = val;
+                    this.loadTableData();
+                },
+                resetForm(formName) {
+                    this.$refs[formName].resetFields();
+                }
+            },
+            // 钩子函数
+            mounted() {
+                /*页面加载完毕调用查询数据方法*/
+                this.loadTableData();
+            }
+        });
+    });
+</script>
+</body>
+</html>
