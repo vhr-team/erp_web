@@ -332,14 +332,13 @@
             </el-form>
 
 
-            <el-table
-                    :data="goodsItems" border>
+            <el-table :data="goodsItems" border>
                 <el-table-column fixed="left" label="商品类别" align="center">
                     <template slot-scope="scope">
                         <el-select @change="currentProductType(scope.$index,scope.row.productTypeId)"
                                    v-model="scope.row.productTypeId" placeholder="请选择商品类别">
                             <el-option :label="item.name" :value="item.productTypeId"
-                                       v-for="item in producttypeItems" :key="item.productTypeId"></el-option>
+                                       orderModel    v-for="item in producttypeItems" :key="item.productTypeId"></el-option>
                         </el-select>
                     </template>
                 </el-table-column>
