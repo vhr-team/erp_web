@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>入库申请审核</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="../../../lib/plugin/iview/dist/styles/iview.css">
+
+    <link rel="stylesheet" href="../../../lib/layui-v2.5.5/css/layui.css" media="all">
+    <link rel="stylesheet" href="../../../css/public.css" media="all">
+</head>
+<body>
+
+
+<div class="layuimini-container" id="app">
+    <div class="layuimini-main">
+
+        <!--搜索结束-->
+
+        <!--数据表格-->
+        <i-table border :columns="columns1" :data="data1">
+            <template slot-scope="{ row, index }" slot="action">
+                <i-button type="info" @click="modal1 = true" icon="ios-add-circle-outline"> 审 核 </i-button>
+            </template>
+        </i-table>
+        <!--数据表格-->
+
+
+        <!--分页-->
+        <Page
+                :page-size-opts=[5,10,15,20]
+                :current="page"
+                :page-size="pageSize"
+                style="margin-top: 20px"
+                :total="total"
+                @on-change="currentPageChange"
+                @on-page-size-change="currentPageSizeChange"
+                show-total
+                show-sizer
+                show-elevator/>
+        <!--分页-->
+
+        <!--modal-->
+        <Modal width="1300px" title="Title" v-model="modal1" :mask-closable="false">
+
+            <i-button type="success "  icon="checkmark-round"> 提 交 </i-button>
+
+
+            <form method="post" class="layui-form layui-form-pane" lay-filter="dataFrm" id="dataFrm">
+                <div class="layui-form-item" style="padding-left: 5%">
+                    <div class="layui-inline" >
+                        <label class="layui-form-label">入库人</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="storer" id="storer" lay-verify="required" autocomplete="off"
+                                   placeholder="请输入入库人姓名" class="layui-input" style="width: 300px">
+                        </div>
+                    </div>
+                    <div class="layui-inline" style="padding: 0 222.5px">
+                        <label class="layui-form-label">入库理由</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="reason" id="reason" lay-verify="required" autocomplete="off"
+                                   placeholder="请输入入库理由" class="layui-input" style="width: 300px">
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="layui-form-item" style="padding-left: 5%">
+                    <div class="layui-inline" style="padding-right: 222.5px">
+                        <label class="layui-form-label">总件数</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="amountSum" id="amountSum" lay-verify="required" autocomplete="off"
+                                   placeholder="请输入总件数" class="layui-input" style="width: 300px">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">总金额</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="costPriceSum" id="costPriceSum" lay-verify="required" autocomplete="off"
+                                   placeholder="请输入总金额" class="layui-input" style="width: 300px">
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+
+            <i-table
+                    :columns="columns1" :data="data1">
+                <template slot-scope="{ row, index }" slot="action">
+                    <i-button v-if="indexVal == 0" icon="md-checkmark-circle" type="success" size="small" style="margin-right: 5px" > 入 库</i-button>
+                </template>
+            </i-table>
+
+        </Modal>
+        <!--modal-->
+
+    </div>
+</div>
+
+
+
+<!-- 你的HTML代码 -->
+
+<!--jq-->
+<script src="../../../lib/jquery-3.4.1/jquery-3.4.1.min.js"></script>
+<script src="../../../lib/plugin/vue/vue.min.js"></script>
+<script src="../../../lib/plugin/iview/dist/iview.min.js"></script>
+
+<!--layui-->
+<script src="../../../lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
+
+<!--axios-->
+<script src="../../../lib/plugin/axios/axios.min.js"></script>
+
+<!--系统文件-->
+<script src="../../../lib/common/jquery.cookie.min.js" charset="utf-8"></script>
+<script src="../../../lib/common/common.js" charset="utf-8"></script>
+<script>
+
+    let urlApi = 'http://127.0.0.1:8004/';
+    let vue;
+
+    $("#addDept").click(function () {
+        openAdddept();
+    });
+
+    // 入口函数
+    $(function () {
+        // http request 拦截器
+        axios.interceptors.request.use(
+            config => {
+                if (token) { //判断token是否存在
+                    config.headers.token = $.cookie("TOKEN");  //将token设置成请求头
+                }
+                return config;
+            },
+            err => {
+                return Promise.reject(err);
+            }
+        );
+
+        // 初始化Vue
+        vue = new Vue({
+            // 控制区域
+            el: '#app',
+            // 数据
+            data: {
+                indexVal: 0,
+
+                columns1: [
+                    {title: '申请单编号',fixed: 'left', key: 'inboundId', align: 'center'},
+                    {title: '入库理由', key:'reason', align: 'center'},
+                    {title: '登记时间', key: 'registerTime', align: 'center'},
+                    {title: '总件数', key: 'amountSum', align: 'center'},
+                    {title: '总金额', key: 'costPriceSum', align: 'center'},
+                    {
+                        title: '操作',
+                        slot: 'action',
+                        width: 280,
+                        fixed: 'right',
+                        align: 'center'
+                    }
+                ],
+                data1: [
+                    {Id: 1}
+                ],
+                page: 1,
+                pageSize: 10,
+                total: 9,
+                modal8: false,
+
+                modal1: false
+            },
+
+            // 方法
+            methods: {
+                tabsEventClick(val) {
+                    this.indexVal = val;
+                },
+                initTableData1() {
+                    let params = `checkTag=0&page=${this.page}&limit=${this.pageSize}`;
+                    axios.get(urlApi + "warehouseInbound/queryInboundLimit?" + params).then(res => {
+                        this.data1 = res.data.data;
+                    }).catch(err => {
+                        this.$Message.error('对方不想说话，并且向你抛出了一个异常');
+                    });
+                },
+                // 当前页发生改变
+                currentPageChange(val) {
+                    this.page = val;
+
+                    // 重新渲染表格数据
+                    this.initTableData1();
+                },
+                // 当前页显示条数发生改变
+                currentPageSizeChange(val) {
+                    this.pageSize = val;
+
+                    // 重新渲染表格数据
+                    this.initTableData1();
+                },
+            },
+            // 钩子函数
+            mounted() {
+                this.initTableData1();
+            }
+        })
+    });
+</script>
+</body>
+</html>
