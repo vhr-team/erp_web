@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>制定生产派工单</title>
+    <script src="../../../lib/jquery-3.4.1/jquery-3.4.1.min.js"></script>
+    <script src="../../../lib/layui-v2.5.5/layui.js"></script>
+    <link rel="stylesheet" href="../../../lib/layui-v2.5.5/css/layui.css">
+</head>
+<body>
+<script type="text/html" id="toolbarDemo">
+    <div class="layui-btn-container">
+        <button class="layui-btn layui-btn-sm" lay-event="getCheckData">生成派工单</button>
+    </div>
+</script>
+<div id="dispatchadd"style="display: none;" >
+    <fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;">
+        <legend style="margin-left: 495px">制定生产派工单</legend>
+    </fieldset>
+    <input type="text" name="title" required lay-verify="required" placeholder="请输入标题" autocomplete="off" class="layui-input" style="margin-left: ">
+
+</div>
+<table id="demo" lay-filter="test"></table>
+<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>
+
+<script>
+    layui.use(['table','layer'], function(){
+        var table = layui.table;
+        var layer=layui.layer;
+        //第一个实例
+        table.render({
+            elem: '#demo'
+            ,toolbar: '#toolbarDemo' //开启头部工具栏，并为其绑定左侧模板
+            ,height: 312
+            ,url: 'json/table.json' //数据接口
+            ,page: true //开启分页
+            ,cols: [[ //表头
+                {type: 'checkbox', fixed: 'left'}
+                ,{field: 'id', title: 'ID', width:100, sort: true, fixed: 'left'}
+                ,{field: 'username', title: '计划单编号', width:100}
+                ,{field: 'sex', title: '产品编号', width:100, sort: true}
+                ,{field: 'city', title: '产品名称', width:100}
+                ,{field: 'sign', title: '描述', width: 177}
+                ,{field: 'experience', title: '数量', width: 100, sort: true}
+                ,{field: 'score', title: '出库编号集合', width: 100, sort: true}
+                ,{field: 'classify', title: '审核时间', width: 100}
+                ,{fixed: 'right', title:'操作', toolbar: '#barDemo', width:150}
+            ]]
+        });
+
+        //头工具栏事件
+        table.on('toolbar(test)', function(obj){
+            var checkStatus = table.checkStatus(obj.config.id);
+            switch(obj.event){
+                case 'getCheckData':
+                    var data = checkStatus.data;
+                    layer.alert(JSON.stringify(data));
+                    layer.open({
+                        type:1,//类型
+                        area:['1200px','500px'],//定义宽和高
+                        title:'查看详细信息',//题目
+                        shadeClose:false,//点击遮罩层关闭
+                        content: $('#dispatchadd')//打开的内容
+                    });
+                    break;
+              /*  case 'getCheckLength':
+                    var data = checkStatus.data;
+                    layer.msg('选中了：'+ data.length + ' 个');
+                    break;
+                case 'isAll':
+                    layer.msg(checkStatus.isAll ? '全选': '未全选');
+                    break;*/
+            };
+        });
+
+        //监听行工具事件
+        table.on('tool(test)', function(obj){
+            var data = obj.data;
+            //console.log(obj)
+            if(obj.event === 'del'){
+                layer.confirm('真的删除行么', function(index){
+                    obj.del();
+                    layer.close(index);
+                });
+            } else if(obj.event === 'edit'){
+                layer.prompt({
+                    formType: 2
+                    ,value: data.email
+                }, function(value, index){
+                    obj.update({
+                        email: value
+                    });
+                    layer.close(index);
+                });
+            }
+        });
+
+    });
+</script>
+</body>
+</html>

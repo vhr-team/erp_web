@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>制定生产派工单</title>
+    <!-- import CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <link rel="stylesheet" href="../../../lib/layui-v2.5.5/css/layui.css">
+    <script src="../../../lib/jquery-3.4.1/jquery-3.4.1.min.js"></script>
+    <script src="../../../lib/layui-v2.5.5/layui.js"></script>
+    <script src="../../../lib/plugin/axios/axios.min.js"></script>
+    <script src="../../../lib/plugin/element-ui/index.js"></script>
+    <link rel="stylesheet" href="../../../lib/plugin/element-ui/style/index.css">
+</head>
+<body>
+<div id="app">
+<div>
+    <el-table
+            :data="tableData.filter(data => !search || data.name.toLowerCase().includes(search.toLowerCase()))"
+            style="width: 100%">
+        <el-table-column
+                label="Date"
+                prop="date">
+        </el-table-column>
+        <el-table-column
+                label="Name"
+                prop="name">
+        </el-table-column>
+        <el-table-column
+                align="right">
+            <template slot="header" slot-scope="scope">
+                <el-button type="success" plain>生成派工单</el-button>
+            </template>
+            <template slot-scope="scope">
+                <el-button
+                        size="mini"
+                        @click="handleEdit(scope.$index, scope.row)">Edit</el-button>
+                <el-button
+                        size="mini"
+                        type="danger"
+                        @click="handleDelete(scope.$index, scope.row)">Delete</el-button>
+            </template>
+        </el-table-column>
+    </el-table>
+</div>
+</div>
+</body>
+<script src="https://unpkg.com/vue/dist/vue.js"></script>
+<script src="https://unpkg.com/element-ui/lib/index.js"></script>
+<script>
+    layui.use(['table','layer'], function() {
+
+
+        new Vue({
+            el: '#app',
+            data: {
+                tableData: [{
+                    date: '2016-05-02',
+                    name: '王小虎',
+                    address: '上海市普陀区金沙江路 1518 弄'
+                }, {
+                    date: '2016-05-04',
+                    name: '王小虎',
+                    address: '上海市普陀区金沙江路 1517 弄'
+                }, {
+                    date: '2016-05-01',
+                    name: '王小虎',
+                    address: '上海市普陀区金沙江路 1519 弄'
+                }, {
+                    date: '2016-05-03',
+                    name: '王小虎',
+                    address: '上海市普陀区金沙江路 1516 弄'
+                }],
+                search: ''
+
+            },
+            methods: {
+                handleEdit(index, row) {
+                    console.log(index, row);
+                },
+                handleDelete(index, row) {
+                    console.log(index, row);
+                }
+            },
+        });
+    });
+</script>
+</html>
