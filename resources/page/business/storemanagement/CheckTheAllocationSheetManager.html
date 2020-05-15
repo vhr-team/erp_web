@@ -210,18 +210,68 @@
                     </el-col>
                 </el-form>
             </el-row>
-
-            <el-row :gutter="20">
-                <el-col :span="12">
-                    设计人: {{diaObj.stockId}}
-                </el-col>
-                <el-col :span="12"></el-col>
-            </el-row>
         </div>
 
+        <el-table
+                border
+                :data="tableData2"
+                style="width: 100%">
+            <el-table-column
+                    prop="Safetid"
+                    label="序号"
+                    align="center"
+            >
+            </el-table-column>
+            <el-table-column
+                    prop="name"
+                    label="库房名称"
+                    align="center"
+            >
+            </el-table-column>
+            <el-table-column
+                    prop="addressId"
+                    label="存储地址编号"
+                    align="center"
+            >
+            </el-table-column>
+            <el-table-column
+                    prop="addressName"
+                    width="250px"
+                    label="存储地址名称"
+                    align="center"
+            >
+            </el-table-column>
+            <el-table-column
+                    prop=""
+                    label="存储单元简称"
+                    align="center"
+            >
+            </el-table-column>
+            <el-table-column
+                    prop=""
+                    label="最大存储量"
+                    align="center"
+            >
+                <template slot-scope="scope">
+                    <el-input v-model="diaObj.maxCapacityAmount"></el-input>
+                </template>
+            </el-table-column>
+            <el-table-column
+                    prop="name"
+                    label="存储单元简称"
+                    align="center"
+            >
+            </el-table-column>
+            <el-table-column
+                    prop="address"
+                    align="center"
+                    label="存储单位">
+            </el-table-column>
+        </el-table>
+
         <span slot="footer" class="dialog-footer">
-            <el-button @click="centerDialogVisible = false" icon="el-icon-switch-button">取 消</el-button>
-            <el-button type="primary" @click="centerDialogVisible = false" icon="el-icon-position">确 定</el-button>
+            <el-button @click="centerDialogVisible = false" icon="el-icon-switch-button"> 取 消 </el-button>
+            <el-button type="primary" @click="throughFn(diaObj.productId)" icon="el-icon-position"> 审 核 通 过 </el-button>
         </span>
     </el-dialog>
     <!--弹出层-->
@@ -291,15 +341,40 @@
                 /*弹出层*/
 
                 /*diaobj*/
-                diaObj: {}
+                diaObj: {},
                 /*diaobj*/
+
+
+                /*复核数据*/
+                tableData2: [
+                    {Safetid: 1, name: '成品库', addressId: '01-01-01', addressName: '电子-计算机-服务器', max_capacity_amount: 0}
+                ]
+                /*复核数据*/
             },
             // 方法
             methods: {
+                // 审核通过
+                throughFn(productId){
+                    // 关闭弹出层
+                    this.centerDialogVisible = false;
+
+                    axios.get(safeApi + 'warehouseStock/updateSecuritySheet/'+productId+"/"+JSON.parse(localStorage.getItem("user")).name).then(res=>{
+                        if(res.data.success){
+                            this.$message({
+                                message: res.data.message,
+                                type: 'success'
+                            });
+                        }
+                        this.loadTableData();
+                    }).catch(err=>{
+                        this.$message.error('网络不佳,请稍后再试!');
+                    })
+                },
                 reviewFn(row) {
                     this.centerDialogVisible = true;
 
                     this.diaObj = row;
+                    console.log(row);
                 },
                 queryFnBtn() {
                     this.loadTableData();

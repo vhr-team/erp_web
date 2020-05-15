@@ -7,6 +7,8 @@
     <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
     <link rel="stylesheet" href="../../../lib/layui-v2.5.5/css/layui.css">
     <link href="https://cdn.bootcss.com/element-ui/2.8.2/theme-chalk/index.css" rel="stylesheet">
+    <link rel="stylesheet" href="../../../lib/layui-v2.5.5/css/layui.css" media="all">
+    <link rel="stylesheet" href="../../../css/public.css" media="all">
     <!-- 2. 引入vue和vue-router-->
     <script src="https://cdn.bootcss.com/vue/2.6.10/vue.js"></script>
     <!-- 未使用vue路由功能可不导入 -->
@@ -40,186 +42,196 @@
 
 </head>
 <body>
-<div id="app">
-    <div>
-        <!--搜索开始-->
-        <fieldset class="layui-elem-field">
-            <legend>搜索信息</legend>
-            <div class="layui-field-box" style="margin-left: 300px ">
-                <label for="">名称： </label>
-                <el-input v-model="material.productName" style="display: inline-block;width: 200px"
-                          placeholder="物料名称"></el-input>
-                <label for="">日期： </label>
-                <el-date-picker
-                        v-model="material.date"
-                        type="date"
-                        value-format="yyyy-MM-dd"
-                        placeholder="选择建档日期">
-                </el-date-picker>
-                <el-button type="primary" @click="findPage()" icon="el-icon-search">搜索</el-button>
 
+<div class="layuimini-container">
+    <div class="layuimini-main">
+        <div id="app">
+            <div>
+                <!--搜索开始-->
+                <fieldset class="layui-elem-field">
+                    <legend>搜索信息</legend>
+                    <div class="layui-field-box" style="margin-left: 300px ">
+                        <label for="">名称： </label>
+                        <el-input v-model="material.productName" style="display: inline-block;width: 200px"
+                                  placeholder="物料名称"></el-input>
+                        <label for="">日期： </label>
+                        <el-date-picker
+                                v-model="material.date"
+                                type="date"
+                                value-format="yyyy-MM-dd"
+                                placeholder="选择建档日期">
+                        </el-date-picker>
+                        <el-button type="primary" @click="findPage()" icon="el-icon-search">搜索</el-button>
+
+                    </div>
+                </fieldset>
+                <!--搜索结束-->
+                <div style="margin-left: 10px">
+                    <div style="margin-bottom:5px;display: inline-block">
+                        <el-tooltip class="item" effect="dark" content="添加物料" placement="top-start">
+                            <el-button type="success" size="small" @click="materialAdd=true,getUser()"
+                                       icon="el-icon-plus">
+                                添加物料
+                            </el-button>
+                        </el-tooltip>
+                    </div>
+                </div>
+                <!--表格开始-->
+                <div>
+                    <el-table
+                            :data="materialList"
+                            ref="multipleTable"
+                            v-loading="loading"
+                            border
+                            @selection-change="handleSelectionChange"
+                            style="width: 100%;margin: 0 auto">
+                        <el-table-column
+                                type="selection"
+                                width="55">
+                        </el-table-column>
+                        <el-table-column type="expand" label="详细" width="50">
+                            <template slot-scope="props">
+                                <el-form label-position="left" inline class="demo-table-expand">
+                                    <el-form-item label="物料编号">
+                                        <span>{{ props.row.productId }}</span>
+                                    </el-form-item>
+                                    <el-form-item label="物料名称">
+                                        <span>{{ props.row.productName }}</span>
+                                    </el-form-item>
+                                    <el-form-item label="用途类型">
+                                        <span>{{ props.row.type }}</span>
+                                    </el-form-item>
+                                    <el-form-item label="单位">
+                                        <span>{{ props.row.amountUnit }}</span>
+                                    </el-form-item>
+                                    <el-form-item label="价格">
+                                        <span>{{ props.row.costPrice }}</span>
+                                    </el-form-item>
+                                    <el-form-item label="登记时间">
+                                        <span>{{ props.row.date }}</span>
+                                    </el-form-item>
+                                    <el-form-item label="登记人">
+                                        <span>{{ props.row.marterialPerson }}</span>
+                                    </el-form-item>
+                                    <el-form-item label="描述">
+                                        <span>{{ props.row.productDescribe }}</span>
+                                    </el-form-item>
+                                </el-form>
+                            </template>
+                        </el-table-column>
+                        <el-table-column
+                                label="ID"
+                                prop="id">
+                        </el-table-column>
+                        <el-table-column
+                                label="物料名称"
+                                prop="productName">
+                        </el-table-column>
+                        <el-table-column
+                                label="描述"
+                                prop="productDescribe">
+                        </el-table-column>
+                        <el-table-column
+                                fixed="right"
+                                label="操作"
+                                width="160">
+                            <template slot-scope="scope">
+                                <el-button-group>
+                                    <el-tooltip class="item" effect="dark" content="修改物料" placement="top-start">
+                                        <el-button type="primary" @click="Update(scope.row),materialUpdate=true"
+                                                   size="small" icon="el-icon-edit"></el-button>
+                                    </el-tooltip>
+                                    <!--<el-tooltip class="item" effect="dark" content="删除物料" placement="top-start">
+                                        <el-button type="danger" title="" size="small"
+                                                   icon="el-icon-delete"></el-button>
+                                    </el-tooltip>-->
+                                </el-button-group>
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                    <!--表格结束-->
+                    <!--分页开始-->
+                    <el-pagination
+                            @size-change="handleSizeChange"
+                            @current-change="handleCurrentChange"
+                            :current-page="page"
+                            :page-sizes="[10, 20, 30, 40,50,60]"
+                            :page-size="pageSize"
+                            layout="total, sizes, prev, pager, next, jumper"
+                            :total="total">
+                    </el-pagination>
+                    <!--分页结束-->
+                </div>
             </div>
-        </fieldset>
-        <!--搜索结束-->
-        <div style="margin-left: 10px">
-            <div style="margin-bottom:5px;display: inline-block">
-                <el-tooltip class="item" effect="dark" content="添加物料" placement="top-start">
-                    <el-button type="success" size="small" @click="materialAdd=true,getUser()" icon="el-icon-plus">
-                        添加物料
-                    </el-button>
-                </el-tooltip>
+            <div>
+                <!--添加的模态框-->
+                <el-drawer
+                        title="添加物料"
+                        :visible.sync="materialAdd"
+                        :before-close="materialAddClose">
+                    <el-form ref="form" size="small" label-width="80px">
+                        <el-form-item label="*物料名称">
+                            <el-input style="width: 200px" v-model="materialAdds.productName"></el-input>
+                        </el-form-item>
+                        <el-form-item label="*用途类型">
+                            <el-input style="width: 200px" v-model="materialAdds.type"></el-input>
+                        </el-form-item>
+                        <el-form-item label="*单位">
+                            <el-input style="width: 200px" v-model="materialAdds.amountUnit"></el-input>
+                        </el-form-item>
+                        <el-form-item label="*单价"
+                                      :rules="[  { required: true, message: '单价不能为空'}, { type: 'number', message: '单价必须为数字值'} ]">
+                            <el-input style="width: 200px" type="number" v-model="materialAdds.costPrice"></el-input>
+                        </el-form-item>
+                        <el-form-item label="*登记人">
+                            <el-input style="width: 200px" :disabled="true"
+                                      v-model="materialAdds.marterialPerson"></el-input>
+                        </el-form-item>
+                        <el-form-item label="物料描述">
+                            <el-input type="textarea" style="width: 200px"
+                                      v-model="materialAdds.productDescribe"></el-input>
+                        </el-form-item>
+                        <el-form-item>
+                            <el-button type="primary" @click="addmaterial()">添加</el-button>
+                        </el-form-item>
+                    </el-form>
+                </el-drawer>
+            </div>
+            <div>
+                <!--修改的模态框-->
+                <el-drawer
+                        title="修改物料"
+                        :visible.sync="materialUpdate"
+                        :before-close="materialAddClose">
+                    <el-form ref="form" size="small" label-width="80px">
+                        <el-form-item label="*物料名称">
+                            <el-input style="width: 200px" v-model="materialUpdates.productName"></el-input>
+                        </el-form-item>
+                        <el-form-item label="*用途类型">
+                            <el-input style="width: 200px" v-model="materialUpdates.type"></el-input>
+                        </el-form-item>
+                        <el-form-item label="*单位">
+                            <el-input style="width: 200px" v-model="materialUpdates.amountUnit"></el-input>
+                        </el-form-item>
+                        <el-form-item label="*单价"
+                                      :rules="[  { required: true, message: '单价不能为空'}, { type: 'number', message: '单价必须为数字值'} ]">
+                            <el-input style="width: 200px" type="number" v-model="materialUpdates.costPrice"></el-input>
+                        </el-form-item>
+                        <el-form-item label="*登记人">
+                            <el-input style="width: 200px" :disabled="true"
+                                      v-model="materialUpdates.marterialPerson"></el-input>
+                        </el-form-item>
+                        <el-form-item label="物料描述">
+                            <el-input type="textarea" style="width: 200px"
+                                      v-model="materialUpdates.productDescribe"></el-input>
+                        </el-form-item>
+                        <el-form-item>
+                            <el-button type="primary" @click="updatematerial()">修改</el-button>
+                        </el-form-item>
+                    </el-form>
+                </el-drawer>
             </div>
         </div>
-        <!--表格开始-->
-        <div>
-            <el-table
-                    :data="materialList"
-                    ref="multipleTable"
-                    v-loading="loading"
-                    border
-                    @selection-change="handleSelectionChange"
-                    style="width: 100%;margin: 0 auto">
-                <el-table-column
-                        type="selection"
-                        width="55">
-                </el-table-column>
-                <el-table-column type="expand" label="详细" width="50">
-                    <template slot-scope="props">
-                        <el-form label-position="left" inline class="demo-table-expand">
-                            <el-form-item label="物料编号">
-                                <span>{{ props.row.productId }}</span>
-                            </el-form-item>
-                            <el-form-item label="物料名称">
-                                <span>{{ props.row.productName }}</span>
-                            </el-form-item>
-                            <el-form-item label="用途类型">
-                                <span>{{ props.row.type }}</span>
-                            </el-form-item>
-                            <el-form-item label="单位">
-                                <span>{{ props.row.amountUnit }}</span>
-                            </el-form-item>
-                            <el-form-item label="价格">
-                                <span>{{ props.row.costPrice }}</span>
-                            </el-form-item>
-                            <el-form-item label="登记时间">
-                                <span>{{ props.row.date }}</span>
-                            </el-form-item>
-                            <el-form-item label="登记人">
-                                <span>{{ props.row.marterialPerson }}</span>
-                            </el-form-item>
-                            <el-form-item label="描述">
-                                <span>{{ props.row.productDescribe }}</span>
-                            </el-form-item>
-                        </el-form>
-                    </template>
-                </el-table-column>
-                <el-table-column
-                        label="ID"
-                        prop="id">
-                </el-table-column>
-                <el-table-column
-                        label="物料名称"
-                        prop="productName">
-                </el-table-column>
-                <el-table-column
-                        label="描述"
-                        prop="productDescribe">
-                </el-table-column>
-                <el-table-column
-                        fixed="right"
-                        label="操作"
-                        width="160">
-                    <template slot-scope="scope">
-                        <el-button-group>
-                            <el-tooltip class="item" effect="dark" content="修改物料" placement="top-start">
-                                <el-button type="primary" @click="Update(scope.row),materialUpdate=true"
-                                           size="small" icon="el-icon-edit"></el-button>
-                            </el-tooltip>
-                            <!--<el-tooltip class="item" effect="dark" content="删除物料" placement="top-start">
-                                <el-button type="danger" title="" size="small"
-                                           icon="el-icon-delete"></el-button>
-                            </el-tooltip>-->
-                        </el-button-group>
-                    </template>
-                </el-table-column>
-            </el-table>
-            <!--表格结束-->
-            <!--分页开始-->
-            <el-pagination
-                    @size-change="handleSizeChange"
-                    @current-change="handleCurrentChange"
-                    :current-page="page"
-                    :page-sizes="[10, 20, 30, 40,50,60]"
-                    :page-size="pageSize"
-                    layout="total, sizes, prev, pager, next, jumper"
-                    :total="total">
-            </el-pagination>
-            <!--分页结束-->
-        </div>
-    </div>
-    <div>
-        <!--添加的模态框-->
-        <el-drawer
-                title="添加物料"
-                :visible.sync="materialAdd"
-                :before-close="materialAddClose">
-            <el-form ref="form" size="small" label-width="80px">
-                <el-form-item label="*物料名称">
-                    <el-input style="width: 200px" v-model="materialAdds.productName"></el-input>
-                </el-form-item>
-                <el-form-item label="*用途类型">
-                    <el-input style="width: 200px" v-model="materialAdds.type"></el-input>
-                </el-form-item>
-                <el-form-item label="*单位">
-                    <el-input style="width: 200px" v-model="materialAdds.amountUnit"></el-input>
-                </el-form-item>
-                <el-form-item label="*单价"
-                              :rules="[  { required: true, message: '单价不能为空'}, { type: 'number', message: '单价必须为数字值'} ]">
-                    <el-input style="width: 200px" type="number" v-model="materialAdds.costPrice"></el-input>
-                </el-form-item>
-                <el-form-item label="*登记人">
-                    <el-input style="width: 200px" :disabled="true" v-model="materialAdds.marterialPerson"></el-input>
-                </el-form-item>
-                <el-form-item label="物料描述">
-                    <el-input type="textarea" style="width: 200px" v-model="materialAdds.productDescribe"></el-input>
-                </el-form-item>
-                <el-form-item>
-                    <el-button type="primary" @click="addmaterial()">添加</el-button>
-                </el-form-item>
-            </el-form>
-        </el-drawer>
-    </div>
-    <div>
-        <!--修改的模态框-->
-        <el-drawer
-                title="修改物料"
-                :visible.sync="materialUpdate"
-                :before-close="materialAddClose">
-            <el-form ref="form" size="small" label-width="80px">
-                <el-form-item label="*物料名称">
-                    <el-input style="width: 200px" v-model="materialUpdates.productName"></el-input>
-                </el-form-item>
-                <el-form-item label="*用途类型">
-                    <el-input style="width: 200px" v-model="materialUpdates.type"></el-input>
-                </el-form-item>
-                <el-form-item label="*单位">
-                    <el-input style="width: 200px" v-model="materialUpdates.amountUnit"></el-input>
-                </el-form-item>
-                <el-form-item label="*单价"
-                              :rules="[  { required: true, message: '单价不能为空'}, { type: 'number', message: '单价必须为数字值'} ]">
-                    <el-input style="width: 200px" type="number" v-model="materialUpdates.costPrice"></el-input>
-                </el-form-item>
-                <el-form-item label="*登记人">
-                    <el-input style="width: 200px" :disabled="true" v-model="materialUpdates.marterialPerson"></el-input>
-                </el-form-item>
-                <el-form-item label="物料描述">
-                    <el-input type="textarea" style="width: 200px" v-model="materialUpdates.productDescribe"></el-input>
-                </el-form-item>
-                <el-form-item>
-                    <el-button type="primary" @click="updatematerial()">修改</el-button>
-                </el-form-item>
-            </el-form>
-        </el-drawer>
     </div>
 </div>
 </body>
@@ -240,7 +252,7 @@
                 loading: true,
 
                 /*修改的实体*/
-                materialUpdates:{},
+                materialUpdates: {},
                 materialUpdate: false,//修改模态框默认关闭
                 materialAdd: false,//添加模态框默认关闭
                 page: 1,//页码
@@ -259,7 +271,7 @@
             methods: {
                 /*查询当前用户名*/
                 getUser() {
-                    var marterialPerson = $.parseJSON( window.localStorage.getItem("user") );
+                    var marterialPerson = $.parseJSON(window.localStorage.getItem("user"));
                     this.materialAdds.marterialPerson = marterialPerson.name;
                 },
                 /*分页条件查询*/
@@ -358,11 +370,11 @@
                     });
                 },
                 /*获取修改数据*/
-                Update(value){
-                    this.materialUpdates=value;//绑定修改的实体
+                Update(value) {
+                    this.materialUpdates = value;//绑定修改的实体
                 },
                 /*修改物料*/
-                updatematerial(){
+                updatematerial() {
                     var data = this.materialUpdates;
                     if (data.productName == null || data.productName === "") {
                         vm.$message({showClose: true, message: "请输入物料名称", type: 'error'});
