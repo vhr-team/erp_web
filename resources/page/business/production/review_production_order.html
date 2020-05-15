@@ -64,7 +64,7 @@
 
 <script type="text/html" id="toolbarDemo">
     <div class="layui-btn-container">
-        <button class="layui-btn layui-btn-normal make-erver" lay-event="add">审核</button>
+        <button class="layui-btn layui-btn-normal make-erver"  lay-event="add">审核</button>
     </div>
 </script>
 
@@ -72,6 +72,10 @@
 
 
 <script>
+
+
+    let apiUrl = "http://localhost:8003/";
+
     layui.use(['table', 'layer','laydate'], function () {
         let table = layui.table;
         let layer = layui.layer;
@@ -82,9 +86,10 @@
             elem: '#test1'
         });
 
+
         table.render({
             elem: '#test'
-            , url: 'http://localhost:8003/production/findByFields'
+            , url: apiUrl+'production/getFindByProduction_generate'
             , page: true
             , toolbar: '#toolbarDemo2' //开启头部工具栏，并为其绑定左侧模板
             , defaultToolbar: ['filter', 'exports', 'print', { //自定义头部工具栏右侧图标。如无需自定义，去除该参数即可
@@ -94,25 +99,65 @@
             }]
             , cols: [[
                 {type: 'checkbox'}
+                , {field: 'id', align: 'center', title: 'id',hide:true}
                 , {field: 'schedule_id', align: 'center', title: '生产派工单编号'}
                 , {field: 'product_id', title: '产品编号'}
                 , {field: 'product_name', title: '产品名称'}
                 , {field: 'quantity', title: '数量'}
                 , {field: 'qutbound_order_id', title: '出库单编号'}
                 , {field: 'review_time', title: '登记时间'}
+                , {field: 'checked_audit', title: '审核状态'}
                 , {title: '操作', templet: '#toolbarDemo', fixed: "right", align: "center"}
             ]]
         });
 
+      /*  //监听行工具事件
+        table.on('tool(test)', function(obj){
+            var data = obj.data;
+            //console.log(obj)
+            if(obj.event === 'add'){
+                layer.confirm('确定审核吗', function(index){
+                    obj.del();
+                    layer.close(index);
+                });
+            } else if(obj.event === 'edit'){
+                layer.prompt({
+                    formType: 2
+                    ,value: data.email
+                }, function(value, index){
+                    obj.update({
+                        email: value
+                    });
+                    layer.close(index);
+                });
+            }
+        });*/
+
+
         //监听工具条
         table.on('tool(test)', function (obj) {
             var data = obj.data;
-            console.log(data);
+            console.log(data.id);
+            if(obj.event === 'add'){
+                layer.confirm('确定审核吗', function(index){
+                    obj.del();
+                    layer.close(index);
+                    $.post(apiUrl+'production/updatechecked_audit',data,function (res) {
+                        layer.msg(res);
+                        if (res.code == 200) {
+                            tableIns.reload();
+                        }
+                    })
+                    return false;
+                });
+            }
+
         });
 
+
+
+
     });
-
-
 
 </script>
 
