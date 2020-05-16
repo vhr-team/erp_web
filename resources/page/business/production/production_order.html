@@ -103,14 +103,14 @@
             <div class="layui-inline">
                 <label class="layui-form-label">描述</label>
                 <div class="layui-input-block">
-                    <input type="text" name="product_describe" lay-verify="title"  placeholder="请输入描述"
+                    <input type="text" name="product_describe" readonly="readonly" lay-verify="title"  placeholder="请输入描述"
                            class="layui-input">
                 </div>
             </div>
             <div class="layui-inline">
                 <label class="layui-form-label">数量</label>
                 <div class="layui-input-block">
-                    <input type="text" name="quantity" lay-verify="required" placeholder="请输入数量"
+                    <input type="text" name="quantity" readonly="readonly" lay-verify="required" placeholder="请输入数量"
                            class="layui-input">
                 </div>
             </div>
@@ -171,7 +171,7 @@
                 , {field: 'product_id', title: '产品编号'}
                 , {field: 'product_name', title: '产品名称'}
                 , {field: 'product_describe', title: '描述'}
-                , {field: 'quantity', title: '数量', sort: true, edit: 'text'}
+                , {field: 'quantity', title: '数量'}
                 , {field: 'qutbound_order_id', title: '出库单编号'}
                 , {field: 'review_time', title: '制定时间'}
                 , {title: '操作', templet: '#toolbarDemo', fixed: "right", align: "center"}
