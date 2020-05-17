@@ -9,19 +9,91 @@
     <link rel="stylesheet" href="../../../lib/layui-v2.5.5/css/layui.css" media="all">
     <link rel="stylesheet" href="../../../css/layuicmspublic.css" media="all">
     <link rel="stylesheet" href="../../../css/public.css" media="all">
+
+    <link rel="stylesheet" href="../../../js/lay-module/PearAdmin/css/pearButton.css">
+    <link rel="stylesheet" href="../../../js/lay-module/PearAdmin/css/pearOper.css">
+    <style>
+        .pear-container{
+            background-color: whitesmoke;
+            margin: 10px;
+        }
+        #febs-user-profile #user-profile, #febs-user-profile .user-profile-card {
+            display: inline-block;
+        }
+
+        #febs-user-profile #user-img, #febs-user-profile #user-info {
+            display: inline-block;
+            float: left;
+        }
+
+        #febs-user-profile #user-img img {
+            width: 7rem;
+            margin: 1rem;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        #febs-user-profile #user-info {
+            margin: .95rem 0 .95rem 1.2rem;
+        }
+
+        #febs-user-profile #user-info div {
+            margin: 3px 0;
+            max-width: 22rem;
+        }
+
+        #febs-user-profile #options-wrapper {
+            text-align: center;
+            margin-top: 3rem;
+        }
+
+        #febs-user-profile #update-user-info {
+            cursor: pointer;
+            margin-left: -1rem;
+        }
+
+        #febs-user-profile #options-wrapper a {
+            padding: 4px 6px;
+            color: rgba(0, 0, 0, 0.65);
+            border: 1px solid #d9d9d9;
+            border-radius: 2px;
+        }
+
+        #febs-user-profile #options-wrapper a:hover {
+            color: #40a9ff;
+            border-color: #40a9ff;
+        }
+
+        #febs-user-profile .layui-form-item {
+            margin-bottom: 0;
+            margin-top: 20px;
+        }
+
+        .layuimini-container {
+            border: 1px solid #f2f2f2;
+            border-radius: 5px;
+            background-color: #ffffff;
+            height: 500px;
+        }
+    </style>
+    <link rel="stylesheet" href="../../../js/lay-module/febs/css/febs.css">
 </head>
 <body>
-<div class="layuimini-container">
+<div class="layuimini-container" id="febs-user-profile">
     <br>
     <form class="layui-form layui-row" method="post" id="dataFrm" lay-filter="dataFrm">
         <div class="layui-col-md3 layui-col-xs12 user_right">
             <div class="layui-upload-list">
-                <img class="layui-upload-img layui-circle userFaceBtn userAvatar" id="userFace">
-                <p id="resultText"></p>
+                <img alt="头像" title="点我更换头像" class="layui-upload-img layui-circle userFaceBtn userAvatar" id="userFace">
             </div>
-            <button type="button" class="layui-btn layui-btn-primary userFaceBtn"><i class="layui-icon">&#xe67c;</i>
-                掐指一算，我要换一个头像了
-            </button>
+            <div id="options-wrapper">
+                <div id="update-user-info">
+                    <a href="javascript:;" class="userFaceBtn">
+                        <span class="layui-icon layui-icon-setting"></span>
+                        掐指一算，要换头像了 😊
+                    </a>
+                </div>
+            </div>
         </div>
         <div class="layui-col-md6 layui-col-xs12">
             <div class="layui-form-item">
@@ -134,9 +206,5 @@
 
     });
 </script>
-<script>
-
-</script>
-
 </body>
 </html>
