@@ -151,9 +151,6 @@
 
         $('.login-out').on("click", function () {
             vue.open();
-            setTimeout(function () {
-                window.location = "./login.html";
-            }, 2000);
         });
     });
 
@@ -175,6 +172,10 @@
                         type: 'success',
                         message: '退出成功!'
                     });
+
+                    setTimeout(function () {
+                        window.location = "./login.html";
+                    }, 2000);
                 }).catch(() => {
                     this.$message({
                         type: 'info',
