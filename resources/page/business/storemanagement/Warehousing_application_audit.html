@@ -202,7 +202,7 @@
 
                     console.log(this.inboundId);
                     console.log(this.register);
-                    let obj = `/check_tag=0/checker=${this.register}/inbound_id=${this.inboundId}`;
+                    let obj = `/0/${this.register}/${this.inboundId}`;
                     console.log(obj);
                     // axios.get(urlApi + "warehouseInbound/queryInboundLimit?" + params).then(res => {
                     axios.post(urlApi + "warehouseInbound/updateWarehousing" + obj).then(res => {
