@@ -20,13 +20,9 @@ Erp_Web，JavaScript,Jquery,Layui,Iview,Element-ui,Html,Css...构建。相信 Er
 ## 参与贡献
 欢迎提交PR一起完善项目，以下为提PR并合并的小伙伴（排名不分先后）
 
-<a href='https://github.com/2609380588'>
-  <img style="border-radius: 50%;width:50px;height:50px;margin-right:10px" src='https://avatars2.githubusercontent.com/u/32418569?s=400&u=f18e8677fcce9297bd91b05073cb331bee4cbc8d&v=4'/>
-</a>
-<a href='https://github.com/guangzan'>
-  <img style="border-radius: 50%;width:50px;height:50px;margin-right:10px" src='https://avatars1.githubusercontent.com/u/43458667?s=400&u=56ba29ddcae348e030ecfc3d3f37b8107f0ba990&v=4'/>
-</a>
-
+<img src="https://avatars2.githubusercontent.com/u/32418569?s=50&u=f18e8677fcce9297bd91b05073cb331bee4cbc8d&v=4" />
+<img src='https://avatars1.githubusercontent.com/u/43458667?s=50&u=56ba29ddcae348e030ecfc3d3f37b8107f0ba990&v=4'/>
+<img src='https://avatars1.githubusercontent.com/u/43458667?s=50&u=56ba29ddcae348e030ecfc3d3f37b8107f0ba990&v=4'/>
 
 ## 下载方式
 
