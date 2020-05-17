@@ -1,0 +1,34 @@
+.fa {
+  margin-right: 12px;
+}
+
+.layui-side-scroll,
+.layui-layout-admin .layui-logo,
+.layui-layout-admin .layui-side,
+.layui-nav-tree {
+  width: 257px;
+}
+
+.layuimini-tool,
+.layui-body {
+  left: 257px !important;
+}
+
+.layuimini-mini .layui-logo img {
+  width: 80%;
+}
+
+.layui-layout-body .layui-nav-itemed .layui-nav-child a {
+  padding-left: 22px;
+}
+
+.layuimini-tool i {
+  margin: 15px auto auto;
+}
+
+.layui-layout-admin .layui-header .layui-nav {
+  padding-left: 22px !important;
+}
+
+/* 
+layuimini-mini  */
