@@ -22,4 +22,15 @@ layui.config({
     echartsTheme: 'echarts/echartsTheme', // echarts图表主题扩展
     wangEditor: 'wangEditor/wangEditor', // wangEditor富文本扩展
     layarea: 'layarea/layarea', //  省市县区三级联动下拉选择器
+
+    // PearAdmin
+    pearTab:"PearAdmin/extends/pearTab",
+    pearMenu:"PearAdmin/extends/pearMenu",
+    pearOper:"PearAdmin/extends/pearOper",
+    pearHash:"PearAdmin/extends/pearHash",
+    pearAdmin:"PearAdmin/extends/pearAdmin",
+    pearFrame:"PearAdmin/extends/pearFrame",
+    pearSocial:"PearAdmin/extends/pearSocial",
+    pearNotice:"PearAdmin/extends/pearNotice",
+    pearStep:"PearAdmin/extends/pearStep",
 });

@@ -23,6 +23,16 @@
     <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
     <style id="layuimini-bg-color"></style>
+
+    <link rel="stylesheet" href="resources/js/lay-module/PearAdmin/css/pearMenu.css" />
+    <link rel="stylesheet" href="resources/js/lay-module/PearAdmin/css/pearTab.css" />
+    <link rel="stylesheet" href="resources/js/lay-module/PearAdmin/css/pearTheme.css" />
+    <link rel="stylesheet" href="resources/js/lay-module/PearAdmin/css/pearLoad.css" />
+    <link rel="stylesheet" href="resources/js/lay-module/PearAdmin/css/pearFrame.css" />
+    <link rel="stylesheet" href="resources/js/lay-module/PearAdmin/css/pearAdmin.css" />
+    <link rel="stylesheet" href="resources/js/lay-module/PearAdmin/css/pearNotice.css" />
+    <link rel="stylesheet" href="resources/js/lay-module/PearAdmin/css/pearSocial.css" />
+    <style id="pearone-bg-color"></style>
 </head>
 <body class="layui-layout-body layuimini-all">
 
@@ -62,15 +72,20 @@
                     </a>
                     <dl class="layui-nav-child">
                         <dd>
-                            <a href="javascript:;" data-iframe-tab="resources/page/system/user/userInfo.html" data-title="基本资料"
-                               data-icon="fa fa-gears"> <i class="layui-icon layui-icon-edit"></i> &nbsp;&nbsp; 基 本 资 料 </a>
+                            <a href="javascript:;" data-iframe-tab="resources/page/system/user/userInfo.html"
+                               data-title="基本资料"
+                               data-icon="fa fa-gears"> <i class="layui-icon layui-icon-edit"></i> &nbsp;&nbsp; 基 本 资 料
+                            </a>
                         </dd>
                         <dd>
-                            <a href="javascript:;" data-iframe-tab="resources/page/system/user/user-password.html" data-title="修改密码"
-                               data-icon="fa fa-gears"> <i class="layui-icon layui-icon-auz"></i> &nbsp;&nbsp; 修 改 密 码 </a>
+                            <a href="javascript:;" data-iframe-tab="resources/page/system/user/user-password.html"
+                               data-title="修改密码"
+                               data-icon="fa fa-gears"> <i class="layui-icon layui-icon-auz"></i> &nbsp;&nbsp; 修 改 密 码
+                            </a>
                         </dd>
                         <dd>
-                            <a href="javascript:;" class="login-out"> <i class="layui-icon layui-icon-release"></i> &nbsp;&nbsp; 退 出 登 录 </a>
+                            <a href="javascript:;" class="login-out"> <i class="layui-icon layui-icon-release"></i>
+                                &nbsp;&nbsp; 退 出 登 录 </a>
                         </dd>
                     </dl>
                 </li>
@@ -85,9 +100,9 @@
             </div>
         </div>
 
-        <!--初始化加载层-->
-        <div class="layuimini-loader">
-            <div class="layuimini-loader-inner"></div>
+        <!-- 初始加载 动画-->
+        <div class="preloader">
+            <div class="preloader-inner"></div>
         </div>
 
         <div class="layui-body">
@@ -99,8 +114,10 @@
                     <li class="layui-nav-item">
                         <a href="javascript:;"></a>
                         <dl class="layui-nav-child">
-                            <dd><a href="javascript:;" data-page-close="other"><i class="fa fa-window-close"></i> 关闭其他</a></dd>
-                            <dd><a href="javascript:;" data-page-close="all"><i class="fa fa-window-close-o"></i> 关闭全部</a></dd>
+                            <dd><a href="javascript:;" data-page-close="other"><i class="fa fa-window-close"></i>
+                                关闭其他</a></dd>
+                            <dd><a href="javascript:;" data-page-close="all"><i class="fa fa-window-close-o"></i>
+                                关闭全部</a></dd>
                         </dl>
                     </li>
                 </ul>
@@ -116,7 +133,6 @@
 
 <!--vue-->
 <script src="resources/lib/plugin/vue/vue.min.js"></script>
-<!--element-ui/index.js-->
 <script src="resources/lib/plugin/element-ui/index.js"></script>
 
 <script src="resources/lib/jquery-3.4.1/jquery-3.4.1.min.js" charset="utf-8"></script>
@@ -127,38 +143,42 @@
 <script>
     let vue;
 
-    // 入口函数
-    $(function () {
-        layui.use(['element', 'layer', 'layuimini'], function () {
-            var $ = layui.jquery,
-                element = layui.element,
-                layer = layui.layer;
+    layui.use(['element', 'layer', 'layuimini','pearAdmin'], function () {
+        var $ = layui.jquery;
+            element = layui.element,
+            layer = layui.layer;
+        var pearAdmin = layui.pearAdmin;
 
-            layuimini.init(api + 'login/loadIndexMenu');
+        var config = {
+            keepLoad: 1200, // 主 页 加 载 过 度 时 长 可为 false
+        };
 
-            $('.login-out').on("click", function () {
-                vue.$message({
-                    message: '退出登录成功!',
-                    type: 'success'
-                });
-                setTimeout(function () {
-                    window.location = "./login.html";
-                },2000);
+        pearAdmin.render(config);
+
+        layuimini.init(api + 'login/loadIndexMenu');
+
+        $('.login-out').on("click", function () {
+            vue.$message({
+                message: '退出登录成功!',
+                type: 'success'
             });
+            setTimeout(function () {
+                window.location = "./login.html";
+            }, 2000);
         });
+    });
 
-        // 初始化Vue
-        vue = new Vue({
-            // 控制区域
-            el: '#app',
-            // 数据
-            data: {},
-            // 方法
-            methods:{},
-            // 钩子函数
-            mounted(){
-            }
-        });
+    // 初始化Vue
+    vue = new Vue({
+        // 控制区域
+        el: '#app',
+        // 数据
+        data: {},
+        // 方法
+        methods: {},
+        // 钩子函数
+        mounted() {
+        }
     });
 </script>
 </body>
