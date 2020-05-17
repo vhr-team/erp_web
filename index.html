@@ -146,7 +146,8 @@
 
         pearAdmin.render(config);
 
-        layuimini.init(api + 'login/loadIndexMenu');
+        // layuimini.init(api + 'login/loadIndexMenu');
+        layuimini.init('resources/api/init.json');
 
         $('.login-out').on("click", function () {
             vue.open();

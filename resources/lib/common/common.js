@@ -15,7 +15,7 @@ $.ajaxSetup({
 });
 
 // 如果访问登陆页面之外的页面 并且还没有登陆成功之后写入cookie的token就转到登陆页面
-if (token == undefined) {
+/*if (token == undefined) {
     if (window.location != loginUrl) {
         window.top.location = loginUrl;
     }
@@ -36,7 +36,7 @@ if (token == undefined) {
             }
         });
     }
-}
+}*/
 
 let pers = localStorage.getItem("permissions");
 let usertype = localStorage.getItem("usertype");

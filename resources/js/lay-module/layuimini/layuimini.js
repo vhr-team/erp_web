@@ -88,10 +88,10 @@ layui.define(["element", "jquery"], function (exports) {
          * @param data
          */
         this.initHome = function () {
-            sessionStorage.setItem('layuiminiHomeHref', "resources/page/welcome-1.html?mpi=m-p-i-0");
+            sessionStorage.setItem('layuiminiHomeHref', "resources/page/console.html?mpi=m-p-i-0");
             $('#layuiminiHomeTabId').html('<i class="fa fa-desktop"></i> <span> 控制台 </span>');
-            $('#layuiminiHomeTabId').attr('lay-id', "resources/page/welcome-1.html?mpi=m-p-i-0");
-            $('#layuiminiHomeTabIframe').html('<iframe width="100%" height="100%" frameborder="0"  src="resources/page/welcome-1.html?mpi=m-p-i-0"></iframe>');
+            $('#layuiminiHomeTabId').attr('lay-id', "resources/page/console.html?mpi=m-p-i-0");
+            $('#layuiminiHomeTabIframe').html('<iframe width="100%" height="100%" frameborder="0"  src="resources/page/console.html?mpi=m-p-i-0"></iframe>');
         };
 
         /**
