@@ -28,9 +28,13 @@ layui.config({
     pearMenu:"PearAdmin/extends/pearMenu",
     pearOper:"PearAdmin/extends/pearOper",
     pearHash:"PearAdmin/extends/pearHash",
+    pearHash:"PearAdmin/extends/code",
     pearAdmin:"PearAdmin/extends/pearAdmin",
     pearFrame:"PearAdmin/extends/pearFrame",
     pearSocial:"PearAdmin/extends/pearSocial",
     pearNotice:"PearAdmin/extends/pearNotice",
     pearStep:"PearAdmin/extends/pearStep",
+
+    // Febs Admin
+    apexcharts: 'febs/lay/extends/apexcharts.min',
 });
