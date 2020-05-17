@@ -1108,5 +1108,5 @@
     color: #000 !important;
 }
 .layui-nav-tree .layui-nav-item a{
-    color: #fff !important;
+    color: rgba(255, 255, 255, 0.7) !important;
 }

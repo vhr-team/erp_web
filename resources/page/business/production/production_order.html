@@ -47,19 +47,21 @@
 </div>
 
 <div style="display: none" id="diaLogOpen">
-    <form class="layui-form form-padding" lay-filter="DataFrm" id="DataFrm" action="">
+    <form class="layui-form form-padding" lay-filter="DataFrm" id="DataFrm">
         <div class="layui-form-item">
             <div class="layui-inline">
-                <label class="layui-form-label">工单制定人</label>
+                <label class="layui-form-label">计划单编号</label>
                 <div class="layui-input-block">
-                    <input type="text" name="" lay-verify="title" autocomplete="off" placeholder="请输入工单制定人"
+                    <input style="display: none" type="text" name="id" readonly="readonly"  lay-verify="required" placeholder="请输入计划单编号"
+                           class="layui-input">
+                    <input type="text" name="schedule_id" readonly="readonly"  lay-verify="required" placeholder="请输入计划单编号"
                            class="layui-input">
                 </div>
             </div>
             <div class="layui-inline">
                 <label class="layui-form-label">出库单编号</label>
                 <div class="layui-input-block">
-                    <input type="text" name="qutbound_order_id" disabled="disabled"  lay-verify="required" placeholder="请输入出库单编号"
+                    <input type="text" name="qutbound_order_id" readonly="readonly"  lay-verify="required" placeholder="请输入出库单编号"
                            class="layui-input">
                 </div>
             </div>
@@ -68,7 +70,7 @@
             <div class="layui-inline">
                 <label class="layui-form-label">登记人</label>
                 <div class="layui-input-block">
-                    <input type="text" name="title" id="DengjiInput" disabled="disabled" lay-verify="title" autocomplete="off" placeholder="请输入登记人"
+                    <input type="text" name="title" id="DengjiInput" readonly="readonly" lay-verify="title" autocomplete="off" placeholder="请输入登记人"
                            class="layui-input">
                 </div>
             </div>
@@ -76,7 +78,7 @@
                 <label class="layui-form-label">登记时间</label>
                 <div class="layui-input-block">
 
-                    <input type="text" class="layui-input" id="test1" placeholder="请输入登记时间">
+                    <input type="text" name="review_time" class="layui-input" id="test1" placeholder="请输入登记时间">
 
                 </div>
             </div>
@@ -85,14 +87,14 @@
             <div class="layui-inline">
                 <label class="layui-form-label">产品编号</label>
                 <div class="layui-input-block">
-                    <input type="text" name="product_id" disabled="disabled" lay-verify="title" autocomplete="off" placeholder="请输入产品编号"
+                    <input type="text" name="product_id" readonly="readonly" lay-verify="title" autocomplete="off" placeholder="请输入产品编号"
                            class="layui-input">
                 </div>
             </div>
             <div class="layui-inline">
                 <label class="layui-form-label">产品名称</label>
                 <div class="layui-input-block">
-                    <input type="text" name="product_name" disabled="disabled" lay-verify="required" placeholder="请输入产品名称"
+                    <input type="text" name="product_name" readonly="readonly" lay-verify="required" placeholder="请输入产品名称"
                            class="layui-input">
                 </div>
             </div>
@@ -101,22 +103,16 @@
             <div class="layui-inline">
                 <label class="layui-form-label">描述</label>
                 <div class="layui-input-block">
-                    <input type="text" name="product_describe" lay-verify="title"  placeholder="请输入描述"
+                    <input type="text" name="product_describe" readonly="readonly" lay-verify="title"  placeholder="请输入描述"
                            class="layui-input">
                 </div>
             </div>
             <div class="layui-inline">
                 <label class="layui-form-label">数量</label>
                 <div class="layui-input-block">
-                    <input type="text" name="quantity" lay-verify="required" placeholder="请输入数量"
+                    <input type="text" name="quantity" readonly="readonly" lay-verify="required" placeholder="请输入数量"
                            class="layui-input">
                 </div>
-            </div>
-        </div>
-        <div class="layui-form-item layui-form-text">
-            <label class="layui-form-label">备注</label>
-            <div class="layui-input-block">
-                <textarea placeholder="请输入内容" class="layui-textarea remark"></textarea>
             </div>
         </div>
         <a class="layui-btn button-info" lay-submit="" lay-filter="addOrder" id="addOrder"><label
@@ -129,7 +125,7 @@
 
 <script type="text/html" id="toolbarDemo">
     <div class="layui-btn-container">
-        <button class="layui-btn layui-btn-normal make-erver" lay-event="add">生成派工单</button>
+        <button class="layui-btn layui-btn-normal make-erver " lay-event="add">生成派工单</button>
     </div>
 </script>
 
@@ -141,6 +137,11 @@
 <script src="../../../lib/common/common.js" charset="utf-8"></script>
 
 <script>
+
+    let apiUrl = "http://localhost:8003/";
+    let tableIns;
+    let index;
+
     layui.use(['table', 'layer', 'form','laydate'], function () {
         let table = layui.table;
         let layer = layui.layer;
@@ -150,11 +151,12 @@
         //常规用法
         laydate.render({
             elem: '#test1'
+            ,type: 'datetime'
         });
 
-        table.render({
+        tableIns = table.render({
             elem: '#test'
-            , url: 'http://localhost:8003/production/getAllProduction_order'
+            , url: apiUrl+'production/getAllProduction_order'
             , page: true
             , toolbar: '#toolbarDemo2' //开启头部工具栏，并为其绑定左侧模板
             , defaultToolbar: ['filter', 'exports', 'print', { //自定义头部工具栏右侧图标。如无需自定义，去除该参数即可
@@ -164,13 +166,14 @@
             }]
             , cols: [[
                 {type: 'checkbox'}
+                , {field: 'id', align: 'center', title: 'id',hide:true}
                 , {field: 'schedule_id', align: 'center', title: '计划单编号'}
                 , {field: 'product_id', title: '产品编号'}
                 , {field: 'product_name', title: '产品名称'}
                 , {field: 'product_describe', title: '描述'}
-                , {field: 'quantity', title: '数量', sort: true, edit: 'text'}
+                , {field: 'quantity', title: '数量'}
                 , {field: 'qutbound_order_id', title: '出库单编号'}
-                , {field: 'review_time', title: '审核时间'}
+                , {field: 'review_time', title: '制定时间'}
                 , {title: '操作', templet: '#toolbarDemo', fixed: "right", align: "center"}
             ]]
         });
@@ -181,11 +184,11 @@
             console.log(data);
             if (obj.event === 'add') {
                 //页面层
-                layer.open({
+                index = layer.open({
                     type: 1,
                     title: '制定派工单',
                     skin: 'layui-layer-rim', //加上边框
-                    area: ['700px', '500px'], //宽高
+                    area: ['700px', '450px'], //宽高
                     content: $("#diaLogOpen")
                     , success: function (layero) {
                         form.val('DataFrm',data);
@@ -199,34 +202,31 @@
         });
 
         $("#addOrder").click(function () {
-            openAddOrder();
-        });
+            var params = $("#DataFrm").serialize();
+            $.post(apiUrl+'production/updateProductionOrderById', params, function (res) {
 
-        // 提交派工单
-        let url;  //动态的url
-
-        function openAddOrder() {
-            //监听提交
-            form.on('submit(addOrder)', function(data){
-                let edC=  $("#DataFrm").val();
-                if(edC != 1){
-                    $.ajax({
-                        url:'http://127.0.0.1:8005/production/insertProduction_order',
-                        data:data.field,
-                        success: function (data) {
-                            layer.msg("提交成功")
-                        }
-                    })
-                    return ;
+                layer.msg(res);
+                if (res.code == 200) {
+                    tableIns.reload();
                 }
-                layer.alert(JSON.stringify(data.field), {
-                    title: '最终的提交信息'
-                });
-
-
-                return false;
+                layer.close(index);
             });
-        }
+            return false;
+        });
+        /*//提交数据
+        form.on("submit(addOrder)", function (data) {
+            var params = $("#DataFrm").serialize();
+            console.log(params);
+            $.post(apiUrl+'production/updateProductionOrderById', params, function (res) {
+
+                layer.msg(res);
+                if (res.code == 200) {
+                    tableIns.reload();
+                }
+               layer.close(index);
+            });
+            return false;
+        });*/
 
     });
 
