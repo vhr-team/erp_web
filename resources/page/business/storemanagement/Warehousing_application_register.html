@@ -244,7 +244,7 @@
             // 方法
             methods: {
                 addOrUpdate() {
-                    this.$Message.error('正在提交');
+                    this.$Message.success('正在提交');
 
                     let obj = {
 
@@ -275,18 +275,18 @@
 
                     console.log(obj);
 
-                    // axios.post(urlApi + 'warehouseInbound/insertWarehousing',obj).then(res => {
-                    //     this.$message({
-                    //         message: res.data.msg,
-                    //         type: 'success'
-                    //     });
-                    //
-                    //     // this.loadInventoryAllocationSheet();
-                    //     this.drawerValue = false;
-                    //
-                    // }).catch(err => {
-                    //     this.$Message.error('提交失败');
-                    // })
+                    axios.post(urlApi + 'warehouseInbound/insertWarehousing',obj).then(res => {
+                        this.$message({
+                            message: res.data.msg,
+                            type: 'success'
+                        });
+
+                        // this.loadInventoryAllocationSheet();
+                        this.drawerValue = false;
+
+                    }).catch(err => {
+                        this.$Message.error('提交失败');
+                    })
 
                 },
 
