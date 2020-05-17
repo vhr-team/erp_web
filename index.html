@@ -62,15 +62,20 @@
                     </a>
                     <dl class="layui-nav-child">
                         <dd>
-                            <a href="javascript:;" data-iframe-tab="resources/page/system/user/userInfo.html" data-title="基本资料"
-                               data-icon="fa fa-gears"> <i class="layui-icon layui-icon-edit"></i> &nbsp;&nbsp; 基 本 资 料 </a>
+                            <a href="javascript:;" data-iframe-tab="resources/page/system/user/userInfo.html"
+                               data-title="基本资料"
+                               data-icon="fa fa-gears"> <i class="layui-icon layui-icon-edit"></i> &nbsp;&nbsp; 基 本 资 料
+                            </a>
                         </dd>
                         <dd>
-                            <a href="javascript:;" data-iframe-tab="resources/page/system/user/user-password.html" data-title="修改密码"
-                               data-icon="fa fa-gears"> <i class="layui-icon layui-icon-auz"></i> &nbsp;&nbsp; 修 改 密 码 </a>
+                            <a href="javascript:;" data-iframe-tab="resources/page/system/user/user-password.html"
+                               data-title="修改密码"
+                               data-icon="fa fa-gears"> <i class="layui-icon layui-icon-auz"></i> &nbsp;&nbsp; 修 改 密 码
+                            </a>
                         </dd>
                         <dd>
-                            <a href="javascript:;" class="login-out"> <i class="layui-icon layui-icon-release"></i> &nbsp;&nbsp; 退 出 登 录 </a>
+                            <a href="javascript:;" class="login-out"> <i class="layui-icon layui-icon-release"></i>
+                                &nbsp;&nbsp; 退 出 登 录 </a>
                         </dd>
                     </dl>
                 </li>
@@ -99,8 +104,10 @@
                     <li class="layui-nav-item">
                         <a href="javascript:;"></a>
                         <dl class="layui-nav-child">
-                            <dd><a href="javascript:;" data-page-close="other"><i class="fa fa-window-close"></i> 关闭其他</a></dd>
-                            <dd><a href="javascript:;" data-page-close="all"><i class="fa fa-window-close-o"></i> 关闭全部</a></dd>
+                            <dd><a href="javascript:;" data-page-close="other"><i class="fa fa-window-close"></i>
+                                关闭其他</a></dd>
+                            <dd><a href="javascript:;" data-page-close="all"><i class="fa fa-window-close-o"></i>
+                                关闭全部</a></dd>
                         </dl>
                     </li>
                 </ul>
@@ -126,39 +133,50 @@
 <script src="resources/lib/common/common.js" type="text/javascript" charset="utf-8"></script>
 <script>
     let vue;
+    layui.use(['element', 'layer', 'layuimini'], function () {
+        var $ = layui.jquery,
+            element = layui.element,
+            layer = layui.layer;
 
-    // 入口函数
-    $(function () {
-        layui.use(['element', 'layer', 'layuimini'], function () {
-            var $ = layui.jquery,
-                element = layui.element,
-                layer = layui.layer;
+        layuimini.init(api + 'login/loadIndexMenu');
 
-            layuimini.init(api + 'login/loadIndexMenu');
+        $('.login-out').on("click", function () {
+            vue.open();
+            setTimeout(function () {
+                window.location = "./login.html";
+            }, 2000);
+        });
+    });
 
-            $('.login-out').on("click", function () {
-                vue.$message({
-                    message: '退出登录成功!',
-                    type: 'success'
+    // 初始化Vue
+    vue = new Vue({
+        // 控制区域
+        el: '#app',
+        // 数据
+        data: {},
+        // 方法
+        methods: {
+            open() {
+                this.$confirm('此操作将退出系统!, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    this.$message({
+                        type: 'success',
+                        message: '退出成功!'
+                    });
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消退出'
+                    });
                 });
-                setTimeout(function () {
-                    window.location = "./login.html";
-                },2000);
-            });
-        });
-
-        // 初始化Vue
-        vue = new Vue({
-            // 控制区域
-            el: '#app',
-            // 数据
-            data: {},
-            // 方法
-            methods:{},
-            // 钩子函数
-            mounted(){
             }
-        });
+        },
+        // 钩子函数
+        mounted() {
+        }
     });
 </script>
 </body>
