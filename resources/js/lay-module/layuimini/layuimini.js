@@ -4,10 +4,11 @@
  * description:layuimini 框架扩展
  */
 
-layui.define(["element", "jquery"], function (exports) {
+layui.define(["element", "jquery", 'pearOper', 'code'], function (exports) {
     var element = layui.element,
         $ = layui.$,
         layer = layui.layer;
+    var pearOper = layui.pearOper;
 
     // 判断是否在web容器中打开
     if (!/http(s*):\/\//.test(location.href)) {
@@ -89,7 +90,7 @@ layui.define(["element", "jquery"], function (exports) {
          */
         this.initHome = function () {
             sessionStorage.setItem('layuiminiHomeHref', "resources/page/console.html?mpi=m-p-i-0");
-            $('#layuiminiHomeTabId').html('<i class="fa fa-desktop"></i> <span> 控制台 </span>');
+            $('#layuiminiHomeTabId').html('<i class="fa fa-desktop"></i> <span> 控 制 台 </span>');
             $('#layuiminiHomeTabId').attr('lay-id', "resources/page/console.html?mpi=m-p-i-0");
             $('#layuiminiHomeTabIframe').html('<iframe width="100%" height="100%" frameborder="0"  src="resources/page/console.html?mpi=m-p-i-0"></iframe>');
         };
@@ -101,7 +102,7 @@ layui.define(["element", "jquery"], function (exports) {
         this.initLogo = function () {
             var html = '<a href="javascript:;">\n' +
                 '<img src="resources/images/logo.png" alt="logo">\n' +
-                '<h1>进销存系统</h1>\n' +
+                '<h1> 进 销 存 系 统</h1>\n' +
                 '</a>';
             $('.layui-layout-admin .layui-logo').html(html);
         };
@@ -303,8 +304,8 @@ layui.define(["element", "jquery"], function (exports) {
                 {
                     headerRight: '#ffffff', //头部右侧背景色
                     headerRightThis: '#e4e4e4', //头部右侧选中背景色,
-                    headerLogo: '#20222A', //logo背景颜色,
-                    menuLeft: '#001529', //左侧菜单背景,
+                    headerLogo: '#272c33', //logo背景颜色,
+                    menuLeft: '#272c33', //左侧菜单背景,
                     menuLeftThis: '#1E9FFF', //左侧菜单选中背景,
                 },
                 {
@@ -575,7 +576,8 @@ layui.define(["element", "jquery"], function (exports) {
          * @returns {*}
          */
         this.msg_success = function (title) {
-            return layer.msg(title, {icon: 1, shade: this.shade, scrollbar: false, time: 2000, shadeClose: true});
+            return pearOper.notice({position:'right-top',type:"warning",title:title});
+            // return layer.msg(title, {icon: 1, shade: this.shade, scrollbar: false, time: 2000, shadeClose: true});
         };
 
         /**
@@ -584,7 +586,8 @@ layui.define(["element", "jquery"], function (exports) {
          * @returns {*}
          */
         this.msg_error = function (title) {
-            return layer.msg(title, {icon: 2, shade: this.shade, scrollbar: false, time: 3000, shadeClose: true});
+            return pearOper.notice({position:'right-top',type:"success",title:title});
+            // return layer.msg(title, {icon: 2, shade: this.shade, scrollbar: false, time: 3000, shadeClose: true});
         };
 
         /**
@@ -881,7 +884,8 @@ layui.define(["element", "jquery"], function (exports) {
      */
     $('body').on('click', '[data-refresh]', function () {
         $(".layui-tab-item.layui-show").find("iframe")[0].contentWindow.location.reload();
-        layuimini.msg_success('刷新成功');
+        // layuimini.msg_success('刷新成功');
+        pearOper.notice({position:'right-top',type:"success",title:"刷新成功"});
     });
 
     /**
@@ -912,7 +916,7 @@ layui.define(["element", "jquery"], function (exports) {
      * 菜单栏缩放
      */
     $('body').on('click', '[data-side-fold]', function () {
-        var loading = layer.load(0, {shade: false, time: 2 * 1000});
+        var loading = layer.load(1, {shade: false, time: 2 * 1000});
         var isShow = $(this).attr('data-side-fold');
         if (isShow == 1) { // 缩放
             $(this).attr('data-side-fold', 0);

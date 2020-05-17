@@ -17,32 +17,53 @@
 <div class="layuimini-container" id="app">
     <div class="layuimini-main">
 
-        <!--搜索开始-->
-        <fieldset class="table-search-fieldset">
-            <legend>搜索信息</legend>
-        </fieldset>
-        <!--搜索结束-->
-
         <!--Tabs-->
-        <Tabs active-key="key1" @on-click="tabsEventClick">
-            <Tab-pane label="未审核" key="key1"></Tab-pane>
-            <Tab-pane label="审核通过" key="key2"></Tab-pane>
-            <Tab-pane label="审核不通过" key="key3"></Tab-pane>
-        </Tabs>
+        <template>
+            <Tabs :animated="false">
+                <Tab-pane label="未审核">
+
+                    <!--数据表格-->
+                    <i-table :columns="columns1" :data="data1" >
+                        <template slot-scope="{ row, index }" slot="action">
+
+
+
+                        </template>
+                    </i-table>
+
+                </Tab-pane>
+                <Tab-pane label="审核通过">
+
+                    <!--数据表格-->
+                    <i-table :columns="columns1" :data="data2" >
+                        <template slot-scope="{ row, index }" slot="action">
+
+
+
+                        </template>
+                    </i-table>
+
+                </Tab-pane>
+                <Tab-pane label="审核未通过">
+
+                    <!--数据表格-->
+                    <i-table :columns="columns1" :data="data3" >
+                        <template slot-scope="{ row, index }" slot="action">
+
+
+
+                        </template>
+                    </i-table>
+
+                </Tab-pane>
+            </Tabs>
+        </template>
         <!--Tabs-->
 
 
 
 
-        <!--数据表格-->
-        <i-table :columns="columns1" :data="data1">
-            <template slot-scope="{ row, index }" slot="action">
 
-
-
-            </template>
-        </i-table>
-        <!--数据表格-->
 
 
         <!--分页-->
@@ -118,7 +139,7 @@
             data: {
                 indexVal: 0,
                 columns1: [
-                    {title: '序号',fixed: 'left', key: 'Id', align: 'center'},
+                    {title: '序号',fixed: 'left', key: 'id', align: 'center'},
                     {title: '入库单编号', key: 'inboundId', align: 'center'},
                     {title: '入库理由', key: 'reason', align: 'center'},
                     {title: '登记时间', key: 'registerTime', align: 'center'},
@@ -133,6 +154,8 @@
                     }
                 ],
                 data1: [],
+                data2: [],
+                data3: [],
                 page: 1,
                 pageSize: 10,
                 total: 9,
@@ -141,13 +164,26 @@
 
             // 方法
             methods: {
-                tabsEventClick(val) {
-                    this.indexVal = val;
-                },
                 initTableData1() {
-                    let params = `check_tag=0&page=${this.page}&limit=${this.pageSize}`;
-                    axios.get(urlApi + "warehouseStock/querySecuritySheet?" + params).then(res => {
+                    let params = `checkTag=0&page=${this.page}&limit=${this.pageSize}`;
+                    axios.get(urlApi + "warehouseInbound/queryInboundLimit?" + params).then(res => {
                         this.data1 = res.data.data;
+                    }).catch(err => {
+                        this.$Message.error('对方不想说话，并且向你抛出了一个异常');
+                    });
+                },
+                initTableData2() {
+                    let params = `checkTag=1&page=${this.page}&limit=${this.pageSize}`;
+                    axios.get(urlApi + "warehouseInbound/queryInboundLimit?" + params).then(res => {
+                        this.data2 = res.data.data;
+                    }).catch(err => {
+                        this.$Message.error('对方不想说话，并且向你抛出了一个异常');
+                    });
+                },
+                initTableData3() {
+                    let params = `checkTag=2&page=${this.page}&limit=${this.pageSize}`;
+                    axios.get(urlApi + "warehouseInbound/queryInboundLimit?" + params).then(res => {
+                        this.data3 = res.data.data;
                     }).catch(err => {
                         this.$Message.error('对方不想说话，并且向你抛出了一个异常');
                     });
@@ -158,6 +194,8 @@
 
                     // 重新渲染表格数据
                     this.initTableData1();
+                    this.initTableData2();
+                    this.initTableData3();
                 },
                 // 当前页显示条数发生改变
                 currentPageSizeChange(val) {
@@ -165,11 +203,15 @@
 
                     // 重新渲染表格数据
                     this.initTableData1();
+                    this.initTableData2();
+                    this.initTableData3();
                 },
             },
             // 钩子函数
             mounted() {
                 this.initTableData1();
+                this.initTableData2();
+                this.initTableData3();
             }
         })
     });
