@@ -10,6 +10,8 @@
     <link rel="stylesheet" href="../lib/layui-v2.5.5/css/layui.css" media="all">
     <link rel="stylesheet" href="../lib/font-awesome-4.7.0/css/font-awesome.min.css" media="all">
     <link rel="stylesheet" href="../css/public.css" media="all">
+    <link rel="stylesheet" href="../lib/plugin/febs/css/febs.css">
+
     <style>
         .layui-card {
             border: 1px solid #f2f2f2;
@@ -145,50 +147,269 @@
             right: 16px;
             display: inline-block;
             height: 16px;
-            color: #999;}
-        #febs-index .welcome-info {border: 1px solid #f1f1f1;margin-bottom: .5rem;padding: .5rem;}
-        #febs-index .welcome-info-wrapper {padding: .2rem;display: inline-block}
-        #febs-index .welcome-info-wrapper .user-header {display: inline-block;vertical-align: middle}
-        #febs-index .welcome-info-wrapper .user-header img {width: 5rem;margin: .5rem 1rem;border-radius: 50%}
-        #febs-index .welcome-info-wrapper .user-info {display: inline-block;vertical-align: middle}
-        #febs-index .welcome-info-wrapper .user-info .random-message {font-size: 1rem;margin-bottom: .2rem;max-width: 21rem}
-        #febs-index .welcome-info-wrapper .user-info .user-dept, #febs-index .welcome-info-wrapper .user-info .user-login-info {color: rgba(0, 0, 0, 0.45);}
-        #febs-index .login-count-table {width: 100%;margin: 1rem;}
-        #febs-index .login-count-table .count {padding-top: .8rem;font-size: 1rem;font-weight: 600;color: #1890ff}
-        #febs-index .project-table {padding: .5rem;border: 1px solid #f1f1f1;width: 100%}
-        #febs-index .project-table-td {padding: .5rem 0.7rem;border: 1px solid #f1f1f1;}
-        #febs-index .project-table-td a{color: #42b983;font-size: .9rem;font-weight: 600;}
-        #febs-index .project-desc {color: rgba(0, 0, 0, 0.45);}
-        .top-panel {border: 1px solid #eceff9;border-radius: 5px;text-align: center;}
-        .top-panel > .layui-card-body {height: 60px;}
-        .top-panel-number {line-height: 60px;font-size: 30px;border-right: 1px solid #eceff9;}
-        .top-panel-tips {line-height: 30px;font-size: 12px}
-        .top-panel {border-radius: 4px;text-align: center;}
-        .top-panel>.layui-card-body {height: 60px;}
-        .top-panel-number {line-height: 60px;font-size: 30px;border-right: 1px solid #eceff9;}
-        .top-panel-tips {padding-left: 8px;padding-top: 16px;line-height: 30px;font-size: 12px}
-        .pear-container {background-color: whitesmoke;margin: 10px;}
-        .card {width: 100%;height: 160px;background-color: whitesmoke;border-radius: 4px;}
-        .card .header .avatar {width: 28px;height: 28px;margin: 20px;border-radius: 50px;}
-        .card .header {color: dimgray;}
-        .card .body {color: gray;}
-        .card .body {margin-left: 20px;margin-right: 20px;}
-        .card .footer {margin-left: 20px;margin-right: 20px;margin-top: 20px;font-size: 13px;color: gray;position: absolute;}
-        .list .list-item {height: 33px;line-height: 33px;color: gray;padding: 5px;padding-left: 15px;border-radius: 4px;margin-top: 5.2px;}
-        .custom-tab .layui-tab-title {border-bottom-width: 0px;border-bottom-style: none;}
-        .custom-tab .layui-tab-title li {margin-left: 10px;}
-        .list .list-item:hover {background-color: whitesmoke;}
-        .list .list-item .title {font-size: 13px;width: 100%;}
-        .list .list-item .footer {position: absolute;right: 30px;font-size: 12px;}
-        .top-panel-tips i {font-size: 33px;}
+            color: #999;
+        }
+
+        #febs-index .welcome-info {
+            border: 1px solid #f1f1f1;
+            margin-bottom: .5rem;
+            padding: .5rem;
+        }
+
+        #febs-index .welcome-info-wrapper {
+            padding: .2rem;
+            display: inline-block
+        }
+
+        #febs-index .welcome-info-wrapper .user-header {
+            display: inline-block;
+            vertical-align: middle
+        }
+
+        #febs-index .welcome-info-wrapper .user-header img {
+            width: 5rem;
+            margin: .5rem 1rem;
+            border-radius: 50%
+        }
+
+        #febs-index .welcome-info-wrapper .user-info {
+            display: inline-block;
+            vertical-align: middle
+        }
+
+        #febs-index .welcome-info-wrapper .user-info .random-message {
+            font-size: 1rem;
+            margin-bottom: .2rem;
+            max-width: 21rem
+        }
+
+        #febs-index .welcome-info-wrapper .user-info .user-dept, #febs-index .welcome-info-wrapper .user-info .user-login-info {
+            color: rgba(0, 0, 0, 0.45);
+        }
+
+        #febs-index .login-count-table {
+            width: 100%;
+            margin: 1rem;
+        }
+
+        #febs-index .login-count-table .count {
+            padding-top: .8rem;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #1890ff
+        }
+
+        #febs-index .project-table {
+            padding: .5rem;
+            border: 1px solid #f1f1f1;
+            width: 100%
+        }
+
+        #febs-index .project-table-td {
+            padding: .5rem 0.7rem;
+            border: 1px solid #f1f1f1;
+        }
+
+        #febs-index .project-table-td a {
+            color: #42b983;
+            font-size: .9rem;
+            font-weight: 600;
+        }
+
+        #febs-index .project-desc {
+            color: rgba(0, 0, 0, 0.45);
+        }
+
+        .top-panel {
+            border: 1px solid #eceff9;
+            border-radius: 5px;
+            text-align: center;
+        }
+
+        .top-panel > .layui-card-body {
+            height: 60px;
+        }
+
+        .top-panel-number {
+            line-height: 60px;
+            font-size: 30px;
+            border-right: 1px solid #eceff9;
+        }
+
+        .top-panel-tips {
+            line-height: 30px;
+            font-size: 12px
+        }
+
+        .top-panel {
+            border-radius: 4px;
+            text-align: center;
+        }
+
+        .top-panel > .layui-card-body {
+            height: 60px;
+        }
+
+        .top-panel-number {
+            line-height: 60px;
+            font-size: 30px;
+            border-right: 1px solid #eceff9;
+        }
+
+        .top-panel-tips {
+            padding-left: 8px;
+            padding-top: 16px;
+            line-height: 30px;
+            font-size: 12px
+        }
+
+        .pear-container {
+            background-color: whitesmoke;
+            margin: 10px;
+        }
+
+        .card {
+            width: 100%;
+            height: 160px;
+            background-color: whitesmoke;
+            border-radius: 4px;
+        }
+
+        .card .header .avatar {
+            width: 28px;
+            height: 28px;
+            margin: 20px;
+            border-radius: 50px;
+        }
+
+        .card .header {
+            color: dimgray;
+        }
+
+        .card .body {
+            color: gray;
+        }
+
+        .card .body {
+            margin-left: 20px;
+            margin-right: 20px;
+        }
+
+        .card .footer {
+            margin-left: 20px;
+            margin-right: 20px;
+            margin-top: 20px;
+            font-size: 13px;
+            color: gray;
+            position: absolute;
+        }
+
+        .list .list-item {
+            height: 33px;
+            line-height: 33px;
+            color: gray;
+            padding: 5px;
+            padding-left: 15px;
+            border-radius: 4px;
+            margin-top: 5.2px;
+        }
+
+        .custom-tab .layui-tab-title {
+            border-bottom-width: 0px;
+            border-bottom-style: none;
+        }
+
+        .custom-tab .layui-tab-title li {
+            margin-left: 10px;
+        }
+
+        .list .list-item:hover {
+            background-color: whitesmoke;
+        }
+
+        .list .list-item .title {
+            font-size: 13px;
+            width: 100%;
+        }
+
+        .list .list-item .footer {
+            position: absolute;
+            right: 30px;
+            font-size: 12px;
+        }
+
+        .top-panel-tips i {
+            font-size: 33px;
+        }
     </style>
-    <link rel="stylesheet" href="../lib/plugin/febs/css/febs.css">
 </head>
 <body class="console console1 ok-body-scroll">
 <div class="layuimini-container">
     <div class="layuimini-main" style="padding-top: 5px">
 
-        <!-- 、、、、、、、、、、、、 -->
+        <div class="layui-row layui-col-space10">
+            <div class="layui-col-xs6 layui-col-md3">
+                <div class="layui-card top-panel">
+                    <div class="layui-card-header">今日访问</div>
+                    <div class="layui-card-body">
+                        <div class="layui-row layui-col-space5">
+                            <div class="layui-col-xs8 layui-col-md8 top-panel-number">
+                                9,04,0
+                            </div>
+                            <div class="layui-col-xs4 layui-col-md4 top-panel-tips">
+                                <i class="layui-icon layui-icon-app" style="color: #4099FF;"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-col-xs6 layui-col-md3">
+                <div class="layui-card top-panel">
+                    <div class="layui-card-header">提交次数</div>
+                    <div class="layui-card-body">
+                        <div class="layui-row layui-col-space5">
+                            <div class="layui-col-xs8 layui-col-md8 top-panel-number">
+                                6,34,4
+                            </div>
+                            <div class="layui-col-xs4 layui-col-md4 top-panel-tips">
+                                <i class="layui-icon layui-icon-component" style="color: #DD4A68;"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-col-xs6 layui-col-md3">
+                <div class="layui-card top-panel">
+                    <div class="layui-card-header">下载数量</div>
+                    <div class="layui-card-body">
+                        <div class="layui-row layui-col-space5">
+                            <div class="layui-col-xs8 layui-col-md8 top-panel-number">
+                                1,34,1
+                            </div>
+                            <div class="layui-col-xs4 layui-col-md4  top-panel-tips">
+                                <i class="layui-icon layui-icon-carousel" style="color: #5FB878;"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-col-xs6 layui-col-md3">
+                <div class="layui-card top-panel">
+                    <div class="layui-card-header">商品统计</div>
+                    <div class="layui-card-body">
+                        <div class="layui-row layui-col-space5">
+                            <div class="layui-col-xs8 layui-col-md8 top-panel-number">
+                                7,04,6
+                            </div>
+                            <div class="layui-col-xs4 layui-col-md4 top-panel-tips">
+                                <i class="layui-icon layui-icon-cart" style="color: #E6A23C;"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div id="febs-index" class="febs-anim-up layui-col-md12 layui-col-sm12 layui-col-xs12">
             <div class="layui-col-md15">
                 <div class="layui-card">
@@ -215,87 +436,8 @@
                     </div>
                 </div>
             </div>
-
         </div>
-        <!-- 、、、、、、、、、、、、 -->
 
-        <!-- 第二块 -->
-        <div class="layui-row layui-col-space15">
-            <div class="layui-col-xs12 layui-col-md3">
-
-                <div class="layui-card top-panel">
-                    <div class="layui-card-header"><span class="layui-badge layui-bg-black">用户数量</span></div>
-                    <div class="layui-card-body">
-                        <div class="layui-row layui-col-space5">
-                            <div class="layui-col-xs9 layui-col-md9 top-panel-number">
-                                9,054,056
-                            </div>
-                            <div class="layui-col-xs3 layui-col-md3 top-panel-tips">
-                                比昨天 <a style="color: #1aa094">▲0.45</a><br>
-                                比七日 <a style="color: #bd3004">▼0.20</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-            <div class="layui-col-xs12 layui-col-md3">
-
-                <div class="layui-card top-panel">
-                    <div class="layui-card-header"><span class="layui-badge layui-bg-black">供应商数量</span></div>
-                    <div class="layui-card-body">
-                        <div class="layui-row layui-col-space5">
-                            <div class="layui-col-xs9 layui-col-md9 top-panel-number">
-                                9,054,056
-                            </div>
-                            <div class="layui-col-xs3 layui-col-md3 top-panel-tips">
-                                比昨天 <a style="color: #1aa094">▲0.12</a><br>
-                                比七日 <a style="color: #bd3004">▼0.36</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-            <div class="layui-col-xs12 layui-col-md3">
-
-                <div class="layui-card top-panel">
-                    <div class="layui-card-header"><span class="layui-badge layui-bg-black">商品数量</span></div>
-                    <div class="layui-card-body">
-                        <div class="layui-row layui-col-space5">
-                            <div class="layui-col-xs9 layui-col-md9 top-panel-number">
-                                9,054,056
-                            </div>
-                            <div class="layui-col-xs3 layui-col-md3 top-panel-tips">
-                                比昨天 <a style="color: #1aa094">▲0.98</a><br>
-                                比七日 <a style="color: #bd3004">▼0.47</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-            <div class="layui-col-xs12 layui-col-md3">
-
-                <div class="layui-card top-panel">
-                    <div class="layui-card-header"><span class="layui-badge layui-bg-black">访问数量</span></div>
-                    <div class="layui-card-body">
-                        <div class="layui-row layui-col-space5">
-                            <div class="layui-col-xs9 layui-col-md9 top-panel-number">
-                                666
-                            </div>
-                            <div class="layui-col-xs3 layui-col-md3 top-panel-tips">
-                                比昨天 <a style="color: #1aa094">▲0.24</a><br>
-                                比七日 <a style="color: #bd3004">▼0.12</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- 第二块 -->
-
-        <!--报表-->
         <div class="layui-row layui-col-space15">
             <div class="layui-col-md15">
                 <div class="layui-card">
@@ -303,9 +445,7 @@
                 </div>
             </div>
         </div>
-        <!--报表-->
 
-        <!--第三块-->
         <div class="layui-row layui-col-space15">
             <div class="layui-col-md9">
                 <div id="echarts-dataset" style="background-color:#ffffff;min-height:300px;padding: 10px"></div>
@@ -317,7 +457,6 @@
                 </div>
             </div>
         </div>
-        <!--第三块-->
     </div>
 </div>
 <script src="../lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
@@ -344,7 +483,7 @@
 
         var optionRecords = {
             title: {
-                text: '指标名称-报表图'
+                text: '用户列表'
             },
             tooltip: {
                 trigger: 'axis',
