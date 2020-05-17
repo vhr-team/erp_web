@@ -20,9 +20,26 @@ Erp_Web，JavaScript,Jquery,Layui,Iview,Element-ui,Html,Css...构建。相信 Er
 ## 参与贡献
 欢迎提交PR一起完善项目，以下为提PR并合并的小伙伴（排名不分先后）
 
-<img style="display: inline-block" src="https://avatars2.githubusercontent.com/u/32418569?s=50&u=f18e8677fcce9297bd91b05073cb331bee4cbc8d&v=4" />
-<img style="display: inline-block" src='https://avatars1.githubusercontent.com/u/43458667?s=50&u=56ba29ddcae348e030ecfc3d3f37b8107f0ba990&v=4'/>
-<img src='https://avatars1.githubusercontent.com/u/43458667?s=50&u=56ba29ddcae348e030ecfc3d3f37b8107f0ba990&v=4'/>
+<p>
+  <a href="https://github.com/sunzhixian001">
+     <img src="https://avatars1.githubusercontent.com/u/63136165?s=50&u=35ac6d1b4db1ae9f0dad474580ca6a86cbb0ec16&v=4" />
+  </a>
+  <a href="https://github.com/guangzan">
+     <img src="https://avatars1.githubusercontent.com/u/43458667?s=50&u=56ba29ddcae348e030ecfc3d3f37b8107f0ba990&v=4" />
+  </a>
+  <a href="https://github.com/q1982525943">
+     <img src="https://avatars0.githubusercontent.com/u/62741112?s=50&u=3c3b7c8efc778d97b3d8fc2a1d78a1b204138c33&v=4" />
+  </a>
+  <a href="https://github.com/XiaoHuiHuiBlog">
+     <img src="https://avatars0.githubusercontent.com/u/52324484?s=50&u=d00d4f0b4c116969da60d2af5a22469b4cd273b3&v=4" />
+  </a>
+  <a href="https://github.com/Zeng-dong-dong">
+     <img src="https://avatars0.githubusercontent.com/u/59249040?s=50&u=c8dd8a2ec40de4bfe9fdc0a4760424b27b8eefcd&v=4" />
+  </a>
+  <a href="https://github.com/1819268110okll">
+     <img src="https://avatars1.githubusercontent.com/u/63482516?s=50&v=4" />
+  </a>
+</p>
 
 ## 下载方式
 
