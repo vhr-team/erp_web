@@ -90,7 +90,7 @@ layui.define(["element", "jquery", 'pearOper', 'code'], function (exports) {
          */
         this.initHome = function () {
             sessionStorage.setItem('layuiminiHomeHref', "resources/page/console.html?mpi=m-p-i-0");
-            $('#layuiminiHomeTabId').html('<i class="fa fa-desktop"></i> <span> 控 制 台 </span>');
+            $('#layuiminiHomeTabId').html('<i class="fa fa-desktop"></i> <span>控制台</span>');
             $('#layuiminiHomeTabId').attr('lay-id', "resources/page/console.html?mpi=m-p-i-0");
             $('#layuiminiHomeTabIframe').html('<iframe width="100%" height="100%" frameborder="0"  src="resources/page/console.html?mpi=m-p-i-0"></iframe>');
         };

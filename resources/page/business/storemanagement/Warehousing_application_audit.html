@@ -200,20 +200,31 @@
                 chenggong(){
                     this.$Message.success('正在提交审核');
 
+                    var checker = JSON.parse(localStorage.getItem("user")).name
                     console.log(this.inboundId);
                     console.log(this.register);
-                    let obj = `/0/${this.register}/${this.inboundId}`;
+                    let obj = `/1/${checker}/${this.inboundId}`;
                     console.log(obj);
-                    // axios.get(urlApi + "warehouseInbound/queryInboundLimit?" + params).then(res => {
                     axios.post(urlApi + "warehouseInbound/updateWarehousing" + obj).then(res => {
-                        this.$Message.error('提交成功');
+                        this.$Message.success(res.data.message);
                     }).catch(err => {
                         this.$Message.error('提交失败');
                     })
 
                 },
                 shibai(){
-                    this.$Message.error('正在取消审核');
+                    this.$Message.success('正在提交审核');
+
+                    var checker = JSON.parse(localStorage.getItem("user")).name
+                    console.log(this.inboundId);
+                    console.log(this.register);
+                    let obj = `/2/${checker}/${this.inboundId}`;
+                    console.log(obj);
+                    axios.post(urlApi + "warehouseInbound/updateWarehousing" + obj).then(res => {
+                        this.$Message.success(res.data.message);
+                    }).catch(err => {
+                        this.$Message.error('提交失败');
+                    })
                 },
                 shenhe(row){
                     this.inboundId=row.inboundId;
