@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>产品工序制定</title>
+    <!-- import CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <link rel="stylesheet" href="../../../../lib/layui-v2.5.5/css/layui.css">
+    <link href="https://cdn.bootcss.com/element-ui/2.8.2/theme-chalk/index.css" rel="stylesheet">
+    <link rel="stylesheet" href="../../../../lib/bootstarp/css/bootstrap.css">
+    <link rel="stylesheet" href="../../../../lib/layui-v2.5.5/css/layui.css" media="all">
+    <link rel="stylesheet" href="../../../../css/public.css" media="all">
+    <script src="https://cdn.bootcss.com/vue/2.6.10/vue.js"></script>
+    <script src="https://cdn.bootcss.com/vue-router/3.0.6/vue-router.js"></script>
+    <script src="https://cdn.bootcss.com/element-ui/2.8.2/index.js"></script>
+    <script src="../../../../lib/layui-v2.5.5/layui.all.js"></script>
+    <script src="../../../../lib/layui-v2.5.5/layui.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/axios/0.19.2/axios.js"></script>
+    <script src="../../../../lib/jquery-3.4.1/jquery-3.4.1.min.js"></script>
+    <script src="../../../../lib/common/jquery.cookie.min.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/qs/6.9.3/qs.js"></script>
+    <script src="../../../../lib/bootstarp/js/bootstrap.js"></script>
+    <script src="../../../../lib/layui-v2.5.5/layui.js"></script>
+    <link rel="stylesheet" href="../../../../lib/layui-v2.5.5/css/layui.css">
+    <link rel="stylesheet" href="../../../../lib/bootstarp/css/bootstrap.css">
+    <script src="../../../../lib/jquery-3.4.1/jquery-3.4.1.min.js"></script>
+    <script src="../../../../lib/plugin/axios/axios.min.js"></script>
+    <script src="../../../../lib/plugin/vue/vue.min.js"></script>
+    <script src="js/common.js"></script>
+    <link rel="stylesheet" href="../../../../lib/plugin/element-ui/style/index.css">
+    <script src="../../../../lib/plugin/element-ui/index.js"></script>
+    <script src="../../../../lib/bootstarp/js/bootstrap.js"></script>
+    <style>
+        .bodernone {
+            border: 0px;
+        }
+    </style>
+</head>
+<body>
+<div class="layuimini-container" id="app">
+    <div class="layuimini-main">
+        <div>
+            <div style="margin-bottom: 20px">
+                <span class="demonstration">建档时间：</span>
+                <el-date-picker
+                        v-model="record.registerTime"
+                        type="date"
+                        value-format="yyyy-MM-dd"
+                        placeholder="选择日期">
+                </el-date-picker>
+                <el-button type="primary" @click="selectprocessAll()">查询</el-button>
+            </div>
+            <div>
+                <el-table
+                        :data="processList"
+                        border
+                        style="width: 100%">
+                    <el-table-column
+                            prop="productId"
+                            label="产品编号">
+                    </el-table-column>
+                    <el-table-column
+                            prop="productName"
+                            label="产品名称">
+                    </el-table-column>
+                    <el-table-column
+                            prop="productClass"
+                            label="档次级别">
+                    </el-table-column>
+                    <el-table-column
+                            prop="register"
+                            label="设计人">
+                    </el-table-column>
+                    <el-table-column
+                            prop="registerTime"
+                            label="设计时间">
+                    </el-table-column>
+                    <el-table-column
+                            fixed="right"
+                            label="操作">
+                        <template slot-scope="scope">
+                            <el-button @click="selectByassmbleid(scope.row)" type="text" size="small"
+                                       data-toggle="modal" data-target="#myModal1">查看物料
+                            </el-button>
+                            <el-button type="text" size="small"
+                                       data-toggle="modal" @click="showgx(scope.row)" data-target="#myModal2">工序制定
+                            </el-button>
+                        </template>
+                    </el-table-column>
+                </el-table>
+            </div>
+        </div>
+        <div class="modal fade" id="myModal1" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="myModalLabel">物料组成</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div>
+                            <table class="layui-table">
+                                <colgroup>
+                                    <col width="150">
+                                    <col width="200">
+                                </colgroup>
+                                <thead>
+                                <tr>
+                                    <th>物料编号</th>
+                                    <th>物料名称</th>
+                                    <th>所需数量</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr v-for="(item,index) in materialList">
+                                    <td>{{item.materialid}}</td>
+                                    <td>{{item.materialname}}</td>
+                                    <td>{{item.materialnum}}</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="layui-btn layui-btn-warm" data-dismiss="modal">关闭</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="">工序设计单</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="layui-card">
+                            <div class="layui-card-header">
+                                <el-form ref="ruleForm" label-width="100px" class="demo-ruleForm">
+                                    <el-row :gutter="20">
+                                        <el-col :span="12">
+                                            <div class="grid-content bg-purple">
+                                                <el-form-item label="产品编号" prop="name">
+                                                    <el-input readonly v-model="designsheet.productId"></el-input>
+                                                </el-form-item>
+                                            </div>
+                                        </el-col>
+                                        <el-col :span="12">
+                                            <div class="grid-content bg-purple">
+                                                <el-form-item label="产品名称" prop="name">
+                                                    <el-input readonly v-model="designsheet.productName"></el-input>
+                                                </el-form-item>
+                                            </div>
+                                        </el-col>
+                                    </el-row>
+                                    <el-row :gutter="20">
+                                        <el-col :span="12">
+                                            <div class="grid-content bg-purple">
+                                                <el-form-item label="档案设计人" prop="name">
+                                                    <el-input readonly v-model="designsheet.register"></el-input>
+                                                </el-form-item>
+                                            </div>
+                                        </el-col>
+                                       <!-- <el-col :span="12">
+                                            <div class="grid-content bg-purple">
+                                                <el-form-item label="工序编号" prop="name">
+                                                    <el-input v-model="designsheet.productId"></el-input>
+                                                </el-form-item>
+                                            </div>
+                                        </el-col>-->
+                                    </el-row>
+                                </el-form>
+                            </div>
+                            <div class="layui-card-body">
+                                <button type="button" class="layui-btn" @click="addrow()">添加工序</button>
+                                <table class="layui-table">
+                                    <thead>
+                                    <tr>
+                                        <th>工序名称</th>
+                                        <th>工时数</th>
+                                        <th>工时单位</th>
+                                        <th>工时成本</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr v-for="processsheet in sheets">
+                                        <td>
+                                            <el-select v-model="processsheet.processName" placeholder="请选择">
+                                                <el-option
+                                                        v-for="item in sheet"
+                                                        :key="item.value"
+                                                        :label="item.label"
+                                                        :value="item.value">
+                                                </el-option>
+                                            </el-select>
+                                        </td>
+                                        <td>
+                                            <el-input v-model="processsheet.timenumber" placeholder="请输入内容"></el-input>
+                                        </td>
+                                        <td>
+                                            <el-input v-model="processsheet.timeunit" placeholder="请输入内容"></el-input>
+                                        </td>
+                                        <td>
+                                            <el-input v-model="processsheet.timeprice" placeholder="请输入内容"></el-input>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                                <el-form ref="ruleForm" label-width="100px" class="demo-ruleForm">
+                                    <el-row :gutter="20">
+                                        <el-col :span="8">
+                                            <div class="grid-content bg-purple">
+                                                <el-form-item label="工序设计人" prop="name">
+                                                    <el-input readonly v-model="designsheet.processRegister"></el-input>
+                                                </el-form-item>
+                                            </div>
+                                        </el-col>
+                                        <el-col :span="8">
+                                            <div class="grid-content bg-purple">
+                                                <el-form-item label="工序描述" prop="name">
+                                                    <el-input v-model="designsheet.processRemark"></el-input>
+                                                </el-form-item>
+                                            </div>
+                                        </el-col>
+                                        <el-col :span="8">
+                                            <div class="grid-content bg-purple">
+                                                <el-form-item label="设计要求" prop="name">
+                                                    <el-input v-model="designsheet.processRequire"></el-input>
+                                                </el-form-item>
+                                            </div>
+                                        </el-col>
+                                    </el-row>
+                                </el-form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="layui-btn layui-btn-warm" @click="add()">提交</button>
+                        <button type="button" class="layui-btn layui-btn-warm" data-dismiss="modal">关闭</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script>
+    layui.use(['layer', 'form'], function () {
+        var layer = layui.layer
+            , form = layui.form;
+        /*vue*/
+        var vm = new Vue({
+            el: '#app',
+            data: {
+                designsheet: {
+
+                },
+                sheets: [],
+                record: {
+                    registerTime: ""
+                },
+                processList: [],
+                materialList: [],
+                sheet: [
+                    {
+                        value: '组装',
+                        label: '组装'
+                    }, {
+                        value: '测试',
+                        label: '测试'
+                    }, {
+                        value: '包装',
+                        label: '包装'
+                    }
+                ],
+
+            },
+            methods: {
+                /*获取当前用户名*/
+                getUser() {
+                    var register = $.parseJSON(window.localStorage.getItem("user"));
+                    console.log(register);
+                    this.designsheet.processRegister = register.name;
+
+                },
+                /*查询需要工序设计的档案*/
+                selectprocessAll() {
+                    axios.post(api + "product/selectprocessAll", this.record).then(res => {
+                        vm.processList = res.data;
+                    }).catch(err => {
+                        vm.$message.error('网络异常');
+                    });
+                },
+                handleClick(row) {
+                    console.log(row);
+                },
+                selectByassmbleid(data) {
+                    //var material={productId:data.productId};
+                    axios.get(api + "product/selectmaterialByproidAll?productId=" + data.productId).then(res => {
+                        vm.materialList = res.data;
+                        console.log(vm.materialList);
+                    }).catch(err => {
+                        vm.$message.error('网络异常');
+                    });
+                },
+                showgx(data) {
+                    this.designsheet = data;
+
+                    this.designsheet.sheets = [];
+                    this.getUser();
+                    console.log(data);
+                },
+                addrow() {
+                    this.sheets.push({});
+                    console.log(this.designsheet.sheets);
+                },
+                add() {
+                    var sheet={
+                        process:this.designsheet,
+                        sheet:this.sheets
+                    }
+                    axios.post(api+"product/add",sheet).then(res=>{
+                        if(res.data.success){
+                            vm.$message({
+                                showClose: true,
+                                message: res.data.message,
+                                type: 'success'
+                            });
+                        }else{
+                            vm.$message({
+                                showClose: true,
+                                message: res.data.message,
+                                type: 'error'
+                            });
+                        }
+                        vm.selectprocessAll();
+                    }).catch(err=>{
+                        vm.$message.error('网络异常');
+                    })
+                }
+            },
+            created() {
+                this.getUser();
+                this.selectprocessAll();
+            }
+        });
+
+
+    });
+</script>
+</html>

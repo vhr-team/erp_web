@@ -8,6 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <link rel="stylesheet" href="../../../lib/layui-v2.5.5/css/layui.css" media="all">
     <link rel="stylesheet" href="../../../css/public.css" media="all">
+    <script src="../../../lib/layui-v2.5.5/layui.all.js"></script>
     <style>
         body {
             margin: 10px;
@@ -19,6 +20,7 @@
             text-align: center;
         }
     </style>
+
 </head>
 <body>
 <div id="addGx1">
@@ -162,8 +164,6 @@
 <script type="text/html" id="complain_toolbar">
     <div class="layui-btn-container">
     </div>
-
-
 </script>
 <script type="text/html" id="barDemo2">
     <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
@@ -230,8 +230,8 @@
         });
         $("#addProduction_process_design").click(function () {
             var product_name = $("#product_name").val();
-            var design_idB = $("#procedure_id").val();
-            var product_designer = $("#product_designer").val();
+            var prdouctId = $("#prdouctId").val();
+            var designregister = $("#designregister").val();
             var product_registrant = $("#register").val();
             var design_date = $("#register_time").val();
             var esign_require = $(".layui-textarea").val();
@@ -241,10 +241,14 @@
             var delIndex = layer.confirm('确定提交吗', function (delIndex) {
                 layui.use('table', function () {
                     var table = layui.table;
-
+                    console.log(product_name);
+                    console.log(prdouctId);
+                    console.log(designregister);
+                    console.log(design_date);
+                    console.log(esign_require);
                     datas = layui.table.cache["test3"];
-                    JSON.stringify(datas);//把JS对象转换为json 这个是获取所有
-                    $.ajax({
+                    console.log(JSON.stringify(datas));;//把JS对象转换为json 这个是获取所有
+                    /*$.ajax({
                         url: 'http://127.0.0.1:8003/process/insertProductionSheet',
                         data: {
                             'product_name': product_name,
@@ -261,7 +265,7 @@
                             window.parent.location.reload();//刷新父页面
                             layer.closeAll();
                         }
-                    })
+                    })*/
 
                 })
 
