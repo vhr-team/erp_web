@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>产品工序审核</title>
+    <!-- import CSS -->
+    <link rel="stylesheet" href="../../../../lib/layui-v2.5.5/css/layui.css">
+    <link rel="stylesheet" href="../../../../lib/bootstarp/css/bootstrap.css">
+    <link rel="stylesheet" href="../../../../lib/layui-v2.5.5/css/layui.css" media="all">
+    <link rel="stylesheet" href="../../../../css/public.css" media="all">
+    <script src="../../../../lib/layui-v2.5.5/layui.all.js"></script>
+    <script src="../../../../lib/layui-v2.5.5/layui.js"></script>
+    <script src="../../../../lib/jquery-3.4.1/jquery-3.4.1.min.js"></script>
+    <script src="../../../../lib/common/jquery.cookie.min.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/qs/6.9.3/qs.js"></script>
+    <script src="../../../../lib/bootstarp/js/bootstrap.js"></script>
+    <script src="../../../../lib/layui-v2.5.5/layui.js"></script>
+    <link rel="stylesheet" href="../../../../lib/layui-v2.5.5/css/layui.css">
+    <link rel="stylesheet" href="../../../../lib/bootstarp/css/bootstrap.css">
+    <script src="../../../../lib/jquery-3.4.1/jquery-3.4.1.min.js"></script>
+    <script src="../../../../lib/plugin/axios/axios.min.js"></script>
+    <script src="../../../../lib/plugin/vue/vue.min.js"></script>
+    <script src="js/common.js"></script>
+    <link rel="stylesheet" href="../../../../lib/plugin/element-ui/style/index.css">
+    <script src="../../../../lib/plugin/element-ui/index.js"></script>
+    <script src="../../../../lib/bootstarp/js/bootstrap.js"></script>
+    <style>
+        .bodernone {
+            border: 0px;
+        }
+    </style>
+</head>
+<body>
+<div class="layuimini-container" id="app">
+    <div class="layuimini-main">
+        <div>
+            <div style="margin-bottom: 20px">
+                <el-input v-model="design.productName" style="width: 200px;" :inline="true" placeholder="请输入产品名称"></el-input>
+                <el-button type="primary" @click="selectAll()">查询</el-button>
+            </div>
+            <div>
+
+                <el-tabs v-model="activeName" @tab-click="handleClick">
+                    <el-tab-pane label="待审核" name="待审核">
+                        <div>
+                            <el-table
+                                    :data="designList"
+                                    border
+                                    style="width: 100%">
+                                <el-table-column
+                                        prop="processId"
+                                        label="工序编号">
+                                </el-table-column>
+                                <el-table-column
+                                        prop="productName"
+                                        label="产品名称">
+                                </el-table-column>
+                                <el-table-column
+                                        prop="desregister"
+                                        label="工序设计人">
+                                </el-table-column>
+                                <el-table-column
+                                        prop="desdate"
+                                        label="设计时间">
+                                </el-table-column>
+                                <el-table-column
+                                        fixed="right"
+                                        label="操作">
+                                    <template slot-scope="scope">
+                                        <el-button type="text" size="small"
+                                                   data-toggle="modal" @click="showgx(scope.row)" data-target="#myModal2">审核
+                                        </el-button>
+                                    </template>
+                                </el-table-column>
+                            </el-table>
+                        </div>
+                    </el-tab-pane>
+                    <el-tab-pane label="审核通过" name="审核通过">
+                        <div>
+                            <el-table
+                                    :data="designList"
+                                    border
+                                    style="width: 100%">
+                                <el-table-column
+                                        prop="processId"
+                                        label="工序编号">
+                                </el-table-column>
+                                <el-table-column
+                                        prop="productName"
+                                        label="产品名称">
+                                </el-table-column>
+                                <el-table-column
+                                        prop="desregister"
+                                        label="工序设计人">
+                                </el-table-column>
+                                <el-table-column
+                                        prop="desdate"
+                                        label="设计时间">
+                                </el-table-column>
+                                <el-table-column
+                                        fixed="right"
+                                        label="操作">
+                                    <template slot-scope="scope">
+                                        <el-button type="text" size="small"
+                                                   data-toggle="modal" @click="showgx(scope.row)" data-target="#myModal2">审核
+                                        </el-button>
+                                    </template>
+                                </el-table-column>
+                            </el-table>
+                        </div>
+                    </el-tab-pane>
+                    <el-tab-pane label="审核未通过" name="审核未通过">
+                        <div>
+                            <el-table
+                                    :data="designList"
+                                    border
+                                    style="width: 100%">
+                                <el-table-column
+                                        prop="processId"
+                                        label="工序编号">
+                                </el-table-column>
+                                <el-table-column
+                                        prop="productName"
+                                        label="产品名称">
+                                </el-table-column>
+                                <el-table-column
+                                        prop="desregister"
+                                        label="工序设计人">
+                                </el-table-column>
+                                <el-table-column
+                                        prop="desdate"
+                                        label="设计时间">
+                                </el-table-column>
+                                <el-table-column
+                                        fixed="right"
+                                        label="操作">
+                                    <template slot-scope="scope">
+                                        <el-button type="text" size="small"
+                                                   data-toggle="modal" @click="showgx(scope.row)" data-target="#myModal2">审核
+                                        </el-button>
+                                    </template>
+                                </el-table-column>
+                            </el-table>
+                        </div>
+                    </el-tab-pane>
+                </el-tabs>
+            </div>
+        </div>
+        <div class="modal fade" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="">工序审核</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="layui-card">
+                            <div class="layui-card-header">
+                                <el-form ref="ruleForm" label-width="100px" class="demo-ruleForm">
+                                    <el-row :gutter="20">
+                                        <el-col :span="12">
+                                            <div class="grid-content bg-purple">
+                                                <el-form-item label="产品编号" prop="name">
+                                                    <el-input readonly v-model="process.productid"></el-input>
+                                                </el-form-item>
+                                            </div>
+                                        </el-col>
+                                        <el-col :span="12">
+                                            <div class="grid-content bg-purple">
+                                                <el-form-item label="产品名称" prop="name">
+                                                    <el-input readonly v-model="process.productName"></el-input>
+                                                </el-form-item>
+                                            </div>
+                                        </el-col>
+                                    </el-row>
+                                    <el-row :gutter="20">
+                                        <el-col :span="12">
+                                            <div class="grid-content bg-purple">
+                                                <el-form-item label="工序设计人" prop="name">
+                                                    <el-input readonly v-model="process.desregister"></el-input>
+                                                </el-form-item>
+                                            </div>
+                                        </el-col>
+                                        <el-col :span="12">
+                                            <div class="grid-content bg-purple">
+                                                <el-form-item label="工序编号" prop="name">
+                                                    <el-input readonly v-model="process.processId"></el-input>
+                                                </el-form-item>
+                                            </div>
+                                        </el-col>
+                                    </el-row>
+                                </el-form>
+                            </div>
+                            <div class="layui-card-body">
+                                <table class="layui-table">
+                                    <thead>
+                                    <tr>
+                                        <th>工序名称</th>
+                                        <th>工时数</th>
+                                        <th>工时单位</th>
+                                        <th>工时成本</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr v-for="item in sheetList">
+                                        <td>{{item.processName}}</td>
+                                        <td>{{item.timenumber}}</td>
+                                        <td>{{item.timeunit}}</td>
+                                        <td>{{item.timeprice}}</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="layui-btn layui-btn-warm" @click="updatecheck('审核通过')">审核通过</button>
+                        <button type="button" class="layui-btn layui-btn-warm" @click="updatecheck('审核不通过')">审核不通过</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script>
+    layui.use(['layer', 'form'], function () {
+        var layer = layui.layer
+            , form = layui.form;
+        /*vue*/
+        var vm = new Vue({
+            el: '#app',
+            data: {
+                activeName: '待审核',
+                design: {
+                    productName: "",
+                    processCheck:"待审核"
+                },
+                process:{},
+                designList: [],
+                sheet:{
+                    processId:"",
+                },
+                sheetList:[]
+            },
+            methods: {
+                /*获取当前用户名*/
+                getUser() {
+                    var register = $.parseJSON(window.localStorage.getItem("user"));
+                },
+                showgx(data) {
+                    this.process=data;
+                    this.sheet.processId=data.processId;
+                    this.selectAllSheet();
+                },
+                selectAll() {
+                    axios.post(api + "product/selectAll", this.design).then(res => {
+                        this.designList=res.data;
+                        console.log(this.designList);
+                    }).catch(err => {
+                        vm.$message.error('网络异常');
+                    })
+                },
+                /*获取点击的tab*/
+                handleClick(tab, event) {
+                    this.design.processCheck = tab.name;
+                    this.selectAll();
+                },
+                /*根据工序id查询工序*/
+                selectAllSheet(){
+                    axios.post(api+"product/selectAllSheet",this.sheet).then(res=>{
+                        this.sheetList=res.data;
+                    }).catch()
+                },
+                updatecheck(check){
+                    var data={processId:this.sheet.processId,processCheck:check};
+                    axios.post(api+"product/updatecheck",data).then(res=>{
+                        this.selectAll();
+                    }).catch()
+                }
+            },
+            created() {
+                this.getUser();
+                this.selectAll();
+            }
+        });
+    });
+</script>
+</html>

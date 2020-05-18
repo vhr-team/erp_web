@@ -12,6 +12,7 @@
         <style>
             .layui-iconpicker-body.layui-iconpicker-body-page .hide {display: none;}
         </style>
+        <link rel="stylesheet" href="../../../js/lay-module/febs/css/febs.css">
     </head>
 
     <body>
@@ -37,10 +38,9 @@
                                         </i>
                                         搜 索
                                     </button>
-                                    <button type="reset" class="layui-btn layui-btn-primary"
+                                    <button type="reset" class="layui-btn layui-btn-primary btn_reset"
                                             lay-filter="data-search-btn">
-                                        <i
-                                                class="layui-icon layui-icon-refresh"></i>
+                                        <i class="layui-icon layui-icon-refresh"></i>
                                         重 置
                                     </button>
                                 </div>
@@ -58,12 +58,8 @@
                 </button>
                 <table class="layui-hide" id="menuTable" lay-filter="menuTable"></table>
                 <div style="display: none" id="menuTableBar">
-                    <a class="layui-btn layui-btn-xs layui-btn-warm data-count-delete menubtn_update"
-                       lay-event="update">修改
-                    </a>
-                    <a class="layui-btn layui-btn-xs layui-btn-danger data-count-delete menubtn_delete"
-                       lay-event="delete">删除
-                    </a>
+                    <a class="layui-btn layui-btn-xs layui-btn-warm data-count-delete menubtn_update" lay-event="update"><i class="layui-icon layui-icon-edit"></i> 修 改 </a>
+                    <a class="layui-btn layui-btn-xs layui-btn-danger data-count-delete menubtn_delete" lay-event="delete"><i class="layui-icon layui-icon-delete"></i> 删 除 </a>
                 </div>
 
                 <script type="text/html" id="spreadTpl">
@@ -208,6 +204,7 @@
                         openName: 'spread'  // 自定义默认展开的字段名
                     },
                     elem: '#menuTable',
+                    height: 'full-300', //高度最大化减去差值
                     cellMinWidth: true,
                     cols: [
                         {type: "numbers"},
@@ -236,7 +233,7 @@
                         {field: 'ordernum', title: '排序码', align: "center"},
                         {field: 'spread', title: '是否展开', align: "center", templet: '#spreadTpl'},
                         {field: 'available', title: '是否可用', align: "center", templet: '#availableTpl'},
-                        {title: '操作', templet: '#menuTableBar', fixed: "right", align: "center"}
+                        {title: '操作',width: 250, templet: '#menuTableBar', fixed: "right", align: "center"}
                     ],
                     reqData: function (data, callback) {
                         if (data == undefined) {

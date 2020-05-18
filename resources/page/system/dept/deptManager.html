@@ -15,6 +15,7 @@
             padding: 0 8px;
         }
     </style>
+    <link rel="stylesheet" href="../../../js/lay-module/febs/css/febs.css">
 </head>
 <body>
 <div class="layuimini-container">
@@ -102,7 +103,7 @@
                     <div class="layui-input-block" style="text-align: center;">
                         <a class="layui-btn " lay-submit="" lay-filter="doSubmit"><label
                                 class="layui-icon layui-icon-release"></label>提交</a>
-                        <a class="layui-btn layui-btn-warm" onclick="javascript:$('#dataFrm')[0].reset()"
+                        <a class="layui-btn layui-btn-warm btn_reset" onclick="javascript:$('#dataFrm')[0].reset()"
                            lay-filter="data-search-btn"><label class="layui-icon layui-icon-refresh"></label>重置</a>
                     </div>
                 </div>
@@ -113,8 +114,7 @@
         <!--表头工具条-->
         <button style="margin-top: 10px;" class="layui-btn layui-btn-sm layui-btn-normal data-delete-btn btn_add"
                 id="addDept">
-            <i
-                    class="layui-icon layui-icon-addition"></i> 添 加
+            <i class="layui-icon layui-icon-addition"></i> 添 加
         </button>
 
         <table class="layui-hide" id="deptTable" lay-filter="deptTable"></table>
@@ -133,8 +133,8 @@
 
         <!--表格右侧每一行数据的删除按钮-->
         <div style="display: none" id="deptTableBar">
-            <a class="layui-btn layui-btn-xs layui-btn-warm data-count-delete btn_update" lay-event="update"> 修 改 </a>
-            <a class="layui-btn layui-btn-xs layui-btn-danger data-count-delete btn_delete" lay-event="delete"> 删 除 </a>
+            <a class="layui-btn layui-btn-xs layui-btn-warm data-count-delete btn_update" lay-event="update"><i class="layui-icon layui-icon-edit"></i> 修 改 </a>
+            <a class="layui-btn layui-btn-xs layui-btn-danger data-count-delete btn_delete" lay-event="delete"><i class="layui-icon layui-icon-delete"></i> 删 除 </a>
         </div>
     </div>
 </div>
@@ -168,6 +168,7 @@
                 isPidData: true  // 是否是pid形式数据
             },
             elem: '#deptTable',
+            height: "full-300", //高度最大化减去差值
             cols: [
                 {type: "numbers"},
                 {field: 'title', title: '部门名称', align: "center", width: 200},

@@ -8,6 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <link rel="stylesheet" href="../../../lib/layui-v2.5.5/css/layui.css" media="all">
     <link rel="stylesheet" href="../../../css/public.css" media="all">
+    <link rel="stylesheet" href="../../../js/lay-module/febs/css/febs.css">
 </head>
 <body class="childrenBody">
 
@@ -109,7 +110,7 @@
             cellMinWidth: true,
             toolbar: '#deploymentTableToolBar',
             page: true,
-            height: "full-350",
+            height: "full",
             limits: [5, 10, 15, 20],
             limit: 5,
             id: "deploymentListTable",
@@ -129,7 +130,7 @@
             url: api + 'workFlow/loadAllProcessDefinition',
             cellMinWidth: true,
             page: true,
-            height: "full-380",
+            height: "full-500",
             limits: [5, 10, 15, 20],
             limit: 5,
             id: "processDefinitionListTable",

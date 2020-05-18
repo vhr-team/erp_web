@@ -8,6 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <link rel="stylesheet" href="../../../lib/layui-v2.5.5/css/layui.css" media="all">
     <link rel="stylesheet" href="../../../css/public.css" media="all">
+    <link rel="stylesheet" href="../../../js/lay-module/febs/css/febs.css">
 </head>
 <body>
 <div class="layuimini-container">
@@ -43,7 +44,7 @@
                         <div class="layui-inline">
                             <a class="layui-btn layui-btn-primary" lay-submit="" lay-filter="data-search-btn"><label
                                     class="layui-icon layui-icon-search"></label> 搜 索 </a>
-                            <a class="layui-btn layui-btn-primary"
+                            <a class="layui-btn layui-btn-primary btn_reset"
                                onclick="javascript:$('#searchFrm')[0].reset();$('#p_deptid').val('')"
                                lay-filter="data-search-btn"><label class="layui-icon layui-icon-refresh"></label> 重 置
                             </a>
@@ -61,10 +62,10 @@
                     class="layui-icon layui-icon-addition"></i> 添加 </a>
         </div>
         <script type="text/html" id="userTableBar">
-            <a class="layui-btn layui-btn-xs layui-btn-warm data-count-delete userBtn_update" lay-event="update">修改</a>
-            <a class="layui-btn layui-btn-xs layui-btn-danger data-count-delete userBtn_delete" lay-event="delete">删除</a>
-            <a class="layui-btn layui-btn-xs layui-btn-normal data-count-delete" lay-event="selectRole">分配角色</a>
-            <a class="layui-btn layui-btn-xs layui-bg-black data-count-delete" lay-event="resetPwd">重置密码</a>
+            <a class="layui-btn layui-btn-xs layui-btn-warm data-count-delete userBtn_update" lay-event="update"><i class="layui-icon layui-icon-edit"></i> 修 改 </a>
+            <a class="layui-btn layui-btn-xs layui-btn-danger data-count-delete userBtn_delete" lay-event="delete"><i class="layui-icon layui-icon-delete"></i> 删 除 </a>
+            <a class="layui-btn layui-btn-xs layui-btn-normal data-count-delete" lay-event="selectRole"><i class="layui-icon layui-icon-auz"></i> 分 配 角 色 </a>
+            <a class="layui-btn layui-btn-xs layui-bg-black data-count-delete" lay-event="resetPwd"><i class="layui-icon layui-icon-password"></i> 重 置 密 码 </a>
         </script>
         <script type="text/html" id="availableTpl">
             <!-- 这里的 checked 的状态只是演示 -->
@@ -207,6 +208,7 @@
             url: api + 'user/loadAllUser',
             toolbar: "#userToolBar",
             cellMinWidth: true,
+            height: "full-300",
             cols: [[
                 {field: 'id', title: 'ID', align: "center"},
                 {field: 'name', title: '用户姓名', align: "center"},
@@ -228,7 +230,7 @@
                     }
                 },
                 {field: 'available', title: '是否可用', align: "center", templet: '#availableTpl'},
-                {title: '操作', width: 300, templet: '#userTableBar', fixed: "right", align: "center"}
+                {title: '操作', width: 450, templet: '#userTableBar', fixed: "right", align: "center"}
             ]],
             page: true
         });

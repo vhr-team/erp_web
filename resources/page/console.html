@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>首页工作台</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <link rel="stylesheet" href="../lib/layui-v2.5.5/css/layui.css" media="all">
+    <link rel="stylesheet" href="../lib/font-awesome-4.7.0/css/font-awesome.min.css" media="all">
+    <link rel="stylesheet" href="../css/public.css" media="all">
+    <style>
+        .layui-card {
+            border: 1px solid #f2f2f2;
+            border-radius: 5px;
+        }
+
+        .icon {
+            margin-right: 10px;
+            color: #1aa094;
+        }
+
+        .icon-cray {
+            color: #ffb800 !important;
+        }
+
+        .icon-blue {
+            color: #1e9fff !important;
+        }
+
+        .icon-tip {
+            color: #ff5722 !important;
+        }
+
+        .layuimini-qiuck-module {
+            text-align: center;
+            margin-top: 10px
+        }
+
+        .layuimini-qiuck-module a i {
+            display: inline-block;
+            width: 100%;
+            height: 60px;
+            line-height: 60px;
+            text-align: center;
+            border-radius: 2px;
+            font-size: 30px;
+            background-color: #F8F8F8;
+            color: #333;
+            transition: all .3s;
+            -webkit-transition: all .3s;
+        }
+
+        .layuimini-qiuck-module a cite {
+            position: relative;
+            top: 2px;
+            display: block;
+            color: #666;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
+            font-size: 14px;
+        }
+
+        .welcome-module {
+            width: 100%;
+            height: 210px;
+        }
+
+        .panel {
+            background-color: #fff;
+            border: 1px solid transparent;
+            border-radius: 3px;
+            -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
+            box-shadow: 0 1px 1px rgba(0, 0, 0, .05)
+        }
+
+        .panel-body {
+            padding: 10px
+        }
+
+        .panel-title {
+            margin-top: 0;
+            margin-bottom: 0;
+            font-size: 12px;
+            color: inherit
+        }
+
+        .label {
+            display: inline;
+            padding: .2em .6em .3em;
+            font-size: 75%;
+            font-weight: 700;
+            line-height: 1;
+            color: #fff;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: baseline;
+            border-radius: .25em;
+            margin-top: .3em;
+        }
+
+        .layui-red {
+            color: red
+        }
+
+        .main_btn > p {
+            height: 40px;
+        }
+
+        .layui-bg-number {
+            background-color: #F8F8F8;
+        }
+
+        .layuimini-notice:hover {
+            background: #f6f6f6;
+        }
+
+        .layuimini-notice {
+            padding: 7px 16px;
+            clear: both;
+            font-size: 12px !important;
+            cursor: pointer;
+            position: relative;
+            transition: background 0.2s ease-in-out;
+        }
+
+        .layuimini-notice-title, .layuimini-notice-label {
+            padding-right: 70px !important;
+            text-overflow: ellipsis !important;
+            overflow: hidden !important;
+            white-space: nowrap !important;
+        }
+
+        .layuimini-notice-title {
+            line-height: 28px;
+            font-size: 14px;
+        }
+
+        .layuimini-notice-extra {
+            position: absolute;
+            top: 50%;
+            margin-top: -8px;
+            right: 16px;
+            display: inline-block;
+            height: 16px;
+            color: #999;
+        }
+
+        #febs-index .welcome-info {
+            border: 1px solid #f1f1f1;
+            margin-bottom: .5rem;
+            padding: .5rem;
+        }
+
+        #febs-index .welcome-info-wrapper {
+            padding: .2rem;
+            display: inline-block
+        }
+
+        #febs-index .welcome-info-wrapper .user-header {
+            display: inline-block;
+            vertical-align: middle
+        }
+
+        #febs-index .welcome-info-wrapper .user-header img {
+            width: 5rem;
+            margin: .5rem 1rem;
+            border-radius: 50%
+        }
+
+        #febs-index .welcome-info-wrapper .user-info {
+            display: inline-block;
+            vertical-align: middle
+        }
+
+        #febs-index .welcome-info-wrapper .user-info .random-message {
+            font-size: 1rem;
+            margin-bottom: .2rem;
+            max-width: 21rem
+        }
+
+        #febs-index .welcome-info-wrapper .user-info .user-dept, #febs-index .welcome-info-wrapper .user-info .user-login-info {
+            color: rgba(0, 0, 0, 0.45);
+        }
+
+        #febs-index .login-count-table {
+            width: 100%;
+            margin: 1rem;
+        }
+
+        #febs-index .login-count-table .count {
+            padding-top: .8rem;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #1890ff
+        }
+
+        #febs-index .project-table {
+            padding: .5rem;
+            border: 1px solid #f1f1f1;
+            width: 100%
+        }
+
+        #febs-index .project-table-td {
+            padding: .5rem 0.7rem;
+            border: 1px solid #f1f1f1;
+        }
+
+        #febs-index .project-table-td a {
+            color: #42b983;
+            font-size: .9rem;
+            font-weight: 600;
+        }
+
+        #febs-index .project-desc {
+            color: rgba(0, 0, 0, 0.45);
+        }
+
+        .top-panel {
+            border: 1px solid #eceff9;
+            border-radius: 5px;
+            text-align: center;
+        }
+
+        .top-panel > .layui-card-body {
+            height: 60px;
+        }
+
+        .top-panel-number {
+            line-height: 60px;
+            font-size: 30px;
+            border-right: 1px solid #eceff9;
+        }
+
+        .top-panel-tips {
+            line-height: 30px;
+            font-size: 12px
+        }
+
+        .top-panel {
+            border-radius: 4px;
+            text-align: center;
+        }
+
+        .top-panel > .layui-card-body {
+            height: 60px;
+        }
+
+        .top-panel-number {
+            line-height: 60px;
+            font-size: 30px;
+            border-right: 1px solid #eceff9;
+        }
+
+        .top-panel-tips {
+            padding-left: 8px;
+            padding-top: 16px;
+            line-height: 30px;
+            font-size: 12px
+        }
+
+        .pear-container {
+            background-color: whitesmoke;
+            margin: 10px;
+        }
+
+        .card {
+            width: 100%;
+            height: 160px;
+            background-color: whitesmoke;
+            border-radius: 4px;
+        }
+
+        .card .header .avatar {
+            width: 28px;
+            height: 28px;
+            margin: 20px;
+            border-radius: 50px;
+        }
+
+        .card .header {
+            color: dimgray;
+        }
+
+        .card .body {
+            color: gray;
+        }
+
+        .card .body {
+            margin-left: 20px;
+            margin-right: 20px;
+        }
+
+        .card .footer {
+            margin-left: 20px;
+            margin-right: 20px;
+            margin-top: 20px;
+            font-size: 13px;
+            color: gray;
+            position: absolute;
+        }
+
+        .list .list-item {
+            height: 33px;
+            line-height: 33px;
+            color: gray;
+            padding: 5px;
+            padding-left: 15px;
+            border-radius: 4px;
+            margin-top: 5.2px;
+        }
+
+        .custom-tab .layui-tab-title {
+            border-bottom-width: 0px;
+            border-bottom-style: none;
+        }
+
+        .custom-tab .layui-tab-title li {
+            margin-left: 10px;
+        }
+
+        .list .list-item:hover {
+            background-color: whitesmoke;
+        }
+
+        .list .list-item .title {
+            font-size: 13px;
+            width: 100%;
+        }
+
+        .list .list-item .footer {
+            position: absolute;
+            right: 30px;
+            font-size: 12px;
+        }
+
+        .top-panel-tips i {
+            font-size: 33px;
+        }
+    </style>
+    <link rel="stylesheet" href="../js/lay-module/febs/css/febs.css">
+</head>
+<body class="console console1 ok-body-scroll">
+<div class="febs-container">
+    <div class="layuimini-main" style="padding-top: 5px">
+
+
+        <div class="layui-fluid layui-anim febs-anim-up" id="febs-index" lay-title="系统首页">
+
+            <div class="layui-row layui-col-space10">
+                <div class="layui-col-xs6 layui-col-md3">
+                    <div class="layui-card top-panel">
+                        <div class="layui-card-header">今日访问</div>
+                        <div class="layui-card-body">
+                            <div class="layui-row layui-col-space5">
+                                <div class="layui-col-xs8 layui-col-md8 top-panel-number">
+                                    9,04,0
+                                </div>
+                                <div class="layui-col-xs4 layui-col-md4 top-panel-tips">
+                                    <i class="layui-icon layui-icon-app" style="color: #4099FF;"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-col-xs6 layui-col-md3">
+                    <div class="layui-card top-panel">
+                        <div class="layui-card-header">提交次数</div>
+                        <div class="layui-card-body">
+                            <div class="layui-row layui-col-space5">
+                                <div class="layui-col-xs8 layui-col-md8 top-panel-number">
+                                    6,34,4
+                                </div>
+                                <div class="layui-col-xs4 layui-col-md4 top-panel-tips">
+                                    <i class="layui-icon layui-icon-component" style="color: #DD4A68;"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-col-xs6 layui-col-md3">
+                    <div class="layui-card top-panel">
+                        <div class="layui-card-header">下载数量</div>
+                        <div class="layui-card-body">
+                            <div class="layui-row layui-col-space5">
+                                <div class="layui-col-xs8 layui-col-md8 top-panel-number">
+                                    1,34,1
+                                </div>
+                                <div class="layui-col-xs4 layui-col-md4  top-panel-tips">
+                                    <i class="layui-icon layui-icon-carousel" style="color: #5FB878;"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-col-xs6 layui-col-md3">
+                    <div class="layui-card top-panel">
+                        <div class="layui-card-header">商品统计</div>
+                        <div class="layui-card-body">
+                            <div class="layui-row layui-col-space5">
+                                <div class="layui-col-xs8 layui-col-md8 top-panel-number">
+                                    7,04,6
+                                </div>
+                                <div class="layui-col-xs4 layui-col-md4 top-panel-tips">
+                                    <i class="layui-icon layui-icon-cart" style="color: #E6A23C;"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="layui-row layui-col-space8">
+                <div class="layui-col-md12 layui-col-sm12 layui-col-xs12">
+                    <div class="layui-card">
+                        <div class="layui-card-body layui-anim layui-anim-fadein">
+                            <div class="layui-row welcome-info">
+                                <div class="layui-col-md6 layui-col-sm12 layui-col-xs12">
+                                    <div class="layui-row welcome-info-wrapper">
+                                        <div class="user-header">
+                                            <img alt="头像" id="user-avatar"
+                                                 data-th-src="@{febs/images/avatar/empty.jpg}">
+                                        </div>
+                                        <div class="user-info">
+                                            <div class="layui-row">
+                                                <div class="random-message">
+                                                    <span id="welcome-message"></span>
+                                                </div>
+                                                <div class="user-dept">
+                                                    <span id="user-dept"></span> | <span id="user-role"></span>
+                                                </div>
+                                                <div class="user-login-info">
+                                                    <!--上次登录时间：<span id="last-login-time">2019-05-23 18:45:12</span>-->
+                                                    <span id="nowTime"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="layui-col-md6 layui-col-sm12 layui-col-xs12">
+                                    <div class="layui-col-md-offset5">
+                                        <table class="login-count-table">
+                                            <tr>
+                                                <td>今日IP</td>
+                                                <td>今日访问</td>
+                                                <td>总访问量</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="count" id="today-ip">
+                                                    17
+                                                </td>
+                                                <td class="count" id="today-visit-count">
+                                                    20
+                                                </td>
+                                                <td class="count" id="total-visit-count">
+                                                    40983
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-col-md6 layui-col-sm6 layui-col-xs12">
+                    <div class="layui-card">
+                        <div class="layui-card-body">
+                            <div id="chart" style="height: 350px"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="layui-col-md6 layui-col-sm6 layui-col-xs12">
+                    <div class="layui-card">
+                        <div class="layui-card-header"><i class="fa fa-bullhorn icon icon-tip"></i>系统公告</div>
+                        <div class="layui-card-body layui-text" id="notice_area"></div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="layui-row layui-col-space9">
+                <div class="layui-card">
+                    <div class="layui-card-header">月生产曲线</div>
+                    <div class="layui-card-body">
+                        <div id="basicAreaChart"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="../lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
+<script src="../js/lay-config.js?v=1.0.4" charset="utf-8"></script>
+<script src="../lib/jquery-3.4.1/jquery-3.4.1.min.js" charset="utf-8"></script>
+<script src="../lib/layui-v2.5.5/layui.js?v=1.0.4" charset="utf-8"></script>
+
+<script src="../js/lay-config.js?v=1.0.4" charset="utf-8"></script>
+<script src="../lib/common/jquery.cookie.min.js" charset="utf-8"></script>
+<script src="../lib/common/common.js" charset="utf-8"></script>
+
+<script src="../js/lay-module/febs/lay/data/dataSeries.js"></script>
+<script>
+    layui.use(['layer', 'apexcharts', 'layuimini', 'echarts', 'jquery', 'util'], function () {
+        var $ = layui.jquery,
+            layer = layui.layer,
+            util = layui.util,
+            $view = $('#febs-index'),
+            layuimini = layui.layuimini,
+            echarts = layui.echarts;
+
+        /* 系统 */
+        function handleSuccess() {
+            var hour = new Date().getHours();
+            var time = hour < 6 ? '早上好' : (hour <= 11 ? '上午好' : (hour <= 13 ? '中午好' : (hour <= 18 ? '下午好' : '晚上好')));
+            var welcomeArr = [
+                '喝杯咖啡休息下吧☕',
+                '要不要和朋友打局LOL',
+                '今天又写了几个Bug呢',
+                '今天在群里吹水了吗',
+                '今天吃了什么好吃的呢',
+                '今天您微笑了吗😊',
+                '今天帮助别人了吗',
+                '准备吃些什么呢',
+                '周末要不要去看电影？'
+            ];
+            let user = JSON.parse(localStorage.getItem("user"));
+
+            $view.find('#user-dept').text(user.deptname ? user.deptname : '暂无所属部门').end()
+                .find('#user-role').text(user.loginname ? user.loginname : '暂无角色').end()
+                .find('#welcome-message').html(welcomeMessage).end();
+
+            var index = Math.floor((Math.random() * welcomeArr.length));
+            var welcomeMessage = time + `，<a id="febs-index-user">${JSON.parse(localStorage.getItem("user")).name}</a>，` + welcomeArr[index];
+            var currentTime = new Date().getTime();
+            var yourVisitCount = [20, 14];
+            var totalVisitCount = [10, 50];
+            var lastTenDays = [
+                util.toDateString(new Date(currentTime - 1000 * 9 * 86400), 'MM-dd'),
+                util.toDateString(new Date(currentTime - 1000 * 8 * 86400), 'MM-dd'),
+                util.toDateString(new Date(currentTime - 1000 * 7 * 86400), 'MM-dd'),
+                util.toDateString(new Date(currentTime - 1000 * 6 * 86400), 'MM-dd'),
+                util.toDateString(new Date(currentTime - 1000 * 5 * 86400), 'MM-dd'),
+                util.toDateString(new Date(currentTime - 1000 * 4 * 86400), 'MM-dd'),
+                util.toDateString(new Date(currentTime - 1000 * 3 * 86400), 'MM-dd'),
+                util.toDateString(new Date(currentTime - 1000 * 2 * 86400), 'MM-dd'),
+                util.toDateString(new Date(currentTime - 1000 * 86400), 'MM-dd'),
+                util.toDateString(new Date(currentTime), 'MM-dd')
+            ];
+            var options = {
+                chart: {
+                    height: 350,
+                    type: 'area',
+                    toolbar: {
+                        show: true
+                    }
+                },
+                colors: ['#1890ff', '#0acf97'],
+                plotOptions: {
+                    bar: {
+                        horizontal: true,
+                        columnWidth: '32rem'
+                    }
+                },
+                dataLabels: {
+                    enabled: true
+                },
+                stroke: {
+                    width: [3, 3],
+                    curve: 'smooth'
+                },
+                series: [{
+                    name: '总数',
+                    data: totalVisitCount
+                }, {
+                    name: '您',
+                    data: yourVisitCount
+                }],
+                xaxis: {
+                    categories: lastTenDays,
+                    axisTicks: {
+                        show: true
+                    },
+                    axisBorder: {
+                        show: true,
+                        color: '#f1f1f1'
+                    }
+                },
+                fill: {
+                    type: 'gradient',
+                    gradient: {
+                        shadeIntensity: 1,
+                        inverseColors: false,
+                        opacityFrom: 0.5,
+                        opacityTo: 0,
+                        stops: [0, 90, 100]
+                    }
+                },
+                title: {
+                    text: '近10天系统访问记录',
+                    align: 'left',
+                    style: {
+                        color: 'rgba(0, 0, 0, .65)'
+                    }
+                },
+                tooltip: {
+                    y: {
+                        formatter: function (val) {
+                            return "访问次数 " + val + " 次"
+                        }
+                    }
+                },
+                grid: {
+                    row: {
+                        colors: ['transparent', 'transparent'],
+                        opacity: 0.2
+                    },
+                    borderColor: '#f1f1f1'
+                }
+            };
+            new ApexCharts(
+                document.querySelector("#chart"),
+                options
+            ).render();
+
+            // ------------- basicAreaChart -------------------
+            var basicAreaChartOptions = {
+                chart: {
+                    height: 320,
+                    type: 'area',
+                    zoom: {
+                        enabled: true
+                    },
+                    toolbar: {
+                        show: true
+                    }
+                },
+                dataLabels: {
+                    enabled: true
+                },
+                stroke: {
+                    curve: 'straight',
+                    width: [3]
+                },
+                series: [{
+                    name: "STOCK ABC",
+                    data: series.monthDataSeries1.prices
+                }],
+                labels: series.monthDataSeries1.dates,
+                xaxis: {
+                    type: 'datetime'
+                },
+                yaxis: {
+                    opposite: true
+                },
+                legend: {
+                    horizontalAlign: 'left'
+                },
+                grid: {
+                    row: {
+                        colors: ['transparent', 'transparent'],
+                        opacity: 0.2
+                    },
+                    borderColor: '#f1f3fa'
+                }
+            };
+
+            // --------------- basicAreaChart --------------
+            new ApexCharts(
+                document.querySelector("#basicAreaChart"),
+                basicAreaChartOptions
+            ).render();
+
+            $("#welcome-message").html(welcomeMessage);
+        }
+
+        //使用ajax请求公告的查询接口
+        $.get(api + "notice/loadAllNotice", {page: 1, limit: 5}, function (res) {
+            var html = "";
+            $.each(res.data, function (i, item) {
+                html += '<div class="layuimini-notice">' +
+                    '<div class="layuimini-notice-title show_title">' + item.title + '</div>' +
+                    '<div class="layuimini-notice-extra show_createtime">' + item.createtime + '</div>' +
+                    '<div class="layuimini-notice-extra show_opername layui-hide">' + item.opername + '</div>' +
+                    '<div class="layuimini-notice-content show_content layui-hide">' + item.content + '</div>'
+                    + '</div>';
+            });
+
+            $("#notice_area").html(html);
+        });
+        /**
+         * 查看公告信息
+         **/
+        $('body').on('click', '.layuimini-notice', function () {
+            var title = $(this).children('.show_title').text();
+            var noticeTime = $(this).children('.show_createtime').text();
+            var opername = $(this).children('.show_opername').text();
+            var content = $(this).children('.show_content').html();
+            var html = '<div style="padding:15px 20px; text-align:justify; line-height: 22px;border-bottom:1px solid #e2e2e2;background-color: #2f4056;color: #ffffff">\n' +
+                '<div style="text-align: center;margin-bottom: 20px;font-weight: bold;border-bottom:1px solid #718fb5;padding-bottom: 5px"><h4 class="text-danger">' + title + '</h4></div>\n' +
+                '<div style="font-size: 12px">' + content + '</div>\n' +
+                '</div>\n';
+            parent.layer.open({
+                type: 1,
+                title: '系统公告' + '<span style="float: right;right: 1px;font-size: 12px;color: #b1b3b9;margin-top: 1px">发布时间:' + noticeTime + ' 发布人:' + opername + '</span>',
+                area: '800px;',
+                shade: 0.8,
+                btn: ['关闭'],
+                btnAlign: 'c',
+                moveType: 1,
+                content: html
+            });
+        });
+        handleSuccess();
+        getLangDate();
+        /* 系统 */
+    });
+
+    //值小于10时，在前面补0
+    function dateFilter(date) {
+        if (date < 10) {
+            return "0" + date;
+        }
+        return date;
+    }
+
+    function getLangDate() {
+        let userName = JSON.parse(localStorage.getItem("user")).name;
+        var dateObj = new Date(); //表示当前系统时间的Date对象
+        var year = dateObj.getFullYear(); //当前系统时间的完整年份值
+        var month = dateObj.getMonth() + 1; //当前系统时间的月份值
+        var date = dateObj.getDate(); //当前系统时间的月份中的日
+        var day = dateObj.getDay(); //当前系统时间中的星期值
+        var weeks = ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"];
+        var week = weeks[day]; //根据星期值，从数组中获取对应的星期字符串
+        var hour = dateObj.getHours(); //当前系统时间的小时值
+        var minute = dateObj.getMinutes(); //当前系统时间的分钟值
+        var second = dateObj.getSeconds(); //当前系统时间的秒钟值
+        var timeValue = "" + ((hour >= 12) ? (hour >= 18) ? "晚上" : "下午" : "上午"); //当前时间属于上午、晚上还是下午
+        newDate = dateFilter(year) + "年" + dateFilter(month) + "月" + dateFilter(date) + "日 " + " " + dateFilter(hour) + ":" + dateFilter(minute) + ":" + dateFilter(second);
+        document.getElementById("nowTime").innerHTML = "亲爱的【" + userName + "】，" + timeValue + "好！ 欢迎使用进销存管理系统。<br/>当前时间为： " + newDate + "　" + week;
+        setTimeout("getLangDate()", 1000);
+    }
+</script>
+</body>
+</html>

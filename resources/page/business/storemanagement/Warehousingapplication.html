@@ -1,182 +1,284 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
+    <meta charset="UTF-8">
     <title>入库申请管理</title>
     <meta name="renderer" content="webkit">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="../../../lib/plugin/iview/dist/styles/iview.css">
+
     <link rel="stylesheet" href="../../../lib/layui-v2.5.5/css/layui.css" media="all">
     <link rel="stylesheet" href="../../../css/public.css" media="all">
 </head>
 <body>
-<div class="layuimini-container">
+
+
+<div class="layuimini-container" id="app">
     <div class="layuimini-main">
+
         <!--搜索开始-->
         <fieldset class="table-search-fieldset">
             <legend>搜索信息</legend>
-            <div style="margin: 10px 10px 10px 10px">
-                <form class="layui-form layui-form-pane" id="searchFrm">
-                    <div class="layui-form-item">
-                        <div class="layui-inline">
-                            <label class="layui-form-label">关键词</label>
-                            <div class="layui-input-inline">
-                                <input type="text" name="name" autocomplete="off" class="layui-input">
-                            </div>
-                        </div>
-                        <div class="layui-inline">
-                            <a class="layui-btn layui-btn-primary" lay-submit="" lay-filter="data-search-btn"><i class="layui-icon"></i>搜索</a>
-                            <a class="layui-btn layui-btn-primary" onclick="javascript:$('#searchFrm')[0].reset()"
-                               lay-filter="data-search-btn"><i class="layui-icon layui-icon-refresh"></i>重置</a>
-                        </div>
-                    </div>
-                </form>
-            </div>
         </fieldset>
         <!--搜索结束-->
 
-        <!--表格开始-->
-        <table class="layui-hide" id="roleTable" lay-filter="roleTable"></table>
-        <script type="text/html" id="roleToolBar">
-            <a class="layui-btn layui-btn-sm layui-btn-danger data-count-delete" lay-event="storage">申请入库</a>
-        </script>
-        <script type="text/html" id="availableTpl">
-            <!-- 这里的 checked 的状态只是演示 -->
-            <input type="checkbox" name="available" value="{{d.id}}" lay-skin="switch" lay-text="可用|不可用"
-                   lay-filter="availableSwitch" {{ d.available== 1 ? 'checked' : '' }}>
-        </script>
-        <!--表格结束-->
 
-        <!--添加和修改的弹出层开始-->
-        <div id="addOrUpdateDiv" style="display: none;padding: 0.3125rem">
-            <form method="post" class="layui-form layui-form-pane" lay-filter="dataFrm" id="dataFrm">
-                <div class="layui-form-item">
-                    <label class="layui-form-label">角色名称</label>
-                    <div class="layui-input-block">
-                        <input type="hidden" name="id"/>
-                        <input type="text" name="name" lay-verify="required" autocomplete="off" placeholder="请输入标题"
-                               class="layui-input">
+        <div style="margin-top: 10px;">
+            <i-button type="info" @click="modal8 = true" icon="ios-add-circle-outline" id="addDept"> 添 加 入 库 申 请 单</i-button>
+        </div>
+
+
+
+
+        <!--数据表格-->
+        <i-table :columns="columns1" :data="data1">
+            <template slot-scope="{ row, index }" slot="action">
+
+
+
+            </template>
+        </i-table>
+        <!--数据表格-->
+
+
+        <!--分页-->
+        <Page
+                :page-size-opts=[5,10,15,20]
+                :current="page"
+                :page-size="pageSize"
+                style="margin-top: 20px"
+                :total="total"
+                @on-change="currentPageChange"
+                @on-page-size-change="currentPageSizeChange"
+                show-total
+                show-sizer
+                show-elevator/>
+        <!--分页-->
+
+        <!--modal-->
+        <Modal width="680" title="Title" v-model="modal8" :mask-closable="false">
+            <form method="post" class="layui-form layui-form-pane" lay-filter="dataFrm" id="dataFrm" >
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">入库人</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="storer" id="storer" lay-verify="required" autocomplete="off"
+                               placeholder="请输入入库人姓名" class="layui-input">
                     </div>
                 </div>
-                <div class="layui-form-item">
-                    <label class="layui-form-label">角色备注</label>
-                    <div class="layui-input-block">
-                        <textarea placeholder="请输入角色备注" name="remark" class="layui-textarea"></textarea>
+                <div class="layui-inline">
+                    <label class="layui-form-label">入库理由</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="reason" id="reason" lay-verify="required" autocomplete="off"
+                               placeholder="请输入入库理由" class="layui-input">
                     </div>
                 </div>
-                <div class="layui-form-item">
-                    <div class="layui-input-block" style="text-align: center;">
-                        <a class="layui-btn " lay-submit="" lay-filter="doSubmit"><label
-                                class="layui-icon layui-icon-release"></label>提交</a>
-                        <a class="layui-btn layui-btn-warm" onclick="javascript:$('#dataFrm')[0].reset()"
-                           lay-filter="data-search-btn"><label class="layui-icon layui-icon-refresh"></label>重置</a>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">总件数</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="amountSum" id="amountSum" lay-verify="required" autocomplete="off"
+                               placeholder="请输入总件数" class="layui-input">
                     </div>
                 </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">总金额</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="costPriceSum" id="costPriceSum" lay-verify="required" autocomplete="off"
+                                   placeholder="请输入总金额" class="layui-input">
+                        </div>
+                    </div>
+            </div>
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">登记人</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="register" id="register" lay-verify="required" autocomplete="off"
+                                   placeholder="请输入登记人姓名" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">备注</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="pemark" id="pemark" lay-verify="required" autocomplete="off"
+                                   placeholder="请输入备注" class="layui-input">
+                        </div>
+                    </div>
+                </div>
+
+            <div class="layui-form-item">
+                <div class="layui-input-block" style="text-align: center;">
+                    <a class="layui-btn " lay-submit="" lay-filter="doSubmit"><label
+                            class="layui-icon layui-icon-release"></label>提交</a>
+                    <a class="layui-btn layui-btn-warm btn_reset" onclick="javascript:$('#dataFrm')[0].reset()"
+                       lay-filter="data-search-btn"><label class="layui-icon layui-icon-refresh"></label>重置</a>
+                </div>
+            </div>
             </form>
-        </div>
-        <!--添加和修改的弹出层结束-->
-
-        <!--选择菜单和权限的弹出层开始-->
-        <div id="selectMenuDiv" style="display: none;padding: 0.3125rem;">
-            <table class="layui-hide" id="menuTable" lay-filter="menuTable"></table>
-        </div>
-        <!--选择菜单和权限的弹出层结束-->
+        </Modal>
+        <!--modal-->
 
     </div>
 </div>
-<script src="../../../lib/jquery-3.4.1/jquery-3.4.1.min.js" charset="utf-8"></script>
+
+
+
+<!-- 你的HTML代码 -->
+
+<!--jq-->
+<script src="../../../lib/jquery-3.4.1/jquery-3.4.1.min.js"></script>
+<script src="../../../lib/plugin/vue/vue.min.js"></script>
+<script src="../../../lib/plugin/iview/dist/iview.min.js"></script>
+
+<!--layui-->
 <script src="../../../lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
-<script src="../../../js/lay-config.js?v=1.0.4" charset="utf-8"></script>
-<script src="../../../lib/jq-module/jquery.particleground.min.js" charset="utf-8"></script>
+
+<!--axios-->
+<script src="../../../lib/plugin/axios/axios.min.js"></script>
+
+<!--系统文件-->
 <script src="../../../lib/common/jquery.cookie.min.js" charset="utf-8"></script>
 <script src="../../../lib/common/common.js" charset="utf-8"></script>
-
 <script>
+
+
     layui.use(['form', 'table', 'laydate', 'layer', 'treeTable'], function () {
-        var form = layui.form;
-        var table = layui.table;
-        var laydate = layui.laydate;
-        var layer = layui.layer;
-        var treeTable = layui.treeTable;
+        let form = layui.form;
+        let table = layui.table;
+        let laydate = layui.laydate;
+        let layuimini = layui.layuimini;
+        let layer = layui.layer;
+        let treeTable = layui.treeTable;
 
-        var tableIns = table.render({
-            elem: '#roleTable',
-            url: api + 'role/loadAllRole',
-            toolbar: "#roleToolBar",
-            cellMinWidth: true,
-            cols: [[
-                {type: "checkbox", fixed: "left"},
-                {field: 'inboundId', title: '入库单编号', align: "center"},
-                {field: 'reason', title: '入库理由', align: "center"},
-                {field: 'registerTime', title: '登记时间', align: "center"},
-                {field: 'amountSum', title: '总件数', align: "center"},
-                {field: 'costPriceSum', title: '总金额', align: "center"},
-                {field: 'checkTag', title: '审核标志', align: "center"},
-                {field: 'attemper', title: '调度人', align: "center"},
-                {field: 'attemperTime', title: '调度时间', align: "center"},
-                {field: 'storeTag', title: '库存标志', align: "center"}
-            ]],
-            page: true
-        });
 
-        // 监听搜索操作
-        form.on('submit(data-search-btn)', function (data) {
-            var params = $("#searchFrm").serialize();
-            //执行搜索重载
-            table.reload('roleTable', {
-                page: {
-                    curr: 1
-                }
-                , url: api + 'role/loadAllRole?' + params
-            });
-            return false;
-        });
+    $("#addDept").click(function () {
+        openAdddept();
+    });
 
-        //监听表头的事件
-        table.on('toolbar(roleTable)', function (obj) {
-            var checkStatus = table.checkStatus(obj.config.id);
-            switch (obj.event) {
-                case 'storage':
-                    storage();
-                    break;
-                case 'add':
-                    openAddRole();
-                    break;
-            }
-            ;
-        });
 
-        //监听行数据的事件
-        table.on('tool(roleTable)', function (obj) {
-            var data = obj.data;
-            if (obj.event === 'delete') {
-                layer.confirm('真的删除【' + data.name + '】这个角色吗么', function (index) {
-                    $.post(api + "role/deleteRole", {id: data.id}, function (res) {
-                        layer.msg(res.msg);
-                        obj.del();
-                        layer.close(index);
-                    })
-                });
-            } else if (obj.event === 'update') {
-                openUpdateRole(data);
-            } else if (obj.event === 'selectMenu') {
-                openSelectMenu(data);
+
+
+    var mainIndex;
+    var url;  //动态的url
+    function openAdddept() {
+        mainIndex = layer.open({
+            type: 1,
+            title: '添加部门',
+            content: $("#addOrUpdateDiv"),
+            area: ['800px', '600px'],
+            success: function (index) {
+                url = storemApi + "";
+                //重置表单
+                $("#dataFrm")[0].reset();
             }
         });
-        //监听可用操作
-        form.on('switch(availableSwitch)', function (obj) {
-            $.post(api + "role/updateRole", {id: this.value, available: obj.elem.checked ? 1 : 0}, function (res) {
-                layer.msg(res.msg);
-                tableIns.reload();
-            })
-        });
+    }
 
+    //提交数据
+    form.on("submit(doSubmit)", function (data) {
+        var params = $("#dataFrm").serialize();
+        $.post(url, params, function (res) {
+            layer.msg(res.msg);
+            if (res.code == 200) {
+                insTb.reload();
+            }
+            layer.close(mainIndex);
+        })
+        return false;
+    })
 
     });
-</script>
-<script>
+    let urlApi = 'http://127.0.0.1:8004/';
+    let vue;
 
-</script>
+    $("#addDept").click(function () {
+        openAdddept();
+    });
 
+    // 入口函数
+    $(function () {
+        // http request 拦截器
+        axios.interceptors.request.use(
+            config => {
+                if (token) { //判断token是否存在
+                    config.headers.token = $.cookie("TOKEN");  //将token设置成请求头
+                }
+                return config;
+            },
+            err => {
+                return Promise.reject(err);
+            }
+        );
+
+        // 初始化Vue
+        vue = new Vue({
+            // 控制区域
+            el: '#app',
+            // 数据
+            data: {
+                indexVal: 0,
+                columns1: [
+                    {title: '序号',fixed: 'left', key: 'Id', align: 'center'},
+                    {title: '入库单编号', key: 'inboundId', align: 'center'},
+                    {title: '入库理由', key: 'reason', align: 'center'},
+                    {title: '登记时间', key: 'registerTime', align: 'center'},
+                    {title: '总件数', key: 'amountSum', align: 'center'},
+                    {title: '总金额', key: 'costPriceSum', align: 'center'},
+                    {
+                        title: '操作',
+                        slot: 'action',
+                        width: 280,
+                        fixed: 'right',
+                        align: 'center'
+                    }
+                ],
+                data1: [],
+                page: 1,
+                pageSize: 10,
+                total: 9,
+                modal8: false,
+            },
+
+
+
+
+
+            // 方法
+            methods: {
+                tabsEventClick(val) {
+                    this.indexVal = val;
+                },
+                initTableData1() {
+                    let params = `check_tag=0&page=${this.page}&limit=${this.pageSize}`;
+                    axios.get(urlApi + "warehouseStock/querySecuritySheet?" + params).then(res => {
+                        this.data1 = res.data.data;
+                    }).catch(err => {
+                        this.$Message.error('对方不想说话，并且向你抛出了一个异常');
+                    });
+                },
+                // 当前页发生改变
+                currentPageChange(val) {
+                    this.page = val;
+
+                    // 重新渲染表格数据
+                    this.initTableData1();
+                },
+                // 当前页显示条数发生改变
+                currentPageSizeChange(val) {
+                    this.pageSize = val;
+
+                    // 重新渲染表格数据
+                    this.initTableData1();
+                },
+            },
+            // 钩子函数
+            mounted() {
+                this.initTableData1();
+            }
+        })
+    });
+</script>
 </body>
 </html>
