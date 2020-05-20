@@ -8,75 +8,86 @@
       <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <link rel="stylesheet" href="../../../lib/layui-v2.5.5/css/layui.css" media="all">
     <link rel="stylesheet" href="../../../css/public.css" media="all">
+    <link rel="stylesheet" href="../../../js/lay-module/febs/css/febs.css">
 </head>
 <body>
-<!--添加模态框-->
-<div id="">
-    <div id="addSupper" style="display: none;">
-        <form action="" class="layui-form" lay-filter="">
-            <div class="layui-form-item">
-                <label class="layui-form-label">供应商名称</label>
-                <div class="layui-input-inline">
-                    <input autocomplete="off" style="    width: 307px;" class="layui-input" id="name" lay-verify="required" name="name"
-                           placeholder="请输入供应商名称" type="text">
-                </div>
-            </div>
-            <input  id="edidId" type="hidden"  name="edidId">
-            <input  id="id" type="hidden"  name="id">
-            <div class="layui-form-item">
-                <label class="layui-form-label">联系人</label>
-                <div class="layui-input-inline">
-                    <input autocomplete="off" style="    width: 307px;" class="layui-input" id="contact" lay-verify="required" name="contact"
-                           placeholder="请输入供应商联系人" type="text">
-                </div>
-            </div>
-            <div class="layui-form-item">
-                <label class="layui-form-label">联系地址</label>
-                <div class="layui-input-inline">
-                    <input autocomplete="off" style="    width: 307px;" class="layui-input" id="address" lay-verify="required" name="address"
-                           placeholder="请输入供应商联系地址" type="text">
-                </div>
-            </div>
-            <div class="layui-form-item">
-                <label class="layui-form-label">联系电话</label>
-                <div class="layui-input-inline">
-                    <input autocomplete="off" style="    width: 307px;" class="layui-input" id="number" lay-verify="required" name="number"
-                           placeholder="请输入供应商联系电话" type="text">
-                </div>
-            </div>
-            <div class="layui-form-item">
-                <label class="layui-form-label">备注</label>
-                <div class="layui-input-inline">
-                    <input autocomplete="off" style="    width: 307px;" class="layui-input" id="remarks" lay-verify="required" name="remarks"
-                           placeholder="" type="text">
-                </div>
-            </div>
-            <div class="layui-form-item">
-                <div class="layui-input-block" style="    margin-left: 184px;">
+<div class="layuimini-container">
+    <div class="layuimini-main">
 
-                    <button type="submit" class="layui-btn" lay-submit="" lay-filter="supperSub">立即提交</button>
-                </div>
+        <!--添加模态框-->
+        <div id="febs" >
+            <div id="addSupper" style="display: none;">
+                <form action="" class="layui-form" lay-filter="">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">供应商名称</label>
+                        <div class="layui-input-inline">
+                            <input autocomplete="off" style="    width: 307px;" class="layui-input" id="name" lay-verify="required" name="name"
+                                   placeholder="请输入供应商名称" type="text">
+                        </div>
+                    </div>
+                    <input  id="edidId" type="hidden"  name="edidId">
+                    <input  id="id" type="hidden"  name="id">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">联系人</label>
+                        <div class="layui-input-inline">
+                            <input autocomplete="off" style="    width: 307px;" class="layui-input" id="contact" lay-verify="required" name="contact"
+                                   placeholder="请输入供应商联系人" type="text">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">联系地址</label>
+                        <div class="layui-input-inline">
+                            <input autocomplete="off" style="    width: 307px;" class="layui-input" id="address" lay-verify="required" name="address"
+                                   placeholder="请输入供应商联系地址" type="text">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">联系电话</label>
+                        <div class="layui-input-inline">
+                            <input autocomplete="off" style="    width: 307px;" class="layui-input" id="number" lay-verify="required" name="number"
+                                   placeholder="请输入供应商联系电话" type="text">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">备注</label>
+                        <div class="layui-input-inline">
+                            <input autocomplete="off" style="    width: 307px;" class="layui-input" id="remarks" lay-verify="required" name="remarks"
+                                   placeholder="" type="text">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-input-block" style="    margin-left: 184px;">
+
+                            <button type="submit" class="layui-btn" lay-submit="" lay-filter="supperSub">立即提交</button>
+                        </div>
+                    </div>
+                </form>
             </div>
-        </form>
+        </div>
+        <blockquote class="layui-elem-quote news_search" style=" border-left: 0px solid #009688;">
+            <fieldset class="table-search-fieldset">
+                <legend>搜索信息</legend>
+                <div class="layui-row">
+                    <form class="layui-form layui-col-md12 x-so" id="complain_search">
+                        供应商名称:
+                        <div class="layui-input-inline">
+                            <input type="text" name="name" id="name"
+                                   placeholder="供应商名称" autocomplete="off" class="layui-input">
+                        </div>
+
+                        <button id="search" class="layui-btn" lay-submit
+                                lay-filter="provinceSearch">
+                            <i class="layui-icon">&#xe615;</i>
+                        </button>
+                    </form>
+                </div>
+            </fieldset>
+
+            <table class="layui-hide" id="complainTable" lay-filter="complainList"></table>
+        </blockquote>
+
     </div>
 </div>
-<blockquote class="layui-elem-quote news_search" style=" border-left: 0px solid #009688;">
-    <div class="layui-row">
-        <form class="layui-form layui-col-md12 x-so" id="complain_search">
-            供应商名称:
-            <div class="layui-input-inline">
-                <input type="text" name="name" id="name"
-                       placeholder="供应商名称" autocomplete="off" class="layui-input">
-            </div>
-
-            <button id="search" class="layui-btn" lay-submit
-                    lay-filter="provinceSearch">
-                <i class="layui-icon">&#xe615;</i>
-            </button>
-        </form>
-    </div>
-    <table class="layui-hide" id="complainTable" lay-filter="complainList"></table>
-</blockquote>
 
 <script type="text/html" id="complain_toolbar">
     <div class="layui-btn-container">

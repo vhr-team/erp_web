@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>档案审核</title>
+    <title>审核状态</title>
     <!-- import CSS -->
     <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
     <link rel="stylesheet" href="../../../lib/layui-v2.5.5/css/layui.css">
@@ -125,7 +125,7 @@
                                 prop="productName">
                         </el-table-column>
                         <el-table-column
-                                label="描述"
+                                label="审核状态"
                                 prop="productDescribe">
                         </el-table-column>
                         <el-table-column
@@ -427,6 +427,13 @@
                     registerTime:"",//登记时间
                     checker:"",//审核人
                     checkTag:"",//审核状态
+                },
+                productCheck:{
+                    productId:"",//商品id
+                    productName:"",//产品名称
+                    productCheck:"",
+                    checkRemark:"",
+                    checkPerson:""
                 }
             },
             methods: {
@@ -503,28 +510,73 @@
                 },
                 checkrecord(value){//
                     this.checkers.checkTag=value;
+                    this.productCheck.productId=this.checkers.productId
+                    this.productCheck.productName=this.checkers.productName
+                    this.productCheck.productCheck=this.checkers.checkTag
+                    this.productCheck.checkPerson=this.checkers.checker
+                    var data={record:this.checkers,check:this.productCheck}
                     if(this.checkers!=null){
-                        axios.post(api1+"design_record/updatecheck",this.checkers).then(res=>{
-                            if(res.data.success){
-                                vm.$message({
+                        if(this.productCheck.productCheck==="审核未通过"){
+                            layer.prompt({
+                                formType: 2,
+                                value: '请输入理由',
+                                title: '不通过的理由',
+                                area: ['500', '150'] //自定义文本域宽高
+                            }, function(value, index, elem){
+                                vm.productCheck.checkRemark=value;
+                                layer.close(index);
+                                axios.post(api1+"design_record/updatecheck",data).then(res=>{
+                                    if(res.data.success){
+                                        vm.$message({
+                                            showClose: true,
+                                            message: res.data.message,
+                                            type: 'success'
+                                        });
+                                    }else{
+                                        vm.$message({
+                                            showClose: true,
+                                            message: res.data.message,
+                                            type: 'error'
+                                        });
+                                    }
+                                    console.log(vm.productCheck);
+                                }).catch(err=>{
+                                    vm.$message({//异常
+                                        showClose: true,
+                                        message: "系统异常",
+                                        type: 'error'
+                                    });
+                                })
+                            });
+
+                        }else{
+                            this.productCheck.checkRemark="通过";
+                            axios.post(api1+"design_record/updatecheck",data).then(res=>{
+                                if(res.data.success){
+                                    vm.$message({
+                                        showClose: true,
+                                        message: res.data.message,
+                                        type: 'success'
+                                    });
+                                }else{
+                                    vm.$message({
+                                        showClose: true,
+                                        message: res.data.message,
+                                        type: 'error'
+                                    });
+                                }
+                                console.log(vm.productCheck);
+                            }).catch(err=>{
+                                vm.$message({//异常
                                     showClose: true,
-                                    message: res.data.message,
-                                    type: 'success'
-                                });
-                            }else{
-                                vm.$message({
-                                    showClose: true,
-                                    message: res.data.message,
+                                    message: "系统异常",
                                     type: 'error'
                                 });
-                            }
-                        }).catch(err=>{
-                            vm.$message({//异常
-                                showClose: true,
-                                message: "系统异常",
-                                type: 'error'
-                            });
-                        })
+                            })
+
+                        }
+
+
                     }
                 }
             },
@@ -534,6 +586,5 @@
             }
         });
     });
-
 </script>
 </html>

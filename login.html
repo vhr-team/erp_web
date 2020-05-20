@@ -253,7 +253,7 @@
         $.get(api + 'login/captcha?codeKey=' + keyCode, function (res) {
             // $("#captchaPic").attr("src", api + 'login/captcha?codeKey=' + keyCode)
             $("#captchaPic").attr("src", res.msg);
-        }, 'json');
+        }, 'json')
     }
 
     genCode();
