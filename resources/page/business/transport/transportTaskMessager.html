@@ -250,7 +250,7 @@
 
                 <!--派单人-->
                 <Form-item style="margin-top: 10px;" label="指派人">
-                    <i-select v-model="model15" style="width:260px">
+                    <i-select v-model="completerUser" style="width:260px">
                         <i-option v-for="item in cityList" :value="item.id">{{ item.name }}</i-option>
                     </i-select>
                 </Form-item>
@@ -361,6 +361,7 @@
 
                 cityList: [],
                 model15: '',
+                completerUser: '',
 
                 orderId: null
             },
@@ -369,8 +370,8 @@
                 okFn() {
                     axios.post(orderApi + "ordermodel/tranOrderAssginOrder",
                         {
-                            orderId: this.orderId,
-                            completer: this.model15
+                            orderId: this.orderId,// 订单ID
+                            completer: this.completerUser
                         }
                     ).then(res => {
                         if (res.data.code == 200) {
@@ -442,7 +443,7 @@
                     }
 
                     // 查询条件
-                    let params = `page=${this.page}&pageSize=${this.pageSize}&orderType=1&orderState=2&startTime=${this.orderModelObj.startTime}&endTime=${this.orderModelObj.endTime}&auditStartTime=${this.orderModelObj.auditStartTime}&auditEndTime=${this.orderModelObj.auditEndTime}&ndeeds=${this.orderModelObj.ndeeds}&supplierId=${this.orderModelObj.supplierId}&createrName=${this.orderModelObj.createrName}&checkerName=${this.orderModelObj.checkerName}&completerName=${this.orderModelObj.completerName}`
+                    let params = `page=${this.page}&pageSize=${this.pageSize}&orderType=1&orderState=2&startTime=${this.orderModelObj.startTime}&endTime=${this.orderModelObj.endTime}&auditStartTime=${this.orderModelObj.auditStartTime}&auditEndTime=${this.orderModelObj.auditEndTime}&ndeeds=${this.orderModelObj.ndeeds}&supplierId=${this.orderModelObj.supplierId}&createrName=${this.orderModelObj.createrName}&checkerName=${this.orderModelObj.checkerName}&completer=${JSON.parse(localStorage.getItem("user")).id}`
                     axios.get(orderApi + "ordermodel/queryAllTaskList?" + params).then(res => {
                         this.data1 = res.data.data;
                         this.total = res.data.count;

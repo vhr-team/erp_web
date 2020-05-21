@@ -331,6 +331,7 @@
             // 方法
             methods: {
                 tabFn(val) {
+                    console.log(val);
                     this.indexVal = val;
                     if (val == 0) {
                         this.orderState = 1;
@@ -435,7 +436,7 @@
                     }
 
                     // 查询条件
-                    let params = `page=${this.page}&pageSize=${this.pageSize}&orderType=2&orderState=${this.orderState}&startTime=${this.orderModelObj.startTime}&endTime=${this.orderModelObj.endTime}&auditStartTime=${this.orderModelObj.auditStartTime}&auditEndTime=${this.orderModelObj.auditEndTime}&ndeeds=${this.orderModelObj.ndeeds}&supplierId=${this.orderModelObj.supplierId}&createrName=${this.orderModelObj.createrName}&checkerName=${this.orderModelObj.checkerName}&completerName=${this.orderModelObj.completerName}`
+                    let params = `page=${this.page}&pageSize=${this.pageSize}&orderType=2&orderState=${this.orderState}&startTime=${this.orderModelObj.startTime}&endTime=${this.orderModelObj.endTime}&auditStartTime=${this.orderModelObj.auditStartTime}&auditEndTime=${this.orderModelObj.auditEndTime}&ndeeds=${this.orderModelObj.ndeeds}&supplierId=${this.orderModelObj.supplierId}&createrName=${this.orderModelObj.createrName}&checkerName=${this.orderModelObj.checkerName}&completer=${JSON.parse(localStorage.getItem("user")).id}`
                     axios.get(orderApi + "ordermodel/queryAllTaskList?" + params).then(res => {
                         this.data1 = res.data.data;
                         this.total = res.data.count;
