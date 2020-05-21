@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>出库查询</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="../../../lib/plugin/iview/dist/styles/iview.css">
+
+    <link rel="stylesheet" href="../../../lib/layui-v2.5.5/css/layui.css" media="all">
+    <link rel="stylesheet" href="../../../css/public.css" media="all">
+</head>
+<body>
+
+
+<div class="layuimini-container" id="app">
+    <div class="layuimini-main">
+        <!--Tabs-->
+        <template>
+            <Tabs :animated="false">
+                <Tab-pane label="未审核">
+
+                    <!--数据表格-->
+                    <i-table :columns="columns1" :data="data1" >
+                        <template slot-scope="{ row, index }" slot="action">
+
+
+
+                        </template>
+                    </i-table>
+
+                </Tab-pane>
+                <Tab-pane label="审核通过">
+
+                    <!--数据表格-->
+                    <i-table :columns="columns1" :data="data2" >
+                        <template slot-scope="{ row, index }" slot="action">
+
+
+
+                        </template>
+                    </i-table>
+
+                </Tab-pane>
+                <Tab-pane label="审核未通过">
+
+                    <!--数据表格-->
+                    <i-table :columns="columns1" :data="data3" >
+                        <template slot-scope="{ row, index }" slot="action">
+
+
+
+                        </template>
+                    </i-table>
+
+                </Tab-pane>
+            </Tabs>
+        </template>
+        <!--Tabs-->
+
+
+
+
+
+
+
+        <!--分页-->
+        <Page
+                :page-size-opts=[5,10,15,20]
+                :current="page"
+                :page-size="pageSize"
+                style="margin-top: 20px"
+                :total="total"
+                @on-change="currentPageChange"
+                @on-page-size-change="currentPageSizeChange"
+                show-total
+                show-sizer
+                show-elevator/>
+        <!--分页-->
+
+        <!--modal-->
+        <Modal width="680" title="Title" v-model="modal8" :mask-closable="false">
+
+        </Modal>
+        <!--modal-->
+
+    </div>
+</div>
+
+
+
+<!-- 你的HTML代码 -->
+
+<!--jq-->
+<script src="../../../lib/jquery-3.4.1/jquery-3.4.1.min.js"></script>
+<script src="../../../lib/plugin/vue/vue.min.js"></script>
+<script src="../../../lib/plugin/iview/dist/iview.min.js"></script>
+
+<!--layui-->
+<script src="../../../lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
+
+<!--axios-->
+<script src="../../../lib/plugin/axios/axios.min.js"></script>
+
+<!--系统文件-->
+<script src="../../../lib/common/jquery.cookie.min.js" charset="utf-8"></script>
+<script src="../../../lib/common/common.js" charset="utf-8"></script>
+<script>
+
+    let urlApi = 'http://127.0.0.1:8004/';
+    let vue;
+
+    $("#addDept").click(function () {
+        openAdddept();
+    });
+
+    // 入口函数
+    $(function () {
+        // http request 拦截器
+        axios.interceptors.request.use(
+            config => {
+                if (token) { //判断token是否存在
+                    config.headers.token = $.cookie("TOKEN");  //将token设置成请求头
+                }
+                return config;
+            },
+            err => {
+                return Promise.reject(err);
+            }
+        );
+
+        // 初始化Vue
+        vue = new Vue({
+            // 控制区域
+            el: '#app',
+            // 数据
+            data: {
+                indexVal: 0,
+                columns1: [
+                    {title: '序号',fixed: 'left', key: 'id', align: 'center'},
+                    {title: '入库单编号', key: 'inboundId', align: 'center'},
+                    {title: '入库理由', key: 'reason', align: 'center'},
+                    {title: '登记时间', key: 'registerTime', align: 'center'},
+                    {title: '总件数', key: 'amountSum', align: 'center'},
+                    {title: '总金额', key: 'costPriceSum', align: 'center'}
+                ],
+                data1: [],
+                data2: [],
+                data3: [],
+                page: 1,
+                pageSize: 10,
+                total: 9,
+                modal8: false,
+            },
+
+            // 方法
+            methods: {
+                initTableData1() {
+                    let params = `checkTag=0&page=${this.page}&limit=${this.pageSize}`;
+                    axios.get(urlApi + "warehouseInbound/queryInboundLimit?" + params).then(res => {
+                        this.data1 = res.data.data;
+                    }).catch(err => {
+                        this.$Message.error('对方不想说话，并且向你抛出了一个异常');
+                    });
+                },
+                initTableData2() {
+                    let params = `checkTag=1&page=${this.page}&limit=${this.pageSize}`;
+                    axios.get(urlApi + "warehouseInbound/queryInboundLimit?" + params).then(res => {
+                        this.data2 = res.data.data;
+                    }).catch(err => {
+                        this.$Message.error('对方不想说话，并且向你抛出了一个异常');
+                    });
+                },
+                initTableData3() {
+                    let params = `checkTag=2&page=${this.page}&limit=${this.pageSize}`;
+                    axios.get(urlApi + "warehouseInbound/queryInboundLimit?" + params).then(res => {
+                        this.data3 = res.data.data;
+                    }).catch(err => {
+                        this.$Message.error('对方不想说话，并且向你抛出了一个异常');
+                    });
+                },
+                // 当前页发生改变
+                currentPageChange(val) {
+                    this.page = val;
+
+                    // 重新渲染表格数据
+                    this.initTableData1();
+                    this.initTableData2();
+                    this.initTableData3();
+                },
+                // 当前页显示条数发生改变
+                currentPageSizeChange(val) {
+                    this.pageSize = val;
+
+                    // 重新渲染表格数据
+                    this.initTableData1();
+                    this.initTableData2();
+                    this.initTableData3();
+                },
+            },
+            // 钩子函数
+            mounted() {
+                this.initTableData1();
+                this.initTableData2();
+                this.initTableData3();
+            }
+        })
+    });
+</script>
+</body>
+</html>
