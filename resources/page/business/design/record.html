@@ -597,14 +597,14 @@
                                     message: res.data.message,
                                     type: 'success'
                                 });
-                                this.fullscreenLoading = false;
+                                vm.fullscreenLoading = false;
                             } else {
                                 vm.$message({//添加失败
                                     showClose: true,
                                     message: res.data.message,
                                     type: 'error'
                                 });
-                                this.fullscreenLoading = false;
+                                vm.fullscreenLoading = false;
                             }
                         }).catch(err => {
                             vm.$message({//异常
@@ -612,7 +612,7 @@
                                 message: "系统异常",
                                 type: 'error'
                             });
-                            this.fullscreenLoading = false;
+                            vm.fullscreenLoading = false;
                         })
                         layer.close(index);
                     });
