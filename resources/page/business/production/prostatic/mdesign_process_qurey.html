@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>产品工序制定</title>
+    <!-- import CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <link rel="stylesheet" href="../../../../lib/layui-v2.5.5/css/layui.css">
+    <link href="https://cdn.bootcss.com/element-ui/2.8.2/theme-chalk/index.css" rel="stylesheet">
+    <link rel="stylesheet" href="../../../../lib/bootstarp/css/bootstrap.css">
+    <link rel="stylesheet" href="../../../../lib/layui-v2.5.5/css/layui.css" media="all">
+    <link rel="stylesheet" href="../../../../css/public.css" media="all">
+    <script src="https://cdn.bootcss.com/vue/2.6.10/vue.js"></script>
+    <script src="https://cdn.bootcss.com/vue-router/3.0.6/vue-router.js"></script>
+    <script src="https://cdn.bootcss.com/element-ui/2.8.2/index.js"></script>
+    <script src="../../../../lib/layui-v2.5.5/layui.all.js"></script>
+    <script src="../../../../lib/layui-v2.5.5/layui.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/axios/0.19.2/axios.js"></script>
+    <script src="../../../../lib/jquery-3.4.1/jquery-3.4.1.min.js"></script>
+    <script src="../../../../lib/common/jquery.cookie.min.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/qs/6.9.3/qs.js"></script>
+    <script src="../../../../lib/bootstarp/js/bootstrap.js"></script>
+    <script src="../../../../lib/layui-v2.5.5/layui.js"></script>
+    <link rel="stylesheet" href="../../../../lib/layui-v2.5.5/css/layui.css">
+    <link rel="stylesheet" href="../../../../lib/bootstarp/css/bootstrap.css">
+    <script src="../../../../lib/jquery-3.4.1/jquery-3.4.1.min.js"></script>
+    <script src="../../../../lib/plugin/axios/axios.min.js"></script>
+    <script src="../../../../lib/plugin/vue/vue.min.js"></script>
+    <script src="js/common.js"></script>
+    <link rel="stylesheet" href="../../../../lib/plugin/element-ui/style/index.css">
+    <script src="../../../../lib/plugin/element-ui/index.js"></script>
+    <script src="../../../../lib/bootstarp/js/bootstrap.js"></script>
+    <style>
+        .bodernone {
+            border: 0px;
+        }
+    </style>
+</head>
+<body>
+<div class="layuimini-container" id="app">
+    <div class="layuimini-main">
+        <div>
+            <div style="margin-bottom: 20px">
+                <span class="demonstration">工序设计时间：</span>
+                <el-date-picker
+                        v-model="design.desdate"
+                        type="date"
+                        value-format="yyyy-MM-dd"
+                        placeholder="选择日期">
+                </el-date-picker>
+                <el-button type="primary" @click="selectprocess()">查询</el-button>
+            </div>
+            <div>
+                <el-table
+                        v-loading="loading"
+                        :data="processList"
+                        border
+                        style="width: 100%">
+                    <el-table-column
+                            prop="processId"
+                            label="工序编号">
+                    </el-table-column>
+                    <el-table-column
+                            prop="productid"
+                            label="产品编号">
+                    </el-table-column>
+                    <el-table-column
+                            prop="productName"
+                            label="产品名称">
+                    </el-table-column>
+                    <el-table-column
+                            prop="desregister"
+                            label="工序登记人">
+                    </el-table-column>
+                    <el-table-column
+                            prop="desdate"
+                            label="工序登记时间">
+                    </el-table-column>
+                    <el-table-column
+                            fixed="right"
+                            label="操作">
+                        <template slot-scope="scope">
+                            <el-button type="text" size="small"
+                                       data-toggle="modal" @click="selectprocessById(scope.row)" data-target="#myModal2">查看工序
+                            </el-button>
+                        </template>
+                    </el-table-column>
+                </el-table>
+            </div>
+        </div>
+        <div class="modal fade" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="">工序单查询</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="layui-card">
+                            <div class="layui-card-body">
+                                <table class="layui-table">
+                                    <thead>
+                                    <tr>
+                                        <th>工序名称</th>
+                                        <th>工时数</th>
+                                        <th>工时单位</th>
+                                        <th>工时成本</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr v-for="processsheet in sheetList">
+                                        <td>
+                                            {{processsheet.processName}}
+                                        </td>
+                                        <td>
+                                           {{processsheet.timenumber}}
+                                        </td>
+                                        <td>
+                                            {{processsheet.timeunit}}
+                                        </td>
+                                        <td>
+                                            {{processsheet.timeprice}}
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script>
+    layui.use(['layer', 'form'], function () {
+        var layer = layui.layer
+            , form = layui.form;
+        /*vue*/
+        var vm = new Vue({
+            el: '#app',
+            data: {
+                design:{
+                    desdate:""
+                },
+                fullscreenLoading:false,
+                loading:true,
+                processList:[],
+                sheetList:[]
+            },
+            methods: {
+                handleClick(row) {
+                    console.log(row);
+                },
+                selectprocess(){
+                    this.loading=true;
+                    axios.post(api+"product/selectprocess",this.design).then(res=>{
+                        this.processList=res.data;
+                        vm.loading=false;
+                    }).catch(err=>{
+
+                    })
+                },
+                selectprocessById(value){
+                    axios.get(api+"product/selectprocessById?processId="+value.processId).then(res=>{
+                        this.sheetList=res.data;
+                    }).catch()
+                    console.log(value.processId);
+                }
+
+            },
+            created() {
+                this.selectprocess();
+            }
+        });
+
+
+    });
+</script>
+</html>

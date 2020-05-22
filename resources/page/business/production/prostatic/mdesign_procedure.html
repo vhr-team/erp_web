@@ -52,6 +52,7 @@
             </div>
             <div>
                 <el-table
+                        v-loading="loading"
                         :data="processList"
                         border
                         style="width: 100%">
@@ -183,10 +184,11 @@
                                         <th>工时数</th>
                                         <th>工时单位</th>
                                         <th>工时成本</th>
+                                        <th>操作</th>
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    <tr v-for="processsheet in sheets">
+                                    <tr v-for="(processsheet,index) in sheets">
                                         <td>
                                             <el-select v-model="processsheet.processName" placeholder="请选择">
                                                 <el-option
@@ -205,6 +207,10 @@
                                         </td>
                                         <td>
                                             <el-input v-model="processsheet.timeprice" placeholder="请输入内容"></el-input>
+                                        </td>
+                                        <td>
+                                            <el-button type="danger" icon="el-icon-delete" circle
+                                                       @click="deleteRow(index)"></el-button>
                                         </td>
                                     </tr>
                                     </tbody>
@@ -238,7 +244,7 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="layui-btn layui-btn-warm" @click="add()">提交</button>
+                        <button type="button" class="layui-btn layui-btn-warm" @click="add()"  v-loading.fullscreen.lock="fullscreenLoading">提交</button>
                         <button type="button" class="layui-btn layui-btn-warm" data-dismiss="modal">关闭</button>
                     </div>
                 </div>
@@ -255,6 +261,8 @@
         var vm = new Vue({
             el: '#app',
             data: {
+                fullscreenLoading:false,
+                loading:true,
                 designsheet: {
 
                 },
@@ -282,14 +290,15 @@
                 /*获取当前用户名*/
                 getUser() {
                     var register = $.parseJSON(window.localStorage.getItem("user"));
-                    console.log(register);
                     this.designsheet.processRegister = register.name;
 
                 },
                 /*查询需要工序设计的档案*/
                 selectprocessAll() {
+                    this.loading=true
                     axios.post(api + "product/selectprocessAll", this.record).then(res => {
                         vm.processList = res.data;
+                        this.loading=false
                     }).catch(err => {
                         vm.$message.error('网络异常');
                     });
@@ -298,10 +307,10 @@
                     console.log(row);
                 },
                 selectByassmbleid(data) {
+                    this.materialList=[]
                     //var material={productId:data.productId};
                     axios.get(api + "product/selectmaterialByproidAll?productId=" + data.productId).then(res => {
                         vm.materialList = res.data;
-                        console.log(vm.materialList);
                     }).catch(err => {
                         vm.$message.error('网络异常');
                     });
@@ -315,9 +324,13 @@
                 },
                 addrow() {
                     this.sheets.push({});
-                    console.log(this.designsheet.sheets);
+                },
+                /*删除选项*/
+                deleteRow(index) {
+                    this.sheets.splice(index, 1);
                 },
                 add() {
+                    this.fullscreenLoading=true;
                     var sheet={
                         process:this.designsheet,
                         sheet:this.sheets
@@ -329,16 +342,19 @@
                                 message: res.data.message,
                                 type: 'success'
                             });
+                            vm.fullscreenLoading=false;
                         }else{
                             vm.$message({
                                 showClose: true,
                                 message: res.data.message,
                                 type: 'error'
                             });
+                            vm.fullscreenLoading=false;
                         }
                         vm.selectprocessAll();
                     }).catch(err=>{
                         vm.$message.error('网络异常');
+                        vm.fullscreenLoading=false;
                     })
                 }
             },
