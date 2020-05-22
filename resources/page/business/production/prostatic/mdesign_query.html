@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>工序状态查询</title>
+    <!-- import CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <link rel="stylesheet" href="../../../../lib/layui-v2.5.5/css/layui.css">
+    <link href="https://cdn.bootcss.com/element-ui/2.8.2/theme-chalk/index.css" rel="stylesheet">
+    <link rel="stylesheet" href="../../../../lib/bootstarp/css/bootstrap.css">
+    <link rel="stylesheet" href="../../../../lib/layui-v2.5.5/css/layui.css" media="all">
+    <link rel="stylesheet" href="../../../../css/public.css" media="all">
+    <script src="https://cdn.bootcss.com/vue/2.6.10/vue.js"></script>
+    <script src="https://cdn.bootcss.com/vue-router/3.0.6/vue-router.js"></script>
+    <script src="https://cdn.bootcss.com/element-ui/2.8.2/index.js"></script>
+    <script src="../../../../lib/layui-v2.5.5/layui.all.js"></script>
+    <script src="../../../../lib/layui-v2.5.5/layui.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/axios/0.19.2/axios.js"></script>
+    <script src="../../../../lib/jquery-3.4.1/jquery-3.4.1.min.js"></script>
+    <script src="../../../../lib/common/jquery.cookie.min.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/qs/6.9.3/qs.js"></script>
+    <script src="../../../../lib/bootstarp/js/bootstrap.js"></script>
+    <script src="../../../../lib/layui-v2.5.5/layui.js"></script>
+    <link rel="stylesheet" href="../../../../lib/layui-v2.5.5/css/layui.css">
+    <link rel="stylesheet" href="../../../../lib/bootstarp/css/bootstrap.css">
+    <script src="../../../../lib/jquery-3.4.1/jquery-3.4.1.min.js"></script>
+    <script src="../../../../lib/plugin/axios/axios.min.js"></script>
+    <script src="../../../../lib/plugin/vue/vue.min.js"></script>
+    <script src="js/common.js"></script>
+    <link rel="stylesheet" href="../../../../lib/plugin/element-ui/style/index.css">
+    <script src="../../../../lib/plugin/element-ui/index.js"></script>
+    <script src="../../../../lib/bootstarp/js/bootstrap.js"></script>
+    <style>
+        .bodernone {
+            border: 0px;
+        }
+    </style>
+</head>
+<body>
+<div class="layuimini-container" id="app">
+    <div class="layuimini-main">
+        <div>
+            <div style="margin-bottom: 20px">
+                <span class="demonstration">建档时间：</span>
+                <el-date-picker
+                        v-model="record.registerTime"
+                        type="date"
+                        value-format="yyyy-MM-dd"
+                        placeholder="选择日期">
+                </el-date-picker>
+                <el-button type="primary" @click="selectprocessAll()">查询</el-button>
+            </div>
+            <div>
+                <el-table
+                        :data="processList"
+                        border
+                        style="width: 100%">
+                    <el-table-column
+                            prop="productid"
+                            label="产品编号">
+                    </el-table-column>
+                    <el-table-column
+                            prop="processId"
+                            label="工序编号">
+                    </el-table-column>
+                    <el-table-column
+                            prop="productName"
+                            label="产品名称">
+                    </el-table-column>
+                    <el-table-column
+                            prop="desregister"
+                            label="工序设计人">
+                    </el-table-column>
+                    <el-table-column
+                            prop="processCheck"
+                            label="审核状态">
+                    </el-table-column>
+                    <el-table-column
+                            fixed="right"
+                            label="操作">
+                        <template slot-scope="scope">
+                            <el-button @click="drawer = true,selectprocesscheck(scope.row)" type="text" size="small"  >查看审核日志
+                            </el-button>
+                            <el-button type="text" size="small"
+                                       data-toggle="modal" @click="showgx(scope.row)" data-target="#myModal2">工序制定
+                            </el-button>
+                        </template>
+                    </el-table-column>
+                </el-table>
+            </div>
+        </div>
+        <div class="modal fade" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="">工序设计单</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="layui-card">
+                            <div class="layui-card-header">
+                                <el-form ref="ruleForm" label-width="100px" class="demo-ruleForm">
+                                    <el-row :gutter="20">
+                                        <el-col :span="12">
+                                            <div class="grid-content bg-purple">
+                                                <el-form-item label="工序编号" prop="name">
+                                                    <el-input readonly v-model="designsheet.processId"></el-input>
+                                                </el-form-item>
+                                            </div>
+                                        </el-col>
+                                        <el-col :span="12">
+                                            <div class="grid-content bg-purple">
+                                                <el-form-item label="产品名称" prop="name">
+                                                    <el-input readonly v-model="designsheet.productName"></el-input>
+                                                </el-form-item>
+                                            </div>
+                                        </el-col>
+
+                                    </el-row>
+                                    <el-row :gutter="20">
+                                        <el-col :span="12">
+                                            <div class="grid-content bg-purple">
+                                                <el-form-item label="产品ID" prop="name">
+                                                    <el-input readonly v-model="designsheet.productid"></el-input>
+                                                </el-form-item>
+                                            </div>
+                                        </el-col>
+                                        <el-col :span="12">
+                                            <div class="grid-content bg-purple">
+                                                <el-form-item label="档案设计人" prop="name">
+                                                    <el-input readonly v-model="designsheet.desregister"></el-input>
+                                                </el-form-item>
+                                            </div>
+                                        </el-col>
+                                    </el-row>
+                                </el-form>
+                            </div>
+                            <div class="layui-card-body">
+                                <button type="button" class="layui-btn" @click="addrow()">添加工序</button>
+                                <table class="layui-table">
+                                    <thead>
+                                    <tr>
+                                        <th>工序名称</th>
+                                        <th>工时数</th>
+                                        <th>工时单位</th>
+                                        <th>工时成本</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr v-for="processsheet in sheets">
+                                        <td>
+                                            <el-select v-model="processsheet.processName" placeholder="请选择">
+                                                <el-option
+                                                        v-for="item in sheet"
+                                                        :key="item.value"
+                                                        :label="item.label"
+                                                        :value="item.value">
+                                                </el-option>
+                                            </el-select>
+                                        </td>
+                                        <td>
+                                            <el-input v-model="processsheet.timenumber" placeholder="请输入内容"></el-input>
+                                        </td>
+                                        <td>
+                                            <el-input v-model="processsheet.timeunit" placeholder="请输入内容"></el-input>
+                                        </td>
+                                        <td>
+                                            <el-input v-model="processsheet.timeprice" placeholder="请输入内容"></el-input>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                                <el-form ref="ruleForm" label-width="100px" class="demo-ruleForm">
+                                    <el-row :gutter="20">
+                                        <el-col :span="8">
+                                            <div class="grid-content bg-purple">
+                                                <el-form-item label="工序设计人" prop="name">
+                                                    <el-input readonly v-model="designsheet.processRegister"></el-input>
+                                                </el-form-item>
+                                            </div>
+                                        </el-col>
+                                        <el-col :span="8">
+                                            <div class="grid-content bg-purple">
+                                                <el-form-item label="工序描述" prop="name">
+                                                    <el-input v-model="processRemarks"></el-input>
+                                                </el-form-item>
+                                            </div>
+                                        </el-col>
+                                        <el-col :span="8">
+                                            <div class="grid-content bg-purple">
+                                                <el-form-item label="设计要求" prop="name">
+                                                    <el-input v-model="processRequires"></el-input>
+                                                </el-form-item>
+                                            </div>
+                                        </el-col>
+                                    </el-row>
+                                </el-form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="layui-btn layui-btn-warm" @click="addsheet()">提交</button>
+                        <button type="button" class="layui-btn layui-btn-warm" data-dismiss="modal">关闭</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--查询状态的抽屉-->
+        <div>
+            <el-drawer
+                    title="我是标题"
+                    :visible.sync="drawer"
+                    :with-header="false">
+                <div class="block" style="margin-left: 20px">
+                    <div class="radio">
+                        排序：
+                        <el-radio-group v-model="reverse">
+                            <el-radio :label="true">倒序</el-radio>
+                            <el-radio :label="false">正序</el-radio>
+                        </el-radio-group>
+                    </div>
+                    <el-timeline :reverse="reverse">
+                        <el-timeline-item
+                                v-for="(activity, index) in activities"
+                                :key="index"
+                                :timestamp="activity.processCheckDate">
+                         计划单号：{{activity.processId}}<br/>
+                         审核状态：{{activity.processCheck}}<br/>
+                         审核详情：{{activity.processCheckRemark}}<br/>
+                         审核人员：{{activity.processCheckPerson}}<br/>
+                        </el-timeline-item>
+                    </el-timeline>
+                </div>
+            </el-drawer>
+        </div>
+    </div>
+</div>
+</body>
+<script>
+    layui.use(['layer', 'form'], function () {
+        var layer = layui.layer
+            , form = layui.form;
+        /*vue*/
+        var vm = new Vue({
+            el: '#app',
+            data: {
+                drawer: false,
+                designsheet: {},
+                processRemarks: "",
+                processRequires: "",
+                sheets: [],
+                record: {
+                    registerTime: ""
+                },
+                processList: [],
+                sheet: [
+                    {
+                        value: '组装',
+                        label: '组装'
+                    }, {
+                        value: '测试',
+                        label: '测试'
+                    }, {
+                        value: '包装',
+                        label: '包装'
+                    }
+                ],
+                reverse: true,
+                activities: []
+            },
+            methods: {
+                /*获取当前用户名*/
+                getUser() {
+                    var register = $.parseJSON(window.localStorage.getItem("user"));
+                    this.designsheet.processRegister = register.name;
+
+                },
+                handleClick(row) {
+                    console.log(row);
+                },
+                showgx(data) {
+                    /*工序编号*/
+                    this.selectprocessById(data.processId);
+                    this.designsheet = data;
+                    this.designsheet.sheets = [];
+                    this.getUser();
+                },
+                /*查询工序*/
+                selectprocessAll() {
+                    axios.get(api + "product/selectAlltwo").then(res => {
+                        this.processList = res.data;
+                    })
+                },
+                /*根据工序编号查询工序*/
+                selectprocessById(processId) {
+                    axios.get(api + "product/selectprocessById?processId=" + processId).then(res => {
+                        this.sheets = res.data;
+                    }).catch()
+                },
+                addsheet() {
+                    this.sheets[0].processRequire = this.processRequires
+                    this.sheets[0].processRemark = this.processRemarks;
+
+                    var sheets = {
+                        process: this.designsheet,
+                        sheet: this.sheets
+                    }
+                    axios.post(api + "product/addsheet", sheets).then(res => {
+                        if(res.data.success){
+                            vm.$message({
+                                showClose: true,
+                                message: res.data.message,
+                                type: 'success'
+                            });
+                        }else{
+                            vm.$message({
+                                showClose: true,
+                                message: res.data.message,
+                                type: 'error'
+                            });
+                        }
+                        vm.selectprocessAll();
+                    }).catch(err=>{
+                        vm.$message({//异常
+                            showClose: true,
+                            message: "系统异常",
+                            type: 'error'
+                        });
+                    })
+
+                },
+                addrow() {
+                    this.sheets.push({});
+                },
+                /*查询审核日志*/
+                selectprocesscheck(data){
+                    console.log(data.processId);
+                    var data={processId:data.processId}
+                    axios.post(api+"product/selectprocesscheck",data).then(res=>{
+                       this.activities=res.data;
+                    }).catch()
+                }
+            },
+            created() {
+                this.getUser();
+                this.selectprocessAll();
+            }
+        });
+
+
+    });
+</script>
+</html>

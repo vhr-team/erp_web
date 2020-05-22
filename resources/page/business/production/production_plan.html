@@ -8,10 +8,62 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <link rel="stylesheet" href="../../../lib/layui-v2.5.5/css/layui.css" media="all">
     <link rel="stylesheet" href="../../../css/public.css" media="all">
+    <style>
+        .layui-form-label {
+            color: #000000;
+        }
+
+        .layui-input {
+            width: 200px;
+        }
+
+        .remark {
+            width: 524px;
+        }
+
+        .form-padding {
+            padding-top: 20px;
+        }
+
+        .button-info {
+            position: absolute;
+            left: 304px;
+            bottom: 35px;
+        }
+
+        .make-erver {
+            margin-top: -4px;
+        }
+    </style>
 </head>
 <body>
 
-<table class="layui-hide" id="test"></table>
+
+<div class="layuimini-container">
+    <div class="layuimini-main">
+        <table class="layui-hide" id="test" lay-filter="test"></table>
+    </div>
+</div>
+
+<div style="display: none" id="diaLogOpen">
+    <form class="layui-form form-padding" lay-filter="DataFrm" id="DataFrm">
+
+    </form>
+</div>
+
+
+
+<script type="text/html" id="toolbarDemo">
+    <div class="layui-btn-container">
+        <button data-method="offset" data-type="auto" class="layui-btn layui-btn-normal" lay-event="check_audit">审核</button>
+    </div>
+</script>
+
+
+<script type="text/html" id="toolbarDemo2">
+
+</script>
+
 
 
 
@@ -25,25 +77,65 @@
 
 
 <script>
+
+    let apiUrl = "http://localhost:8003/";
+    let tableIns;
+    let index;
+
     layui.use('table', function(){
-        var table = layui.table;
+        let table = layui.table;
 
         table.render({
             elem: '#test'
-            ,url:'/demo/table/user/'
-            ,page: true
-            ,cols: [[
-                {field:'id',  title: 'ID', sort: true}
-                ,{field:'username',  title: '产品名称'}
-                ,{field:'sex',  title: '产品编号', sort: true}
-                ,{field:'city',  title: '描述'}
-                ,{field:'experience',title: '数量', sort: true}
-                ,{field:'score',  title: '单位', sort: true}
-                ,{field:'classify', title: '单价'}
-                ,{field:'wealth',  title: '小计', sort: true}
-            ]]
+            ,url: apiUrl+'design_record/selectprocessAll'
+            ,page:true
+            , toolbar: '#toolbarDemo2' //开启头部工具栏，并为其绑定左侧模板
+            , defaultToolbar: ['filter', 'exports', 'print', { //自定义头部工具栏右侧图标。如无需自定义，去除该参数即可
+                title: '提示'
+                , layEvent: 'LAYTABLE_TIPS'
+                , icon: 'layui-icon-tips'
+            }],
+           cols: [[
+                {checkbox: true, fixed: true}
+                ,{field:'id',  title: 'id', sort: true}
+                ,{field:'productName',  title: '产品名称'}
+                ,{field:'productId',  title: '产品编号', sort: true}
+                ,{field:'productDescribe',  title: '描述'}
+                ,{field:'',title: '数量', sort: true,edit: true}
+                ,{field:'amountUnit',  title: '单位', sort: true}
+                ,{field:'listPrice', title: '单价'}
+                ,{field:'',  title: '小计', sort: true}
+                , {title: '操作', templet: '#toolbarDemo', fixed: "right", align: "center"}
+            ]],
+
+            parseData:function (res) {
+                console.log(res);
+                return{
+                    "code":0,
+                    "data":res
+                }
+            }
 
         });
+
+        //监听工具条
+        table.on('tool(test)', function (obj) {
+            var data = obj.data;
+            console.log(data);
+            /*if (obj.event() === 'check_audit'){
+                layer.close(index);
+                $.post(apiUrl+'production/updatechecked_audit',data,function (res) {
+                    layer.msg(res);
+                    if (res.code == 200) {
+                        tableIns.reload();
+                    }
+                });
+                return false;
+            }*/
+        });
+
+
+
     });
 </script>
 

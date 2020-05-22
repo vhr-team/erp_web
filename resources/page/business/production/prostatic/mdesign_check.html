@@ -215,8 +215,26 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="layui-btn layui-btn-warm" @click="updatecheck('审核通过')">审核通过</button>
-                        <button type="button" class="layui-btn layui-btn-warm" @click="updatecheck('审核不通过')">审核不通过</button>
+                        <button type="button" class="layui-btn  layui-btn-normal" @click="updatecheck('审核通过')">审核通过</button>
+                        <button type="button" class="layui-btn layui-btn-warm" data-toggle="modal" data-target="#myModal" >审核不通过</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="myModalLabel">审核内容</h4>
+                    </div>
+                    <div class="modal-body">
+                        <textarea name="desc" placeholder="请输入内容" v-model="check.processCheckRemark" class="layui-textarea"></textarea>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="layui-btn" @click="updatecheck('审核未通过')">提交</button>
+                        <button type="button" class="layui-btn layui-btn-danger"data-dismiss="modal">关闭</button>
                     </div>
                 </div>
             </div>
@@ -242,7 +260,13 @@
                 sheet:{
                     processId:"",
                 },
-                sheetList:[]
+                sheetList:[],
+                check:{
+                    processId:"",
+                    processCheck:"",
+                    processCheckRemark:"",
+                    processCheckPerson:""
+                }
             },
             methods: {
                 /*获取当前用户名*/
@@ -250,6 +274,10 @@
                     var register = $.parseJSON(window.localStorage.getItem("user"));
                 },
                 showgx(data) {
+                    this.check.processId=data.processId;
+
+                    this.check.processCheckPerson=data.desregister;
+                    console.log(this.check);
                     this.process=data;
                     this.sheet.processId=data.processId;
                     this.selectAllSheet();
@@ -274,10 +302,58 @@
                     }).catch()
                 },
                 updatecheck(check){
-                    var data={processId:this.sheet.processId,processCheck:check};
-                    axios.post(api+"product/updatecheck",data).then(res=>{
+                    this.check.processCheck=check;
+                    var sheet={processId:this.sheet.processId,processCheck:check};
+                    var check_sheet={check:this.check,sheet:sheet}
+                    if(check==="审核未通过"){
+                            axios.post(api+"product/updatecheck",check_sheet).then(res=>{
+                                if(res.data.success){
+                                    vm.$message({
+                                        showClose: true,
+                                        message: res.data.message,
+                                        type: 'success'
+                                    });
+                                }else{
+                                    vm.$message({
+                                        showClose: true,
+                                        message: res.data.message,
+                                        type: 'error'
+                                    });
+                                }
+                            }).catch(err=>{
+                                vm.$message({//异常
+                                    showClose: true,
+                                    message: "系统异常",
+                                    type: 'error'
+                                });
+                            })
                         this.selectAll();
-                    }).catch()
+                    }else{
+                        vm.check.processCheckRemark="通过";
+                        axios.post(api+"product/updatecheck",check_sheet).then(res=>{
+                            if(res.data.success){
+                                vm.$message({
+                                    showClose: true,
+                                    message: res.data.message,
+                                    type: 'success'
+                                });
+                            }else{
+                                vm.$message({
+                                    showClose: true,
+                                    message: res.data.message,
+                                    type: 'error'
+                                });
+                            }
+                            this.selectAll();
+                        }).catch(err=>{
+                            vm.$message({//异常
+                                showClose: true,
+                                message: "系统异常",
+                                type: 'error'
+                            });
+                        })
+                    }
+
                 }
             },
             created() {
