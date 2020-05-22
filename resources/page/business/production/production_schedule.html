@@ -9,10 +9,11 @@
     <link rel="stylesheet" href="../../../lib/layui-v2.5.5/css/layui.css" media="all">
     <link rel="stylesheet" href="../../../css/public.css" media="all">
     <style>
-        .check-audit{
+        .check-audit {
             margin-top: -4px;
         }
     </style>
+    <script src="../../../lib/common/requestUrl.js"></script>
 </head>
 <body>
 
@@ -25,7 +26,7 @@
 
 <script type="text/html" id="toolbarDemo">
     <div class="layui-btn-container">
-        <button class="layui-btn layui-btn-normal make-erver check-audit"  lay-event="add">审核</button>
+        <button class="layui-btn layui-btn-normal make-erver check-audit" lay-event="add">审核</button>
     </div>
 </script>
 
@@ -35,46 +36,42 @@
 </script>
 
 
-
-    <script src="../../../lib/jquery-3.4.1/jquery-3.4.1.min.js" charset="utf-8"></script>
-    <script src="../../../lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
-    <script src="../../../js/lay-config.js?v=1.0.4" charset="utf-8"></script>
-    <script src="../../../lib/jq-module/jquery.particleground.min.js" charset="utf-8"></script>
-    <script src="../../../lib/common/jquery.cookie.min.js" charset="utf-8"></script>
-    <script src="../../../lib/common/common.js" charset="utf-8"></script>
-
-
+<script src="../../../lib/jquery-3.4.1/jquery-3.4.1.min.js" charset="utf-8"></script>
+<script src="../../../lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
+<script src="../../../js/lay-config.js?v=1.0.4" charset="utf-8"></script>
+<script src="../../../lib/jq-module/jquery.particleground.min.js" charset="utf-8"></script>
+<script src="../../../lib/common/jquery.cookie.min.js" charset="utf-8"></script>
+<script src="../../../lib/common/common.js" charset="utf-8"></script>
 
 
 <script>
-    let apiUrl = "http://localhost:8003/";
     let tableIns;
     let index;
 
-    layui.use('table', function(){
+    layui.use('table', function () {
         let table = layui.table;
 
         table.render({
             elem: '#test'
-            ,url: apiUrl+'production/findByAdd_status'
-            ,page:true
+            , url: productionApi + 'production/findByAdd_status'
+            , page: true
             , toolbar: '#toolbarDemo2' //开启头部工具栏，并为其绑定左侧模板
             , defaultToolbar: ['filter', 'exports', 'print', { //自定义头部工具栏右侧图标。如无需自定义，去除该参数即可
                 title: '提示'
-                    , layEvent: 'LAYTABLE_TIPS'
+                , layEvent: 'LAYTABLE_TIPS'
                 , icon: 'layui-icon-tips'
             }],
             cols: [[
                 {checkbox: true, fixed: true}
-                ,{field:'id',  title: 'id', sort: true}
-                ,{field:'product_name',  title: '产品名称'}
-                ,{field:'product_id',  title: '产品编号', sort: true}
-                ,{field:'product_describe',  title: '描述'}
-                ,{field:'quantity',title: '数量', sort: true,edit: true}
-                ,{field:'amount_unit',  title: '单位', sort: true}
-                ,{field:'price', title: '单价'}
-                ,{field:'aggregate',  title: '总金额', sort: true}
-                ,{field:'review_time',  title: '生成时间', sort: true}
+                , {field: 'id', title: 'id', sort: true}
+                , {field: 'product_name', title: '产品名称'}
+                , {field: 'product_id', title: '产品编号', sort: true}
+                , {field: 'product_describe', title: '描述'}
+                , {field: 'quantity', title: '数量', sort: true, edit: true}
+                , {field: 'amount_unit', title: '单位', sort: true}
+                , {field: 'price', title: '单价'}
+                , {field: 'aggregate', title: '总金额', sort: true}
+                , {field: 'review_time', title: '生成时间', sort: true}
                 , {title: '操作', templet: '#toolbarDemo', fixed: "right", align: "center"}
             ]],
 
@@ -84,11 +81,11 @@
         table.on('tool(test)', function (obj) {
             var data = obj.data;
             console.log(data.id);
-            if(obj.event === 'add'){
-                layer.confirm('确定审核吗', function(index){
+            if (obj.event === 'add') {
+                layer.confirm('确定审核吗', function (index) {
                     obj.del();
                     layer.close(index);
-                    $.post(apiUrl+'production/updateAdd_status',data,function (res) {
+                    $.post(productionApi + 'production/updateAdd_status', data, function (res) {
                         layer.msg(res);
                         if (res.code == 200) {
                             tableIns.reload();

@@ -10,10 +10,11 @@
     <link rel="stylesheet" href="../../../css/public.css" media="all">
     <style>
 
-        .audit{
+        .audit {
             margin-top: -4px;
         }
     </style>
+    <script src="../../../lib/common/requestUrl.js"></script>
 </head>
 <body>
 
@@ -25,21 +26,15 @@
 </div>
 
 
-
-
-
 <script type="text/html" id="toolbarDemo">
-            <a class="layui-btn button-info audit" lay-submit="" lay-event="addOrder" lay-filter="addOrder" id="addOrder"><label
-                    class="layui-icon layui-icon-add-circle-fine"></label>添加</a>
+    <a class="layui-btn button-info audit" lay-submit="" lay-event="addOrder" lay-filter="addOrder" id="addOrder"><label
+            class="layui-icon layui-icon-add-circle-fine"></label>添加</a>
 </script>
 
 
 <script type="text/html" id="toolbarDemo2">
 
 </script>
-
-
-
 
 
 <script src="../../../lib/jquery-3.4.1/jquery-3.4.1.min.js" charset="utf-8"></script>
@@ -51,66 +46,63 @@
 
 
 <script>
-
-    let apiUrl = "http://localhost:8003/";
     let tableIns;
     let index;
 
-    layui.use('table', function(){
+    layui.use('table', function () {
         let table = layui.table;
 
         table.render({
             elem: '#test'
-            ,url: apiUrl+'design_record/selectprocessAll'
-            ,page:true
+            , url: productionApi + 'design_record/selectprocessAll'
+            , page: true
             , toolbar: '#toolbarDemo2' //开启头部工具栏，并为其绑定左侧模板
             , defaultToolbar: ['filter', 'exports', 'print', { //自定义头部工具栏右侧图标。如无需自定义，去除该参数即可
                 title: '提示'
                 , layEvent: 'LAYTABLE_TIPS'
                 , icon: 'layui-icon-tips'
             }],
-           cols: [[
+            cols: [[
                 {checkbox: true, fixed: true}
-                ,{field:'id',  title: 'id', sort: true}
-                ,{field:'productName',  title: '产品名称'}
-                ,{field:'productId',  title: '产品编号', sort: true}
-                ,{field:'productDescribe',  title: '描述'}
-                ,{field:'quantity',title: '数量', sort: true,edit: true}
-                ,{field:'amountUnit',  title: '单位'}
-                ,{field:'listPrice', title: '单价'}
+                , {field: 'id', title: 'id', sort: true}
+                , {field: 'productName', title: '产品名称'}
+                , {field: 'productId', title: '产品编号', sort: true}
+                , {field: 'productDescribe', title: '描述'}
+                , {field: 'quantity', title: '数量', sort: true, edit: true}
+                , {field: 'amountUnit', title: '单位'}
+                , {field: 'listPrice', title: '单价'}
                 , {title: '操作', templet: '#toolbarDemo', fixed: "right", align: "center"}
             ]],
 
-            parseData:function (res) {
+            parseData: function (res) {
                 console.log(res);
-                return{
-                    "code":0,
-                    "data":res
+                return {
+                    "code": 0,
+                    "data": res
                 }
             }
 
         });
 
 
-
-        table.on('tool(test)', function(obj){ //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
+        table.on('tool(test)', function (obj) { //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
 
             $("#addOrder").click(function () {
                 console.log(obj.data);
-                let production_order={
-                    product_id:obj.data.productId,
-                    product_name:obj.data.productName,
-                    product_describe:obj.data.productDescribe,
-                    amount_unit:obj.data.amountUnit,
-                    price:obj.data.listPrice,
-                    quantity:obj.data.quantity
+                let production_order = {
+                    product_id: obj.data.productId,
+                    product_name: obj.data.productName,
+                    product_describe: obj.data.productDescribe,
+                    amount_unit: obj.data.amountUnit,
+                    price: obj.data.listPrice,
+                    quantity: obj.data.quantity
                 };
                 console.log(production_order);
-                layer.confirm('确定添加吗',function (index) {
+                layer.confirm('确定添加吗', function (index) {
                     obj.del();
                     layer.close(index);
 
-                    $.post(apiUrl+'production/insertProduction_order', production_order, function (res) {
+                    $.post(productionApi + 'production/insertProduction_order', production_order, function (res) {
                         layer.msg(res);
                         if (res.code == 200) {
                             tableIns.reload();
@@ -119,11 +111,10 @@
                     });
                     return false;
                 });
-                })
+            })
 
 
         });
-
 
 
     });

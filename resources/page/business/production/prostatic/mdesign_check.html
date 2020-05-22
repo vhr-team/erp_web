@@ -11,8 +11,9 @@
     <script src="../../../../lib/layui-v2.5.5/layui.all.js"></script>
     <script src="../../../../lib/layui-v2.5.5/layui.js"></script>
     <script src="../../../../lib/jquery-3.4.1/jquery-3.4.1.min.js"></script>
+    <script src="../../../../lib/plugin/vue/qs.js"></script>
+
     <script src="../../../../lib/common/jquery.cookie.min.js"></script>
-    <script src="https://cdn.bootcdn.net/ajax/libs/qs/6.9.3/qs.js"></script>
     <script src="../../../../lib/bootstarp/js/bootstrap.js"></script>
     <script src="../../../../lib/layui-v2.5.5/layui.js"></script>
     <link rel="stylesheet" href="../../../../lib/layui-v2.5.5/css/layui.css">
@@ -20,7 +21,6 @@
     <script src="../../../../lib/jquery-3.4.1/jquery-3.4.1.min.js"></script>
     <script src="../../../../lib/plugin/axios/axios.min.js"></script>
     <script src="../../../../lib/plugin/vue/vue.min.js"></script>
-    <script src="js/common.js"></script>
     <link rel="stylesheet" href="../../../../lib/plugin/element-ui/style/index.css">
     <script src="../../../../lib/plugin/element-ui/index.js"></script>
     <script src="../../../../lib/bootstarp/js/bootstrap.js"></script>
@@ -29,13 +29,16 @@
             border: 0px;
         }
     </style>
+    <script src="../../../../lib/common/requestUrl.js"></script>
+
 </head>
 <body>
 <div class="layuimini-container" id="app">
     <div class="layuimini-main">
         <div>
             <div style="margin-bottom: 20px">
-                <el-input v-model="design.productName" style="width: 200px;" :inline="true" placeholder="请输入产品名称"></el-input>
+                <el-input v-model="design.productName" style="width: 200px;" :inline="true"
+                          placeholder="请输入产品名称"></el-input>
                 <el-button type="primary" @click="selectAll()">查询</el-button>
             </div>
             <div>
@@ -69,7 +72,8 @@
                                         label="操作">
                                     <template slot-scope="scope">
                                         <el-button type="text" size="small"
-                                                   data-toggle="modal" @click="showgx(scope.row)" data-target="#myModal2">审核
+                                                   data-toggle="modal" @click="showgx(scope.row)"
+                                                   data-target="#myModal2">审核
                                         </el-button>
                                     </template>
                                 </el-table-column>
@@ -104,7 +108,8 @@
                                         label="操作">
                                     <template slot-scope="scope">
                                         <el-button type="text" size="small"
-                                                   data-toggle="modal" @click="showgx(scope.row)" data-target="#myModal2">审核
+                                                   data-toggle="modal" @click="showgx(scope.row)"
+                                                   data-target="#myModal2">审核
                                         </el-button>
                                     </template>
                                 </el-table-column>
@@ -139,7 +144,8 @@
                                         label="操作">
                                     <template slot-scope="scope">
                                         <el-button type="text" size="small"
-                                                   data-toggle="modal" @click="showgx(scope.row)" data-target="#myModal2">审核
+                                                   data-toggle="modal" @click="showgx(scope.row)"
+                                                   data-target="#myModal2">审核
                                         </el-button>
                                     </template>
                                 </el-table-column>
@@ -218,8 +224,12 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="layui-btn  layui-btn-normal" @click="updatecheck('审核通过')" v-loading.fullscreen.lock="fullscreenLoading">审核通过</button>
-                        <button type="button" class="layui-btn layui-btn-warm" data-toggle="modal" data-target="#myModal" >审核不通过</button>
+                        <button type="button" class="layui-btn  layui-btn-normal" @click="updatecheck('审核通过')"
+                                v-loading.fullscreen.lock="fullscreenLoading">审核通过
+                        </button>
+                        <button type="button" class="layui-btn layui-btn-warm" data-toggle="modal"
+                                data-target="#myModal">审核不通过
+                        </button>
                     </div>
                 </div>
             </div>
@@ -229,15 +239,19 @@
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                aria-hidden="true">&times;</span></button>
                         <h4 class="modal-title" id="myModalLabel">审核内容</h4>
                     </div>
                     <div class="modal-body">
-                        <textarea name="desc" placeholder="请输入内容" v-model="check.processCheckRemark" class="layui-textarea"></textarea>
+                        <textarea name="desc" placeholder="请输入内容" v-model="check.processCheckRemark"
+                                  class="layui-textarea"></textarea>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="layui-btn" @click="updatecheck('审核未通过')"  v-loading.fullscreen.lock="fullscreenLoading">提交</button>
-                        <button type="button" class="layui-btn layui-btn-danger"data-dismiss="modal">关闭</button>
+                        <button type="button" class="layui-btn" @click="updatecheck('审核未通过')"
+                                v-loading.fullscreen.lock="fullscreenLoading">提交
+                        </button>
+                        <button type="button" class="layui-btn layui-btn-danger" data-dismiss="modal">关闭</button>
                     </div>
                 </div>
             </div>
@@ -258,19 +272,19 @@
                 activeName: '待审核',
                 design: {
                     productName: "",
-                    processCheck:"待审核"
+                    processCheck: "待审核"
                 },
-                process:{},
+                process: {},
                 designList: [],
-                sheet:{
-                    processId:"",
+                sheet: {
+                    processId: "",
                 },
-                sheetList:[],
-                check:{
-                    processId:"",
-                    processCheck:"",
-                    processCheckRemark:"",
-                    processCheckPerson:""
+                sheetList: [],
+                check: {
+                    processId: "",
+                    processCheck: "",
+                    processCheckRemark: "",
+                    processCheckPerson: ""
                 }
             },
             methods: {
@@ -279,19 +293,19 @@
                     var register = $.parseJSON(window.localStorage.getItem("user"));
                 },
                 showgx(data) {
-                    this.check.processId=data.processId;
+                    this.check.processId = data.processId;
 
-                    this.check.processCheckPerson=data.desregister;
+                    this.check.processCheckPerson = data.desregister;
                     console.log(this.check);
-                    this.process=data;
-                    this.sheet.processId=data.processId;
+                    this.process = data;
+                    this.sheet.processId = data.processId;
                     this.selectAllSheet();
                 },
                 selectAll() {
-                    this.loading=true
-                    axios.post(api + "product/selectAll", this.design).then(res => {
-                        this.designList=res.data;
-                        this.loading=false
+                    this.loading = true
+                    axios.post(productionDingJian + "product/selectAll", this.design).then(res => {
+                        this.designList = res.data;
+                        this.loading = false
                         console.log(this.designList);
                     }).catch(err => {
                         vm.$message.error('网络异常');
@@ -303,53 +317,53 @@
                     this.selectAll();
                 },
                 /*根据工序id查询工序*/
-                selectAllSheet(){
-                    axios.post(api+"product/selectAllSheet",this.sheet).then(res=>{
-                        this.sheetList=res.data;
+                selectAllSheet() {
+                    axios.post(productionDingJian + "product/selectAllSheet", this.sheet).then(res => {
+                        this.sheetList = res.data;
                     }).catch()
                 },
-                updatecheck(check){
+                updatecheck(check) {
                     this.fullscreenLoading = true;
-                    this.check.processCheck=check;
-                    var sheet={processId:this.sheet.processId,processCheck:check};
-                    var check_sheet={check:this.check,sheet:sheet}
-                    if(check==="审核未通过"){
-                            axios.post(api+"product/updatecheck",check_sheet).then(res=>{
-                                if(res.data.success){
-                                    vm.$message({
-                                        showClose: true,
-                                        message: res.data.message,
-                                        type: 'success'
-                                    });
-                                    vm.fullscreenLoading = false;
-                                }else{
-                                    vm.$message({
-                                        showClose: true,
-                                        message: res.data.message,
-                                        type: 'error'
-                                    });
-                                    vm.fullscreenLoading = false;
-                                }
-                            }).catch(err=>{
-                                vm.$message({//异常
-                                    showClose: true,
-                                    message: "系统异常",
-                                    type: 'error'
-                                });
-                                vm.fullscreenLoading = false;
-                            })
-                        this.selectAll();
-                    }else{
-                        vm.check.processCheckRemark="通过";
-                        axios.post(api+"product/updatecheck",check_sheet).then(res=>{
-                            if(res.data.success){
+                    this.check.processCheck = check;
+                    var sheet = {processId: this.sheet.processId, processCheck: check};
+                    var check_sheet = {check: this.check, sheet: sheet}
+                    if (check === "审核未通过") {
+                        axios.post(productionDingJian + "product/updatecheck", check_sheet).then(res => {
+                            if (res.data.success) {
                                 vm.$message({
                                     showClose: true,
                                     message: res.data.message,
                                     type: 'success'
                                 });
                                 vm.fullscreenLoading = false;
-                            }else{
+                            } else {
+                                vm.$message({
+                                    showClose: true,
+                                    message: res.data.message,
+                                    type: 'error'
+                                });
+                                vm.fullscreenLoading = false;
+                            }
+                        }).catch(err => {
+                            vm.$message({//异常
+                                showClose: true,
+                                message: "系统异常",
+                                type: 'error'
+                            });
+                            vm.fullscreenLoading = false;
+                        })
+                        this.selectAll();
+                    } else {
+                        vm.check.processCheckRemark = "通过";
+                        axios.post(productionDingJian + "product/updatecheck", check_sheet).then(res => {
+                            if (res.data.success) {
+                                vm.$message({
+                                    showClose: true,
+                                    message: res.data.message,
+                                    type: 'success'
+                                });
+                                vm.fullscreenLoading = false;
+                            } else {
                                 vm.$message({
                                     showClose: true,
                                     message: res.data.message,
@@ -358,7 +372,7 @@
                                 vm.fullscreenLoading = false;
                             }
                             this.selectAll();
-                        }).catch(err=>{
+                        }).catch(err => {
                             vm.$message({//异常
                                 showClose: true,
                                 message: "系统异常",
