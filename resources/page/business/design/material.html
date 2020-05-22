@@ -191,7 +191,7 @@
                                       v-model="materialAdds.productDescribe"></el-input>
                         </el-form-item>
                         <el-form-item>
-                            <el-button type="primary" @click="addmaterial()">添加</el-button>
+                            <el-button type="primary" @click="addmaterial()"  v-loading.fullscreen.lock="fullscreenLoading">添加</el-button>
                         </el-form-item>
                     </el-form>
                 </el-drawer>
@@ -225,7 +225,7 @@
                                       v-model="materialUpdates.productDescribe"></el-input>
                         </el-form-item>
                         <el-form-item>
-                            <el-button type="primary" @click="updatematerial()">修改</el-button>
+                            <el-button type="primary" @click="updatematerial()" v-loading.fullscreen.lock="fullscreenLoading">修改</el-button>
                         </el-form-item>
                     </el-form>
                 </el-drawer>
@@ -243,6 +243,7 @@
         var vm = new Vue({
             el: '#app',
             data: {
+                fullscreenLoading: false,
                 /*加载动画*/
                 loading: true,
 
@@ -316,6 +317,7 @@
                 },
                 /*添加物料*/
                 addmaterial() {
+                    this.fullscreenLoading = true;
                     var data = this.materialAdds;
                     if (data.productName == null || data.productName === "") {
                         vm.$message({showClose: true, message: "请输入物料名称", type: 'error'});
@@ -353,6 +355,7 @@
                                     type: 'error'
                                 });
                             }
+                            this.fullscreenLoading = false;
                         }).catch(err => {
                             vm.$message({//异常
                                 showClose: true,
@@ -370,6 +373,7 @@
                 },
                 /*修改物料*/
                 updatematerial() {
+                    this.fullscreenLoading = true;
                     var data = this.materialUpdates;
                     if (data.productName == null || data.productName === "") {
                         vm.$message({showClose: true, message: "请输入物料名称", type: 'error'});
@@ -407,6 +411,7 @@
                                     type: 'error'
                                 });
                             }
+                            this.fullscreenLoading = false;
                         }).catch(err => {
                             vm.$message({//异常
                                 showClose: true,
