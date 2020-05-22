@@ -162,7 +162,7 @@
                                                    icon="el-icon-s-promotion"></el-button>
                                     </el-tooltip>
                                     <el-tooltip class="item" effect="dark" content="删除档案" placement="top-start">
-                                        <el-button type="danger" title="" @click="deleterecord(scope.row)" size="small"
+                                        <el-button type="danger" title="" @click="deleterecord(scope.row)" v-loading.fullscreen.lock="fullscreenLoading" size="small"
                                                    icon="el-icon-delete"></el-button>
                                     </el-tooltip>
                                 </el-button-group>
@@ -183,7 +183,6 @@
                     <!--修改的模态框-->
                     <el-drawer
                             title="修改档案"
-
                             :visible.sync="recordUpdate"
                             :before-close="recordUpdateClose">
                         <el-form ref="form" size="small" label-width="100px">
@@ -235,7 +234,7 @@
                                           v-model="recordUpdates.productDescribe"></el-input>
                             </el-form-item>
                             <el-form-item>
-                                <el-button type="primary" @click="updaterecord">修改</el-button>
+                                <el-button type="primary" @click="updaterecord"  v-loading.fullscreen.lock="fullscreenLoading">修改</el-button>
                             </el-form-item>
                         </el-form>
                     </el-drawer>
@@ -292,7 +291,7 @@
                                       v-model="recordAdds.productDescribe"></el-input>
                         </el-form-item>
                         <el-form-item>
-                            <el-button type="primary" @click="addrecord">添加</el-button>
+                            <el-button type="primary" @click="addrecord"  v-loading.fullscreen.lock="fullscreenLoading">添加</el-button>
                         </el-form-item>
                     </el-form>
                 </el-drawer>
@@ -361,6 +360,7 @@
         var vm = new Vue({
             el: '#app',
             data: {
+                fullscreenLoading: false,
                 /*加载动画*/
                 loading: true,
                 /*产品档次*/
@@ -482,6 +482,7 @@
                 },
                 /*修改档案*/
                 updaterecord() {
+                    this.fullscreenLoading = true;
                     var data = this.recordUpdates;
                     /*验证非空*/
                     if (data.productName == null || data.productName === "") {
@@ -532,6 +533,7 @@
                                     type: 'error'
                                 });
                             }
+                            this.fullscreenLoading = false;
                         }).catch(err => {//系统异常
                             vm.$message({//异常
                                 showClose: true,
@@ -544,6 +546,7 @@
                 },
                 /*添加档案*/
                 addrecord() {
+                    this.fullscreenLoading = true;
                     var data = this.recordAdds;//获取数据
                     /*验证非空*/
                     if (data.productName == null || data.productName === "") {
@@ -592,12 +595,14 @@
                                     message: res.data.message,
                                     type: 'success'
                                 });
+                                this.fullscreenLoading = false;
                             } else {
                                 vm.$message({//添加失败
                                     showClose: true,
                                     message: res.data.message,
                                     type: 'error'
                                 });
+                                this.fullscreenLoading = false;
                             }
                         }).catch(err => {
                             vm.$message({//异常
@@ -605,27 +610,32 @@
                                 message: "系统异常",
                                 type: 'error'
                             });
+                            this.fullscreenLoading = false;
                         })
                         layer.close(index);
                     });
                 },
                 /*回收·档案*/
                 deleterecord(value) {
+                    this.fullscreenLoading = true;
                     layer.confirm('删除后将会进入回收站', {icon: 3, title: '确定删除吗？'}, function (index) {
                         axios.post(api1 + "/design_record/deleterecord", value).then(res => {
                             if (res.data.success) {
-                                vm.findPage();
+
                                 vm.$message({//回收成功
                                     showClose: true,
                                     message: res.data.message,
                                     type: 'success'
                                 });
+                                vm.findPage();
+                                vm.fullscreenLoading = false;
                             } else {
                                 vm.$message({//回收失败
                                     showClose: true,
                                     message: res.data.message,
                                     type: 'error'
                                 });
+                                vm.fullscreenLoading =false;
                             }
                             vm.seachrecycle();
                         }).catch(err => {
@@ -634,6 +644,7 @@
                                 message: "系统异常",
                                 type: 'error'
                             });
+                            vm.fullscreenLoading = false;
                         })
 
                         layer.close(index);

@@ -52,6 +52,7 @@
             </div>
             <div>
                 <el-table
+                        v-loading="loading"
                         :data="processList"
                         border
                         style="width: 100%">
@@ -200,7 +201,7 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="layui-btn layui-btn-warm" @click="addsheet()">提交</button>
+                        <button type="button" class="layui-btn layui-btn-warm" @click="addsheet()" v-loading.fullscreen.lock="fullscreenLoading">提交</button>
                         <button type="button" class="layui-btn layui-btn-warm" data-dismiss="modal">关闭</button>
                     </div>
                 </div>
@@ -245,6 +246,8 @@
         var vm = new Vue({
             el: '#app',
             data: {
+                fullscreenLoading:false,
+                loading: true,
                 drawer: false,
                 designsheet: {},
                 processRemarks: "",
@@ -288,8 +291,10 @@
                 },
                 /*查询工序*/
                 selectprocessAll() {
+                    this.loading=true
                     axios.get(api + "product/selectAlltwo").then(res => {
                         this.processList = res.data;
+                        this.loading=false
                     })
                 },
                 /*根据工序编号查询工序*/
@@ -299,6 +304,7 @@
                     }).catch()
                 },
                 addsheet() {
+                    this.fullscreenLoading=true;
                     this.sheets[0].processRequire = this.processRequires
                     this.sheets[0].processRemark = this.processRemarks;
 
@@ -313,12 +319,14 @@
                                 message: res.data.message,
                                 type: 'success'
                             });
+                            this.fullscreenLoading=false;
                         }else{
                             vm.$message({
                                 showClose: true,
                                 message: res.data.message,
                                 type: 'error'
                             });
+                            this.fullscreenLoading=false;
                         }
                         vm.selectprocessAll();
                     }).catch(err=>{
@@ -327,6 +335,7 @@
                             message: "系统异常",
                             type: 'error'
                         });
+                        this.fullscreenLoading=false;
                     })
 
                 },

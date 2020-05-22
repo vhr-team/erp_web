@@ -44,6 +44,7 @@
                     <el-tab-pane label="待审核" name="待审核">
                         <div>
                             <el-table
+                                    v-loading="loading"
                                     :data="designList"
                                     border
                                     style="width: 100%">
@@ -78,6 +79,7 @@
                     <el-tab-pane label="审核通过" name="审核通过">
                         <div>
                             <el-table
+                                    v-loading="loading"
                                     :data="designList"
                                     border
                                     style="width: 100%">
@@ -112,6 +114,7 @@
                     <el-tab-pane label="审核未通过" name="审核未通过">
                         <div>
                             <el-table
+                                    v-loading="loading"
                                     :data="designList"
                                     border
                                     style="width: 100%">
@@ -215,7 +218,7 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="layui-btn  layui-btn-normal" @click="updatecheck('审核通过')">审核通过</button>
+                        <button type="button" class="layui-btn  layui-btn-normal" @click="updatecheck('审核通过')" v-loading.fullscreen.lock="fullscreenLoading">审核通过</button>
                         <button type="button" class="layui-btn layui-btn-warm" data-toggle="modal" data-target="#myModal" >审核不通过</button>
                     </div>
                 </div>
@@ -233,7 +236,7 @@
                         <textarea name="desc" placeholder="请输入内容" v-model="check.processCheckRemark" class="layui-textarea"></textarea>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="layui-btn" @click="updatecheck('审核未通过')">提交</button>
+                        <button type="button" class="layui-btn" @click="updatecheck('审核未通过')"  v-loading.fullscreen.lock="fullscreenLoading">提交</button>
                         <button type="button" class="layui-btn layui-btn-danger"data-dismiss="modal">关闭</button>
                     </div>
                 </div>
@@ -250,6 +253,8 @@
         var vm = new Vue({
             el: '#app',
             data: {
+                fullscreenLoading: false,
+                loading: true,
                 activeName: '待审核',
                 design: {
                     productName: "",
@@ -283,8 +288,10 @@
                     this.selectAllSheet();
                 },
                 selectAll() {
+                    this.loading=true
                     axios.post(api + "product/selectAll", this.design).then(res => {
                         this.designList=res.data;
+                        this.loading=false
                         console.log(this.designList);
                     }).catch(err => {
                         vm.$message.error('网络异常');
@@ -302,6 +309,7 @@
                     }).catch()
                 },
                 updatecheck(check){
+                    this.fullscreenLoading = true;
                     this.check.processCheck=check;
                     var sheet={processId:this.sheet.processId,processCheck:check};
                     var check_sheet={check:this.check,sheet:sheet}
@@ -313,12 +321,14 @@
                                         message: res.data.message,
                                         type: 'success'
                                     });
+                                    vm.fullscreenLoading = false;
                                 }else{
                                     vm.$message({
                                         showClose: true,
                                         message: res.data.message,
                                         type: 'error'
                                     });
+                                    vm.fullscreenLoading = false;
                                 }
                             }).catch(err=>{
                                 vm.$message({//异常
@@ -326,6 +336,7 @@
                                     message: "系统异常",
                                     type: 'error'
                                 });
+                                vm.fullscreenLoading = false;
                             })
                         this.selectAll();
                     }else{
@@ -337,12 +348,14 @@
                                     message: res.data.message,
                                     type: 'success'
                                 });
+                                vm.fullscreenLoading = false;
                             }else{
                                 vm.$message({
                                     showClose: true,
                                     message: res.data.message,
                                     type: 'error'
                                 });
+                                vm.fullscreenLoading = false;
                             }
                             this.selectAll();
                         }).catch(err=>{
@@ -351,6 +364,7 @@
                                 message: "系统异常",
                                 type: 'error'
                             });
+                            vm.fullscreenLoading = false;
                         })
                     }
 

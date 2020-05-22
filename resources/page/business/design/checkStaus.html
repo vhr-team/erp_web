@@ -237,7 +237,7 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-                            <button type="button" class="btn btn-primary" @click="addarchives()">提交</button>
+                            <button type="button" class="btn btn-primary" @click="addarchives()" v-loading.fullscreen.lock="fullscreenLoading">提交</button>
                         </div>
                     </div>
                 </div>
@@ -287,6 +287,7 @@
         var vm = new Vue({
             el: '#app',
             data: {
+                fullscreenLoading: false,
                 drawer: false,
                 /*加载动画*/
                 loading: true,
@@ -328,6 +329,7 @@
                 },
                 /*添加组成*/
                 addarchives() {
+                    this.fullscreenLoading = true;
                     if (this.addconstituteList == null) {
                         vm.$message({//添加失败
                             showClose: true,
@@ -355,6 +357,7 @@
                                     type: 'error'
                                 });
                             }
+                            vm.fullscreenLoading = false;
                         },
                         error: function () {
                             vm.$message({//异常
@@ -362,6 +365,8 @@
                                 message: "异常",
                                 type: 'error'
                             });
+                            vm.fullscreenLoading = false;
+
                         }
                     })
                 },

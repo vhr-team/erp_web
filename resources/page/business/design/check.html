@@ -380,7 +380,7 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <el-button type="primary" @click="checkrecord('审核通过')">审核通过</el-button>
+                        <el-button type="primary" @click="checkrecord('审核通过')" v-loading.fullscreen.lock="fullscreenLoading">审核通过</el-button>
                         <el-button type="warning" @click="checkrecord('审核未通过')">审核不通过</el-button>
                     </div>
                 </div>
@@ -403,6 +403,7 @@
         var vm = new Vue({
             el: '#app',
             data: {
+                fullscreenLoading: false,
                 activeName: '等待审核',
                 /*加载动画*/
                 loading: true,
@@ -509,6 +510,7 @@
                     })
                 },
                 checkrecord(value){//
+                    this.fullscreenLoading = true;
                     this.checkers.checkTag=value;
                     this.productCheck.productId=this.checkers.productId
                     this.productCheck.productName=this.checkers.productName
@@ -539,13 +541,15 @@
                                             type: 'error'
                                         });
                                     }
-                                    console.log(vm.productCheck);
+                                    vm.findPage();
+                                    vm.fullscreenLoading = false;
                                 }).catch(err=>{
                                     vm.$message({//异常
                                         showClose: true,
                                         message: "系统异常",
                                         type: 'error'
                                     });
+                                    vm.fullscreenLoading = false;
                                 })
                             });
 
@@ -558,20 +562,23 @@
                                         message: res.data.message,
                                         type: 'success'
                                     });
+                                    vm.fullscreenLoading = false;
                                 }else{
                                     vm.$message({
                                         showClose: true,
                                         message: res.data.message,
                                         type: 'error'
                                     });
+                                    vm.fullscreenLoading = false;
                                 }
-                                console.log(vm.productCheck);
+                                vm.findPage();
                             }).catch(err=>{
                                 vm.$message({//异常
                                     showClose: true,
                                     message: "系统异常",
                                     type: 'error'
                                 });
+                                vm.fullscreenLoading = false;
                             })
 
                         }

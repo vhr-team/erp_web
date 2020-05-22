@@ -130,7 +130,7 @@
                             <template slot-scope="scope">
                                 <el-button-group>
                                     <el-tooltip class="item" effect="dark" content="恢复档案" placement="top-start">
-                                        <el-button type="primary" size="small" @click="recover(scope.row)"
+                                        <el-button type="primary" size="small" v-loading.fullscreen.lock="fullscreenLoading" @click="recover(scope.row)"
                                                    icon="el-icon-refresh-right"></el-button>
                                     </el-tooltip>
                                 </el-button-group>
@@ -163,6 +163,7 @@
         var vm = new Vue({
             el: '#app',
             data: {
+                fullscreenLoading:false,
                 /*加载动画*/
                 loading: true,
                 /*产品档次*/
@@ -215,25 +216,33 @@
                 },
                 /*恢复档案*/
                 recover(value) {
+                    this.fullscreenLoading=true;
                     layer.confirm('确定恢复吗?', {icon: 3, title: '提示'}, function (index) {
                         axios.post(api1 + "design_record/recordrecover", value).then(res => {
                             if (res.data.success) {
-                                vm.findPage();
                                 vm.$message({//恢复成功
                                     showClose: true,
                                     message: res.data.message,
                                     type: 'success'
                                 });
-                                this.findPage();
+
+                                vm.findPage();
+                                vm.fullscreenLoading=false;
                             } else {
                                 vm.$message({//恢复失败
                                     showClose: true,
                                     message: res.data.message,
                                     type: 'error'
                                 });
+                                vm.fullscreenLoading=false;
                             }
+                            this.fullscreenLoading=false;
                         }).catch(err => {
-
+                            vm.$message({//异常
+                                showClose: true,
+                                message: "系统异常",
+                                type: 'error'
+                            });
                         })
                         layer.close(index);
                     });
