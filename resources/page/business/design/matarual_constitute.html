@@ -221,8 +221,8 @@
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-                            <button type="button" class="btn btn-primary" @click="addarchives()" v-loading.fullscreen.lock="fullscreenLoading">提交</button>
+                            <el-button type="danger" data-dismiss="modal">关闭</el-button>
+                            <el-button type="success"  @click="addarchives()" v-loading.fullscreen.lock="fullscreenLoading">提交</el-button>
                         </div>
                     </div>
                 </div>

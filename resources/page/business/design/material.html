@@ -309,11 +309,8 @@
                 },
                 /*关闭添加的模态框*/
                 materialAddClose(done) {
-                    layer.confirm('确认关闭吗?', {icon: 3, title: '提示'}, function (index) {
-                        layer.close(index);
-                        done();//关闭添加模态框
-                        vm.recordAdds = {}//清空添加文本框
-                    });
+                    done();//关闭添加模态框
+                    vm.recordAdds = {}//清空添加文本框
                 },
                 /*添加物料*/
                 addmaterial() {
@@ -348,21 +345,26 @@
                                     message: res.data.message,
                                     type: 'success'
                                 });
+                                this.materialAdds={};
+                                vm.fullscreenLoading = false;
                             } else {
                                 vm.$message({//添加失败
                                     showClose: true,
                                     message: res.data.message,
                                     type: 'error'
                                 });
+                                this.materialAdds={};
+                                vm.fullscreenLoading = false;
                             }
-                            this.fullscreenLoading = false;
                         }).catch(err => {
                             vm.$message({//异常
                                 showClose: true,
                                 message: "系统异常",
                                 type: 'error'
                             });
-                        })
+                            vm.fullscreenLoading = false;
+                        });
+
 
                         layer.close(index);
                     });

@@ -9,20 +9,15 @@
     <link rel="stylesheet" href="../../../css/public.css" media="all">
     <link rel="stylesheet" href="../../../lib/bootstarp/css/bootstrap.css">
     <link rel="stylesheet" href="../../../lib/plugin/element-ui/style/index.css">
-
-    <script src="https://cdn.bootcss.com/vue-router/3.0.6/vue-router.js"></script>
-    <script src="https://cdn.bootcss.com/vue/2.6.10/vue.js"></script>
-    <script src="https://cdn.bootcss.com/element-ui/2.8.2/index.js"></script>
+    <script src="../../../lib/plugin/vue/vue.min.js"></script>
+    <script src="../../../lib/plugin/vue/vue-router.js"></script>
+    <script src="../../../lib/plugin/element-ui/index.js"></script>
     <script src="../../../lib/layui-v2.5.5/layui.all.js"></script>
     <script src="../../../lib/layui-v2.5.5/layui.js"></script>
-    <script src="https://cdn.bootcdn.net/ajax/libs/axios/0.19.2/axios.js"></script>
+    <script src="../../../lib/plugin/axios/axios.min.js"></script>
     <script src="../../../lib/jquery-3.4.1/jquery-3.4.1.min.js"></script>
+    <script src="../../../lib/plugin/vue/qs.js"></script>
     <script src="../../../lib/common/jquery.cookie.min.js"></script>
-    <script src="https://cdn.bootcdn.net/ajax/libs/qs/6.9.3/qs.js"></script>
-    <script src="https://unpkg.com/vue/dist/vue.js"></script>
-    <script src="../../../lib/bootstarp/js/bootstrap.js"></script>
-    <script src="config/common.js"></script>
-    <script src="../../../lib/plugin/element-ui/index.js"></script>
     <style>
         .demo-table-expand {
             font-size: 0;
@@ -38,7 +33,12 @@
             margin-bottom: 0;
             width: 50%;
         }
+
     </style>
+    <script src="../../../lib/bootstarp/js/bootstrap.js"></script>
+    <script src="config/common.js"></script>
+
+
 </head>
 <body>
 <div class="layuimini-container">
@@ -462,11 +462,7 @@
                 },
                 /*关闭修改模态框*/
                 recordUpdateClose(done) {
-                    layer.confirm('确认关闭吗?', {icon: 3, title: '提示'}, function (index) {
-                        layer.close(index);
-                        done();
-                        vm.findPage()
-                    });
+                    done();
                 },
                 /*获取复选框选中的值*/
                 handleSelectionChange(value) {
@@ -474,11 +470,8 @@
                 },
                 /*关闭添加的模态框*/
                 recordAddClose(done) {
-                    layer.confirm('确认关闭吗?', {icon: 3, title: '提示'}, function (index) {
-                        layer.close(index);
-                        done();//关闭添加模态框
-                        vm.recordAdds = {}//清空添加文本框
-                    });
+                    done();//关闭添加模态框
+                    vm.recordAdds = {}//清空添加文本框
                 },
                 /*修改档案*/
                 updaterecord() {
@@ -526,20 +519,22 @@
                                     message: res.data.message,
                                     type: 'success'
                                 });
+                                vm.fullscreenLoading = false;
                             } else {
                                 vm.$message({//修改失败
                                     showClose: true,
                                     message: res.data.message,
                                     type: 'error'
                                 });
+                                vm.fullscreenLoading = false;
                             }
-                            this.fullscreenLoading = false;
                         }).catch(err => {//系统异常
                             vm.$message({//异常
                                 showClose: true,
                                 message: "系统异常",
                                 type: 'error'
                             });
+                            vm.fullscreenLoading = true;
                         })
                         layer.close(index);
                     });
@@ -595,14 +590,14 @@
                                     message: res.data.message,
                                     type: 'success'
                                 });
-                                this.fullscreenLoading = false;
+                                vm.fullscreenLoading = false;
                             } else {
                                 vm.$message({//添加失败
                                     showClose: true,
                                     message: res.data.message,
                                     type: 'error'
                                 });
-                                this.fullscreenLoading = false;
+                                vm.fullscreenLoading = false;
                             }
                         }).catch(err => {
                             vm.$message({//异常
@@ -610,7 +605,7 @@
                                 message: "系统异常",
                                 type: 'error'
                             });
-                            this.fullscreenLoading = false;
+                            vm.fullscreenLoading = false;
                         })
                         layer.close(index);
                     });

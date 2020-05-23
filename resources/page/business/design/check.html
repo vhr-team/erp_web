@@ -450,6 +450,7 @@
                 },
                 /*分页条件查询*/
                 findPage() {
+                    this.loading=true
                     axios.post(api1 + "/design_record/findPagecheck?page=" + this.page + "&pageSize=" + this.pageSize, this.record).then(res => {
                         this.total = res.data.total;
                         this.recordList = res.data.data;

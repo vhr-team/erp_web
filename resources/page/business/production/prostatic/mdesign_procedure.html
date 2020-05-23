@@ -4,21 +4,14 @@
     <meta charset="UTF-8">
     <title>产品工序制定</title>
     <!-- import CSS -->
-    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
     <link rel="stylesheet" href="../../../../lib/layui-v2.5.5/css/layui.css">
-    <link href="https://cdn.bootcss.com/element-ui/2.8.2/theme-chalk/index.css" rel="stylesheet">
     <link rel="stylesheet" href="../../../../lib/bootstarp/css/bootstrap.css">
     <link rel="stylesheet" href="../../../../lib/layui-v2.5.5/css/layui.css" media="all">
     <link rel="stylesheet" href="../../../../css/public.css" media="all">
-    <script src="https://cdn.bootcss.com/vue/2.6.10/vue.js"></script>
-    <script src="https://cdn.bootcss.com/vue-router/3.0.6/vue-router.js"></script>
-    <script src="https://cdn.bootcss.com/element-ui/2.8.2/index.js"></script>
     <script src="../../../../lib/layui-v2.5.5/layui.all.js"></script>
     <script src="../../../../lib/layui-v2.5.5/layui.js"></script>
-    <script src="https://cdn.bootcdn.net/ajax/libs/axios/0.19.2/axios.js"></script>
     <script src="../../../../lib/jquery-3.4.1/jquery-3.4.1.min.js"></script>
     <script src="../../../../lib/common/jquery.cookie.min.js"></script>
-    <script src="https://cdn.bootcdn.net/ajax/libs/qs/6.9.3/qs.js"></script>
     <script src="../../../../lib/bootstarp/js/bootstrap.js"></script>
     <script src="../../../../lib/layui-v2.5.5/layui.js"></script>
     <link rel="stylesheet" href="../../../../lib/layui-v2.5.5/css/layui.css">
@@ -35,6 +28,8 @@
             border: 0px;
         }
     </style>
+    <script src="../../../../lib/plugin/vue/vue-router.js"></script>
+    <script src="../../../../lib/plugin/vue/qs.js"></script>
 </head>
 <body>
 <div class="layuimini-container" id="app">
@@ -244,7 +239,7 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="layui-btn layui-btn-warm" @click="add()"  v-loading.fullscreen.lock="fullscreenLoading">提交</button>
+                        <button type="button" class="layui-btn layui-btn-normal" @click="add()"  v-loading.fullscreen.lock="fullscreenLoading">提交</button>
                         <button type="button" class="layui-btn layui-btn-warm" data-dismiss="modal">关闭</button>
                     </div>
                 </div>
