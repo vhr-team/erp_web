@@ -245,16 +245,20 @@
                                 });
                                 vm.fullscreenLoading = false;
                             }
-                            this.fullscreenLoading = false;
+                            vm.fullscreenLoading = false;
                         }).catch(err => {
                             vm.$message({//异常
                                 showClose: true,
                                 message: "系统异常",
                                 type: 'error'
                             });
+                            vm.fullscreenLoading = false;
                         })
                         layer.close(index);
+                    },function () {//取消
+                        vm.fullscreenLoading = false;
                     });
+
                 }
             },
             created() {

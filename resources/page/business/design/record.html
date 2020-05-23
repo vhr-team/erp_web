@@ -660,6 +660,8 @@
                         })
 
                         layer.close(index);
+                    },function () {//取消
+                        vm.fullscreenLoading = false;
                     });
                 },
                 /*跳转到回收页面*/
