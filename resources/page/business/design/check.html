@@ -3,28 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <title>审核状态</title>
-    <!-- import CSS -->
+    <link rel="stylesheet" href="../../../lib/bootstarp/css/bootstrap.css">
     <link rel="stylesheet" href="../../../lib/layui-v2.5.5/css/layui.css">
+    <link rel="stylesheet" href="../../../lib/layui-v2.5.5/css/layui.css" media="all">
     <link rel="stylesheet" href="../../../lib/plugin/element-ui/style/index.css">
-    <!-- 2. 引入vue和vue-router-->
-    <!-- 未使用vue路由功能可不导入 -->
+    <link rel="stylesheet" href="../../../css/public.css" media="all">
     <script src="../../../lib/plugin/vue/vue.min.js"></script>
-
-
-    <!-- 3. 引入ElementUI组件 -->
     <script src="../../../lib/layui-v2.5.5/layui.all.js"></script>
     <script src="../../../lib/layui-v2.5.5/layui.js"></script>
     <script src="../../../lib/plugin/element-ui/index.js"></script>
     <script src="../../../lib/plugin/vue/vue-router.js"></script>
-
-
-
     <script src="../../../lib/jquery-3.4.1/jquery-3.4.1.min.js"></script>
     <script src="../../../lib/plugin/axios/axios.min.js"></script>
-
     <script src="../../../lib/common/jquery.cookie.min.js"></script>
     <script src="../../../lib/plugin/vue/qs.js"></script>
-
     <style>
         .demo-table-expand {
             font-size: 0;
@@ -41,13 +33,15 @@
             width: 50%;
         }
     </style>
-    <link rel="stylesheet" href="../../../lib/bootstarp/css/bootstrap.css">
+
     <script src="../../../lib/bootstarp/js/bootstrap.js"></script>
     <script src="../../../lib/common/common.js"></script>
     <script src="../../../lib/common/requestUrl.js"></script>
 
 </head>
 <body>
+<div class="layuimini-container">
+    <div class="layuimini-main">
 <div id="app">
     <div>
         <fieldset class="layui-elem-field">
@@ -386,13 +380,14 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <el-button type="primary" @click="checkrecord('审核通过')" v-loading.fullscreen.lock="fullscreenLoading">审核通过</el-button>
-                        <el-button type="warning" @click="checkrecord('审核未通过')">审核不通过</el-button>
+                        <el-button type="primary" @click="checkrecord('审核通过')" v-loading.fullscreen.lock="fullscreenLoading" data-dismiss="modal">审核通过</el-button>
+                        <el-button type="warning" @click="checkrecord('审核未通过')" data-dismiss="modal">审核不通过</el-button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
 </div>
 </div>
 </body>

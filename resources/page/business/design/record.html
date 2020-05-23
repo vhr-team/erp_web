@@ -4,16 +4,15 @@
     <meta charset="UTF-8">
     <title>档案设计管理</title>
     <!-- import CSS -->
+
+    <link rel="stylesheet" href="../../../lib/bootstarp/css/bootstrap.css">
     <link rel="stylesheet" href="../../../lib/layui-v2.5.5/css/layui.css">
     <link rel="stylesheet" href="../../../lib/layui-v2.5.5/css/layui.css" media="all">
-    <link rel="stylesheet" href="../../../css/public.css" media="all">
-    <link rel="stylesheet" href="../../../lib/bootstarp/css/bootstrap.css">
     <link rel="stylesheet" href="../../../lib/plugin/element-ui/style/index.css">
-
+    <link rel="stylesheet" href="../../../css/public.css" media="all">
+    <link rel="stylesheet" href="../../../lib/plugin/element-ui/style/index.css">
     <script src="../../../lib/plugin/vue/vue.min.js"></script>
     <script src="../../../lib/jquery-3.4.1/jquery-3.4.1.min.js"></script>
-
-
     <script src="../../../lib/layui-v2.5.5/layui.all.js"></script>
     <script src="../../../lib/layui-v2.5.5/layui.js"></script>
     <script src="../../../lib/common/jquery.cookie.min.js"></script>
@@ -21,6 +20,10 @@
     <script src="../../../lib/common/common.js"></script>
     <script src="../../../lib/common/requestUrl.js"></script>
     <script src="../../../lib/plugin/element-ui/index.js"></script>
+    <script src="../../../lib/plugin/vue/vue-router.js"></script>
+    <script src="../../../lib/plugin/vue/qs.js"></script>
+    <script src="../../../lib/plugin/axios/axios.min.js"></script>
+
     <style>
         .demo-table-expand {
             font-size: 0;
@@ -37,16 +40,15 @@
             width: 50%;
         }
     </style>
-    <script src="../../../lib/plugin/vue/vue-router.js"></script>
 
-    <script src="../../../lib/plugin/vue/qs.js"></script>
-    <script src="../../../lib/plugin/axios/axios.min.js"></script>
 </head>
 <body>
 <div class="layuimini-container">
     <div class="layuimini-main">
         <div id="app">
             <div>
+                <!--搜索开始-->
+              <div>
                 <fieldset class="layui-elem-field">
                     <legend>搜索信息</legend>
                     <div class="layui-field-box" style="margin-left: 300px ">
@@ -64,6 +66,7 @@
 
                     </div>
                 </fieldset>
+              </div>
                 <div style="margin-left: 50px">
                     <div style="margin-right: 5px;display: inline-block">
                         <el-tooltip class="item" effect="dark" content="添加档案" placement="top-start">
@@ -155,7 +158,7 @@
                                 <el-button-group>
                                     <el-tooltip class="item" effect="dark" content="修改档案" placement="top-start">
                                         <el-button type="primary"
-                                                   @click="recordUpdate = true,recordUpdateList(scope.row),getUse()"
+                                                   @click="recordUpdate = true,recordUpdateList(scope.row),getUser()"
                                                    size="small" icon="el-icon-edit"></el-button>
                                     </el-tooltip>
                                     <el-tooltip class="item" effect="dark" content="查看物料" placement="top-start">
@@ -164,7 +167,8 @@
                                                    icon="el-icon-s-promotion"></el-button>
                                     </el-tooltip>
                                     <el-tooltip class="item" effect="dark" content="删除档案" placement="top-start">
-                                        <el-button type="danger" title="" @click="deleterecord(scope.row)" v-loading.fullscreen.lock="fullscreenLoading" size="small"
+                                        <el-button type="danger" title="" @click="deleterecord(scope.row)"
+                                                   v-loading.fullscreen.lock="fullscreenLoading" size="small"
                                                    icon="el-icon-delete"></el-button>
                                     </el-tooltip>
                                 </el-button-group>
@@ -185,6 +189,7 @@
                     <!--修改的模态框-->
                     <el-drawer
                             title="修改档案"
+                            close="close"
                             :visible.sync="recordUpdate"
                             :before-close="recordUpdateClose">
                         <el-form ref="form" size="small" label-width="100px">
@@ -236,12 +241,15 @@
                                           v-model="recordUpdates.productDescribe"></el-input>
                             </el-form-item>
                             <el-form-item>
-                                <el-button type="primary" @click="updaterecord"  v-loading.fullscreen.lock="fullscreenLoading">修改</el-button>
+                                <el-button type="primary" @click="updaterecord"
+                                           v-loading.fullscreen.lock="fullscreenLoading">修改
+                                </el-button>
                             </el-form-item>
                         </el-form>
                     </el-drawer>
                 </div>
             </div>
+
             <div>
                 <!--添加的模态框-->
                 <el-drawer
@@ -293,7 +301,9 @@
                                       v-model="recordAdds.productDescribe"></el-input>
                         </el-form-item>
                         <el-form-item>
-                            <el-button type="primary" @click="addrecord"  v-loading.fullscreen.lock="fullscreenLoading">添加</el-button>
+                            <el-button type="primary" @click="addrecord" v-loading.fullscreen.lock="fullscreenLoading">
+                                添加
+                            </el-button>
                         </el-form-item>
                     </el-form>
                 </el-drawer>
@@ -343,7 +353,7 @@
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                            <button type="button" class="btn btn-default" id="closemotal" data-dismiss="modal">关闭</button>
                         </div>
                     </div>
                 </div>
@@ -537,9 +547,10 @@
                                 message: "系统异常",
                                 type: 'error'
                             });
-                            vm.fullscreenLoading = true;
+                            vm.fullscreenLoading = false;
                         })
                         layer.close(index);
+                        vm.recordUpdate=false;
                     });
                 },
                 /*添加档案*/
@@ -600,6 +611,7 @@
                                     message: res.data.message,
                                     type: 'error'
                                 });
+                                vm.recordAdd();
                                 vm.fullscreenLoading = false;
                             }
                         }).catch(err => {
@@ -608,10 +620,12 @@
                                 message: "系统异常",
                                 type: 'error'
                             });
+                            vm.recordAdd();
                             vm.fullscreenLoading = false;
                         })
                         layer.close(index);
                     });
+
                 },
                 /*回收·档案*/
                 deleterecord(value) {
@@ -633,7 +647,7 @@
                                     message: res.data.message,
                                     type: 'error'
                                 });
-                                vm.fullscreenLoading =false;
+                                vm.fullscreenLoading = false;
                             }
                             vm.seachrecycle();
                         }).catch(err => {

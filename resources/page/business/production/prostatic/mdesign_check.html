@@ -344,6 +344,7 @@
                                 });
                                 vm.fullscreenLoading = false;
                             }
+                            vm.selectAll();
                         }).catch(err => {
                             vm.$message({//异常
                                 showClose: true,
@@ -352,7 +353,7 @@
                             });
                             vm.fullscreenLoading = false;
                         })
-                        this.selectAll();
+
                     } else {
                         vm.check.processCheckRemark = "通过";
                         axios.post(productionDingJian + "product/updatecheck", check_sheet).then(res => {
@@ -362,6 +363,7 @@
                                     message: res.data.message,
                                     type: 'success'
                                 });
+                                vm.selectAll();
                                 vm.fullscreenLoading = false;
                             } else {
                                 vm.$message({
@@ -371,13 +373,13 @@
                                 });
                                 vm.fullscreenLoading = false;
                             }
-                            this.selectAll();
                         }).catch(err => {
                             vm.$message({//异常
                                 showClose: true,
                                 message: "系统异常",
                                 type: 'error'
                             });
+                            vm.selectAll();
                             vm.fullscreenLoading = false;
                         })
                     }

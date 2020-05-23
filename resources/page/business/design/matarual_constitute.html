@@ -46,7 +46,7 @@
         <div id="app">
             <div>
                 <fieldset class="layui-elem-field">
-
+                    <legend>搜索信息</legend>
                     <div class="layui-field-box" style="margin-left: 290px ">
                         <label for="">名称：</label>
                         <el-input v-model="record.productName" style="display: inline-block;width: 190px"
@@ -225,7 +225,7 @@
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <el-button type="danger" data-dismiss="modal">关闭</el-button>
+                            <el-button type="danger" data-dismiss="modal" id="closemotal">关闭</el-button>
                             <el-button type="success"  @click="addarchives()" v-loading.fullscreen.lock="fullscreenLoading">提交</el-button>
                         </div>
                     </div>
@@ -300,6 +300,7 @@
                                     message: data.message,
                                     type: 'success'
                                 });
+                                $("#closemotal").click();
                                 vm.fullscreenLoading=false;
                             } else {
                                 vm.$message({//添加失败
@@ -307,6 +308,7 @@
                                     message: data.message,
                                     type: 'error'
                                 });
+                                $("#closemotal").click();
                                 vm.fullscreenLoading=false;
                             }
 

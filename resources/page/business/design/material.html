@@ -6,17 +6,13 @@
     <!-- import CSS -->
     <link rel="stylesheet" href="../../../lib/layui-v2.5.5/css/layui.css">
     <link rel="stylesheet" href="../../../lib/layui-v2.5.5/css/layui.css" media="all">
+    <link rel="stylesheet" href="../../../lib/plugin/element-ui/style/index.css">
     <link rel="stylesheet" href="../../../css/public.css" media="all">
-    <!-- 2. 引入vue和vue-router-->
-    <!-- 未使用vue路由功能可不导入 -->
-    <!-- 3. 引入ElementUI组件 -->
     <script src="../../../lib/layui-v2.5.5/layui.all.js"></script>
     <script src="../../../lib/layui-v2.5.5/layui.js"></script>
     <script src="../../../lib/jquery-3.4.1/jquery-3.4.1.min.js"></script>
     <script src="../../../lib/plugin/vue/vue-router.js"></script>
     <script src="../../../lib/plugin/vue/qs.js"></script>
-
-
     <script src="../../../lib/common/jquery.cookie.min.js"></script>
     <script src="../../../lib/common/common.js"></script>
     <script src="../../../lib/common/requestUrl.js"></script>
@@ -36,7 +32,7 @@
             width: 50%;
         }
     </style>
-    <link rel="stylesheet" href="../../../lib/plugin/element-ui/style/index.css">
+
     <script src="../../../lib/plugin/vue/vue.min.js"></script>
     <script src="../../../lib/plugin/element-ui/index.js"></script>
     <script src="../../../lib/plugin/axios/axios.min.js"></script>
@@ -352,6 +348,7 @@
                                     message: res.data.message,
                                     type: 'success'
                                 });
+                                vm.materialAdd=false;
                                 this.materialAdds={};
                                 vm.fullscreenLoading = false;
                             } else {
@@ -360,6 +357,7 @@
                                     message: res.data.message,
                                     type: 'error'
                                 });
+                                vm.materialAdd=false;
                                 this.materialAdds={};
                                 vm.fullscreenLoading = false;
                             }
@@ -369,9 +367,9 @@
                                 message: "系统异常",
                                 type: 'error'
                             });
+                            vm.materialAdd=false;
                             vm.fullscreenLoading = false;
                         });
-
 
                         layer.close(index);
                     });
@@ -413,6 +411,7 @@
                                     message: res.data.message,
                                     type: 'success'
                                 });
+                                vm.materialUpdate=false;
                             } else {
                                 vm.$message({//修改失败
                                     showClose: true,
@@ -420,15 +419,15 @@
                                     type: 'error'
                                 });
                             }
-                            this.fullscreenLoading = false;
+                            vm.fullscreenLoading = false;
                         }).catch(err => {
                             vm.$message({//异常
                                 showClose: true,
                                 message: "系统异常",
                                 type: 'error'
                             });
+                            vm.materialUpdate=false;
                         })
-
                         layer.close(index);
                     });
                 }

@@ -240,7 +240,7 @@
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                            <button type="button" class="btn btn-default" id="closemotal" data-dismiss="modal">关闭</button>
                             <button type="button" class="btn btn-primary" @click="addarchives()"
                                     v-loading.fullscreen.lock="fullscreenLoading">提交
                             </button>
@@ -356,13 +356,16 @@
                                     message: data.message,
                                     type: 'success'
                                 });
+                                $("#closemotal").click();
                             } else {
                                 vm.$message({//添加失败
                                     showClose: true,
                                     message: data.message,
                                     type: 'error'
                                 });
+                                $("#closemotal").click();
                             }
+
                             vm.fullscreenLoading = false;
                         },
                         error: function () {
@@ -371,6 +374,7 @@
                                 message: "异常",
                                 type: 'error'
                             });
+                            $("#closemotal").click();
                             vm.fullscreenLoading = false;
 
                         }
