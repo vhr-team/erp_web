@@ -136,11 +136,10 @@
                                                    @click="recover(scope.row)"
                                                    icon="el-icon-refresh-right"></el-button>
                                     </el-tooltip>
-                                    <el-tooltip class="item" effect="dark" content="删除档案" placement="top-start">
-                                        <el-button type="primary" size="small"
-                                                   v-loading.fullscreen.lock="fullscreenLoading"
-                                                   @click="delete(scope.row)"
-                                                   icon="el-icon-refresh-delete"></el-button>
+                                    <el-tooltip class="item" effect="dark" content="永久删除档案" placement="top-start">
+                                        <el-button type="danger" title=""
+                                                   v-loading.fullscreen.lock="fullscreenLoading" size="small"
+                                                   icon="el-icon-delete"></el-button>
                                     </el-tooltip>
                                 </el-button-group>
                             </template>
