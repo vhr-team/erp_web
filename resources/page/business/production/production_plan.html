@@ -8,6 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <link rel="stylesheet" href="../../../lib/layui-v2.5.5/css/layui.css" media="all">
     <link rel="stylesheet" href="../../../css/public.css" media="all">
+    <link rel="stylesheet" href="../../../js/lay-module/febs/css/febs.css">
     <style>
 
         .audit {
@@ -74,6 +75,8 @@
                 , {title: '操作', templet: '#toolbarDemo', fixed: "right", align: "center"}
             ]],
 
+
+
             parseData: function (res) {
                 console.log(res);
                 return {
@@ -97,13 +100,14 @@
                     price: obj.data.listPrice,
                     quantity: obj.data.quantity
                 };
-                console.log(production_order);
+
                 layer.confirm('确定添加吗', function (index) {
                     obj.del();
                     layer.close(index);
 
                     $.post(productionApi + 'production/insertProduction_order', production_order, function (res) {
                         layer.msg(res);
+                        console.log(production_order);
                         if (res.code == 200) {
                             tableIns.reload();
                         }
