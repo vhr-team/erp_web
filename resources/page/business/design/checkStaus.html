@@ -7,14 +7,15 @@
     <link rel="stylesheet" href="../../../lib/bootstarp/css/bootstrap.css">
     <link rel="stylesheet" href="../../../lib/layui-v2.5.5/css/layui.css" media="all">
     <link rel="stylesheet" href="../../../css/public.css" media="all">
-    <script src="https://cdn.bootcss.com/vue-router/3.0.6/vue-router.js"></script>
     <script src="../../../lib/layui-v2.5.5/layui.all.js"></script>
     <script src="../../../lib/layui-v2.5.5/layui.js"></script>
     <script src="../../../lib/jquery-3.4.1/jquery-3.4.1.min.js"></script>
+    <script src="../../../lib/plugin/vue/vue-router.js"></script>
+    <script src="../../../lib/plugin/vue/qs.js"></script>
     <script src="../../../lib/common/jquery.cookie.min.js"></script>
-    <script src="https://cdn.bootcdn.net/ajax/libs/qs/6.9.3/qs.js"></script>
     <script src="../../../lib/bootstarp/js/bootstrap.js"></script>
-    <script src="config/common.js"></script>
+    <script src="../../../lib/common/common.js"></script>
+    <script src="../../../lib/common/requestUrl.js"></script>
     <style>
         .demo-table-expand {
             font-size: 0;
@@ -30,6 +31,7 @@
             margin-bottom: 0;
             width: 50%;
         }
+
         .text {
             font-size: 14px;
         }
@@ -46,6 +48,7 @@
     <script src="../../../lib/plugin/vue/vue.min.js"></script>
     <script src="../../../lib/plugin/element-ui/index.js"></script>
     <script src="../../../lib/plugin/axios/axios.min.js"></script>
+
 </head>
 <body>
 <div class="layuimini-container">
@@ -152,7 +155,8 @@
                                                size="small" icon="el-icon-edit"></el-button>
                                 </el-tooltip>
                                 <el-tooltip class="item" effect="dark" content="审核详情" placement="top-start">
-                                    <el-button type="success" title="" @click="drawer = true,selectcheckremark(scope.row)" size="small"
+                                    <el-button type="success" title=""
+                                               @click="drawer = true,selectcheckremark(scope.row)" size="small"
                                                icon="el-icon-s-promotion"></el-button>
                                 </el-tooltip>
                             </el-button-group>
@@ -237,7 +241,9 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-                            <button type="button" class="btn btn-primary" @click="addarchives()" v-loading.fullscreen.lock="fullscreenLoading">提交</button>
+                            <button type="button" class="btn btn-primary" @click="addarchives()"
+                                    v-loading.fullscreen.lock="fullscreenLoading">提交
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -256,7 +262,7 @@
                         </el-radio-group>
                     </div>
 
-                    <div  class="text item">
+                    <div class="text item">
                         <div class="block">
 
                             <el-timeline :reverse="reverse">
@@ -422,10 +428,10 @@
                     }).catch()
                 },
                 /*查看审核详情*/
-                selectcheckremark(value){
+                selectcheckremark(value) {
                     console.log(value.productId);
-                    axios.get(api1+"design_record/selectcheckremarkAll?productId="+value.productId).then(res=>{
-                        this.activities=res.data;
+                    axios.get(api1 + "design_record/selectcheckremarkAll?productId=" + value.productId).then(res => {
+                        this.activities = res.data;
                     }).catch()
 
                 },

@@ -10,32 +10,11 @@
     <link rel="stylesheet" href="../../../css/public.css" media="all">
 
     <style>
-        .layui-form-label {
-            color: #000000;
-        }
-
-        .layui-input {
-            width: 200px;
-        }
-
-        .remark {
-            width: 524px;
-        }
-
-        .form-padding {
-            padding-top: 20px;
-        }
-
-        .button-info {
-            position: absolute;
-            left: 304px;
-            bottom: 35px;
-        }
-
         .make-erver {
             margin-top: -4px;
         }
     </style>
+    <script src="../../../lib/common/requestUrl.js"></script>
 </head>
 <body>
 
@@ -45,10 +24,6 @@
 
     </div>
 </div>
-
-
-
-
 
 
 <script src="../../../lib/jquery-3.4.1/jquery-3.4.1.min.js" charset="utf-8"></script>
@@ -64,19 +39,14 @@
 
 <script type="text/html" id="toolbarDemo">
     <div class="layui-btn-container">
-        <button class="layui-btn layui-btn-normal make-erver"  lay-event="add">审核</button>
+        <button class="layui-btn layui-btn-normal make-erver" lay-event="add">审核</button>
     </div>
 </script>
 
 
-
-
 <script>
 
-
-    let apiUrl = "http://localhost:8003/";
-
-    layui.use(['table', 'layer','laydate'], function () {
+    layui.use(['table', 'layer', 'laydate'], function () {
         let table = layui.table;
         let layer = layui.layer;
         let laydate = layui.laydate;
@@ -89,7 +59,7 @@
 
         table.render({
             elem: '#test'
-            , url: apiUrl+'production/getFindByProduction_generate'
+            , url: productionApi + 'production/getFindByProduction_generate'
             , page: true
             , toolbar: '#toolbarDemo2' //开启头部工具栏，并为其绑定左侧模板
             , defaultToolbar: ['filter', 'exports', 'print', { //自定义头部工具栏右侧图标。如无需自定义，去除该参数即可
@@ -99,7 +69,7 @@
             }]
             , cols: [[
                 {type: 'checkbox'}
-                , {field: 'id', align: 'center', title: 'id',hide:true}
+                , {field: 'id', align: 'center', title: 'id', hide: true}
                 , {field: 'schedule_id', align: 'center', title: '生产派工单编号'}
                 , {field: 'product_id', title: '产品编号'}
                 , {field: 'product_name', title: '产品名称'}
@@ -111,38 +81,16 @@
             ]]
         });
 
-      /*  //监听行工具事件
-        table.on('tool(test)', function(obj){
-            var data = obj.data;
-            //console.log(obj)
-            if(obj.event === 'add'){
-                layer.confirm('确定审核吗', function(index){
-                    obj.del();
-                    layer.close(index);
-                });
-            } else if(obj.event === 'edit'){
-                layer.prompt({
-                    formType: 2
-                    ,value: data.email
-                }, function(value, index){
-                    obj.update({
-                        email: value
-                    });
-                    layer.close(index);
-                });
-            }
-        });*/
-
 
         //监听工具条
         table.on('tool(test)', function (obj) {
             var data = obj.data;
             console.log(data.id);
-            if(obj.event === 'add'){
-                layer.confirm('确定审核吗', function(index){
+            if (obj.event === 'add') {
+                layer.confirm('确定审核吗', function (index) {
                     obj.del();
                     layer.close(index);
-                    $.post(apiUrl+'production/updatechecked_audit',data,function (res) {
+                    $.post(productionApi + 'production/updatechecked_audit', data, function (res) {
                         layer.msg(res);
                         if (res.code == 200) {
                             tableIns.reload();
@@ -153,8 +101,6 @@
             }
 
         });
-
-
 
 
     });

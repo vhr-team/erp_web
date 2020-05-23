@@ -9,14 +9,17 @@
     <link rel="stylesheet" href="../../../css/public.css" media="all">
     <!-- 2. 引入vue和vue-router-->
     <!-- 未使用vue路由功能可不导入 -->
-    <script src="https://cdn.bootcss.com/vue-router/3.0.6/vue-router.js"></script>
     <!-- 3. 引入ElementUI组件 -->
     <script src="../../../lib/layui-v2.5.5/layui.all.js"></script>
     <script src="../../../lib/layui-v2.5.5/layui.js"></script>
     <script src="../../../lib/jquery-3.4.1/jquery-3.4.1.min.js"></script>
+    <script src="../../../lib/plugin/vue/vue-router.js"></script>
+    <script src="../../../lib/plugin/vue/qs.js"></script>
+
+
     <script src="../../../lib/common/jquery.cookie.min.js"></script>
-    <script src="https://cdn.bootcdn.net/ajax/libs/qs/6.9.3/qs.js"></script>
-    <script src="config/common.js"></script>
+    <script src="../../../lib/common/common.js"></script>
+    <script src="../../../lib/common/requestUrl.js"></script>
     <style>
         .demo-table-expand {
             font-size: 0;
@@ -191,7 +194,9 @@
                                       v-model="materialAdds.productDescribe"></el-input>
                         </el-form-item>
                         <el-form-item>
-                            <el-button type="primary" @click="addmaterial()"  v-loading.fullscreen.lock="fullscreenLoading">添加</el-button>
+                            <el-button type="primary" @click="addmaterial()"
+                                       v-loading.fullscreen.lock="fullscreenLoading">添加
+                            </el-button>
                         </el-form-item>
                     </el-form>
                 </el-drawer>
@@ -225,7 +230,9 @@
                                       v-model="materialUpdates.productDescribe"></el-input>
                         </el-form-item>
                         <el-form-item>
-                            <el-button type="primary" @click="updatematerial()" v-loading.fullscreen.lock="fullscreenLoading">修改</el-button>
+                            <el-button type="primary" @click="updatematerial()"
+                                       v-loading.fullscreen.lock="fullscreenLoading">修改
+                            </el-button>
                         </el-form-item>
                     </el-form>
                 </el-drawer>
