@@ -47,6 +47,7 @@
             background-color: #f9fafc;
         }
     </style>
+    <script src="../../../lib/common/requestUrl.js"></script>
 </head>
 <body>
 
@@ -337,9 +338,6 @@
 
 <!--业务代码-->
 <script>
-    let orderApi = 'http://127.0.0.1:8006/';
-    let productApi = 'http://127.0.0.1:8005/';
-    let goodsApi = 'http://127.0.0.1:8005/';
     let vue;
 
     // 入口函数
@@ -419,7 +417,7 @@
                         });
                 },
                 initSupplier() {
-                    axios.get(productApi + "supper/getAllSupper").then(res => {
+                    axios.get(transportApi + "supper/getAllSupper").then(res => {
                         this.items = res.data;
                     });
                 },

@@ -81,75 +81,68 @@
     <div class="layuimini-main">
 
         <!--搜索开始-->
-        <fieldset class="table-search-fieldset">
-            <legend>搜索信息</legend>
+
+        <div>
             <div>
-                <div>
-                    <!--
-                    :rules="rules"
-                    -->
-                    <el-form :inline="true" :model="goods" ref="goodsForm" label-width="100px"
-                             class="demo-ruleForm">
-                        <el-form-item label="供应商" prop="providerid">
-                            <el-select v-model="goods.providerid" placeholder="请选择">
-                                <el-option :label="item.name" :value="item.id" v-for="item in items"></el-option>
-                            </el-select>
-                        </el-form-item>
+                <!--
+                :rules="rules"
+                -->
+                <el-form :inline="true" :model="goods" ref="goodsForm" label-width="100px"
+                         class="demo-ruleForm">
+                    <el-select v-model="goods.providerid" placeholder="供应商">
+                        <el-option :label="item.name" :value="item.id" v-for="item in items"></el-option>
+                    </el-select>
 
-                        <el-form-item label="商品名称" prop="goodsname">
-                            <el-input v-model="goods.goodsname" placeholder="请输入商品名称"></el-input>
-                        </el-form-item>
+                    <el-input v-model="goods.goodsname" style="width: 150px;margin-left: 10px;"
+                              placeholder="商品名称"></el-input>
 
-                        <el-form-item label="生产批号" prop="productcode">
-                            <el-input v-model="goods.productcode" placeholder="请输入生产批号"></el-input>
-                        </el-form-item>
-                        <el-form-item label="批准文号" prop="promitcode">
-                            <el-input v-model="goods.promitcode" placeholder="请输入批准文号"></el-input>
-                        </el-form-item>
-                        <el-form-item label="商品描述" prop="description">
-                            <el-input v-model="goods.description" placeholder="请输入商品描述"></el-input>
-                        </el-form-item>
-                        <el-form-item label="商品规格" prop="size">
-                            <el-input v-model="goods.size" placeholder="请输入商品规格"></el-input>
-                        </el-form-item>
-                        <el-form-item label="生产厂家" prop="producer">
-                            <el-input v-model="goods.producer" placeholder="请输入生产厂家"></el-input>
-                        </el-form-item>
-                        <el-form-item label="单位" prop="unit">
-                            <el-input v-model="goods.unit" placeholder="请输入单位"></el-input>
-                        </el-form-item>
-                        <el-form-item label="进货价格" prop="minInPrice">
-                            <el-input v-model.number="goods.minInPrice" placeholder="请输入进货价格"></el-input>
-                        </el-form-item>
-                        <el-form-item label="到" prop="maxInPrice">
-                            <el-input v-model.number="goods.maxInPrice" placeholder="请输入"></el-input>
-                        </el-form-item>
-                        <el-form-item label="销售价格" prop="minOutPrice">
-                            <el-input v-model.number="goods.minOutPrice" placeholder="请输入销售价格"></el-input>
-                        </el-form-item>
-                        <el-form-item label="到" prop="maxOutPrice">
-                            <el-input v-model.number="goods.maxOutPrice" placeholder="请输入"></el-input>
-                        </el-form-item>
+                    <el-input v-model="goods.productcode" style="width: 150px;margin-left: 10px;"
+                              placeholder="生产批号"></el-input>
 
-                        <el-form-item>
-                            <el-button type="primary" @click="submitForm('goodsForm')" icon="el-icon-search">查询
-                            </el-button>
-                            <el-button @click="resetForm('goodsForm')" icon="el-icon-refresh-left">重置</el-button>
-                        </el-form-item>
-                    </el-form>
-                </div>
+                    <el-input v-model="goods.promitcode" style="width: 150px;margin-left: 10px;"
+                              placeholder="批准文号"></el-input>
+                    <el-input v-model="goods.description" style="width: 150px;margin-left: 10px;"
+                              placeholder="商品描述"></el-input>
+                    <el-input v-model="goods.size" style="width: 150px;margin-left: 10px;"
+                              placeholder="商品规格"></el-input>
+                    <el-input v-model="goods.producer" style="width: 150px;margin-left: 10px;"
+                              placeholder="生产厂家"></el-input>
+                    <el-input v-model="goods.unit" style="width: 150px;margin-left: 10px;" placeholder="单位"></el-input>
+                    <el-input v-model.number="goods.minInPrice" style="width: 150px;margin-left: 10px;"
+                              placeholder="进货价格"></el-input>
+                    <el-input v-model.number="goods.maxInPrice" style="width: 150px;margin-left: 10px;margin-top: 10px;margin-bottom: 10px"
+                              placeholder="到"></el-input>
+                    <el-input v-model.number="goods.minOutPrice" style="width: 150px;margin-left: 10px;"
+                              placeholder="销售价格"></el-input>
+                    <el-input v-model.number="goods.maxOutPrice" style="width: 150px;margin-left: 10px;"
+                              placeholder="到"></el-input>
+
+                    <el-button type="primary" @click="submitForm('goodsForm')" icon="el-icon-search">查询
+                    </el-button>
+                    <el-button @click="resetForm('goodsForm')" icon="el-icon-refresh-left">重置</el-button>
+
+                    <el-dropdown trigger="click" class="filter-item">
+                        <el-button>
+                            更多操作
+                        </el-button>
+                        <el-dropdown-menu slot="dropdown">
+                            <el-dropdown-item  @click="dialogFormVisible = true">添加</el-dropdown-item>
+                        </el-dropdown-menu>
+                    </el-dropdown>
+                </el-form>
             </div>
-        </fieldset>
-
-        <div style="margin: 10px 0">
-            <el-button type="primary" icon="el-icon-plus" @click="dialogFormVisible = true">添加</el-button>
         </div>
+
+        <!--<div style="margin: 10px 0">
+            <el-button type="primary" icon="el-icon-plus">添加</el-button>
+        </div>-->
 
         <!--数据表格-->
         <el-table
                 v-loading="loading"
                 border
                 stripe
+                height="500px"
                 :data="tableData">
             <el-table-column
                     type="selection"
@@ -649,7 +642,7 @@
                         this.total = res.data.count;
                         this.tableData = res.data.data;
                     }).catch(err => {
-                        this.$message.error(err.data);
+                        this.$message.error(err);
                     })
                 },
                 submitForm(formName) {
@@ -668,6 +661,21 @@
                 },
                 resetForm(formName) {
                     this.$refs[formName].resetFields();
+                    this.goods = {
+                        providerid: '',
+                        goodsname: '',
+                        productcode: '',
+                        promitcode: '',
+                        description: '',
+                        size: '',
+                        producer: '',
+                        unit: '',
+                        minInPrice: '',
+                        maxInPrice: '',
+                        minOutPrice: '',
+                        maxOutPrice: ''
+                    };
+                    this.queryGoodsData();
                 }
             },
             // 钩子函数
