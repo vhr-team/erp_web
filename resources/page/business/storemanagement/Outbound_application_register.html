@@ -20,7 +20,7 @@
         <!--搜索开始-->
         <fieldset class="table-search-fieldset" style="margin: 20px 0 20px 5%;width: 1500px;padding: 5px 10px">
             <div style="margin-top: 10px;">
-                <i-button type="info" @click="modal8 = true" icon="ios-add-circle-outline"> 添 加 产 品</i-button>
+                <i-button type="info" @click="modal8 = true;tainjia" icon="ios-add-circle-outline"> 添 加 产 品</i-button>
                 <i-button type="success " @click="addOrUpdate" icon="checkmark-round"> 提 交</i-button>
             </div>
         </fieldset>
@@ -44,14 +44,6 @@
                                placeholder="请输入出库理由" class="layui-input" style="width: 300px">
                     </div>
                 </div>
-                <div class="layui-inline">
-                    <label class="layui-form-label">登记人</label>
-                    <div class="layui-input-inline">
-                        <input type="text" name="register" v-model="register" id="register" lay-verify="required"
-                               autocomplete="off"
-                               placeholder="请输入登记人姓名" class="layui-input" style="width: 300px">
-                    </div>
-                </div>
             </div>
 
 
@@ -61,7 +53,7 @@
                     <div class="layui-input-inline">
                         <input type="text" v-model="amountSum" name="amountSum" id="amountSum" lay-verify="required"
                                autocomplete="off"
-                               placeholder="请输入总件数" class="layui-input" style="width: 300px">
+                               placeholder="请输入总件数" class="layui-input" style="width: 300px" disabled>
                     </div>
                 </div>
                 <div class="layui-inline">
@@ -70,7 +62,7 @@
                         <input type="text" v-model="costPriceSum" name="costPriceSum" id="costPriceSum"
                                lay-verify="required"
                                autocomplete="off"
-                               placeholder="请输入总金额" class="layui-input" style="width: 300px">
+                               placeholder="请输入总金额" class="layui-input" style="width: 300px" disabled>
                     </div>
                 </div>
             </div>
@@ -90,9 +82,6 @@
                     </template>
                     <template slot-scope="{ row, index }" slot="amount">
                         <Input-number v-model="numArray[index].num"></Input-number>
-                    </template>
-                    <template slot-scope="{ row, index }" slot="subtotal">
-                        <Input-number v-model="subtotArray[index].subtot"></Input-number>
                     </template>
                 </i-table>
             </div>
@@ -204,11 +193,11 @@
 
                     {title: '产品名称', fixed: 'left', key: 'productName', align: 'center'},
                     {title: '产品编号', key: 'productId', align: 'center'},
+                    {title: '描述', align: 'center', slot: 'productDescribe'},
                     {title: '数量', slot: 'amount', align: 'center'},
                     {title: '单位', slot: 'amountUnit', align: 'center'},
                     {title: '成本单价', key: 'realCostPrice', align: 'center'},
-                    {title: '小计', slot: 'subtotal', align: 'center'},
-                    {title: '描述', align: 'center', slot: 'productDescribe'},
+                    {title: '小计', key: 'subtotal', align: 'center'},
                     {title: '地址', slot: 'action', align: 'center'}
                 ],
                 data1: [],
@@ -234,7 +223,7 @@
                 amountSum: 0,
                 costPriceSum: 0,
                 reason: "",
-                register: "",
+                register: JSON.parse(localStorage.getItem("user")).name,
                 pemark:"",
                 storer:"",
                 numArray: [],
@@ -255,11 +244,11 @@
                         costPrice: [],//成本单价
                         subtotal: [],//小计
                         productDescribe: [],//描述
-                        reason: this.reason,//入库理由
-                        register: this.register,//登记人
+                        register:this.register, //登记人
+                        reason: this.reason,//出库理由
                         amountSum: this.amountSum,//总件数
                         costPriceSum: this.costPriceSum,//总金额
-                        storer:this.storer,//入库人
+                        storer:this.storer,//出库人
                         pemark:this.pemark//备注
                     }
 
@@ -275,7 +264,7 @@
 
                     console.log(obj);
 
-                    axios.post(urlApi + 'warehouseInbound/insertWarehousing',obj).then(res => {
+                    axios.post(urlApi + 'warehouseOutbound/addWarehouseOutbound',obj).then(res => {
                         this.$message({
                             message: res.data.msg,
                             type: 'success'
@@ -289,19 +278,9 @@
                     })
 
                 },
-
-                // loadInventoryAllocationSheet() {
-                //     this.loading = true;
-                //     axios.get(safeApi + "warehouseInbound/updateWarehousing?page=" + this.page + "&limit=" + this.pageSize + "&checkTag=审核通过&inventoryStatus=0").then(res => {
-                //         this.data1 = res.data.data;
-                //         this.total = res.data.total;
-                //
-                //         this.loading = false;
-                //     }).catch(err => {
-                //         this.$Message.error('对方不想说话，并且向你抛出了一个异常');
-                //     });
-                // },
-
+                tainjia(){
+                    this.initTableData2();
+                },
 
                 tuihui(row, index) {
                     this.data1.splice(index, 1);
@@ -318,12 +297,14 @@
                     this.indexVal = val;
                 },
                 initTableData2() {
+
                     axios.post(urlApi + "warehouseStock/findPagecheck?page=" + this.page + "&limit=" + this.pageSize + "&checkTag=审核通过" + "&inventoryStatus=1").then(res => {
                         console.log(res.data);
                         this.data2 = res.data.data;
+
+                        console.log("进入查询")
                     }).catch(err => {
-                        this.initTableData2();
-                        this.$Message.error('正在加载');
+                        console.log("出来了")
                     });
                 },
                 //当前页发生改变

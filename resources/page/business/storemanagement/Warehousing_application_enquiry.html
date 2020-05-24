@@ -20,7 +20,7 @@
         <!--Tabs-->
         <template>
             <Tabs :animated="false">
-                <Tab-pane label="未审核">
+                <Tab-pane label="审核通过">
 
                     <!--数据表格-->
                     <i-table :columns="columns1" :data="data1" >
@@ -32,22 +32,10 @@
                     </i-table>
 
                 </Tab-pane>
-                <Tab-pane label="审核通过">
+                <Tab-pane label="未审核">
 
                     <!--数据表格-->
                     <i-table :columns="columns1" :data="data2" >
-                        <template slot-scope="{ row, index }" slot="action">
-
-
-
-                        </template>
-                    </i-table>
-
-                </Tab-pane>
-                <Tab-pane label="审核未通过">
-
-                    <!--数据表格-->
-                    <i-table :columns="columns1" :data="data3" >
                         <template slot-scope="{ row, index }" slot="action">
 
 
@@ -165,7 +153,7 @@
             // 方法
             methods: {
                 initTableData1() {
-                    let params = `checkTag=0&page=${this.page}&limit=${this.pageSize}`;
+                    let params = `storeTag=1&page=${this.page}&limit=${this.pageSize}`;
                     axios.get(urlApi + "warehouseInbound/queryInboundLimit?" + params).then(res => {
                         this.data1 = res.data.data;
                     }).catch(err => {
@@ -173,17 +161,9 @@
                     });
                 },
                 initTableData2() {
-                    let params = `checkTag=1&page=${this.page}&limit=${this.pageSize}`;
+                    let params = `page=${this.page}&limit=${this.pageSize}`;
                     axios.get(urlApi + "warehouseInbound/queryInboundLimit?" + params).then(res => {
                         this.data2 = res.data.data;
-                    }).catch(err => {
-                        this.$Message.error('对方不想说话，并且向你抛出了一个异常');
-                    });
-                },
-                initTableData3() {
-                    let params = `checkTag=2&page=${this.page}&limit=${this.pageSize}`;
-                    axios.get(urlApi + "warehouseInbound/queryInboundLimit?" + params).then(res => {
-                        this.data3 = res.data.data;
                     }).catch(err => {
                         this.$Message.error('对方不想说话，并且向你抛出了一个异常');
                     });
@@ -195,7 +175,6 @@
                     // 重新渲染表格数据
                     this.initTableData1();
                     this.initTableData2();
-                    this.initTableData3();
                 },
                 // 当前页显示条数发生改变
                 currentPageSizeChange(val) {
@@ -204,14 +183,12 @@
                     // 重新渲染表格数据
                     this.initTableData1();
                     this.initTableData2();
-                    this.initTableData3();
                 },
             },
             // 钩子函数
             mounted() {
                 this.initTableData1();
                 this.initTableData2();
-                this.initTableData3();
             }
         })
     });

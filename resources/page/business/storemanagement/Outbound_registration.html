@@ -22,7 +22,7 @@
         <!--数据表格-->
         <i-table border :columns="columns1" :data="data1">
             <template slot-scope="{ row, index }" slot="action">
-                <i-button type="info" @click="modal1 = true;shenhe(row)" icon="ios-add-circle-outline"> 登 记 </i-button>
+                <i-button type="info" @click="modal1 = true;shenhe(row)" icon="ios-add-circle-outline"> 登 记</i-button>
             </template>
         </i-table>
         <!--数据表格-->
@@ -43,73 +43,80 @@
         <!--分页-->
 
         <!--modal-->
-        <Modal width="1300px"   v-model="modal1" :mask-closable="false">
-            <div class="ivu-modal-header" >
-                <div class="ivu-modal-header-inner" style="padding-left: 600px;font-size: 20px;margin-top: 20px;"  >出库单</div>
+        <Modal width="1300px" v-model="modal1" :mask-closable="false">
+            <div class="ivu-modal-header">
+                <div class="ivu-modal-header-inner" style="padding-left: 600px;font-size: 20px;margin-top: 20px;">出库单
+                </div>
             </div>
 
 
-
-            <form method="post" class="layui-form layui-form-pane" lay-filter="dataFrm" id="dataFrm" style="padding-top: 30px">
+            <form method="post" class="layui-form layui-form-pane" lay-filter="dataFrm" id="dataFrm"
+                  style="padding-top: 30px">
                 <div class="layui-form-item" style="padding-left: 30px">
                     <div class="layui-inline">
-                        <label class="layui-form-label">出库人</label>
+                        <label class="layui-form-label" style="width: 150px">出库单编号</label>
                         <div class="layui-input-inline">
-                            <input type="text" name="storer" id="storer" v-model="storer" lay-verify="required" autocomplete="off"
-                                   placeholder="请输入出库人姓名" class="layui-input" style="width: 220px">
+                            <input type="text" name="outboundId" id="outboundId" v-model="outboundId" lay-verify="required"
+                                   autocomplete="off"
+                                   placeholder="请输入出库人姓名" class="layui-input" style="width: 220px;" disabled>
                         </div>
                     </div>
-                    <div class="layui-inline" style="padding: 0 110px">
-                        <label class="layui-form-label">出库理由</label>
+                    <div class="layui-inline" style="padding: 0 50px">
+                        <label class="layui-form-label" style="width: 150px">出库理由</label>
                         <div class="layui-input-inline">
                             <input type="text" name="reason" v-model="reason" id="reason" lay-verify="required"
                                    autocomplete="off"
-                                   placeholder="请输入出库理由" class="layui-input" style="width: 220px">
+                                   placeholder="请输入出库理由" class="layui-input" style="width: 220px" disabled>
                         </div>
                     </div>
                     <div class="layui-inline">
-                        <label class="layui-form-label">登记人</label>
+                        <label class="layui-form-label" style="width: 150px">登记人</label>
                         <div class="layui-input-inline">
                             <input type="text" name="register" v-model="register" id="register" lay-verify="required"
                                    autocomplete="off"
-                                   placeholder="请输入登记人姓名" class="layui-input" style="width: 220px">
+                                   placeholder="请输入登记人姓名" class="layui-input" style="width: 220px" disabled>
                         </div>
                     </div>
                 </div>
-
-
                 <div class="layui-form-item" style="padding-left: 30px">
-                    <div class="layui-inline" style="padding-right: 110px">
-                        <label class="layui-form-label">总件数</label>
+                    <div class="layui-inline">
+                        <label class="layui-form-label" style="width: 150px">应出库总件数</label>
                         <div class="layui-input-inline">
                             <input type="text" v-model="amountSum" name="amountSum" id="amountSum" lay-verify="required"
                                    autocomplete="off"
-                                   placeholder="请输入总件数" class="layui-input" style="width: 220px">
+                                   placeholder="请输入总件数" class="layui-input" style="width: 220px" disabled>
                         </div>
                     </div>
-                    <div class="layui-inline">
-                        <label class="layui-form-label">总金额</label>
+                    <div class="layui-inline" style="padding: 0 50px">
+                        <label class="layui-form-label" style="width: 150px">已出库总件数</label>
                         <div class="layui-input-inline">
                             <input type="text" v-model="costPriceSum" name="costPriceSum" id="costPriceSum"
                                    lay-verify="required"
-                                   autocomplete="off"
-                                   placeholder="请输入总金额" class="layui-input" style="width: 220px">
+                                   autocomplete="off" placeholder="请输入总金额" class="layui-input" style="width: 220px"
+                                   disabled>
                         </div>
                     </div>
+
                 </div>
 
                 <!--数据表格-->
                 <div style="margin: 20px 0 20px 30px;width: 1200px;">
-                    <i-table border :columns="columns2" :data="data1">
+                    <i-table border :columns="columns2" :data="data2">
+
+                        <template slot-scope="{ row, index }" slot="paidAmount">
+
+                            <i-input v-model="numArray[index]"></i-input>
+                        </template>
+
                     </i-table>
                 </div>
+
             </form>
 
 
-
             <div style="margin-left: 600px;padding-top: 30px">
-                <Button-group>
-                    <i-button style="width: 100px;height: 40px;" @click="chenggong">通过</i-button>
+                <Button-group style="">
+                    <i-button style="width: 100px;height: 40px;" @click="chenggong" icon="">通过</i-button>
                 </Button-group>
             </div>
             </form>
@@ -120,7 +127,6 @@
 
     </div>
 </div>
-
 
 
 <!-- 你的HTML代码 -->
@@ -171,77 +177,101 @@
             data: {
                 indexVal: 0,
                 columns1: [
-                    {title: '申请单编号',fixed: 'left', key: 'inboundId', align: 'center',},
-                    {title: '入库理由', key:'reason', align: 'center'},
+                    {title: '出库单编号', fixed: 'left', key: 'outboundId', align: 'center',},
+                    {title: '出库理由', key: 'reason', align: 'center'},
                     {title: '登记时间', key: 'registerTime', align: 'center'},
                     {title: '总件数', key: 'amountSum', align: 'center'},
                     {title: '总金额', key: 'costPriceSum', align: 'center'},
-                    {
-                        title: '操作',
-                        slot: 'action',
-                        width: 280,
-                        fixed: 'right',
-                        align: 'center'
-                    }
+                    {title: '操作', slot: 'action', width: 280, fixed: 'right', align: 'center'}
                 ],
-                columns2: [
-                    {title: '申请单编号',fixed: 'left', key: 'inboundId', align: 'center',},
-                    {title: '入库理由', key:'reason', align: 'center'},
-                    {title: '登记时间', key: 'registerTime', align: 'center'},
-                    {title: '总件数', key: 'amountSum', align: 'center'},
-                    {title: '总金额', key: 'costPriceSum', align: 'center'}
-                ],
+                data1: [],
 
-                data1: [{inboundId:110}],
+
+                columns2: [
+                    {title: '产品编号', fixed: 'left', key: 'productId', align: 'center',},
+                    {title: '产品名称', key: 'productName', align: 'center'},
+                    {title: '库存名称', key: 'productDescribe', align: 'center'},
+                    {title: '存放地址', key: 'amount', align: 'center'},
+                    {title: '应出库数', key: 'amount', align: 'center'},
+                    {title: '已出库数', key: 'yiruku', align: 'center'},
+                    {title: '本次出库数', slot: 'paidAmount', align: 'center'}
+                ],
+                data2: [],
+
                 page: 1,
-                amountSum:0,
-                costPriceSum:0,
+                amountSum: 0,
+                costPriceSum: 0,
                 pageSize: 10,
                 total: 9,
-                register:"",
-                inboundId:"",
-                registerTime:"",
-                reason:"",
+                register: "",
+                outboundId: "",
+                registerTime: "",
+                reason: "",
+                numArray: [],
+                ida:0,
                 modal8: false,
                 modal1: false
             },
 
             // 方法
             methods: {
-                chenggong(){
-                    this.$Message.success('正在提交审核');
 
-                    var checker = JSON.parse(localStorage.getItem("user")).name
-                    console.log(this.inboundId);
-                    console.log(this.register);
-                    let obj = `/1/${checker}/${this.inboundId}`;
+                chenggong() {
+                    let obj = {
+
+                        id:this.id,//序号
+
+                        ids:[],
+
+                        paidAmount:[]//本次入库数量
+
+                    }
+
+                    for (let i = 0; i < this.data2.length; i++) {
+
+                        obj.ids.push(this.data2[i].id);
+                        obj.paidAmount.push(this.numArray[i]);
+                    }
+
                     console.log(obj);
-                    axios.post(urlApi + "warehouseInbound/updateWarehousing" + obj).then(res => {
-                        this.$Message.success(res.data.message);
+
+
+                    axios.post(urlApi + 'warehouseOutbound/OutboundCommit',obj).then(res => {
+                        this.$Message.error('正在提交');
                     }).catch(err => {
                         this.$Message.error('提交失败');
                     })
 
                 },
-                shenhe(row){
-                    this.inboundId=row.inboundId;
-                    this.reason=row.reason;
-                    this.amountSum=row.amountSum;
-                    this.costPriceSum=row.costPriceSum;
-                    this.register=row.register;
-                    this.registerTime=row.registerTime;
-
+                shenhe(row) {
+                    this.id = row.id;
+                    this.outboundId = row.outboundId;
+                    this.reason = row.reason;
+                    this.amountSum = row.amountSum;
+                    this.costPriceSum = row.costPriceSum;
+                    this.register = row.register;
+                    this.registerTime = row.registerTime;
+                    this.initTableData2();
                 },
                 tabsEventClick(val) {
                     this.indexVal = val;
                 },
                 initTableData1() {
-                    // let params = `checkTag=0&page=${this.page}&limit=${this.pageSize}`;
-                    // axios.get(urlApi + "warehouseInbound/queryInboundLimit?" + params).then(res => {
-                    //     this.data1 = res.data.data;
-                    // }).catch(err => {
-                    //     this.$Message.error('对方不想说话，并且向你抛出了一个异常');
-                    // });
+
+                    let params = `store_tag=2&page=${this.page}&limit=${this.pageSize}`;
+                    axios.get(urlApi + "warehouseOutbound/queryWarehouseOutbound?" + params).then(res => {
+                        this.data1 = res.data.data;
+                    }).catch(err => {
+                        this.$Message.error('对方不想说话，并且向你抛出了一个异常');
+                    });
+                },
+                initTableData2() {
+                    let params = `id=${this.id}&page=${this.page}&limit=${this.pageSize}`;
+                    axios.get(urlApi + "warehouseOutboundDetailed/queryWarehouseOutboundDetailed?" + params).then(res => {
+                        this.data2 = res.data.data;
+                    }).catch(err => {
+                        this.$Message.error('对方不想说话，并且向你抛出了一个异常');
+                    });
                 },
                 // 当前页发生改变
                 currentPageChange(val) {
@@ -249,6 +279,7 @@
 
                     // 重新渲染表格数据
                     this.initTableData1();
+                    this.initTableData2();
                 },
                 // 当前页显示条数发生改变
                 currentPageSizeChange(val) {
@@ -256,11 +287,13 @@
 
                     // 重新渲染表格数据
                     this.initTableData1();
+                    this.initTableData2();
                 },
             },
             // 钩子函数
             mounted() {
                 this.initTableData1();
+                this.initTableData2();
             }
         })
     });
