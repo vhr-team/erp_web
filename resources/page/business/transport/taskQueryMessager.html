@@ -10,6 +10,7 @@
 
     <link rel="stylesheet" href="../../../lib/layui-v2.5.5/css/layui.css" media="all">
     <link rel="stylesheet" href="../../../css/public.css" media="all">
+    <script src="../../../lib/common/requestUrl.js"></script>
 </head>
 <body>
 
@@ -237,8 +238,6 @@
 <script src="../../../lib/common/jquery.cookie.min.js" charset="utf-8"></script>
 <script src="../../../lib/common/common.js" charset="utf-8"></script>
 <script>
-    let orderApi = 'http://127.0.0.1:8006/';
-    let productApi = 'http://127.0.0.1:8005/';
     let vue;
 
     // 入口函数
@@ -403,7 +402,7 @@
                     this.modal8 = true;
                 },
                 initSupplier() {
-                    axios.get(productApi + "supper/getAllSupper").then(res => {
+                    axios.get(transportApi + "supper/getAllSupper").then(res => {
                         this.items = res.data;
                     });
                 },
