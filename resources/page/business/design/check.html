@@ -3,23 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <title>审核状态</title>
-    <!-- import CSS -->
-    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <link rel="stylesheet" href="../../../lib/bootstarp/css/bootstrap.css">
     <link rel="stylesheet" href="../../../lib/layui-v2.5.5/css/layui.css">
-    <link href="https://cdn.bootcss.com/element-ui/2.8.2/theme-chalk/index.css" rel="stylesheet">
-    <!-- 2. 引入vue和vue-router-->
-    <script src="https://cdn.bootcss.com/vue/2.6.10/vue.js"></script>
-    <!-- 未使用vue路由功能可不导入 -->
-    <script src="https://cdn.bootcss.com/vue-router/3.0.6/vue-router.js"></script>
-    <!-- 3. 引入ElementUI组件 -->
-    <script src="https://cdn.bootcss.com/element-ui/2.8.2/index.js"></script>
+    <link rel="stylesheet" href="../../../lib/layui-v2.5.5/css/layui.css" media="all">
+    <link rel="stylesheet" href="../../../lib/plugin/element-ui/style/index.css">
+    <link rel="stylesheet" href="../../../css/public.css" media="all">
+    <script src="../../../lib/plugin/vue/vue.min.js"></script>
     <script src="../../../lib/layui-v2.5.5/layui.all.js"></script>
     <script src="../../../lib/layui-v2.5.5/layui.js"></script>
-    <script src="https://cdn.bootcdn.net/ajax/libs/axios/0.19.2/axios.js"></script>
+    <script src="../../../lib/plugin/element-ui/index.js"></script>
+    <script src="../../../lib/plugin/vue/vue-router.js"></script>
     <script src="../../../lib/jquery-3.4.1/jquery-3.4.1.min.js"></script>
+    <script src="../../../lib/plugin/axios/axios.min.js"></script>
     <script src="../../../lib/common/jquery.cookie.min.js"></script>
-    <script src="https://cdn.bootcdn.net/ajax/libs/qs/6.9.3/qs.js"></script>
-    <script src="config/common.js"></script>
+    <script src="../../../lib/plugin/vue/qs.js"></script>
     <style>
         .demo-table-expand {
             font-size: 0;
@@ -36,12 +33,16 @@
             width: 50%;
         }
     </style>
-    <link rel="stylesheet" href="../../../lib/bootstarp/css/bootstrap.css">
-    <script src="../../../lib/bootstarp/js/bootstrap.js"></script>
 
+    <script src="../../../lib/bootstarp/js/bootstrap.js"></script>
+    <script src="../../../lib/common/common.js"></script>
+    <script src="../../../lib/common/requestUrl.js"></script>
+    <script src="js/check.js"></script>
 
 </head>
 <body>
+<div class="layuimini-container">
+    <div class="layuimini-main">
 <div id="app">
     <div>
         <fieldset class="layui-elem-field">
@@ -380,8 +381,8 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <el-button type="primary" @click="checkrecord('审核通过')">审核通过</el-button>
-                        <el-button type="warning" @click="checkrecord('审核未通过')">审核不通过</el-button>
+                        <el-button type="primary" @click="checkrecord('审核通过')" v-loading.fullscreen.lock="fullscreenLoading" data-dismiss="modal">审核通过</el-button>
+                        <el-button type="warning" @click="checkrecord('审核未通过')" data-dismiss="modal">审核不通过</el-button>
                     </div>
                 </div>
             </div>
@@ -389,202 +390,6 @@
     </div>
 </div>
 </div>
+</div>
 </body>
-<!-- import Vue before Element -->
-<script src="https://unpkg.com/vue/dist/vue.js"></script>
-<!-- import JavaScript -->
-<script src="https://unpkg.com/element-ui/lib/index.js"></script>
-<script>
-
-    layui.use(['layer', 'form'], function () {
-        var layer = layui.layer
-            , form = layui.form;
-
-        var vm = new Vue({
-            el: '#app',
-            data: {
-                activeName: '等待审核',
-                /*加载动画*/
-                loading: true,
-                page: 1,//页码
-                pageSize: 10,//行数
-                total: 0,//总记录数
-                recordList: [],//展示的数据
-                record: {//查询的条件
-                    productName: "",//产品名称
-                    registerTime: "",//建档时间
-                    checkTag:"等待审核",//审核标志
-                },
-                proID:"",//产品id
-                proName:"",//产品名称
-                matarual_constitute:[],//物料组成
-                checkers:{//审核的实体
-                    id:"",//产品序号
-                    productId:"",//商品id
-                    productName:"",//产品名称
-                    productClass:"",//产品档次
-                    register:"",//设计人
-                    registerTime:"",//登记时间
-                    checker:"",//审核人
-                    checkTag:"",//审核状态
-                },
-                productCheck:{
-                    productId:"",//商品id
-                    productName:"",//产品名称
-                    productCheck:"",
-                    checkRemark:"",
-                    checkPerson:""
-                }
-            },
-            methods: {
-
-                /*获取点击的tab*/
-                handleClick(tab, event) {
-                    this.record.checkTag=tab.name;
-                    this.findPage();
-                },
-                /*//获取点击的行数据*/
-                recordUpdateList(row) {
-                    this.recordUpdates = row;//绑定到修改的实体
-                },
-                /*分页条件查询*/
-                findPage() {
-                    axios.post(api1 + "/design_record/findPagecheck?page=" + this.page + "&pageSize=" + this.pageSize, this.record).then(res => {
-                        this.total = res.data.total;
-                        this.recordList = res.data.data;
-                        this.loading=false;
-                    }).catch(err => {
-                        vm.$message({//异常
-                            showClose: true,
-                            message: "获取超时，请检查网络",
-                            type: 'error'
-                        });
-                    })
-                },
-                /*设置行数*/
-                handleSizeChange(pageSize) {
-                    this.pageSize = pageSize;
-                },
-                /*获取页码*/
-                handleCurrentChange(page) {
-                    this.page = page;
-                    this.findPage();
-                },
-                /*全选*/
-                toggleSelection(rows) {//全选选中
-                    if (rows) {
-                        rows.forEach(row => {
-                            this.$refs.multipleTable.toggleRowSelection(row);
-                        });
-                    } else {
-                        this.$refs.multipleTable.clearSelection();
-                    }
-                },
-                /*获取复选框选中的值*/
-                handleSelectionChange(value) {
-                    this.deleterecords=value;
-                },
-                /*查看点击选中行*/
-                show(value){
-                    /**/
-                    this.checkers.productId=value.productId;
-                    this.checkers.productName=value.productName;
-                    this.checkers.productClass=value.productClass;
-                    this.checkers.register=value.register;
-                    this.checkers.registerTime=value.registerTime;
-                    console.log(this.checkers);
-                    this.checkers.id=value.id;
-                    this.proID=value.productId
-                    this.proName=value.productName;
-                    var checker = $.parseJSON(window.localStorage.getItem("user"));
-                    this.checkers.checker = checker.name;
-                    axios.get(api1+"design_record/selectBymaterielArchivesId?materielArchivesId="+value.materielArchivesId).then(res=>{
-                        this.matarual_constitute=res.data;
-                    }).catch(err=>{
-                        vm.$message({//异常
-                            showClose: true,
-                            message: "获取超时，请检查网络",
-                            type: 'error'
-                        });
-                    })
-                },
-                checkrecord(value){//
-                    this.checkers.checkTag=value;
-                    this.productCheck.productId=this.checkers.productId
-                    this.productCheck.productName=this.checkers.productName
-                    this.productCheck.productCheck=this.checkers.checkTag
-                    this.productCheck.checkPerson=this.checkers.checker
-                    var data={record:this.checkers,check:this.productCheck}
-                    if(this.checkers!=null){
-                        if(this.productCheck.productCheck==="审核未通过"){
-                            layer.prompt({
-                                formType: 2,
-                                value: '请输入理由',
-                                title: '不通过的理由',
-                                area: ['500', '150'] //自定义文本域宽高
-                            }, function(value, index, elem){
-                                vm.productCheck.checkRemark=value;
-                                layer.close(index);
-                                axios.post(api1+"design_record/updatecheck",data).then(res=>{
-                                    if(res.data.success){
-                                        vm.$message({
-                                            showClose: true,
-                                            message: res.data.message,
-                                            type: 'success'
-                                        });
-                                    }else{
-                                        vm.$message({
-                                            showClose: true,
-                                            message: res.data.message,
-                                            type: 'error'
-                                        });
-                                    }
-                                    console.log(vm.productCheck);
-                                }).catch(err=>{
-                                    vm.$message({//异常
-                                        showClose: true,
-                                        message: "系统异常",
-                                        type: 'error'
-                                    });
-                                })
-                            });
-
-                        }else{
-                            this.productCheck.checkRemark="通过";
-                            axios.post(api1+"design_record/updatecheck",data).then(res=>{
-                                if(res.data.success){
-                                    vm.$message({
-                                        showClose: true,
-                                        message: res.data.message,
-                                        type: 'success'
-                                    });
-                                }else{
-                                    vm.$message({
-                                        showClose: true,
-                                        message: res.data.message,
-                                        type: 'error'
-                                    });
-                                }
-                                console.log(vm.productCheck);
-                            }).catch(err=>{
-                                vm.$message({//异常
-                                    showClose: true,
-                                    message: "系统异常",
-                                    type: 'error'
-                                });
-                            })
-
-                        }
-
-
-                    }
-                }
-            },
-            created() {
-                /*页面加载*/
-                this.findPage();
-            }
-        });
-    });
-</script>
 </html>

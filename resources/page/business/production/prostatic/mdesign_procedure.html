@@ -4,43 +4,35 @@
     <meta charset="UTF-8">
     <title>产品工序制定</title>
     <!-- import CSS -->
-    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
     <link rel="stylesheet" href="../../../../lib/layui-v2.5.5/css/layui.css">
-    <link href="https://cdn.bootcss.com/element-ui/2.8.2/theme-chalk/index.css" rel="stylesheet">
+    <link rel="stylesheet" href="../../../../lib/plugin/element-ui/style/index.css">
     <link rel="stylesheet" href="../../../../lib/bootstarp/css/bootstrap.css">
     <link rel="stylesheet" href="../../../../lib/layui-v2.5.5/css/layui.css" media="all">
     <link rel="stylesheet" href="../../../../css/public.css" media="all">
-    <script src="https://cdn.bootcss.com/vue/2.6.10/vue.js"></script>
-    <script src="https://cdn.bootcss.com/vue-router/3.0.6/vue-router.js"></script>
-    <script src="https://cdn.bootcss.com/element-ui/2.8.2/index.js"></script>
+    <script src="../../../../lib/plugin/vue/vue.min.js"></script>
     <script src="../../../../lib/layui-v2.5.5/layui.all.js"></script>
+    <script src="../../../../lib/plugin/vue/vue-router.js"></script>
     <script src="../../../../lib/layui-v2.5.5/layui.js"></script>
-    <script src="https://cdn.bootcdn.net/ajax/libs/axios/0.19.2/axios.js"></script>
     <script src="../../../../lib/jquery-3.4.1/jquery-3.4.1.min.js"></script>
     <script src="../../../../lib/common/jquery.cookie.min.js"></script>
-    <script src="https://cdn.bootcdn.net/ajax/libs/qs/6.9.3/qs.js"></script>
     <script src="../../../../lib/bootstarp/js/bootstrap.js"></script>
-    <script src="../../../../lib/layui-v2.5.5/layui.js"></script>
-    <link rel="stylesheet" href="../../../../lib/layui-v2.5.5/css/layui.css">
-    <link rel="stylesheet" href="../../../../lib/bootstarp/css/bootstrap.css">
-    <script src="../../../../lib/jquery-3.4.1/jquery-3.4.1.min.js"></script>
     <script src="../../../../lib/plugin/axios/axios.min.js"></script>
-    <script src="../../../../lib/plugin/vue/vue.min.js"></script>
-    <script src="js/common.js"></script>
-    <link rel="stylesheet" href="../../../../lib/plugin/element-ui/style/index.css">
     <script src="../../../../lib/plugin/element-ui/index.js"></script>
-    <script src="../../../../lib/bootstarp/js/bootstrap.js"></script>
     <style>
         .bodernone {
             border: 0px;
         }
     </style>
+    <script src="../../../../lib/common/requestUrl.js"></script>
+    <script src="../../../../lib/plugin/vue/qs.js"></script>
 </head>
 <body>
 <div class="layuimini-container" id="app">
     <div class="layuimini-main">
         <div>
-            <div style="margin-bottom: 20px">
+            <fieldset class="layui-elem-field">
+                <legend>搜索信息</legend>
+            <div style="margin-left:50px;margin-bottom: 20px">
                 <span class="demonstration">建档时间：</span>
                 <el-date-picker
                         v-model="record.registerTime"
@@ -50,8 +42,10 @@
                 </el-date-picker>
                 <el-button type="primary" @click="selectprocessAll()">查询</el-button>
             </div>
+            </fieldset>
             <div>
                 <el-table
+                        v-loading="loading"
                         :data="processList"
                         border
                         style="width: 100%">
@@ -164,13 +158,6 @@
                                                 </el-form-item>
                                             </div>
                                         </el-col>
-                                       <!-- <el-col :span="12">
-                                            <div class="grid-content bg-purple">
-                                                <el-form-item label="工序编号" prop="name">
-                                                    <el-input v-model="designsheet.productId"></el-input>
-                                                </el-form-item>
-                                            </div>
-                                        </el-col>-->
                                     </el-row>
                                 </el-form>
                             </div>
@@ -183,10 +170,11 @@
                                         <th>工时数</th>
                                         <th>工时单位</th>
                                         <th>工时成本</th>
+                                        <th>操作</th>
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    <tr v-for="processsheet in sheets">
+                                    <tr v-for="(processsheet,index) in sheets">
                                         <td>
                                             <el-select v-model="processsheet.processName" placeholder="请选择">
                                                 <el-option
@@ -205,6 +193,10 @@
                                         </td>
                                         <td>
                                             <el-input v-model="processsheet.timeprice" placeholder="请输入内容"></el-input>
+                                        </td>
+                                        <td>
+                                            <el-button type="danger" icon="el-icon-delete" circle
+                                                       @click="deleteRow(index)"></el-button>
                                         </td>
                                     </tr>
                                     </tbody>
@@ -238,7 +230,7 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="layui-btn layui-btn-warm" @click="add()">提交</button>
+                        <button type="button" class="layui-btn layui-btn-warm" @click="add()" data-dismiss="modal"  v-loading.fullscreen.lock="fullscreenLoading">提交</button>
                         <button type="button" class="layui-btn layui-btn-warm" data-dismiss="modal">关闭</button>
                     </div>
                 </div>
@@ -255,6 +247,8 @@
         var vm = new Vue({
             el: '#app',
             data: {
+                fullscreenLoading:false,
+                loading:true,
                 designsheet: {
 
                 },
@@ -282,14 +276,15 @@
                 /*获取当前用户名*/
                 getUser() {
                     var register = $.parseJSON(window.localStorage.getItem("user"));
-                    console.log(register);
                     this.designsheet.processRegister = register.name;
 
                 },
                 /*查询需要工序设计的档案*/
                 selectprocessAll() {
-                    axios.post(api + "product/selectprocessAll", this.record).then(res => {
+                    this.loading=true
+                    axios.post(productionDingJian + "product/selectprocessAll", this.record).then(res => {
                         vm.processList = res.data;
+                        this.loading=false
                     }).catch(err => {
                         vm.$message.error('网络异常');
                     });
@@ -298,10 +293,10 @@
                     console.log(row);
                 },
                 selectByassmbleid(data) {
+                    this.materialList=[]
                     //var material={productId:data.productId};
-                    axios.get(api + "product/selectmaterialByproidAll?productId=" + data.productId).then(res => {
+                    axios.get(productionDingJian + "product/selectmaterialByproidAll?productId=" + data.productId).then(res => {
                         vm.materialList = res.data;
-                        console.log(vm.materialList);
                     }).catch(err => {
                         vm.$message.error('网络异常');
                     });
@@ -315,30 +310,37 @@
                 },
                 addrow() {
                     this.sheets.push({});
-                    console.log(this.designsheet.sheets);
+                },
+                /*删除选项*/
+                deleteRow(index) {
+                    this.sheets.splice(index, 1);
                 },
                 add() {
+                    this.fullscreenLoading=true;
                     var sheet={
                         process:this.designsheet,
                         sheet:this.sheets
                     }
-                    axios.post(api+"product/add",sheet).then(res=>{
+                    axios.post(productionDingJian+"product/add",sheet).then(res=>{
                         if(res.data.success){
                             vm.$message({
                                 showClose: true,
                                 message: res.data.message,
                                 type: 'success'
                             });
+                            vm.fullscreenLoading=false;
                         }else{
                             vm.$message({
                                 showClose: true,
                                 message: res.data.message,
                                 type: 'error'
                             });
+                            vm.fullscreenLoading=false;
                         }
                         vm.selectprocessAll();
                     }).catch(err=>{
                         vm.$message.error('网络异常');
+                        vm.fullscreenLoading=false;
                     })
                 }
             },

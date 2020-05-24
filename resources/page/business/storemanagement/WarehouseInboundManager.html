@@ -2,47 +2,571 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>制定出库单</title>
+    <title>指定出库单</title>
     <meta name="renderer" content="webkit">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <link rel="stylesheet" href="../../../lib/layui-v2.5.5/css/layui.css" media="all">
     <link rel="stylesheet" href="../../../css/public.css" media="all">
+
+    <!--element-ui/css-->
+    <link rel="stylesheet" href="../../../lib/plugin/element-ui/style/index.css">
+
+    <style>
+        .el-row {
+            margin-bottom: 20px;
+
+        &
+        :last-child {
+            margin-bottom: 0;
+        }
+
+        }
+        .el-col {
+            border-radius: 4px;
+        }
+
+        .bg-purple-dark {
+            background: #99a9bf;
+        }
+
+        .bg-purple {
+            background: #d3dce6;
+        }
+
+        .bg-purple-light {
+            background: #e5e9f2;
+        }
+
+        .grid-content {
+            border-radius: 4px;
+            min-height: 36px;
+        }
+
+        .row-bg {
+            padding: 10px 0;
+            background-color: #f9fafc;
+        }
+
+        body {
+            margin: 0;
+        }
+    </style>
+    <script src="../../../lib/common/requestUrl.js"></script>
 </head>
 <body>
 
-
-<div class="layuimini-container">
+<div class="layuimini-container" id="app">
     <div class="layuimini-main">
-        <table class="layui-hide" id="test"></table>
 
+        <!--数据表格-->
+        <el-row>
+            <el-col :span="24">
+                <template>
+                    <el-table
+                            v-loading="loading"
+                            border
+                            :data="tableData"
+                            style="width: 100%">
+                        <el-table-column
+                                align="center"
+                                type="selection"
+                                width="55">
+                        </el-table-column>
+                        <el-table-column
+                                align="center"
+                                prop="outboundId"
+                                label="出库单编号">
+                        </el-table-column>
+                        <el-table-column
+                                align="center"
+                                prop="reason"
+                                label="出库理由">
+                        </el-table-column>
+                        <el-table-column
+                                align="center"
+                                label="出库详细理由">
+                        </el-table-column>
+                        <el-table-column
+                                align="center"
+                                prop="registerTime"
+                                sortable
+                                label="登记时间">
+                        </el-table-column>
+                        <el-table-column
+                                align="center"
+                                prop="amountSum"
+                                label="总件数">
+                        </el-table-column>
+                        <el-table-column
+                                align="center"
+                                prop="costPriceSum"
+                                label="总金额 (元)">
+                        </el-table-column>
+                        <el-table-column
+                                align="center"
+                                label="操作">
+                            <template slot-scope="scope">
+                                <el-tooltip class="item" effect="dark" content="出库调度" placement="left-start">
+                                    <el-button
+                                            @click="deliverySchedule(scope.row)"
+                                            icon="el-icon-s-promotion"
+                                            size="mini"
+                                    >
+                                    </el-button>
+                                </el-tooltip>
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                </template>
+            </el-col>
+        </el-row>
+
+        <!--分页-->
+        <el-row>
+            <el-col :span="24">
+                <el-pagination
+                        @size-change="handleSizeChange"
+                        @current-change="handleCurrentChange"
+                        :current-page="paginationObj.page"
+                        :page-sizes="[5, 10,15, 20]"
+                        :page-size="paginationObj.pageSize"
+                        layout="total, sizes, prev, pager, next, jumper"
+                        :total="paginationObj.totalCount">
+                </el-pagination>
+            </el-col>
+        </el-row>
+
+        <!--对话框-->
+        <el-dialog
+                title="出库调度单"
+                :visible.sync="centerDialogVisible"
+                width="70%"
+                center>
+
+            <!--内容-->
+            <el-form label-width="100px" class="demo-ruleForm">
+                <el-row type="flex" justify="center">
+                    <el-col :span="6">
+                        <el-form-item label="出库单编号" prop="name">
+                            <el-input v-model="DiaObj.outboundId" :readonly="true"></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="6">
+                    </el-col>
+                    <el-col :span="6">
+                    </el-col>
+                </el-row>
+
+                <el-row type="flex" justify="center">
+                    <el-col :span="6">
+                        <el-form-item label="出库理由" prop="name">
+                            <el-tag>{{DiaObj.reason}}</el-tag>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="6">
+                    </el-col>
+                    <el-col :span="6">
+                        <el-form-item label="出库详细理由" prop="name">
+                            <el-input :readonly="true"></el-input>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+            </el-form>
+
+            <el-row type="flex" justify="center">
+                <el-col :span="24">
+                    <template>
+                        <el-table
+                                border
+                                :data="diaTableData"
+                                style="width: 100%">
+                            <el-table-column
+                                    type="selection"
+                                    width="55">
+                            </el-table-column>
+                            <el-table-column
+                                    prop="id"
+                                    sortable
+                                    align="center"
+                                    label="序号">
+                            </el-table-column>
+                            <el-table-column
+                                    align="center"
+                                    prop="productName"
+                                    label="产品名称">
+                            </el-table-column>
+                            <el-table-column
+                                    align="center"
+                                    prop="productId"
+                                    label="产品编号">
+                            </el-table-column>
+                            <el-table-column
+                                    prop="amount"
+                                    align="center"
+                                    label="应出库件数">
+                            </el-table-column>
+                            <el-table-column
+                                    prop="paidAmount"
+                                    align="center"
+                                    label="已出库件数">
+                            </el-table-column>
+                            <el-table-column
+                                    prop="date"
+                                    align="center"
+                                    label="存放地址集合">
+                            </el-table-column>
+                            <el-table-column
+                                    align="center"
+                                    label="操作">
+                                <template slot-scope="scope">
+                                    <el-tooltip class="item" effect="dark" content="调度" placement="left-start">
+                                        <el-button type="primary" @click="schedulingFn(scope.row)"
+                                                   icon="el-icon-truck"></el-button>
+                                    </el-tooltip>
+                                </template>
+                            </el-table-column>
+                        </el-table>
+
+                        <!--分页-->
+                        <el-row style="margin-top: 10px">
+                            <el-col :span="24">
+                                <el-pagination
+                                        @size-change="handleSizeChangeTwo"
+                                        @current-change="handleCurrentChangeTwo"
+                                        :current-page="paginationObjTwo.page"
+                                        :page-sizes="[5, 10,15, 20]"
+                                        :page-size="paginationObjTwo.pageSize"
+                                        layout="total, sizes, prev, pager, next, jumper"
+                                        :total="paginationObjTwo.totalCount">
+                                </el-pagination>
+                            </el-col>
+                        </el-row>
+                    </template>
+                </el-col>
+            </el-row>
+
+            <el-form label-width="100px" class="demo-ruleForm">
+                <el-row type="flex" justify="center">
+                    <el-col :span="6">
+                        <el-form-item label="应出库总件数" prop="name">
+                            <el-input v-model="DiaObj.amountSum" :readonly="true"></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="6">
+                    </el-col>
+                    <el-col :span="6">
+                        <el-form-item label="已出库总件数" prop="name">
+                            <el-input v-model="DiaObj.paidAmountSum" :readonly="true"></el-input>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+            </el-form>
+
+            <span slot="footer" class="dialog-footer">
+                 <el-tooltip class="item" effect="dark" content="取消" placement="left-start">
+      <el-button @click="centerDialogVisible = false" icon="el-icon-switch-button"></el-button>
+    </el-tooltip>
+                 <el-tooltip class="item" effect="dark" content="确定" placement="right-start">
+                    <el-button type="primary" @click="centerDialogVisible = false" icon="el-icon-thumb"></el-button>
+                </el-tooltip>
+  </span>
+        </el-dialog>
+
+        <el-dialog
+                title="出库调度单"
+                :visible.sync="centerDialogVisibleTwo"
+                width="70%"
+                center>
+
+            <!--内容-->
+            <el-form label-width="100px" class="demo-ruleForm">
+                <el-row type="flex" justify="center">
+                    <el-col :span="6">
+                        <el-form-item label="出库单编号" prop="name">
+                            <el-input v-model="DiaObj.outboundId" :readonly="true"></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="6">
+                    </el-col>
+                    <el-col :span="6">
+                        <el-form-item label="产品编号" prop="name">
+                            <el-input v-model="DiaTwoObj.productId" :readonly="true"></el-input>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+
+                <el-row type="flex" justify="center">
+                    <el-col :span="6">
+                        <el-form-item label="产品名称" prop="name">
+                            <el-input v-model="DiaTwoObj.productName" :readonly="true"></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="6">
+                    </el-col>
+                    <el-col :span="6">
+                        <el-form-item label="成本单价" prop="name">
+                            <el-input v-model="DiaTwoObj.costPrice" :readonly="true"></el-input>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+            </el-form>
+
+            <el-row type="flex" justify="center">
+                <el-col :span="24">
+                    <template>
+                        <el-table
+                                border
+                                :data="diaTableDataTwo"
+                                style="width: 100%">
+                            <el-table-column
+                                    type="selection"
+                                    width="55">
+                            </el-table-column>
+                            <el-table-column
+                                    prop="Safetid"
+                                    sortable
+                                    align="center"
+                                    label="序号">
+                            </el-table-column>
+                            <el-table-column
+                                    align="center"
+                                    prop="name"
+                                    label="库房名称">
+                            </el-table-column>
+                            <el-table-column
+                                    align="center"
+                                    prop="addressId"
+                                    label="存储地址编号">
+                            </el-table-column>
+                            <el-table-column
+                                    prop="addressName"
+                                    align="center"
+                                    label="存储地址名称">
+                            </el-table-column>
+                            <el-table-column
+                                    prop="date"
+                                    align="center"
+                                    label="存储单元简称">
+                            </el-table-column>
+                            <el-table-column
+                                    prop="date"
+                                    align="center"
+                                    label="当前库存数量">
+                            </el-table-column>
+                            <el-table-column
+                                    align="center"
+                                    label="本次出库数量">
+                                <template slot-scope="scope">
+                                    <el-input></el-input>
+                                </template>
+                            </el-table-column>
+                        </el-table>
+                    </template>
+                </el-col>
+            </el-row>
+
+            <el-form label-width="100px" class="demo-ruleForm">
+                <el-row type="flex" justify="center">
+                    <el-col :span="6">
+                        <el-form-item label="应出库数" prop="name">
+                            <el-input v-model="DiaTwoObj.amount" :readonly="true"></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="6">
+                    </el-col>
+                    <el-col :span="6">
+                        <el-form-item label="已出库数" prop="name">
+                            <el-input v-model="DiaObj.register" :readonly="true"></el-input>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+                <el-row type="flex" justify="center">
+                    <el-col :span="6">
+                        <el-form-item label="登记人" prop="name">
+                            <el-input v-model="DiaObj.register" :readonly="true"></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="6">
+                    </el-col>
+                    <el-col :span="6">
+                        <el-form-item label="登记时间" prop="name">
+                            <el-date-picker
+                                    v-model="DiaObj.registerTime"
+                                    type="datetime"
+                                    placeholder="选择日期时间"
+                                    align="right"
+                                    :picker-options="pickerOptions">
+                            </el-date-picker>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+            </el-form>
+
+            <span slot="footer" class="dialog-footer">
+                 <el-tooltip class="item" effect="dark" content="取消" placement="left-start">
+      <el-button @click="centerDialogVisibleTwo = false" icon="el-icon-switch-button"></el-button>
+    </el-tooltip>
+                 <el-tooltip class="item" effect="dark" content="确定" placement="right-start">
+                    <el-button type="primary" @click="centerDialogVisibleTwo = false" icon="el-icon-thumb"></el-button>
+                </el-tooltip>
+  </span>
+        </el-dialog>
 
     </div>
 </div>
 
-<script src="../../../lib/jquery-3.4.1/jquery-3.4.1.min.js" charset="utf-8"></script>
-<script src="../../../lib/common/jquery.cookie.min.js" charset="utf-8"></script>
+<!--jq-->
+<script src="../../../lib/jquery-3.4.1/jquery-3.4.1.min.js"></script>
+<!--layui-->
 <script src="../../../lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
-<script src="../../../lib/common/common.js" charset="utf-8"></script>
-<script>
-    layui.use('table', function(){
-        var table = layui.table;
+<!--vue-->
+<script src="../../../lib/plugin/vue/vue.min.js"></script>
+<!--element-ui/index.js-->
+<script src="../../../lib/plugin/element-ui/index.js"></script>
+<!--axios-->
+<script src="../../../lib/plugin/axios/axios.min.js"></script>
 
-        table.render({
-            elem: '#test'
-            ,url:'/demo/table/user/'
-            ,cols: [[
-                {field:'id', width:80, title: 'ID', sort: true}
-                ,{field:'username', width:80, title: '用户名'}
-                ,{field:'sex', width:80, title: '性别', sort: true}
-                ,{field:'city', width:80, title: '城市'}
-                ,{field:'sign', title: '签名', minWidth: 150}
-                ,{field:'experience', width:80, title: '积分', sort: true}
-                ,{field:'score', width:80, title: '评分', sort: true}
-                ,{field:'classify', width:80, title: '职业'}
-                ,{field:'wealth', width:135, title: '财富', sort: true}
-            ]]
-            ,page: true
+<!--系统文件-->
+<script src="../../../lib/common/jquery.cookie.min.js" charset="utf-8"></script>
+<script src="../../../lib/common/common.js" charset="utf-8"></script>
+
+<!--业务代码-->
+<script>
+    let vue;
+
+    // 入口函数
+    $(function () {
+        // http request 拦截器
+        axios.interceptors.request.use(
+            config => {
+                if (token) { //判断token是否存在
+                    config.headers.token = $.cookie("TOKEN");  //将token设置成请求头
+                }
+                return config;
+            },
+            err => {
+                return Promise.reject(err);
+            }
+        );
+
+        // 初始化Vue
+        vue = new Vue({
+            // 控制区域
+            el: '#app',
+            // 数据
+            data: {
+                tableData: [],
+                /*表格中请求参数约定*/
+                paginationObj: {
+                    "page": 1, //页数
+                    "pageSize": 10, //每页条数
+                    "totalCount": 238,//总条数（表格中用到）
+                },
+                diaTableData: [],
+
+                paginationObjTwo: {
+                    "page": 1, //页数
+                    "pageSize": 10, //每页条数
+                    "totalCount": 238,//总条数（表格中用到）
+                },
+
+                loading: false,
+                centerDialogVisible: false,
+                centerDialogVisibleTwo: false,
+
+                /*对话框表格*/
+                diaTableDataTwo: [
+                    {Safetid: 1, name: '成品库', addressId: '01-01-01', addressName: '电子-计算机-服务器', max_capacity_amount: 0}
+                ],
+
+                pickerOptions: {
+                    shortcuts: [{
+                        text: '今天',
+                        onClick(picker) {
+                            picker.$emit('pick', new Date());
+                        }
+                    }, {
+                        text: '昨天',
+                        onClick(picker) {
+                            const date = new Date();
+                            date.setTime(date.getTime() - 3600 * 1000 * 24);
+                            picker.$emit('pick', date);
+                        }
+                    }, {
+                        text: '一周前',
+                        onClick(picker) {
+                            const date = new Date();
+                            date.setTime(date.getTime() - 3600 * 1000 * 24 * 7);
+                            picker.$emit('pick', date);
+                        }
+                    }]
+                },
+                value1: '',
+                value2: '',
+                value3: '',
+
+                DiaObj: {},
+                DiaTwoObj: {}
+            },
+            // 方法
+            methods: {
+                schedulingFn(row){
+                    this.DiaTwoObj = row;
+                    console.log(this.DiaTwoObj);
+
+                    this.centerDialogVisibleTwo = true;
+
+                    axios.get(api3 + '')
+                },
+                deliverySchedule(row) {
+                    this.DiaObj = row;
+                    console.log(this.DiaObj);
+
+                    this.centerDialogVisible = true;
+
+
+                    let params = `?page=${this.paginationObjTwo.page}&limit=${this.paginationObjTwo.pageSize}&id=${row.id}`;
+                    axios.get(api3 + 'warehouseOutboundDetailed/queryWarehouseOutboundDetailed' + params).then(res => {
+                        console.log(res.data);
+
+                        this.diaTableData = res.data.data;
+                        this.paginationObjTwo.totalCount = res.data.count;
+
+                    }).catch(err => {
+
+                    });
+
+                },
+                handleSizeChange(val) {
+                    this.paginationObj.pageSize = val;
+                },
+                handleCurrentChange(val) {
+                    this.paginationObj.page = val;
+                },
+
+                handleSizeChangeTwo(val) {
+                    this.paginationObj.pageSize = val;
+                },
+                handleCurrentChangeTwo(val) {
+                    this.paginationObj.page = val;
+                },
+
+                QueryinitTableData() {
+                    let params = `?store_tag=1&page=${this.paginationObj.page}&limit=${this.paginationObj.pageSize}`;
+                    axios.get(api3 + 'warehouseOutbound/queryWarehouseOutbound' + params).then(res => {
+                        this.tableData = res.data.data;
+                        this.paginationObj.totalCount = res.data.count;
+
+                    }).catch(err => {
+
+                    });
+                }
+            },
+            // 钩子函数
+            mounted() {
+                this.QueryinitTableData();
+            }
         });
     });
 </script>

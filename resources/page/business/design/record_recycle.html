@@ -7,13 +7,15 @@
     <link rel="stylesheet" href="../../../lib/layui-v2.5.5/css/layui.css">
     <link rel="stylesheet" href="../../../lib/layui-v2.5.5/css/layui.css" media="all">
     <link rel="stylesheet" href="../../../css/public.css" media="all">
-    <script src="https://cdn.bootcss.com/vue-router/3.0.6/vue-router.js"></script>
+
+    <script src="../../../lib/plugin/vue/vue-router.js"></script>
+    <script src="../../../lib/plugin/vue/qs.js"></script>
     <script src="../../../lib/layui-v2.5.5/layui.all.js"></script>
     <script src="../../../lib/layui-v2.5.5/layui.js"></script>
     <script src="../../../lib/jquery-3.4.1/jquery-3.4.1.min.js"></script>
-    <script src="https://cdn.bootcdn.net/ajax/libs/qs/6.9.3/qs.js"></script>
     <script src="../../../lib/common/jquery.cookie.min.js"></script>
-    <script src="config/common.js"></script>
+    <script src="../../../lib/common/common.js"></script>
+    <script src="../../../lib/common/requestUrl.js"></script>
     <style>
         .demo-table-expand {
             font-size: 0;
@@ -34,6 +36,7 @@
     <script src="../../../lib/plugin/vue/vue.min.js"></script>
     <script src="../../../lib/plugin/element-ui/index.js"></script>
     <script src="../../../lib/plugin/axios/axios.min.js"></script>
+
 </head>
 <body>
 <div class="layuimini-container">
@@ -57,7 +60,6 @@
                     </div>
                 </fieldset>
                 <div>
-
                     <el-table
                             :data="recordList"
                             ref="multipleTable"
@@ -130,8 +132,16 @@
                             <template slot-scope="scope">
                                 <el-button-group>
                                     <el-tooltip class="item" effect="dark" content="恢复档案" placement="top-start">
-                                        <el-button type="primary" size="small" @click="recover(scope.row)"
+                                        <el-button type="primary" size="small"
+                                                   v-loading.fullscreen.lock="fullscreenLoading"
+                                                   @click="recover(scope.row)"
                                                    icon="el-icon-refresh-right"></el-button>
+                                    </el-tooltip>
+                                    <el-tooltip class="item" effect="dark" content="永久删除档案" placement="top-start">
+                                        <el-button type="danger" title=""
+                                                   @click="deleteperpetual(scope.row)"
+                                                   v-loading.fullscreen.lock="fullscreenLoading" size="small"
+                                                   icon="el-icon-delete"></el-button>
                                     </el-tooltip>
                                 </el-button-group>
                             </template>
@@ -153,98 +163,5 @@
     </div>
 </div>
 </body>
-<!-- import Vue before Element -->
-<!-- import JavaScript -->
-<script>
-
-    layui.use(['layer', 'form'], function () {
-        var layer = layui.layer
-            , form = layui.form;
-        var vm = new Vue({
-            el: '#app',
-            data: {
-                /*加载动画*/
-                loading: true,
-                /*产品档次*/
-                page: 1,//页码
-                pageSize: 10,//行数
-                total: 0,//总记录数
-                recordList: [],//展示的数据
-                record: {//查询的条件
-                    productName: "",//产品名称
-                    registerTime: ""//建档时间
-                },
-            },
-            methods: {
-                /*分页条件查询*/
-                findPage() {
-                    axios.post(api1 + "/design_record/findPagerecycle?page=" + this.page + "&pageSize=" + this.pageSize, this.record).then(res => {
-                        this.total = res.data.total;
-                        this.recordList = res.data.data;
-                        this.loading = false;
-                    }).catch(err => {
-                        vm.$message({//异常
-                            showClose: true,
-                            message: "获取超时，请检查网络",
-                            type: 'error'
-                        });
-                    })
-                },
-                /*设置行数*/
-                handleSizeChange(pageSize) {
-                    this.pageSize = pageSize;
-                },
-                /*获取页码*/
-                handleCurrentChange(page) {
-                    this.page = page;
-                    this.findPage();
-                },
-                /*全选*/
-                toggleSelection(rows) {//全选选中
-                    if (rows) {
-                        rows.forEach(row => {
-                            this.$refs.multipleTable.toggleRowSelection(row);
-                        });
-                    } else {
-                        this.$refs.multipleTable.clearSelection();
-                    }
-                },
-                /*获取复选框选中的值 集合*/
-                handleSelectionChange(value) {
-                    this.deleterecords = value;
-                },
-                /*恢复档案*/
-                recover(value) {
-                    layer.confirm('确定恢复吗?', {icon: 3, title: '提示'}, function (index) {
-                        axios.post(api1 + "design_record/recordrecover", value).then(res => {
-                            if (res.data.success) {
-                                vm.findPage();
-                                vm.$message({//恢复成功
-                                    showClose: true,
-                                    message: res.data.message,
-                                    type: 'success'
-                                });
-                                this.findPage();
-                            } else {
-                                vm.$message({//恢复失败
-                                    showClose: true,
-                                    message: res.data.message,
-                                    type: 'error'
-                                });
-                            }
-                        }).catch(err => {
-
-                        })
-                        layer.close(index);
-                    });
-                }
-            },
-            created() {
-                /*页面加载*/
-                this.findPage();
-            }
-        });
-    });
-
-</script>
+<script src="js/record_recycle.js"></script>
 </html>

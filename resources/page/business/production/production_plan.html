@@ -2,39 +2,20 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>生产计划管理</title>
+    <title>新增生产计划单</title>
     <meta name="renderer" content="webkit">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <link rel="stylesheet" href="../../../lib/layui-v2.5.5/css/layui.css" media="all">
     <link rel="stylesheet" href="../../../css/public.css" media="all">
+    <link rel="stylesheet" href="../../../js/lay-module/febs/css/febs.css">
     <style>
-        .layui-form-label {
-            color: #000000;
-        }
 
-        .layui-input {
-            width: 200px;
-        }
-
-        .remark {
-            width: 524px;
-        }
-
-        .form-padding {
-            padding-top: 20px;
-        }
-
-        .button-info {
-            position: absolute;
-            left: 304px;
-            bottom: 35px;
-        }
-
-        .make-erver {
+        .audit {
             margin-top: -4px;
         }
     </style>
+    <script src="../../../lib/common/requestUrl.js"></script>
 </head>
 <body>
 
@@ -45,27 +26,16 @@
     </div>
 </div>
 
-<div style="display: none" id="diaLogOpen">
-    <form class="layui-form form-padding" lay-filter="DataFrm" id="DataFrm">
-
-    </form>
-</div>
-
-
 
 <script type="text/html" id="toolbarDemo">
-    <div class="layui-btn-container">
-        <button data-method="offset" data-type="auto" class="layui-btn layui-btn-normal" lay-event="check_audit">审核</button>
-    </div>
+    <a class="layui-btn button-info audit" lay-submit="" lay-event="addOrder" lay-filter="addOrder" id="addOrder"><label
+            class="layui-icon layui-icon-add-circle-fine"></label>添加</a>
 </script>
 
 
 <script type="text/html" id="toolbarDemo2">
 
 </script>
-
-
-
 
 
 <script src="../../../lib/jquery-3.4.1/jquery-3.4.1.min.js" charset="utf-8"></script>
@@ -77,63 +47,78 @@
 
 
 <script>
-
-    let apiUrl = "http://localhost:8003/";
     let tableIns;
     let index;
 
-    layui.use('table', function(){
+    layui.use('table', function () {
         let table = layui.table;
 
         table.render({
             elem: '#test'
-            ,url: apiUrl+'design_record/selectprocessAll'
-            ,page:true
+            , url: productionApi + 'design_record/selectprocessAll'
+            , page: true
             , toolbar: '#toolbarDemo2' //开启头部工具栏，并为其绑定左侧模板
             , defaultToolbar: ['filter', 'exports', 'print', { //自定义头部工具栏右侧图标。如无需自定义，去除该参数即可
                 title: '提示'
                 , layEvent: 'LAYTABLE_TIPS'
                 , icon: 'layui-icon-tips'
             }],
-           cols: [[
+            cols: [[
                 {checkbox: true, fixed: true}
-                ,{field:'id',  title: 'id', sort: true}
-                ,{field:'productName',  title: '产品名称'}
-                ,{field:'productId',  title: '产品编号', sort: true}
-                ,{field:'productDescribe',  title: '描述'}
-                ,{field:'',title: '数量', sort: true,edit: true}
-                ,{field:'amountUnit',  title: '单位', sort: true}
-                ,{field:'listPrice', title: '单价'}
-                ,{field:'',  title: '小计', sort: true}
+                , {field: 'id', title: 'id', sort: true}
+                , {field: 'productName', title: '产品名称'}
+                , {field: 'productId', title: '产品编号', sort: true}
+                , {field: 'productDescribe', title: '描述'}
+                , {field: 'quantity', title: '数量', sort: true, edit: true}
+                , {field: 'amountUnit', title: '单位'}
+                , {field: 'listPrice', title: '单价'}
                 , {title: '操作', templet: '#toolbarDemo', fixed: "right", align: "center"}
             ]],
 
-            parseData:function (res) {
+
+
+            parseData: function (res) {
                 console.log(res);
-                return{
-                    "code":0,
-                    "data":res
+                return {
+                    "code": 0,
+                    "data": res
                 }
             }
 
         });
 
-        //监听工具条
-        table.on('tool(test)', function (obj) {
-            var data = obj.data;
-            console.log(data);
-            /*if (obj.event() === 'check_audit'){
-                layer.close(index);
-                $.post(apiUrl+'production/updatechecked_audit',data,function (res) {
-                    layer.msg(res);
-                    if (res.code == 200) {
-                        tableIns.reload();
-                    }
-                });
-                return false;
-            }*/
-        });
 
+        table.on('tool(test)', function (obj) { //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
+
+            $("#addOrder").click(function () {
+                console.log(obj.data);
+                let production_order = {
+                    product_id: obj.data.productId,
+                    product_name: obj.data.productName,
+                    product_describe: obj.data.productDescribe,
+                    amount_unit: obj.data.amountUnit,
+                    price: obj.data.listPrice,
+                    quantity: obj.data.quantity
+                };
+
+                layer.confirm('确定添加吗', function (index) {
+                    obj.del();
+                    layer.close(index);
+
+                    $.post(productionApi + 'production/insertProduction_order', production_order, function (res) {
+                        layer.msg(res);
+                        console.log(production_order);
+                        if (res.code == 200) {
+                            tableIns.reload();
+                        }
+                        layer.close(index);
+                    });
+                    return false;
+                });
+            })
+
+
+        });
 
 
     });

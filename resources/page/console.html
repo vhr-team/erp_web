@@ -480,13 +480,12 @@
                     </div>
                 </div>
 
-            </div>
-
-            <div class="layui-row layui-col-space9">
-                <div class="layui-card">
-                    <div class="layui-card-header">月生产曲线</div>
-                    <div class="layui-card-body">
-                        <div id="basicAreaChart"></div>
+                <div class="layui-row layui-col-space9">
+                    <div class="layui-card">
+                        <div class="layui-card-header">月生产曲线</div>
+                        <div class="layui-card-body">
+                            <div id="basicAreaChart"></div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -678,7 +677,7 @@
         }
 
         //使用ajax请求公告的查询接口
-        $.get(api + "notice/loadAllNotice", {page: 1, limit: 5}, function (res) {
+        $.get(api + "notice/loadAllNotice", {page: 1, limit: 10}, function (res) {
             var html = "";
             $.each(res.data, function (i, item) {
                 html += '<div class="layuimini-notice">' +

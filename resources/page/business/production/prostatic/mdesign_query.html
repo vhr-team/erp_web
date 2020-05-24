@@ -4,43 +4,34 @@
     <meta charset="UTF-8">
     <title>工序状态查询</title>
     <!-- import CSS -->
-    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
-    <link rel="stylesheet" href="../../../../lib/layui-v2.5.5/css/layui.css">
-    <link href="https://cdn.bootcss.com/element-ui/2.8.2/theme-chalk/index.css" rel="stylesheet">
     <link rel="stylesheet" href="../../../../lib/bootstarp/css/bootstrap.css">
+    <link rel="stylesheet" href="../../../../lib/plugin/element-ui/style/index.css">
     <link rel="stylesheet" href="../../../../lib/layui-v2.5.5/css/layui.css" media="all">
     <link rel="stylesheet" href="../../../../css/public.css" media="all">
-    <script src="https://cdn.bootcss.com/vue/2.6.10/vue.js"></script>
-    <script src="https://cdn.bootcss.com/vue-router/3.0.6/vue-router.js"></script>
-    <script src="https://cdn.bootcss.com/element-ui/2.8.2/index.js"></script>
+    <script src="../../../../lib/plugin/axios/axios.min.js"></script>
+    <script src="../../../../lib/plugin/vue/vue-router.js"></script>
     <script src="../../../../lib/layui-v2.5.5/layui.all.js"></script>
     <script src="../../../../lib/layui-v2.5.5/layui.js"></script>
-    <script src="https://cdn.bootcdn.net/ajax/libs/axios/0.19.2/axios.js"></script>
     <script src="../../../../lib/jquery-3.4.1/jquery-3.4.1.min.js"></script>
     <script src="../../../../lib/common/jquery.cookie.min.js"></script>
-    <script src="https://cdn.bootcdn.net/ajax/libs/qs/6.9.3/qs.js"></script>
+    <script src="../../../../lib/plugin/vue/qs.js"></script>
     <script src="../../../../lib/bootstarp/js/bootstrap.js"></script>
-    <script src="../../../../lib/layui-v2.5.5/layui.js"></script>
-    <link rel="stylesheet" href="../../../../lib/layui-v2.5.5/css/layui.css">
-    <link rel="stylesheet" href="../../../../lib/bootstarp/css/bootstrap.css">
-    <script src="../../../../lib/jquery-3.4.1/jquery-3.4.1.min.js"></script>
-    <script src="../../../../lib/plugin/axios/axios.min.js"></script>
     <script src="../../../../lib/plugin/vue/vue.min.js"></script>
-    <script src="js/common.js"></script>
-    <link rel="stylesheet" href="../../../../lib/plugin/element-ui/style/index.css">
     <script src="../../../../lib/plugin/element-ui/index.js"></script>
-    <script src="../../../../lib/bootstarp/js/bootstrap.js"></script>
     <style>
         .bodernone {
             border: 0px;
         }
     </style>
+    <script src="../../../../lib/common/requestUrl.js"></script>
 </head>
 <body>
 <div class="layuimini-container" id="app">
     <div class="layuimini-main">
         <div>
-            <div style="margin-bottom: 20px">
+            <fieldset class="layui-elem-field">
+                <legend>搜索信息</legend>
+            <div style="margin-left:50px;margin-bottom: 20px">
                 <span class="demonstration">建档时间：</span>
                 <el-date-picker
                         v-model="record.registerTime"
@@ -50,8 +41,10 @@
                 </el-date-picker>
                 <el-button type="primary" @click="selectprocessAll()">查询</el-button>
             </div>
+            </fieldset>
             <div>
                 <el-table
+                        v-loading="loading"
                         :data="processList"
                         border
                         style="width: 100%">
@@ -200,7 +193,7 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="layui-btn layui-btn-warm" @click="addsheet()">提交</button>
+                        <button type="button" class="layui-btn layui-btn-normal" data-dismiss="modal" @click="addsheet()" v-loading.fullscreen.lock="fullscreenLoading">提交</button>
                         <button type="button" class="layui-btn layui-btn-warm" data-dismiss="modal">关闭</button>
                     </div>
                 </div>
@@ -245,6 +238,8 @@
         var vm = new Vue({
             el: '#app',
             data: {
+                fullscreenLoading:false,
+                loading: true,
                 drawer: false,
                 designsheet: {},
                 processRemarks: "",
@@ -288,17 +283,20 @@
                 },
                 /*查询工序*/
                 selectprocessAll() {
-                    axios.get(api + "product/selectAlltwo").then(res => {
+                    this.loading=true
+                    axios.get(productionDingJian + "product/selectAlltwo").then(res => {
                         this.processList = res.data;
+                        this.loading=false
                     })
                 },
                 /*根据工序编号查询工序*/
                 selectprocessById(processId) {
-                    axios.get(api + "product/selectprocessById?processId=" + processId).then(res => {
+                    axios.get(productionDingJian + "product/selectprocessById?processId=" + processId).then(res => {
                         this.sheets = res.data;
                     }).catch()
                 },
                 addsheet() {
+                    this.fullscreenLoading=true;
                     this.sheets[0].processRequire = this.processRequires
                     this.sheets[0].processRemark = this.processRemarks;
 
@@ -306,19 +304,21 @@
                         process: this.designsheet,
                         sheet: this.sheets
                     }
-                    axios.post(api + "product/addsheet", sheets).then(res => {
+                    axios.post(productionDingJian + "product/addsheet", sheets).then(res => {
                         if(res.data.success){
                             vm.$message({
                                 showClose: true,
                                 message: res.data.message,
                                 type: 'success'
                             });
+                            this.fullscreenLoading=false;
                         }else{
                             vm.$message({
                                 showClose: true,
                                 message: res.data.message,
                                 type: 'error'
                             });
+                            this.fullscreenLoading=false;
                         }
                         vm.selectprocessAll();
                     }).catch(err=>{
@@ -327,6 +327,7 @@
                             message: "系统异常",
                             type: 'error'
                         });
+                        this.fullscreenLoading=false;
                     })
 
                 },
@@ -337,7 +338,7 @@
                 selectprocesscheck(data){
                     console.log(data.processId);
                     var data={processId:data.processId}
-                    axios.post(api+"product/selectprocesscheck",data).then(res=>{
+                    axios.post(productionDingJian+"product/selectprocesscheck",data).then(res=>{
                        this.activities=res.data;
                     }).catch()
                 }

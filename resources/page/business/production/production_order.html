@@ -8,6 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <link rel="stylesheet" href="../../../lib/layui-v2.5.5/css/layui.css" media="all">
     <link rel="stylesheet" href="../../../css/public.css" media="all">
+    <link rel="stylesheet" href="../../../js/lay-module/febs/css/febs.css">
     <style>
         .layui-form-label {
             color: #000000;
@@ -15,10 +16,6 @@
 
         .layui-input {
             width: 200px;
-        }
-
-        .remark {
-            width: 524px;
         }
 
         .form-padding {
@@ -35,6 +32,7 @@
             margin-top: -4px;
         }
     </style>
+    <script src="../../../lib/common/requestUrl.js"></script>
 </head>
 <body>
 
@@ -52,16 +50,19 @@
             <div class="layui-inline">
                 <label class="layui-form-label">计划单编号</label>
                 <div class="layui-input-block">
-                    <input style="display: none" type="text" name="id" readonly="readonly"  lay-verify="required" placeholder="请输入计划单编号"
+                    <input style="display: none" type="text" name="id" readonly="readonly" lay-verify="required"
+                           placeholder="请输入计划单编号"
                            class="layui-input">
-                    <input type="text" name="schedule_id" readonly="readonly"  lay-verify="required" placeholder="请输入计划单编号"
+                    <input type="text" name="schedule_id" readonly="readonly" lay-verify="required"
+                           placeholder="请输入计划单编号"
                            class="layui-input">
                 </div>
             </div>
             <div class="layui-inline">
                 <label class="layui-form-label">出库单编号</label>
                 <div class="layui-input-block">
-                    <input type="text" name="qutbound_order_id" readonly="readonly"  lay-verify="required" placeholder="请输入出库单编号"
+                    <input type="text" name="qutbound_order_id" readonly="readonly" lay-verify="required"
+                           placeholder="请输入出库单编号"
                            class="layui-input">
                 </div>
             </div>
@@ -70,7 +71,8 @@
             <div class="layui-inline">
                 <label class="layui-form-label">登记人</label>
                 <div class="layui-input-block">
-                    <input type="text" name="title" id="DengjiInput" readonly="readonly" lay-verify="title" autocomplete="off" placeholder="请输入登记人"
+                    <input type="text" name="title" id="DengjiInput" readonly="readonly" lay-verify="title"
+                           autocomplete="off" placeholder="请输入登记人"
                            class="layui-input">
                 </div>
             </div>
@@ -87,14 +89,16 @@
             <div class="layui-inline">
                 <label class="layui-form-label">产品编号</label>
                 <div class="layui-input-block">
-                    <input type="text" name="product_id" readonly="readonly" lay-verify="title" autocomplete="off" placeholder="请输入产品编号"
+                    <input type="text" name="product_id" readonly="readonly" lay-verify="title" autocomplete="off"
+                           placeholder="请输入产品编号"
                            class="layui-input">
                 </div>
             </div>
             <div class="layui-inline">
                 <label class="layui-form-label">产品名称</label>
                 <div class="layui-input-block">
-                    <input type="text" name="product_name" readonly="readonly" lay-verify="required" placeholder="请输入产品名称"
+                    <input type="text" name="product_name" readonly="readonly" lay-verify="required"
+                           placeholder="请输入产品名称"
                            class="layui-input">
                 </div>
             </div>
@@ -103,7 +107,8 @@
             <div class="layui-inline">
                 <label class="layui-form-label">描述</label>
                 <div class="layui-input-block">
-                    <input type="text" name="product_describe" readonly="readonly" lay-verify="title"  placeholder="请输入描述"
+                    <input type="text" name="product_describe" readonly="readonly" lay-verify="title"
+                           placeholder="请输入描述"
                            class="layui-input">
                 </div>
             </div>
@@ -137,12 +142,10 @@
 <script src="../../../lib/common/common.js" charset="utf-8"></script>
 
 <script>
-
-    let apiUrl = "http://localhost:8003/";
     let tableIns;
     let index;
 
-    layui.use(['table', 'layer', 'form','laydate'], function () {
+    layui.use(['table', 'layer', 'form', 'laydate'], function () {
         let table = layui.table;
         let layer = layui.layer;
         let form = layui.form;
@@ -151,12 +154,12 @@
         //常规用法
         laydate.render({
             elem: '#test1'
-            ,type: 'datetime'
+            , type: 'datetime'
         });
 
         tableIns = table.render({
             elem: '#test'
-            , url: apiUrl+'production/getAllProduction_order'
+            , url: productionApi + 'production/getAllProduction_order'
             , page: true
             , toolbar: '#toolbarDemo2' //开启头部工具栏，并为其绑定左侧模板
             , defaultToolbar: ['filter', 'exports', 'print', { //自定义头部工具栏右侧图标。如无需自定义，去除该参数即可
@@ -166,7 +169,7 @@
             }]
             , cols: [[
                 {type: 'checkbox'}
-                , {field: 'id', align: 'center', title: 'id',hide:true}
+                , {field: 'id', align: 'center', title: 'id', hide: true}
                 , {field: 'schedule_id', align: 'center', title: '计划单编号'}
                 , {field: 'product_id', title: '产品编号'}
                 , {field: 'product_name', title: '产品名称'}
@@ -191,9 +194,9 @@
                     area: ['700px', '450px'], //宽高
                     content: $("#diaLogOpen")
                     , success: function (layero) {
-                        form.val('DataFrm',data);
+                        form.val('DataFrm', data);
 
-                        let user =  JSON.parse(window.localStorage.getItem("user"));
+                        let user = JSON.parse(window.localStorage.getItem("user"));
                         // 登记人
                         $("#DengjiInput").val(user.name);
                     }
@@ -203,7 +206,7 @@
 
         $("#addOrder").click(function () {
             var params = $("#DataFrm").serialize();
-            $.post(apiUrl+'production/updateProductionOrderById', params, function (res) {
+            $.post(productionApi + 'production/updateProductionOrderById', params, function (res) {
 
                 layer.msg(res);
                 if (res.code == 200) {
@@ -217,7 +220,7 @@
         form.on("submit(addOrder)", function (data) {
             var params = $("#DataFrm").serialize();
             console.log(params);
-            $.post(apiUrl+'production/updateProductionOrderById', params, function (res) {
+            $.post(productionApi+'production/updateProductionOrderById', params, function (res) {
 
                 layer.msg(res);
                 if (res.code == 200) {
@@ -229,7 +232,6 @@
         });*/
 
     });
-
 
 
 </script>
