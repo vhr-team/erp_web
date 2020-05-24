@@ -342,13 +342,13 @@
 
             data.field;
 
-            let obj = {
+            let registObj = {
                 name: data.field.name,
                 pwd: data.field.pwd,
                 code: vue.Register.sendcode,
                 phone: vue.Register.phone,
             }
-            axios.post(api + 'login/registeredUser', obj).then(r => {
+            axios.post(api + 'login/registeredUser', registObj).then(r => {
                 if (r.data.code === 200) {
                     layer.msg(r.data.message);
                     loading.hide();
