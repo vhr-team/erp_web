@@ -6,24 +6,19 @@
     <!-- import CSS -->
     <link rel="stylesheet" href="../../../../lib/layui-v2.5.5/css/layui.css">
     <link rel="stylesheet" href="../../../../lib/bootstarp/css/bootstrap.css">
+    <link rel="stylesheet" href="../../../../lib/plugin/element-ui/style/index.css">
     <link rel="stylesheet" href="../../../../lib/layui-v2.5.5/css/layui.css" media="all">
     <link rel="stylesheet" href="../../../../css/public.css" media="all">
     <script src="../../../../lib/layui-v2.5.5/layui.all.js"></script>
     <script src="../../../../lib/layui-v2.5.5/layui.js"></script>
     <script src="../../../../lib/jquery-3.4.1/jquery-3.4.1.min.js"></script>
     <script src="../../../../lib/plugin/vue/qs.js"></script>
-
     <script src="../../../../lib/common/jquery.cookie.min.js"></script>
     <script src="../../../../lib/bootstarp/js/bootstrap.js"></script>
     <script src="../../../../lib/layui-v2.5.5/layui.js"></script>
-    <link rel="stylesheet" href="../../../../lib/layui-v2.5.5/css/layui.css">
-    <link rel="stylesheet" href="../../../../lib/bootstarp/css/bootstrap.css">
-    <script src="../../../../lib/jquery-3.4.1/jquery-3.4.1.min.js"></script>
     <script src="../../../../lib/plugin/axios/axios.min.js"></script>
     <script src="../../../../lib/plugin/vue/vue.min.js"></script>
-    <link rel="stylesheet" href="../../../../lib/plugin/element-ui/style/index.css">
     <script src="../../../../lib/plugin/element-ui/index.js"></script>
-    <script src="../../../../lib/bootstarp/js/bootstrap.js"></script>
     <style>
         .bodernone {
             border: 0px;
@@ -36,11 +31,14 @@
 <div class="layuimini-container" id="app">
     <div class="layuimini-main">
         <div>
-            <div style="margin-bottom: 20px">
+            <fieldset class="layui-elem-field">
+                <legend>搜索信息</legend>
+            <div style="margin-left: 50px;margin-bottom: 20px">
                 <el-input v-model="design.productName" style="width: 200px;" :inline="true"
                           placeholder="请输入产品名称"></el-input>
                 <el-button type="primary" @click="selectAll()">查询</el-button>
             </div>
+            </fieldset>
             <div>
 
                 <el-tabs v-model="activeName" @tab-click="handleClick">
@@ -224,11 +222,11 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="layui-btn  layui-btn-normal" @click="updatecheck('审核通过')"
+                        <button type="button" class="layui-btn  layui-btn-normal" data-dismiss="modal" @click="updatecheck('审核通过')"
                                 v-loading.fullscreen.lock="fullscreenLoading">审核通过
                         </button>
                         <button type="button" class="layui-btn layui-btn-warm" data-toggle="modal"
-                                data-target="#myModal">审核不通过
+                                data-target="#myModal" data-dismiss="modal">审核不通过
                         </button>
                     </div>
                 </div>
@@ -344,6 +342,7 @@
                                 });
                                 vm.fullscreenLoading = false;
                             }
+                            vm.selectAll();
                         }).catch(err => {
                             vm.$message({//异常
                                 showClose: true,
@@ -352,7 +351,7 @@
                             });
                             vm.fullscreenLoading = false;
                         })
-                        this.selectAll();
+
                     } else {
                         vm.check.processCheckRemark = "通过";
                         axios.post(productionDingJian + "product/updatecheck", check_sheet).then(res => {
@@ -362,6 +361,7 @@
                                     message: res.data.message,
                                     type: 'success'
                                 });
+                                vm.selectAll();
                                 vm.fullscreenLoading = false;
                             } else {
                                 vm.$message({
@@ -371,13 +371,13 @@
                                 });
                                 vm.fullscreenLoading = false;
                             }
-                            this.selectAll();
                         }).catch(err => {
                             vm.$message({//异常
                                 showClose: true,
                                 message: "系统异常",
                                 type: 'error'
                             });
+                            vm.selectAll();
                             vm.fullscreenLoading = false;
                         })
                     }

@@ -6,41 +6,33 @@
     <!-- import CSS -->
     <link rel="stylesheet" href="../../../../lib/layui-v2.5.5/css/layui.css">
     <link rel="stylesheet" href="../../../../lib/plugin/element-ui/style/index.css">
-
     <link rel="stylesheet" href="../../../../lib/bootstarp/css/bootstrap.css">
     <link rel="stylesheet" href="../../../../lib/layui-v2.5.5/css/layui.css" media="all">
     <link rel="stylesheet" href="../../../../css/public.css" media="all">
     <script src="../../../../lib/plugin/vue/vue.min.js"></script>
-
     <script src="../../../../lib/layui-v2.5.5/layui.all.js"></script>
     <script src="../../../../lib/plugin/vue/vue-router.js"></script>
-
     <script src="../../../../lib/layui-v2.5.5/layui.js"></script>
     <script src="../../../../lib/jquery-3.4.1/jquery-3.4.1.min.js"></script>
     <script src="../../../../lib/common/jquery.cookie.min.js"></script>
     <script src="../../../../lib/bootstarp/js/bootstrap.js"></script>
-    <script src="../../../../lib/layui-v2.5.5/layui.js"></script>
-    <link rel="stylesheet" href="../../../../lib/layui-v2.5.5/css/layui.css">
-    <link rel="stylesheet" href="../../../../lib/bootstarp/css/bootstrap.css">
-    <script src="../../../../lib/plugin/vue/qs.js"></script>
-
-
-    <script src="../../../../lib/jquery-3.4.1/jquery-3.4.1.min.js"></script>
     <script src="../../../../lib/plugin/axios/axios.min.js"></script>
     <script src="../../../../lib/plugin/element-ui/index.js"></script>
-    <script src="../../../../lib/bootstarp/js/bootstrap.js"></script>
     <style>
         .bodernone {
             border: 0px;
         }
     </style>
     <script src="../../../../lib/common/requestUrl.js"></script>
+    <script src="../../../../lib/plugin/vue/qs.js"></script>
 </head>
 <body>
 <div class="layuimini-container" id="app">
     <div class="layuimini-main">
         <div>
-            <div style="margin-bottom: 20px">
+            <fieldset class="layui-elem-field">
+                <legend>搜索信息</legend>
+            <div style="margin-left:50px;margin-bottom: 20px">
                 <span class="demonstration">建档时间：</span>
                 <el-date-picker
                         v-model="record.registerTime"
@@ -50,6 +42,7 @@
                 </el-date-picker>
                 <el-button type="primary" @click="selectprocessAll()">查询</el-button>
             </div>
+            </fieldset>
             <div>
                 <el-table
                         v-loading="loading"
@@ -165,13 +158,6 @@
                                                 </el-form-item>
                                             </div>
                                         </el-col>
-                                       <!-- <el-col :span="12">
-                                            <div class="grid-content bg-purple">
-                                                <el-form-item label="工序编号" prop="name">
-                                                    <el-input v-model="designsheet.productId"></el-input>
-                                                </el-form-item>
-                                            </div>
-                                        </el-col>-->
                                     </el-row>
                                 </el-form>
                             </div>
@@ -244,7 +230,7 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="layui-btn layui-btn-warm" @click="add()"  v-loading.fullscreen.lock="fullscreenLoading">提交</button>
+                        <button type="button" class="layui-btn layui-btn-warm" @click="add()" data-dismiss="modal"  v-loading.fullscreen.lock="fullscreenLoading">提交</button>
                         <button type="button" class="layui-btn layui-btn-warm" data-dismiss="modal">关闭</button>
                     </div>
                 </div>
