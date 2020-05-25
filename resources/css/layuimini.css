@@ -28,7 +28,7 @@
 
 /**logo演示（通用） */
 .layui-layout-admin .layui-logo {font-weight:bold;color:#ffffff!important;height:60px!important;line-height:60px !important;overflow:hidden;line-height:64px;transition:all .2s!important;}
-.layui-layout-admin  .layui-logo img {display:inline-block;height:30px;vertical-align:middle;}
+.layui-layout-admin  .layui-logo img {width:32px !important;margin-bottom:4px !important;margin-right:3px !important;display:inline-block !important;vertical-align:middle !important}
 .layui-layout-admin  .layui-logo h1 {display:inline-block;margin:0 0 0 12px;color:#dadde2;font-weight:600;font-size:20px;font-family:Avenir,Helvetica Neue,Arial,Helvetica,sans-serif;vertical-align:middle;}
 .layui-layout-admin .layui-logo h1{
     display: inline-block;

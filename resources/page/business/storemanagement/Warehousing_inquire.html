@@ -10,6 +10,7 @@
 
     <link rel="stylesheet" href="../../../lib/layui-v2.5.5/css/layui.css" media="all">
     <link rel="stylesheet" href="../../../css/public.css" media="all">
+    <script src="../../../lib/common/requestUrl.js"></script>
 </head>
 <body>
 
@@ -96,7 +97,6 @@
 <script src="../../../lib/common/common.js" charset="utf-8"></script>
 <script>
 
-    let urlApi = 'http://127.0.0.1:8004/';
     let vue;
 
     $("#addDept").click(function () {
@@ -146,7 +146,7 @@
             methods: {
                 initTableData1() {
                     let params = `storeTag=1&checkTag=0&page=${this.page}&limit=${this.pageSize}`;
-                    axios.get(urlApi + "warehouseInbound/queryInboundLimit?" + params).then(res => {
+                    axios.get(api3 + "warehouseInbound/queryInboundLimit?" + params).then(res => {
                         this.data1 = res.data.data;
                     }).catch(err => {
                         this.$Message.error('对方不想说话，并且向你抛出了一个异常');
@@ -154,7 +154,7 @@
                 },
                 initTableData2() {
                     let params = `storeTag=2&checkTag=1&page=${this.page}&limit=${this.pageSize}`;
-                    axios.get(urlApi + "warehouseInbound/queryInboundLimit?" + params).then(res => {
+                    axios.get(api3 + "warehouseInbound/queryInboundLimit?" + params).then(res => {
                         this.data2 = res.data.data;
                     }).catch(err => {
                         this.$Message.error('对方不想说话，并且向你抛出了一个异常');

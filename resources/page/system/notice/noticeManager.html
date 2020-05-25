@@ -98,7 +98,7 @@
         <script type="text/html" id="toolbarDemo">
             <div class="layui-btn-container">
                 <button class="layui-btn layui-btn-sm data-add-btn layui-btn-normal" lay-event="add"> 添加</button>
-                <button class="layui-btn layui-btn-sm layui-btn-danger data-delete-btn" lay-event="batchdelete"> 批量删除
+                <button class="layui-btn layui-btn-sm layui-btn-danger data-delete-btn" lay-event="batchdelete"><i class="layui-icon febs-edit-area febs-red">&#xe7f9;</i> 批量删除
                 </button>
             </div>
         </script>
@@ -106,9 +106,10 @@
         <table class="layui-hide" id="currentTableId" lay-filter="currentTableFilter"></table>
 
         <script type="text/html" id="currentTableBar">
-            <a class="layui-btn layui-btn-xs data-count-edit" lay-event="edit"> 编辑 </a>
-            <a class="layui-btn layui-btn-xs layui-btn-danger data-count-delete" lay-event="delete"> 删除 </a>
-            <a class="layui-btn layui-btn-xs layui-bg-cyan data-count-delete" lay-event="show"> 查看 </a>
+            <a lay-event="edit" class="data-count-edit"><i
+                    class="layui-icon febs-edit-area febs-blue">&#xe7a4;</i></a>
+            <a lay-event="delete" class="data-count-delete"><i class="layui-icon febs-edit-area febs-red">&#xe7f9;</i></a>
+            <i class="layui-icon data-count-delete febs-edit-area febs-green" lay-event="show" style="cursor: pointer">&#xe7a5;</i>
         </script>
 
     </div>

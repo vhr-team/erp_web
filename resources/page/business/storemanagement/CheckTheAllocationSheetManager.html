@@ -48,6 +48,7 @@
             background-color: #f9fafc;
         }
     </style>
+    <script src="../../../lib/common/requestUrl.js"></script>
 </head>
 <body>
 
@@ -294,7 +295,6 @@
 
 <!--业务代码-->
 <script>
-    let safeApi = 'http://127.0.0.1:8004/';
     let vue;
 
     // 入口函数
@@ -358,7 +358,7 @@
                     // 关闭弹出层
                     this.centerDialogVisible = false;
 
-                    axios.get(safeApi + 'warehouseStock/updateSecuritySheet/'+productId+"/"+JSON.parse(localStorage.getItem("user")).name).then(res=>{
+                    axios.get(api3 + 'warehouseStock/updateSecuritySheet/'+productId+"/"+JSON.parse(localStorage.getItem("user")).name).then(res=>{
                         if(res.data.success){
                             this.$message({
                                 message: res.data.message,
@@ -384,7 +384,7 @@
                     this.loading = true;
 
                     let queryObj = `page=${this.page}&limit=${this.pageSize}&product_name=${this.ruleForm.product_name}&check_tag=0`;
-                    axios.get(safeApi + 'warehouseStock/querySecuritySheet?' + queryObj).then(res => {
+                    axios.get(api3 + 'warehouseStock/querySecuritySheet?' + queryObj).then(res => {
                         this.tableData = res.data.data;
                         this.total = res.data.count;
 

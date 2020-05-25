@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>FEBS 权限系统</title>
+    <title>ERP 进销存系统</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <meta name="renderer" content="webkit">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
@@ -24,6 +24,7 @@
             background: none;
         }
     </style>
+    <script src="resources/lib/common/Convert_Pinyin.js"></script>
 </head>
 <body background="resources/js/lay-module/PearAdmin/images/background.svg" onload="getCookie();">
 <div id="febs-login" lay-title="登录">
@@ -219,7 +220,7 @@
                             message: '手机号不能为空',
                             center: true
                         })
-                        return
+                        return;
                     }
                     if (!reg.test(this.Register.phone)) {
                         vue.$message({
@@ -228,17 +229,16 @@
                         })
                         return;
                     } else {
-                        axios.get(api + '/user/sendCode', {params: {phone: this.Register.phone}})
-                            .then(function (response) {
-                                //获取服务端响应的结果
-                                vue.$message({
-                                    message: '发送成功',
-                                    type: 'success',
-                                    center: true
-                                });
-                                console.log(response.data);
-                            }).catch(function (reason) {
-                            console.log(reason);
+                        axios.get(api + '/user/sendCode', {params: {phone: this.Register.phone}}).then(function (response) {
+                            //获取服务端响应的结果
+                            vue.$message({
+                                message: '发送成功',
+                                type: 'success',
+                                center: true
+                            });
+                            console.log(response.data);
+                        }).catch(function (reason) {
+
                         });
 
                         this.time = 60;
@@ -296,7 +296,6 @@
                 success: function (res) {
                     if (res.code != 200) {
                         vue.$message.error(res.msg);
-                        btn.text("登 录").attr("disabled", false).removeClass("layui-disabled");
 
                         loading.hide();
                         genCode();
@@ -312,12 +311,12 @@
                             localStorage.setItem("usertype", res.token.usertype);
                             localStorage.setItem("user", JSON.stringify(res.token.user));
                             window.location.href = "./index.html";
-                        }, 2000);
+                        }, 500);
                     }
                 },
                 error: function () {
                     vue.$message.error('登录失败');
-                    btn.html("登 录").attr("disabled", "").removeClass("layui-disabled");
+                    loading.hide();
                 }
             });
 
@@ -340,21 +339,22 @@
             if (loading.is(":visible")) return;
             loading.show();
 
-            data.field;
+            var fullName = pinyin.getFullChars(data.field.name);
 
             let registObj = {
                 name: data.field.name,
+                loginname: fullName.toLowerCase(),
                 pwd: data.field.pwd,
                 code: vue.Register.sendcode,
                 phone: vue.Register.phone,
             }
             axios.post(api + 'login/registeredUser', registObj).then(r => {
                 if (r.data.code === 200) {
-                    layer.msg(r.data.message);
+                    layer.msg(r.data.msg);
                     loading.hide();
                     $view.find('#login-href').trigger('click');
                 } else {
-                    layer.msg(r.message);
+                    layer.msg(r.data.msg);
                     loading.hide();
                 }
             }).catch(err => {

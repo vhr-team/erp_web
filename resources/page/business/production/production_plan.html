@@ -10,17 +10,17 @@
     <link rel="stylesheet" href="../../../css/public.css" media="all">
     <link rel="stylesheet" href="../../../js/lay-module/febs/css/febs.css">
     <style>
-
         .audit {
             margin-top: -4px;
         }
     </style>
     <script src="../../../lib/common/requestUrl.js"></script>
+    <script src="../../../lib/plugin/vue/vue.min.js"></script>
 </head>
 <body>
 
 
-<div class="layuimini-container">
+<div class="layuimini-container" id="app">
     <div class="layuimini-main">
         <table class="layui-hide" id="test" lay-filter="test"></table>
     </div>
@@ -29,7 +29,7 @@
 
 <script type="text/html" id="toolbarDemo">
     <a class="layui-btn button-info audit" lay-submit="" lay-event="addOrder" lay-filter="addOrder" id="addOrder"><label
-            class="layui-icon layui-icon-add-circle-fine"></label>添加</a>
+            class="layui-icon layui-icon-add-circle-fine"></label> 添 加 </a>
 </script>
 
 
@@ -49,13 +49,26 @@
 <script>
     let tableIns;
     let index;
+    let vue;
+
+    vue = new Vue({
+        el: '#app',
+        data: {
+            nums: [{
+                "num": 0
+            }]
+        },
+        methods: {
+
+        }
+    })
 
     layui.use('table', function () {
         let table = layui.table;
 
         table.render({
             elem: '#test'
-            , url: productionApi + 'design_record/selectprocessAll'
+            , url: newProductionApi + 'Feignprodution/selectPlancheckAll'
             , page: true
             , toolbar: '#toolbarDemo2' //开启头部工具栏，并为其绑定左侧模板
             , defaultToolbar: ['filter', 'exports', 'print', { //自定义头部工具栏右侧图标。如无需自定义，去除该参数即可
@@ -63,18 +76,17 @@
                 , layEvent: 'LAYTABLE_TIPS'
                 , icon: 'layui-icon-tips'
             }],
+            height: "full-120",
             cols: [[
                 {checkbox: true, fixed: true}
-                , {field: 'id', title: 'id', sort: true}
-                , {field: 'productName', title: '产品名称'}
-                , {field: 'productId', title: '产品编号', sort: true}
-                , {field: 'productDescribe', title: '描述'}
-                , {field: 'quantity', title: '数量', sort: true, edit: true}
-                , {field: 'amountUnit', title: '单位'}
-                , {field: 'listPrice', title: '单价'}
+                , {field: 'productName', align: 'center', title: '产品名称'}
+                , {field: 'productId', align: 'center', title: '产品编号', sort: true}
+                , {field: 'productDescribe', align: 'center', title: '描述'}
+                , {field: 'quantity', title: '数量', align: 'center', sort: true,edit: true}
+                , {field: 'amountUnit', align: 'center', title: '单位'}
+                , {field: 'listPrice', align: 'center', title: '单价'}
                 , {title: '操作', templet: '#toolbarDemo', fixed: "right", align: "center"}
             ]],
-
 
 
             parseData: function (res) {
@@ -90,24 +102,17 @@
 
         table.on('tool(test)', function (obj) { //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
 
-            $("#addOrder").click(function () {
-                console.log(obj.data);
-                let production_order = {
-                    product_id: obj.data.productId,
-                    product_name: obj.data.productName,
-                    product_describe: obj.data.productDescribe,
-                    amount_unit: obj.data.amountUnit,
-                    price: obj.data.listPrice,
-                    quantity: obj.data.quantity
-                };
+            var data = obj.data; //获得当前行数据
+            var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+            var tr = obj.tr; //获得当前行 tr 的 DOM 对象（如果有的话）
 
+            if (layEvent === 'addOrder') { //查看
                 layer.confirm('确定添加吗', function (index) {
                     obj.del();
                     layer.close(index);
 
-                    $.post(productionApi + 'production/insertProduction_order', production_order, function (res) {
-                        layer.msg(res);
-                        console.log(production_order);
+                    $.post(newProductionApi + 'Feignprodution/addproductionOrder', data, function (res) {
+                        layer.msg(res.message);
                         if (res.code == 200) {
                             tableIns.reload();
                         }
@@ -115,9 +120,7 @@
                     });
                     return false;
                 });
-            })
-
-
+            }
         });
 
 

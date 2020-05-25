@@ -36,7 +36,9 @@
     <div class="layui-layout layui-layout-admin">
 
         <div class="layui-header header">
-            <div class="layui-logo"></div>
+            <div class="layui-logo" style="cursor: pointer">
+
+            </div>
             <a>
                 <div class="layuimini-tool"><i title="展开" class="fa fa-outdent" data-side-fold="1"></i></div>
             </a>
@@ -106,8 +108,10 @@
                     <li class="layui-nav-item">
                         <a href="javascript:;"></a>
                         <dl class="layui-nav-child">
-                            <dd><a href="javascript:;" data-page-close="other"><i class="fa fa-window-close"></i> 关 闭 其 他 </a></dd>
-                            <dd><a href="javascript:;" data-page-close="all"><i class="fa fa-window-close-o"></i> 关 闭 全 部 </a></dd>
+                            <dd><a href="javascript:;" data-page-close="other"><i class="fa fa-window-close"></i> 关 闭 其
+                                他 </a></dd>
+                            <dd><a href="javascript:;" data-page-close="all"><i class="fa fa-window-close-o"></i> 关 闭 全
+                                部 </a></dd>
                         </dl>
                     </li>
                 </ul>
@@ -172,9 +176,10 @@
                         message: '退出成功!'
                     });
 
+                    $.cookie("TOKEN", '', {expires: 0});
                     setTimeout(function () {
                         window.location = "./login.html";
-                    }, 2000);
+                    }, 500);
                 }).catch(() => {
                     this.$message({
                         type: 'info',
