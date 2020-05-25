@@ -111,7 +111,7 @@
                 <!--数据表格-->
 
 
-                <div style="margin-left: 600px;padding-top: 40px">
+                <div style="margin-left: 560px;padding-top: 40px">
                     <Button-group>
                         <i-button style="width: 100px;height: 40px" @click="chenggong">通过</i-button>
                     </Button-group>
@@ -186,7 +186,7 @@
                     {title: '产品编号',fixed: 'left', key: 'productId', align: 'center',},
                     {title: '产品名称', key:'productName', align: 'center'},
                     {title: '应入库件数', key: 'amount', align: 'center'},
-                    {title: '已入库件数', key:'gatheredAmount', align: 'center'},
+                    {title: '已入库件数', key:'subtotal', align: 'center'},
                     {title: '本次入库数量', slot: 'paidAmount', align: 'center'}
                 ],
                 data1: [],
@@ -222,16 +222,15 @@
                     }
                     let obj = `id=${this.id}&gathered_amount_sum=${this.gatheredAmountSum}&product_id=${objs.product_id}&gathered_amount=${objs.gathered_amount}`;
                     axios.post(urlApi + 'warehouseInbound/WarehouseInboundDetailedAudit?' + obj).then(res => {
-                        this.$Message.error('正在提交');
+                        location.reload();
                     }).catch(err => {
-                        this.$Message.error('提交失败');
+
                     })
                     console.log(obj)
 
 
                 },
                 shenhe(row){
-
                     this.gatheredAmountSum=row.gatheredAmountSum;
                     this.id=row.id;
                     this.inboundId=row.inboundId;
@@ -251,7 +250,7 @@
                     axios.get(urlApi + "warehouseInbound/queryInboundLimit?" + params).then(res => {
                         this.data1 = res.data.data;
                     }).catch(err => {
-                        this.$Message.error('对方不想说话，并且向你抛出了一个异常');
+
                     });
                 },
                 initTableData2() {
@@ -259,7 +258,7 @@
                     axios.get(urlApi + "warehouseInboundDetailed/queryInboundDetailed?" + params).then(res => {
                         this.data2 = res.data.data;
                     }).catch(err => {
-                        this.$Message.error('对方不想说话，并且向你抛出了一个异常');
+
                     });
                 },
                 // 当前页发生改变

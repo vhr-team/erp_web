@@ -239,9 +239,8 @@
 
 
                     axios.post(urlApi + 'warehouseInbound/insertInboundAmount',obj).then(res => {
-                        this.$Message.error('正在提交');
+                        location.reload();
                     }).catch(err => {
-                        this.$Message.error('提交失败');
                     })
 
                 },
@@ -263,7 +262,6 @@
                     axios.get(urlApi + "warehouseInbound/queryInboundLimit?" + params).then(res => {
                         this.data1 = res.data.data;
                     }).catch(err => {
-                        this.$Message.error('对方不想说话，并且向你抛出了一个异常');
                     });
                 },
                 initTableData2() {
@@ -271,7 +269,6 @@
                     axios.get(urlApi + "warehouseInboundDetailed/queryInboundDetailed?" + params).then(res => {
                         this.data2 = res.data.data;
                     }).catch(err => {
-                        this.$Message.error('对方不想说话，并且向你抛出了一个异常');
                     });
                 },
                 // 当前页发生改变

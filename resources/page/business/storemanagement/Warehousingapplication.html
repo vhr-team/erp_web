@@ -255,7 +255,6 @@
                     axios.get(urlApi + "warehouseStock/querySecuritySheet?" + params).then(res => {
                         this.data1 = res.data.data;
                     }).catch(err => {
-                        this.$Message.error('对方不想说话，并且向你抛出了一个异常');
                     });
                 },
                 // 当前页发生改变

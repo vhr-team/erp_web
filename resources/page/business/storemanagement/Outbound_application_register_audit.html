@@ -252,9 +252,8 @@
                     console.log(obj);
 
                     axios.post(urlApi + "warehouseOutbound/warehouseOutboundDetailedAudit?",obj).then(res => {
-                        this.$Message.success(res.data.message);
+                        location.reload();
                     }).catch(err => {
-                        this.$Message.error('提交失败');
                     })
 
                 },

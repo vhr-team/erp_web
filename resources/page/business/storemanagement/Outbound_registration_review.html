@@ -111,7 +111,7 @@
                 <!--数据表格-->
 
 
-                <div style="margin-left: 600px;padding-top: 40px">
+                <div style="margin-left: 560px;padding-top: 40px">
                     <Button-group>
                         <i-button style="width: 100px;height: 40px" @click="chenggong">通过</i-button>
                     </Button-group>
@@ -225,9 +225,8 @@
                     }
                     let obj = `id=${this.id}&paid_amount_sum=${this.paidAmountSum}&product_id=${objs.product_id}&paid_amount=${objs.paid_amount}`;
                     axios.post(urlApi + 'warehouseOutbound/WarehouseOutboundAudit?' + obj).then(res => {
-                        this.$Message.error('正在提交');
+                        location.reload();
                     }).catch(err => {
-                        this.$Message.error('提交失败');
                     })
 
 
