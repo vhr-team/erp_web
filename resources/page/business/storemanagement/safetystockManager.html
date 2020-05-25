@@ -10,6 +10,7 @@
 
     <link rel="stylesheet" href="../../../lib/layui-v2.5.5/css/layui.css" media="all">
     <link rel="stylesheet" href="../../../css/public.css" media="all">
+    <script src="../../../lib/common/requestUrl.js"></script>
 </head>
 <body>
 
@@ -142,7 +143,6 @@
 <script src="../../../lib/common/common.js" charset="utf-8"></script>
 <script>
     let vue;
-    let safeApi = 'http://127.0.0.1:8004/';
 
     // 入口函数
     $(function () {
@@ -249,7 +249,7 @@
                         config: this.developObj.config,
                     }
 
-                    axios.post(safeApi + 'warehouseStock/insertSecuritySheet', obj).then(res => {
+                    axios.post(api3 + 'warehouseStock/insertSecuritySheet', obj).then(res => {
                         if (res.data.success) {
                             this.$Message.success(res.data.message);
                         }
@@ -278,7 +278,7 @@
                 },
                 loadInventoryAllocationSheet() {
                     this.loading = true;
-                    axios.get(safeApi + "warehouseStock/findPagecheck?page=" + this.page + "&limit=" + this.pageSize + "&checkTag=审核通过&inventoryStatus=0").then(res => {
+                    axios.get(api3 + "warehouseStock/findPagecheck?page=" + this.page + "&limit=" + this.pageSize + "&checkTag=审核通过&inventoryStatus=0").then(res => {
                         this.data1 = res.data.data;
                         this.total = res.data.total;
 

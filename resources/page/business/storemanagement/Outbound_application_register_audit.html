@@ -10,6 +10,7 @@
 
     <link rel="stylesheet" href="../../../lib/layui-v2.5.5/css/layui.css" media="all">
     <link rel="stylesheet" href="../../../css/public.css" media="all">
+    <script src="../../../lib/common/requestUrl.js"></script>
 </head>
 <body style="margin: 0">
 
@@ -127,7 +128,7 @@
 
 
                 <div style="margin-left: 620px;padding-top: 40px">
-                    <Button-group>  
+                    <Button-group>
                         <i-button style="width: 100px;height: 40px" @click="chenggong">通过</i-button>
                         <i-button style="width: 100px;height: 40px" @click="shibai">回绝</i-button>
                     </Button-group>
@@ -160,8 +161,6 @@
 <script src="../../../lib/common/jquery.cookie.min.js" charset="utf-8"></script>
 <script src="../../../lib/common/common.js" charset="utf-8"></script>
 <script>
-
-    let urlApi = 'http://127.0.0.1:8004/';
     let vue;
 
     $("#addDept").click(function () {
@@ -251,7 +250,7 @@
 
                     console.log(obj);
 
-                    axios.post(urlApi + "warehouseOutbound/warehouseOutboundDetailedAudit?",obj).then(res => {
+                    axios.post(api3 + "warehouseOutbound/warehouseOutboundDetailedAudit?",obj).then(res => {
                         this.$Message.success(res.data.message);
                     }).catch(err => {
                         this.$Message.error('提交失败');
@@ -271,7 +270,7 @@
                         obj.ids.push(this.data2[i].id);
                     }
 
-                    axios.post(urlApi + "warehouseOutbound/warehouseOutboundDetailedAudit?",obj).then(res => {
+                    axios.post(api3 + "warehouseOutbound/warehouseOutboundDetailedAudit?",obj).then(res => {
                         this.$Message.success(res.data.message);
                     }).catch(err => {
                         this.$Message.error('提交失败');
@@ -295,7 +294,7 @@
                 },
                 initTableData1() {
                     let params = `page=${this.page}&limit=${this.pageSize}`;
-                    axios.get(urlApi + "warehouseOutbound/queryWarehouseOutbound?" + params).then(res => {
+                    axios.get(api3 + "warehouseOutbound/queryWarehouseOutbound?" + params).then(res => {
                         this.data1 = res.data.data;
                     }).catch(err => {
                         this.$Message.error('对方不想说话，并且向你抛出了一个异常');
@@ -303,7 +302,7 @@
                 },
                 initTableData2() {
                     let params = `page=${this.page}&limit=${this.pageSize}&id=${this.id}`;
-                    axios.get(urlApi + "warehouseOutboundDetailed/queryWarehouseOutboundDetailed?" + params).then(res => {
+                    axios.get(api3 + "warehouseOutboundDetailed/queryWarehouseOutboundDetailed?" + params).then(res => {
                         this.data2 = res.data.data;
                     }).catch(err => {
                         this.$Message.error('对方不想说话，并且向你抛出了一个异常');

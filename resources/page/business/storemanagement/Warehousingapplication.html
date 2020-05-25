@@ -190,7 +190,6 @@
     })
 
     });
-    let urlApi = 'http://127.0.0.1:8004/';
     let vue;
 
     $("#addDept").click(function () {
@@ -252,7 +251,7 @@
                 },
                 initTableData1() {
                     let params = `check_tag=0&page=${this.page}&limit=${this.pageSize}`;
-                    axios.get(urlApi + "warehouseStock/querySecuritySheet?" + params).then(res => {
+                    axios.get(api3 + "warehouseStock/querySecuritySheet?" + params).then(res => {
                         this.data1 = res.data.data;
                     }).catch(err => {
                         this.$Message.error('对方不想说话，并且向你抛出了一个异常');

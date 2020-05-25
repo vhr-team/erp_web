@@ -10,6 +10,7 @@
 
     <link rel="stylesheet" href="../../../lib/layui-v2.5.5/css/layui.css" media="all">
     <link rel="stylesheet" href="../../../css/public.css" media="all">
+    <script src="../../../lib/common/requestUrl.js"></script>
 </head>
 <body>
 
@@ -159,8 +160,6 @@
 <script src="../../../lib/common/jquery.cookie.min.js" charset="utf-8"></script>
 <script src="../../../lib/common/common.js" charset="utf-8"></script>
 <script>
-
-    let urlApi = 'http://127.0.0.1:8004/';
     let vue;
 
     $("#addDept").click(function () {
@@ -264,7 +263,7 @@
 
                     console.log(obj);
 
-                    axios.post(urlApi + 'warehouseOutbound/addWarehouseOutbound',obj).then(res => {
+                    axios.post(api3 + 'warehouseOutbound/addWarehouseOutbound',obj).then(res => {
                         this.$message({
                             message: res.data.msg,
                             type: 'success'
@@ -298,7 +297,7 @@
                 },
                 initTableData2() {
 
-                    axios.post(urlApi + "warehouseStock/findPagecheck?page=" + this.page + "&limit=" + this.pageSize + "&checkTag=审核通过" + "&inventoryStatus=1").then(res => {
+                    axios.post(api3 + "warehouseStock/findPagecheck?page=" + this.page + "&limit=" + this.pageSize + "&checkTag=审核通过" + "&inventoryStatus=1").then(res => {
                         console.log(res.data);
                         this.data2 = res.data.data;
 

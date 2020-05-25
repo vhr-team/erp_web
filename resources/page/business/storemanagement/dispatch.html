@@ -12,6 +12,7 @@
 
     <link rel="stylesheet" href="../../../lib/layui-v2.5.5/css/layui.css" media="all">
     <link rel="stylesheet" href="../../../css/public.css" media="all">
+    <script src="../../../lib/common/requestUrl.js"></script>
 
 </head>
 <body>
@@ -189,7 +190,6 @@
 <script src="../../../lib/common/common.js" charset="utf-8"></script>
 
 <script>
-    let api4 = 'http://127.0.0.1:8004/';
     let vue;
 
     // 入口函数
@@ -264,7 +264,7 @@
             methods: {
                 schedulingModelFn() {
                     let params = `?id=${this.ScheObjTwo.id}&parent_id=${this.ScheObjTwo.parentId}&gatherTag=2&attemper=${JSON.parse(localStorage.getItem("user")).name}`;
-                    axios.get(api4 + 'warehouseInboundDetailed/InboundDetailedCommit' + params).then(res => {
+                    axios.get(api3 + 'warehouseInboundDetailed/InboundDetailedCommit' + params).then(res => {
                         this.$Message['success']({
                             background: true,
                             content: res.data.message
@@ -280,7 +280,7 @@
                     this.ScheObjTwo = row;
 
                     let params = `?product_id=${row.productId}`;
-                    axios.get(api4 + 'warehouseInboundDetailed/queryInventory' + params).then(res => {
+                    axios.get(api3 + 'warehouseInboundDetailed/queryInventory' + params).then(res => {
                         let data = res.data.data;
                         this.data4[0].max_capacity_amount = data.maxCapacityAmount - data.amount;
                     }).catch(err => {
@@ -297,7 +297,7 @@
                     console.log(row);
                     this.ScheObj = row;
                     let params = `?id=${row.id}&page=${this.page}&limit=${this.pageSize}`;
-                    axios.get(api4 + 'warehouseInboundDetailed/queryInboundDetailed' + params).then(res => {
+                    axios.get(api3 + 'warehouseInboundDetailed/queryInboundDetailed' + params).then(res => {
                         this.storageData = res.data.data;
                     }).catch(error => {
                         this.$Message['error']({
@@ -319,7 +319,7 @@
                 },
                 initTableDataOne() {
                     this.loading = true;
-                    axios.get(api4 + "warehouseInbound/queryInboundLimit?page=" + this.page + "&limit=" + this.pageSize + "&storeTag=1").then(res => {
+                    axios.get(api3 + "warehouseInbound/queryInboundLimit?page=" + this.page + "&limit=" + this.pageSize + "&storeTag=1").then(res => {
                         this.Tabledata = res.data.data;
                         this.total = res.data.count;
 

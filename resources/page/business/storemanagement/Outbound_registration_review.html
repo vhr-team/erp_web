@@ -10,6 +10,7 @@
 
     <link rel="stylesheet" href="../../../lib/layui-v2.5.5/css/layui.css" media="all">
     <link rel="stylesheet" href="../../../css/public.css" media="all">
+    <script src="../../../lib/common/requestUrl.js"></script>
 </head>
 <body style="margin: 0">
 
@@ -144,8 +145,6 @@
 <script src="../../../lib/common/jquery.cookie.min.js" charset="utf-8"></script>
 <script src="../../../lib/common/common.js" charset="utf-8"></script>
 <script>
-
-    let urlApi = 'http://127.0.0.1:8004/';
     let vue;
 
     $("#addDept").click(function () {
@@ -224,7 +223,7 @@
                         objs.paid_amount.push(this.numArray[i]);
                     }
                     let obj = `id=${this.id}&paid_amount_sum=${this.paidAmountSum}&product_id=${objs.product_id}&paid_amount=${objs.paid_amount}`;
-                    axios.post(urlApi + 'warehouseOutbound/WarehouseOutboundAudit?' + obj).then(res => {
+                    axios.post(api3 + 'warehouseOutbound/WarehouseOutboundAudit?' + obj).then(res => {
                         this.$Message.error('正在提交');
                     }).catch(err => {
                         this.$Message.error('提交失败');
@@ -255,7 +254,7 @@
                 },
                 initTableData1() {
                     let params = `store_tag=2&check_tag=0&page=${this.page}&limit=${this.pageSize}`;
-                    axios.get(urlApi + "warehouseOutbound/queryWarehouseOutbound?" + params).then(res => {
+                    axios.get(api3 + "warehouseOutbound/queryWarehouseOutbound?" + params).then(res => {
                         this.data1 = res.data.data;
                     }).catch(err => {
                         this.$Message.error('对方不想说话，并且向你抛出了一个异常');
@@ -263,7 +262,7 @@
                 },
                 initTableData2() {
                     let params = `id=${this.id}&page=${this.page}&limit=${this.pageSize}`;
-                    axios.get(urlApi + "warehouseOutboundDetailed/queryWarehouseOutboundDetailed?" + params).then(res => {
+                    axios.get(api3 + "warehouseOutboundDetailed/queryWarehouseOutboundDetailed?" + params).then(res => {
                         this.data2 = res.data.data;
                     }).catch(err => {
                         this.$Message.error('对方不想说话，并且向你抛出了一个异常');
