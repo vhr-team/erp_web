@@ -102,7 +102,7 @@ layui.define(["element", "jquery", 'pearOper', 'code'], function (exports) {
         this.initLogo = function () {
             var html = '<a href="javascript:;">\n' +
                 '<img src="resources/images/logo.png" alt="logo">\n' +
-                '<h1> 进 销 存 系 统</h1>\n' +
+                '<h1> ERP 进销存系统</h1>\n' +
                 '</a>';
             $('.layui-layout-admin .layui-logo').html(html);
         };

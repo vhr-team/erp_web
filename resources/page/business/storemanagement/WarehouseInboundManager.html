@@ -268,7 +268,7 @@
       <el-button @click="centerDialogVisible = false" icon="el-icon-switch-button"></el-button>
     </el-tooltip>
                  <el-tooltip class="item" effect="dark" content="确定" placement="right-start">
-                    <el-button type="primary" @click="centerDialogVisible = false" icon="el-icon-thumb"></el-button>
+                    <el-button type="primary" icon="el-icon-thumb"></el-button>
                 </el-tooltip>
   </span>
         </el-dialog>
@@ -350,7 +350,7 @@
                                     label="存储单元简称">
                             </el-table-column>
                             <el-table-column
-                                    prop="date"
+                                    prop="amount"
                                     align="center"
                                     label="当前库存数量">
                             </el-table-column>
@@ -358,7 +358,7 @@
                                     align="center"
                                     label="本次出库数量">
                                 <template slot-scope="scope">
-                                    <el-input></el-input>
+                                    <el-input v-model="num"></el-input>
                                 </template>
                             </el-table-column>
                         </el-table>
@@ -408,7 +408,7 @@
       <el-button @click="centerDialogVisibleTwo = false" icon="el-icon-switch-button"></el-button>
     </el-tooltip>
                  <el-tooltip class="item" effect="dark" content="确定" placement="right-start">
-                    <el-button type="primary" @click="centerDialogVisibleTwo = false" icon="el-icon-thumb"></el-button>
+                    <el-button type="primary" @click="outboundFn" icon="el-icon-thumb"></el-button>
                 </el-tooltip>
   </span>
         </el-dialog>
@@ -456,6 +456,7 @@
             el: '#app',
             // 数据
             data: {
+                num: 0,
                 tableData: [],
                 /*表格中请求参数约定*/
                 paginationObj: {
@@ -477,7 +478,14 @@
 
                 /*对话框表格*/
                 diaTableDataTwo: [
-                    {Safetid: 1, name: '成品库', addressId: '01-01-01', addressName: '电子-计算机-服务器', max_capacity_amount: 0}
+                    {
+                        Safetid: 1,
+                        name: '成品库',
+                        addressId: '01-01-01',
+                        addressName: '电子-计算机-服务器',
+                        max_capacity_amount: 0,
+                        amount: 0
+                    }
                 ],
 
                 pickerOptions: {
@@ -511,13 +519,34 @@
             },
             // 方法
             methods: {
-                schedulingFn(row){
+                outboundFn() {
+
+                    let params = `?id=${this.DiaTwoObj.id}&parent_id=${this.DiaTwoObj.parentId}&attemper=${JSON.parse(localStorage.getItem("user")).name}&pay_tag=2`;
+                    axios.get(api3 + 'warehouseOutboundDetailed/OutboundDetailedCommit' + params).then(res => {
+                        this.$message({
+                            message: res.data.message,
+                            type: 'success'
+                        });
+
+                        this.centerDialogVisibleTwo = false;
+                        this.centerDialogVisible = false;
+
+                        this.QueryinitTableData();
+                    }).catch(err => {
+                        this.$message.error('服务器繁忙！');
+                    })
+                },
+                schedulingFn(row) {
                     this.DiaTwoObj = row;
                     console.log(this.DiaTwoObj);
 
                     this.centerDialogVisibleTwo = true;
 
-                    axios.get(api3 + '')
+                    axios.get(api3 + 'warehouseStock/queryStockAmount?product_id=' + this.DiaTwoObj.productId).then(res => {
+                        this.diaTableDataTwo[0].amount = res.data.data.amount;
+                    }).catch(err => {
+
+                    });
                 },
                 deliverySchedule(row) {
                     this.DiaObj = row;
