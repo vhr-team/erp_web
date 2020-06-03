@@ -24,6 +24,9 @@ Erp_Web，JavaScript,Jquery,Layui,Iview,Element-ui,Html,Css...构建。相信 Er
   <a href="https://github.com/sunzhixian001">
      <img src="https://avatars1.githubusercontent.com/u/63136165?s=50&u=35ac6d1b4db1ae9f0dad474580ca6a86cbb0ec16&v=4" />
   </a>
+  <a href="https://github.com/2332810801">
+       <img src="https://avatars3.githubusercontent.com/u/57171196?s=60&v=4" />
+    </a>
   <a href="https://github.com/guangzan">
      <img src="https://avatars1.githubusercontent.com/u/43458667?s=50&u=56ba29ddcae348e030ecfc3d3f37b8107f0ba990&v=4" />
   </a>
@@ -48,8 +51,21 @@ git clone https://github.com/vhr-team/erp_web.git
 ```
 
 ## 效果预览
+登录页面
+<img src='https://img-blog.csdnimg.cn/2020060400233752.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2pva2VyZGoyMzM=,size_16,color_FFFFFF,t_70'>
 
-## 使用说明
+系统页面
+<img src='https://img-blog.csdnimg.cn/20200604001801940.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2pva2VyZGoyMzM=,size_16,color_FFFFFF,t_70'>
+业务页面
+<img src="https://img-blog.csdnimg.cn/20200604002009770.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2pva2VyZGoyMzM=,size_16,color_FFFFFF,t_70">
+安全库存
+<img src='https://img-blog.csdnimg.cn/20200604002230315.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2pva2VyZGoyMzM=,size_16,color_FFFFFF,t_70'>
+后端代码目录
+<img src='https://img-blog.csdnimg.cn/20200604002516769.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2pva2VyZGoyMzM=,size_16,color_FFFFFF,t_70'>
+前端代码目录
+<img src='https://img-blog.csdnimg.cn/20200604002626295.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2pva2VyZGoyMzM=,size_16,color_FFFFFF,t_70'>
+
+使用说明
 
 ## 捐赠支持
 
